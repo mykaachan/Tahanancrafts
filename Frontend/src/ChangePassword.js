@@ -17,7 +17,7 @@ function ChangePassword() {
 
   const handleSavePassword = async () => {
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/change-password/", {
+      const res = await axios.post("http://127.0.0.1:8000/api/users/auth/change_password/", {
         contact: contact,   // ✅ comes from ForgotPass2
         otp: otp,           // ✅ verify code from ForgotPass2
         newpass1: newPass1,
