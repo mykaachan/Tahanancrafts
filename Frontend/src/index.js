@@ -15,6 +15,8 @@ import StoryPage from './StoryPage';
 import Products from './Products';
 import Iraya from './Iraya';
 import Cart from './Cart';
+import Layout from './Layout';      
+import AddProduct from './AddProduct'; 
 import SignupVerifyContact from './SignupVerify';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -37,6 +39,7 @@ root.render(
           <Route path="/iraya" element={<Iraya />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/signup-verify" element={<SignupVerifyContact />} />
+          <Route path="/admin" element={<Layout><AddProduct /></Layout>} /> {/* ✅ Admin Add Product route */}
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
