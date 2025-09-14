@@ -1,21 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import './AddProduct.css';
+import { fetchCategories, fetchMaterials } from './api'; // make sure these exist in api.js
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: '',
+    category: [], // array for selected category ids
     brandName: '',
     stockQuantity: '',
     regularPrice: '',
     salesPrice: ''
   });
 
+  const [materials, setMaterials] = useState([]); // array for selected material ids
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [materialOptions, setMaterialOptions] = useState([]);
   const [images, setImages] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const [mainImage, setMainImage] = useState(null);
   const [mainImageDragActive, setMainImageDragActive] = useState(false);
+
+  // Fetch categories and materials from API
+  useEffect(() => {
+    async function fetchOptions() {
+      try {
+        const categoriesData = await fetchCategories();
+        const materialsData = await fetchMaterials();
+        setCategoryOptions(categoriesData);
+        setMaterialOptions(materialsData);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    }
+    fetchOptions();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +54,6 @@ const AddProduct = () => {
       name: file.name
     }));
     setImages(prev => [...prev, ...newImages]);
-    // Reset the file input to allow uploading the same file again
     e.target.value = '';
   };
 
@@ -52,7 +71,6 @@ const AddProduct = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const files = Array.from(e.dataTransfer.files);
       const newImages = files.map(file => ({
@@ -68,10 +86,7 @@ const AddProduct = () => {
   const removeImage = (imageId) => {
     setImages(prev => {
       const imageToRemove = prev.find(img => img.id === imageId);
-      if (imageToRemove) {
-        // Clean up the object URL to prevent memory leaks
-        URL.revokeObjectURL(imageToRemove.preview);
-      }
+      if (imageToRemove) URL.revokeObjectURL(imageToRemove.preview);
       return prev.filter(img => img.id !== imageId);
     });
   };
@@ -80,86 +95,62 @@ const AddProduct = () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete everything? This will clear all form data, main product image, and gallery images. This action cannot be undone."
     );
-    
     if (confirmDelete) {
-      // Clear all form data
       setFormData({
         name: '',
         description: '',
-        category: '',
+        category: [],
         brandName: '',
         stockQuantity: '',
         regularPrice: '',
-        salesPrice: ''
+        salesPrice: []
       });
-      
-      // Clean up all gallery image object URLs before clearing
-      images.forEach(image => {
-        URL.revokeObjectURL(image.preview);
-      });
+      setMaterials([]);
+      images.forEach(img => URL.revokeObjectURL(img.preview));
       setImages([]);
-      
-      // Clean up main image object URL before clearing
-      if (mainImage) {
-        URL.revokeObjectURL(mainImage.preview);
-      }
+      if (mainImage) URL.revokeObjectURL(mainImage.preview);
       setMainImage(null);
     }
   };
 
   const handleMainImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setMainImage({
-        file,
-        preview: URL.createObjectURL(file),
-        name: file.name
-      });
-    }
-    // Reset the file input to allow uploading the same file again
+    if (file) setMainImage({ file, preview: URL.createObjectURL(file), name: file.name });
     e.target.value = '';
   };
 
   const handleMainImageDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setMainImageDragActive(true);
-    } else if (e.type === "dragleave") {
-      setMainImageDragActive(false);
-    }
+    if (e.type === "dragenter" || e.type === "dragover") setMainImageDragActive(true);
+    else if (e.type === "dragleave") setMainImageDragActive(false);
   };
 
   const handleMainImageDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setMainImageDragActive(false);
-    
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setMainImage({
-        file,
-        preview: URL.createObjectURL(file),
-        name: file.name
-      });
+      setMainImage({ file, preview: URL.createObjectURL(file), name: file.name });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the data to your Django API
     console.log('Form data:', formData);
-    console.log('Images:', images);
+    console.log('Selected materials:', materials);
+    console.log('Main image:', mainImage);
+    console.log('Gallery images:', images);
   };
 
   return (
     <div className="add-product-container">
       <h1 className="page-title">Product Details</h1>
-      
       <div className="product-form-container">
         <form onSubmit={handleSubmit} className="product-form">
           <div className="form-columns">
-            {/* Left Column - Product Information */}
+            {/* Left Column */}
             <div className="form-left-column">
               <div className="form-group">
                 <label htmlFor="name">Product Name</label>
@@ -187,16 +178,20 @@ const AddProduct = () => {
                 />
               </div>
 
+              {/* Category Multi-Select Dropdown */}
               <div className="form-group">
-                <label htmlFor="category">Category</label>
-                <input
-                  type="text"
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  placeholder="Type Category here"
-                  className="form-input"
+                <label>Category</label>
+                <Select
+                  options={categoryOptions.map(cat => ({ value: cat.id, label: cat.name }))}
+                  isMulti
+                  onChange={(selectedOptions) => {
+                    const selectedIds = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
+                    setFormData(prev => ({ ...prev, category: selectedIds }));
+                  }}
+                  value={categoryOptions
+                    .filter(cat => formData.category.includes(cat.id))
+                    .map(cat => ({ value: cat.id, label: cat.name }))}
+                  closeMenuOnSelect={false}
                 />
               </div>
 
@@ -254,8 +249,25 @@ const AddProduct = () => {
               </div>
             </div>
 
-            {/* Right Column - Product Gallery */}
+            {/* Right Column */}
             <div className="form-right-column">
+              {/* Materials Multi-Select Dropdown */}
+              <div className="form-group">
+                <label>Materials</label>
+                <Select
+                  options={materialOptions.map(mat => ({ value: mat.id, label: mat.name }))}
+                  isMulti
+                  onChange={(selectedOptions) => {
+                    const selectedIds = selectedOptions ? selectedOptions.map(opt => opt.value) : [];
+                    setMaterials(selectedIds);
+                  }}
+                  value={materialOptions
+                    .filter(mat => materials.includes(mat.id))
+                    .map(mat => ({ value: mat.id, label: mat.name }))}
+                  closeMenuOnSelect={false}
+                />
+              </div>
+
               {/* Main Image Placeholder */}
               <div 
                 className={`main-image-placeholder ${mainImageDragActive ? 'drag-active' : ''}`}
@@ -292,8 +304,6 @@ const AddProduct = () => {
               {/* Product Gallery Section */}
               <div className="gallery-section">
                 <h3 className="gallery-title">Product Gallery</h3>
-                
-                {/* Upload Area */}
                 <div
                   className={`upload-area ${dragActive ? 'drag-active' : ''}`}
                   onDragEnter={handleDrag}
@@ -314,10 +324,9 @@ const AddProduct = () => {
                   />
                 </div>
 
-                {/* Image Thumbnails - Only show when images exist */}
                 {images.length > 0 && (
                   <div className="image-thumbnails">
-                    {images.map((image, index) => (
+                    {images.map((image) => (
                       <div key={image.id} className="thumbnail-item">
                         <div className="thumbnail-preview">
                           <img src={image.preview} alt={image.name} />
@@ -332,7 +341,6 @@ const AddProduct = () => {
                         <span className="thumbnail-name">{image.name}</span>
                       </div>
                     ))}
-                    {/* Empty slots for remaining thumbnails (up to 4 total) */}
                     {Array.from({ length: Math.max(0, 4 - images.length) }).map((_, index) => (
                       <div key={`empty-${index}`} className="thumbnail-item empty">
                         <div className="thumbnail-preview">
@@ -343,7 +351,6 @@ const AddProduct = () => {
                   </div>
                 )}
 
-                {/* Gallery Actions */}
                 <div className="gallery-actions">
                   <button 
                     type="button" 
@@ -370,4 +377,3 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
-

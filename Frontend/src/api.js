@@ -53,3 +53,46 @@ export async function ChangePassword(userData) {
   const res = await api.post("/users/auth/change_password/", userData);
   return res.data;
 }
+
+// --- PRODUCT FUNCTIONS ---
+
+// Fetch all categories
+export async function fetchCategories() {
+  const res = await api.get("products/product/categories/");
+  return res.data;
+}
+
+// Fetch all materials
+export async function fetchMaterials() {
+  const res = await api.get("products/product/materials/");
+  return res.data;
+}
+
+// Add a product (with optional main image & gallery images)
+export async function addProduct(formData, mainImage = null, galleryImages = []) {
+  const data = new FormData();
+
+  // Add product fields
+  for (const key in formData) {
+    // For arrays (categories/materials), append each value
+    if (Array.isArray(formData[key])) {
+      formData[key].forEach((val) => data.append(key, val));
+    } else {
+      data.append(key, formData[key]);
+    }
+  }
+
+  // Add main image
+  if (mainImage) {
+    data.append("main_image", mainImage.file);
+  }
+
+  // Add gallery images
+  galleryImages.forEach((img) => data.append("images", img.file));
+
+  const res = await api.post("/products/add/", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data;
+}
