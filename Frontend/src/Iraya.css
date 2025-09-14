@@ -1,0 +1,439 @@
+.iraya-page .related-section .related-grid {
+  gap: 35px; /* Adjust spacing between items */
+}
+/* Main content wrapper */
+.iraya-page {
+  padding-top: 105px;   /* below header */
+  background: #fffdf9;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Iraya product container ONLY */
+.iraya-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;       /* centers the whole block */
+  padding: 0 60px;      /* ⬅️ equal left & right spacing */
+  align-items: flex-start;
+}
+
+/* LEFT SIDE (Images + Thumbnails) */
+.iraya-container .iraya-images {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  /* remove this ⬇️ */
+  margin-left: 0;       /* reset left margin so it's balanced */
+}
+
+.iraya-container .iraya-images .main-image {
+  width: 750px;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  /* remove this ⬇️ */
+  margin-left: 0;       /* reset so it doesn’t push only left */
+}
+
+.iraya-container .iraya-images .thumbnails {
+  display: flex;
+  gap: 20px;
+  justify-content: center;   /* center under main image */
+}
+
+.iraya-container .iraya-images .thumbnails img {
+  width: 235px;   /* ⬆️ bigger thumbnail */
+  height: 190px;  /* keep square */
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.iraya-container .iraya-images .thumbnails img:hover {
+  border-color: #c89b6d;
+}
+
+
+/* RIGHT SIDE (Details) */
+/* RIGHT SIDE (Details) */
+.iraya-container .iraya-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;   /* ⬅️ reduced from 12px */
+}
+
+.iraya-container .iraya-details h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 2px 0;   /* tighter bottom spacing */
+}
+
+.iraya-container .iraya-details h2 {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0 0 2px 0;
+  font-weight: 500;
+}
+
+.iraya-container .iraya-details .category {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 2px 0;   /* was 5px */
+}
+
+.iraya-container .iraya-details .rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;    /* was 6px */
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.iraya-container .iraya-details .price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 4px;   /* was 5px */
+  color: #222;
+}
+
+.iraya-container .iraya-details .description {
+  line-height: 1.4;   /* was 1.6 */
+  color: #444;
+  font-size: 0.9rem;
+  margin-top: 6px;   /* was 10px */
+}
+
+/* Options (Size & Color) */
+.iraya-container .options {
+  margin-top: 20px;
+  display: flex;
+  gap: 40px;
+}
+
+.iraya-container .option label {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.iraya-container .option .buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.iraya-container .option .buttons button {
+  padding: 6px 14px;
+  border: 1px solid #aaa;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.iraya-container .option .buttons button:hover {
+  background: #f2f2f2;
+}
+
+/* Quantity */
+.iraya-container .quantity {
+  margin-top: 20px;
+}
+
+.iraya-container .quantity label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.iraya-container .quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.iraya-container .quantity-controls button {
+  padding: 4px 12px;
+  font-size: 1rem;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.iraya-container .quantity-controls span {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Add to Cart */
+.iraya-container .add-to-cart {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.iraya-container .add-to-cart button {
+  padding: 12px 28px;
+  background: #c2a68d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.iraya-container .add-to-cart button:hover {
+  background: #a88c73;
+}
+
+.iraya-container .add-to-cart .total {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #222;
+}
+
+
+/* Reviews Section */
+.reviews-section {
+  margin: 60px auto;
+  max-width: 1200px;
+  padding: 0 60px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.reviews-section h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #4a3f35;
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.reviews-header p {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.reviews-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.reviews-actions select {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.review-btn {
+  padding: 8px 16px;
+  background: #4a3f35;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.review-btn:hover {
+  background: #6a5545;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.review-card {
+  background: #f9f6f2;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.review-card .stars {
+  color: #f2b01e;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.review-card h4 {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.review-card p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #444;
+  margin-bottom: 12px;
+}
+
+.review-card small {
+  font-size: 0.8rem;
+  color: #777;
+
+  
+}
+
+
+
+.related-section {
+  margin: 60px auto;
+  max-width: 1200px;
+  padding: 0 40px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Section Title */
+.related-title {
+  font-size: 1.4rem;   /* match products-page h3 */
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #4a3f35;
+}
+
+/* Grid layout (4 items per row) */
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* exactly 4 items per row */
+  gap: 60px;
+}
+
+/* Individual cards styling */
+.related-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: left;
+
+  width: 220px;   /* same as product-card */
+  height: auto;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* smooth hover */
+}
+
+.related-card:hover {
+  transform: translateY(-5px) scale(1.03); /* slightly lifts and enlarges */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* stronger shadow */
+}
+
+
+.related-card img {
+  width: 100%;
+  height: 180px;   /* same as product-card */
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.related-card h4 {
+  font-size: 1rem;   /* same as product-card h2 */
+  font-weight: bold;
+  margin: 0;
+}
+
+.related-card p {
+  font-size: 0.85rem;
+  color: #444;
+  margin: 5px 0;
+}
+
+.related-card .price {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #000;
+}
+
+
+
+
+.shop-section {
+  max-width: 1200px;        /* same as other sections */
+  padding: 0 60px;          /* horizontal padding */
+  margin-top: 60px;
+  margin-bottom: 60px;
+  margin-left: 100px;        /* ← adjust this value to move the whole section right */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.shop-divider {
+  width: 1200px;             /* length of the line */
+  height: 2px;
+  background-color: #c59d5f;
+  border: none;
+  border-radius: 2px;
+  margin: 20px 0;           /* vertical spacing */
+}
+
+.shop-card-horizontal {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.shop-image-horizontal {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #c59d5f;
+  flex-shrink: 0;
+}
+
+.shop-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.shop-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2e2e2e;
+}
+
+.view-shop-btn {
+  padding: 10px 20px;
+  background-color: #c59d5f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.view-shop-btn:hover {
+  background-color: #a47c4b;
+}
+

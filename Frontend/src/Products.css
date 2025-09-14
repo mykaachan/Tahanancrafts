@@ -1,0 +1,107 @@
+.products-page {
+  padding-top: 82px;  /* adjust to match your header height */
+}
+
+/* Line above products */
+.products-page .products-content {
+  flex: 1;
+  border-top: 2px solid #000000; /* ✅ line above products */
+  padding-top: 20px;          /* space between line and products */
+}
+
+/* Layout */
+.products-page .products-layout {
+  display: flex;
+  gap: 30px;
+  margin: 40px;
+}
+
+/* Left Sidebar Filters */
+.products-page .products-filters {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.products-page .products-filters h3 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+
+.products-page .filter-group {
+  margin-bottom: 25px;
+}
+
+.products-page .filter-group h4 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.products-page .filter-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin: 6px 0;
+  cursor: pointer;
+}
+
+/* Right Products Grid */
+.products-page .products-content {
+  flex: 1;
+}
+
+.products-page .products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* exactly 4 items per row */
+  gap: 25px;
+}
+
+.products-page .product-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: left;
+
+  /* ✅ Add these to control size */
+  width: 220px;   /* adjust to make card wider/narrower */
+  height: auto;   /* or set a fixed height like 300px */
+}
+
+.products-page .product-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.products-page .product-card h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.products-page .product-card p {
+  font-size: 0.85rem;
+  color: #444;
+  margin: 5px 0;
+}
+
+.products-page .product-card .price {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #000;
+}
+
+
+/* Show More / Less button */
+.products-page .show-more-btn {
+  font-size: 0.85rem;
+  color: #998759;
+  cursor: pointer;
+  margin-top: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+}

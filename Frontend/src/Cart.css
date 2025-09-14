@@ -1,0 +1,246 @@
+.cart-page {
+  padding-top: 80px;
+  background: #fffdf9;
+  min-height: 70vh;
+  font-family: 'Segoe UI', sans-serif;
+
+  /* 👇 force smaller side spacing */
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.cart-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0;  /* 👈 remove its extra padding */
+}
+
+.cart-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Main layout */
+.cart-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.cart-items {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CART ITEM */
+.cart-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.cart-item-box {
+  flex: 1;
+}
+
+.item-header {
+  background: #d5c1a1;
+  padding: 5px 10px;
+  border-radius: 6px 6px 0 0;
+  font-weight: bold;
+}
+
+.item-body {
+  display: flex;
+  align-items: center;
+  border: 1px solid #000;
+  border-top: none;
+  padding: 10px;
+  gap: 15px;
+}
+
+.item-body img {
+  width: 120px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.qty-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.qty-buttons button {
+  padding: 4px 10px;
+  border: 1px solid #000;
+  background: white;
+  cursor: pointer;
+}
+
+.remove {
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: #d5c1a1;
+  color: black;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* SUMMARY */
+.cart-summary {
+  flex: 1;
+  border: 1px solid #000;
+  padding: 20px;
+  border-radius: 6px;
+  background: white;
+  height: fit-content;
+}
+
+.cart-summary .location {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+.total {
+  margin: 15px 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #d5c1a1;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* selection checkbox */
+.select-item {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #d5c1a1; /* ✅ makes it match your theme */
+}
+
+.item-body {
+  display: flex;
+  align-items: center;
+  border: 1px solid #000;
+  border-top: none;
+  padding: 10px;
+  gap: 15px;
+}
+
+
+
+.related-section {
+  margin: 60px auto;
+  max-width: 1200px;
+  padding: 0 40px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.related-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns per row */
+  gap: 25px;
+}
+
+@media (max-width: 1200px) {
+  .related-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+  }
+}
+
+@media (max-width: 600px) {
+  .related-grid {
+    grid-template-columns: 1fr; /* 1 column for mobile */
+  }
+}
+
+.related-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  background: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.related-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.related-card h4 {
+  font-size: 1rem;
+  margin: 8px 0 4px;
+}
+
+.related-card p {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.related-card .price {
+  font-weight: bold;
+  color: #000;
+}
+
+.related-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
+}

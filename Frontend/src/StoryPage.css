@@ -1,0 +1,113 @@
+/* Story Content */
+.story-content {
+  padding-top: 120px;
+  max-width: 100%;
+  margin: 0 60px;         /* a bit more breathing room */
+  display: flex;
+  flex-direction: column;
+  gap: 60px;              /* more space between story rows */
+}
+.story-page {
+  background-color: #f5f2ed; /* change this to any color you want */
+}
+
+/* Story Title */
+.story-title {
+  font-size: 3.5rem;       /* slightly smaller than before */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  display: inline-block;
+  border-bottom: 2px solid #000000;
+  padding-bottom: 12px;
+  letter-spacing: 1px;     /* spacing for elegance */
+}
+
+/* Story Row */
+.story-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+}
+
+/* Images */
+.story-image {
+  width: 55%;              /* a bit narrower to match screenshot */
+  height: 400px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+/* Description Box */
+.story-text {
+  width: 45%;
+  padding: 30px 25px;
+  background: #cdbeab;
+  border-radius: 0;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  margin-top: 40px;        /* push down to align with screenshot */
+}
+
+/* Text Styling */
+.story-heading {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #2e2e2e;
+}
+
+/* New Location Style */
+.story-location {
+  font-size: 1rem;
+  font-style: italic;
+  color: #5a5a5a;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.story-paragraph {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #2f2f2f;
+  text-align: justify;     /* cleaner alignment */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .story-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .story-image,
+  .story-text {
+    width: 100%;
+  }
+
+  .story-image {
+    max-height: 350px;
+  }
+}
+
+.story-row:last-child {
+  border-bottom: 2px solid #2e2e2e;
+  padding-bottom: 50px;
+  margin-bottom: 40px;
+}
+
+/* Hover effect for story images */
+.story-image:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* Hover effect for description box */
+.story-text:hover {
+  transform: scale(1.01);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}

@@ -1,0 +1,22 @@
+# Node.js (React)
+node_modules/
+build/
+.env
+
+# Python (Django)
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db

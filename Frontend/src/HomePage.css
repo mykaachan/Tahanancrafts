@@ -1,0 +1,505 @@
+/* Reset default margins and prevent horizontal scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* ✅ removes any tiny scrollbars */
+}
+.homepage {
+  background: #fdf3e6;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 80px; /* match actual header height */
+}
+
+/* Header Container */
+.homepage-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: #fdf3e6;
+  border-bottom: 1px solid #ddd;
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+
+  box-sizing: border-box; /* ensures padding stays inside header height */
+}
+
+
+
+.homepage-logo {
+  width: 150px;   /* small */
+}
+
+
+/* Nav Links */
+.nav-links ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links ul li {
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav-links ul li:hover {
+  color: #6b4226;
+}
+
+/* Actions Section */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Search Box */
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 2px 8px;
+  background: #fafafa;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  padding: 6px 8px;
+  background: transparent;
+}
+
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Buttons */
+.login-btn,
+.cart-btn {
+  border: none;
+  background: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.login-btn:hover,
+.cart-btn:hover {
+  color: #6b4226;
+}
+
+
+.featured-section {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; /* aligns the photo to the left */
+  align-items: center;
+}
+
+.featured-photo {
+  max-width: 90%;  /* you can make it smaller than 100% */
+  height: auto;
+  margin-left: 20px; /* 👈 adjust this value for left spacing */
+  border-radius: 0px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Right-side Featured Box with full brown background */
+.featured-box {
+  flex: 1;
+  margin-right: 20px;
+  background: #c8b39a;   /* brown shade background */
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff; /* text inside will be lighter */
+  height: 80%;   /* makes it scale */
+  min-height: 535px; /* adjust this value to match your image height */
+}
+
+.featured-box h1 {
+  font-size: 6rem; 
+  margin-bottom: -20px;      
+  color: #000;
+  position: relative;
+  top: -120px;           /* moves it 20px higher */
+  line-height: 1.1;
+}
+
+.featured-box h3 {
+  font-size: 1.2rem;
+  margin-top: -35px;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #000; /* darker subtitle */
+}
+
+.stars {
+  color: #007bff;  /* blue */
+  font-size: 1rem;
+  margin-bottom: -10px;
+}
+
+.featured-box p {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  color: #fff; /* white text for contrast */
+  max-width: 500px;
+}
+
+.shop-btn {
+  background: #2c1810;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+  align-self: flex-start;
+}
+
+.shop-btn:hover {
+  background: #6b4226;
+}
+
+
+/* Latest Products Section */
+.latest-products {
+  text-align: center;
+  background: #fdf3e6;
+  padding: 40px 0; /* beige section padding */
+  margin-top: 60px;
+  position: relative;
+}
+
+.latest-products::before {
+  content: "";
+  display: block;
+  width: 600px;   /* same width as underline */
+  height: 1.5px;
+  background: #222;
+  margin: 0 auto 40px; /* center + spacing below line */
+}
+
+.latest-products-grid {
+  display: flex;
+  justify-content: center;
+  gap: 100px; /* spacing between images */
+  margin: 0;
+  background: #c2b5a7; /* light brown background behind images */
+  padding: 60px 0; /* taller padding to match bigger photos */
+  flex-wrap: wrap; /* responsive */
+  width: 100%;     /* full width */
+}
+
+.product-card {
+  width: 350px;     /* bigger size */
+  height: 350px;    /* square */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.latest-products-title {
+  font-size: 40px;
+  font-weight: bold;
+  color: #222;
+  margin-top: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+.latest-products-title::after {
+  content: "";
+  display: block;
+  width: 600px;
+  height: 1.5px;
+  background: #222;
+  margin: 12px auto 0;
+}
+
+/* Extra Products Section */
+.extra-products {
+  padding: 40px 0;
+  margin: 0;
+}
+
+.extra-products-grid {
+  display: flex;
+  justify-content: center;
+  gap: 50px; /* space between the 3 images */
+  flex-wrap: wrap;
+  margin-top: -30px; /* ✅ moves the pictures up */
+}
+
+.extra-products-grid .product-card {
+  width: 320px;   /* increased size */
+  height: 320px;  /* increased size */
+  object-fit: cover;
+  border-radius: 0px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.extra-products-grid .product-card:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ Names below images */
+.product-item {
+  text-align: center;
+}
+
+.product-name {
+  margin-top: 12px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+
+
+
+/* Heritage Section */
+.heritage-section {
+  background: #c8b39a; /* beige tone */
+  padding: 60px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.heritage-container {
+  display: flex;
+  align-items: center;
+  max-width: 1100px;
+  width: 100%;
+  gap: 50px;
+  padding: 0 20px;
+}
+
+.heritage-image img {
+  width: 450px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.heritage-content {
+  flex: 1;
+}
+
+.heritage-content h2 {
+  font-size: 2rem;
+  color: #2e2e2e;
+  margin-bottom: 20px;
+}
+
+.heritage-content p {
+  font-size: 1.1rem;
+  color: #3d3d3d;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.heritage-btn {
+  background: #5a4634;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.heritage-btn:hover {
+  background: #4a3929;
+}
+
+
+
+
+
+
+
+/* ✅ Full-Width Background Section - Centered */
+.tahanancrafts-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;       /* vertically center content */
+  align-items: center;           /* horizontally center content */
+    padding: 60px 20px;    /* smaller vertical padding */
+  min-height: 400px;     /* reduce height */
+  background: #fdf3e6;   /* bigger background */
+  position: relative;
+  min-height: 600px;             /* ensures section has enough height for centering */
+}
+
+.tahanancrafts-logo {
+  width: 300px;
+  height: auto;
+  position: absolute;
+  top: 168px;                     /* move up/down */
+  left: 50%;                      /* horizontally center */
+  transform: translateX(-50%);    /* adjust exact center */
+  z-index: 2;
+}
+
+
+/* ✅ Description Box */
+.description-box {
+  background: #c2b5a7;
+  padding: 60px 80px;
+  border-radius: 12px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #333;
+  max-width: 800px;
+  margin-top: 120px;              /* keeps space for logo */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  z-index: 1;
+  text-align: center;             /* centers text inside box */
+}
+
+
+
+
+
+
+/* ===== Footer Section ===== */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #705c47;   /* matches uploaded pic */
+  color: #e5decf;              /* beige text */
+  padding: 50px 70px;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 60px;
+}
+
+/* Left side */
+.footer-left {
+  flex: 1;
+  max-width: 30%;
+}
+
+.footer-left h2 {
+  font-size: 36px;     /* ⬆️ Bigger headline */
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.footer-left p {
+  font-size: 16px;     /* slightly larger for balance */
+  line-height: 1.7;
+  margin-bottom: 24px;
+  color: #d8cfc0;
+}
+
+.register-btn {
+  background: #e5decf;
+  color: #333;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+.register-btn:hover {
+  background: #fff4e2;
+}
+
+/* Right side */
+.footer-right {
+  flex: 2;
+  padding-left: 60px;
+}
+
+/* Only the hr inside the footer-right (above & below THC logo) */
+.footer-right hr {
+  border: none;
+  border-top: 1px solid #ffffff;  /* ✅ white lines */
+  margin: 12px 0;
+}
+
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 24px 0;
+}
+
+/* THC Logo */
+.footer-logo {
+  font-size: 36px;   /* ⬆️ bigger to match left headline */
+  font-weight: 400;
+  font-family: 'Times New Roman', serif;
+  margin-right: 70px;
+  color: #000;
+}
+
+/* Links section */
+.footer-links {
+  display: flex;
+  gap: 70px;
+}
+
+.footer-links h4 {
+  margin-bottom: 10px;
+  font-size: 14px;   /* ⬆️ slightly larger */
+  font-weight: bold;
+  color: #e5decf;
+  letter-spacing: 1px;
+}
+
+.footer-links p {
+  margin: 5px 0;
+  font-size: 14px;   /* ⬆️ bigger */
+  color: #d8cfc0;
+  cursor: pointer;
+}
+
+.footer-links p:hover {
+  text-decoration: underline;
+}
+
+/* Bottom bar */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;   /* ⬆️ slightly bigger */
+  color: #d8cfc0;
+  margin-top: 14px;
+}
+
+
+
