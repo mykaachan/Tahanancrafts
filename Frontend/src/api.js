@@ -68,29 +68,25 @@ export async function fetchMaterials() {
   return res.data;
 }
 
-// Add a product (with optional main image & gallery images)
 export async function addProduct(formData, mainImage = null, galleryImages = []) {
   const data = new FormData();
 
-  // Add product fields
+  // Append all fields
   for (const key in formData) {
-    // For arrays (categories/materials), append each value
     if (Array.isArray(formData[key])) {
-      formData[key].forEach((val) => data.append(key, val));
+      formData[key].forEach(val => data.append(key, val));
     } else {
       data.append(key, formData[key]);
     }
   }
 
-  // Add main image
-  if (mainImage) {
-    data.append("main_image", mainImage.file);
-  }
+  // Main image
+  if (mainImage) data.append("main_image", mainImage.file);
 
-  // Add gallery images
-  galleryImages.forEach((img) => data.append("images", img.file));
+  // Gallery images
+  galleryImages.forEach(img => data.append("images", img.file));
 
-  const res = await api.post("/products/add/", data, {
+  const res = await api.post("/products/product/add_product/", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 

@@ -19,10 +19,11 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'stock_quantity',
-            'regular_price', 'sales_price', 'main_picture', 'categories',
-            'materials', 'images'
-        ]  # Fields to expose in the API
+            'name', 'description', 'brandName', 
+            'stock_quantity', 'regular_price', 'sales_price', 
+            'categories', 'materials', 'main_image', 'images'
+        ]
+  # Fields to expose in the API
 
     # Custom create method to handle many-to-many relationships and nested images
     def create(self, validated_data):
@@ -50,10 +51,11 @@ class UpdateProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'stock_quantity', 
-            'regular_price', 'sales_price', 'main_picture',
-            'categories', 'materials', 'images'
+            'name', 'description', 'brandName', 
+            'stock_quantity', 'regular_price', 'sales_price', 
+            'categories', 'materials', 'main_image', 'images'
         ]
+
     
     def update(self, instance, validated_data):
         # Pop out related data
