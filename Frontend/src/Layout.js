@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -30,10 +31,10 @@ const Layout = ({ children }) => {
               <img src="/images/Home.png" alt="Home" className="nav-icon" />
               <span className="nav-text">HOME</span>
             </div>
-            <div className="nav-item">
+            <Link to="/all-products" className="nav-item no-underline">
               <img src="/images/ALLPRODUCTS.png" alt="All Products" className="nav-icon" />
               <span className="nav-text">ALL PRODUCTS</span>
-            </div>
+            </Link>
             <div className="nav-item">
               <img src="/images/ORDERLIST.png" alt="Order List" className="nav-icon" />
               <span className="nav-text">ORDER LIST</span>

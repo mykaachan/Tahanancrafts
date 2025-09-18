@@ -1,0 +1,115 @@
+.no-underline {
+  text-decoration: none !important;
+}
+.all-products-page-container {
+  background: #f7eddf;
+  min-height: 100vh;
+  padding: 32px 0;
+}
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #4d3c2e;
+}
+.products-section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 32px;
+  margin: 0 auto;
+  max-width: 1100px;
+}
+.products-header {
+  margin-bottom: 16px;
+}
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+.products-table th, .products-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.products-table th {
+  background: #f7f0e4;
+  color: #4d3c2e;
+  font-weight: 600;
+}
+.product-info {
+  display: flex;
+  align-items: center;
+}
+.product-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+  background: #f7f0e4;
+}
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+.product-name {
+  font-weight: 500;
+  color: #4d3c2e;
+}
+.product-category {
+  font-size: 0.95rem;
+  color: #7c6a58;
+}
+.product-date {
+  font-size: 0.85rem;
+  color: #b8a48a;
+}
+.product-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+}
+.status-low {
+  background: #ffe5d0;
+  color: #d97a00;
+}
+.status-on {
+  background: #e6f7e6;
+  color: #2e7d32;
+}
+.status-out {
+  background: #fbeaea;
+  color: #c62828;
+}
+.delete-btn {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.delete-btn:hover {
+  color: #a31515;
+}
+.add-product-btn-container {
+  text-align: right;
+}
+.btn-primary {
+  background: #d97a00;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #b85f00;
+}

@@ -18,6 +18,7 @@ import Cart from './Cart';
 import Layout from './Layout';      
 import AddProduct from './AddProduct'; 
 import SignupVerifyContact from './SignupVerify';
+import AllProducts from './AllProducts';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -39,7 +40,9 @@ root.render(
           <Route path="/iraya" element={<Iraya />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/signup-verify" element={<SignupVerifyContact />} />
-          <Route path="/admin" element={<Layout><AddProduct /></Layout>} /> {/* ✅ Admin Add Product route */}
+          <Route path="/admin" element={<Layout><AllProducts /></Layout>} /> {/* Admin default: All Products */}
+          <Route path="/add-product" element={<Layout><AddProduct /></Layout>} /> {/* Admin Add Product route */}
+          <Route path="/all-products" element={<Layout><AllProducts /></Layout>} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
