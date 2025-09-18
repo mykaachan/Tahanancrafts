@@ -9,12 +9,18 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = ['image']  # Only include the image field
 
 # Main serializer for Product creation and representation
+# Main serializer for Product creation and representation
 class ProductSerializer(serializers.ModelSerializer):
-    # Allow selecting multiple categories and materials by their IDs
-    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-    materials = serializers.PrimaryKeyRelatedField(queryset=Material.objects.all(), many=True)
-    # Accept multiple images for the product (besides the main picture)
-    images = ProductImageSerializer(many=True, required=False)
+    categories = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), many=True
+    )
+    materials = serializers.PrimaryKeyRelatedField(
+        queryset=Material.objects.all(), many=True
+    )
+    # Accept multiple images directly from form-data
+    images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
 
     class Meta:
         model = Product
@@ -23,23 +29,25 @@ class ProductSerializer(serializers.ModelSerializer):
             'stock_quantity', 'regular_price', 'sales_price', 
             'categories', 'materials', 'main_image', 'images'
         ]
-  # Fields to expose in the API
 
-    # Custom create method to handle many-to-many relationships and nested images
     def create(self, validated_data):
-        # Extract categories, materials, and images from the validated data
-        categories = validated_data.pop('categories')
-        materials = validated_data.pop('materials')
-        images= validated_data.pop('images', [])
-        # Create the product instance with the remaining data
+        categories = validated_data.pop('categories', [])
+        materials = validated_data.pop('materials', [])
+        images = validated_data.pop('images', [])
+
+        # Create product
         product = Product.objects.create(**validated_data)
-        # Set the many-to-many relationships
+
+        # Set many-to-many
         product.categories.set(categories)
         product.materials.set(materials)
-        # Create associated ProductImage instances for each image
-        for image_data in images:
-            ProductImage.objects.create(product=product, **image_data)
-        return product  # Return the created product instance
+
+        # Save extra images
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
+
+        return product
+
 
 class UpdateProductSerializer(serializers.ModelSerializer):
     categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
