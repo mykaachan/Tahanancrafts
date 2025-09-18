@@ -56,15 +56,54 @@ class MaterialListView(ListAPIView):
 class AddProductView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        # ✅ Debug: show incoming request data
+        print("Incoming Data:", data)
+
+        # ✅ Check for required fields manually
+        required_fields = ["name", "description", "brandName", "stock_quantity", "regular_price", "categories", "materials"]
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
             return Response(
-                {"message": "Product successfully added", "product": serializer.data},
+                {"error": f"Missing required fields: {', '.join(missing_fields)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ✅ Validate categories
+        categories = data.getlist("categories") if hasattr(data, "getlist") else data.get("categories", [])
+        invalid_categories = [cat_id for cat_id in categories if not Category.objects.filter(id=cat_id).exists()]
+        if invalid_categories:
+            return Response(
+                {"error": f"Invalid category IDs: {invalid_categories}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ✅ Validate materials
+        materials = data.getlist("materials") if hasattr(data, "getlist") else data.get("materials", [])
+        invalid_materials = [mat_id for mat_id in materials if not Material.objects.filter(id=mat_id).exists()]
+        if invalid_materials:
+            return Response(
+                {"error": f"Invalid material IDs: {invalid_materials}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ✅ Run serializer
+        serializer = ProductSerializer(data=data)
+        if serializer.is_valid():
+            product = serializer.save()
+            return Response(
+                {"message": "Product successfully added ✅", "product": serializer.data},
                 status=status.HTTP_201_CREATED
             )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # ❌ If serializer fails, show detailed errors
+        print("Serializer Errors:", serializer.errors)
+        return Response(
+            {"error": "Serializer validation failed", "details": serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class ProductTestView(APIView):
