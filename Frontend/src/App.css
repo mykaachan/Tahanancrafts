@@ -38,7 +38,6 @@ body, html, #root {
   z-index: 2;
   background-color: rgba(237, 235, 232, 0.73);
   height: 89%;
-  height: 89%;
   width: 660px;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -53,9 +52,9 @@ body, html, #root {
 .logo-wrapper {
   width: 100%;
   display: flex;
-  justify-content: center;      /* Horizontally center */
-  align-items: flex-start;      /* Start at top */
-  padding-top: 5rem;            /* Move logo down */
+  justify-content: center;      
+  align-items: flex-start;      
+  padding-top: 5rem;            
   padding-left: 1rem;
   padding-right: 1rem;
   box-sizing: border-box;
@@ -65,67 +64,64 @@ body, html, #root {
   height: auto;
   cursor: pointer;
 }
+
 .login-logo {
   width: 444px;   /* large */
 }
-
 
 /* Wrapper for the form inputs */
 .form-wrapper {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;         /* center horizontally */
+  align-items: center;         
   gap: 1rem;
-  padding: 2rem 1.5rem 0 1.5rem;  /* top, right, bottom, left */
+  padding: 2rem 1.5rem 0 1.5rem;
   box-sizing: border-box;
 }
 
-/* Input fields for login */
+/* Input fields */
 .login-input {
   width: 100%;
   max-width: 350px;
   padding: 0.6rem 1.2rem;
   font-size: 0.8rem;
-  border: 1px solid #ccc;
-  border-color: #6f6a62;
+  border: 1px solid #6f6a62;
   border-radius: 5px;
   background-color: rgb(244, 242, 238);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   outline: none;
   transition: border 0.2s ease, box-shadow 0.2s ease;
 }
-/* On focus effect */
+
 .login-input:focus {
   border-color: #a78b61;
   box-shadow: 0 0 0 3px rgba(167, 139, 97, 0.2);
 }
 
+/* Forgot password */
 .forgot-password {
   width: 100%;
   max-width: 480px;
   text-align: right;
   margin-top: -0.8rem;
   margin-bottom: 1.2rem;
-  padding-right: 6rem;   /* push link a bit to the left from right edge */
+  padding-right: 6rem;   
 }
 
 .forgot-password a {
   font-size: 0.7rem;
   color: #6b4f29;
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.2s ease;
 }
-.forgot-password a {
-  text-decoration: underline;
-}
 
-/* Login button styled like the input boxes */
+/* Login button */
 .login-button {
-  display: block;           /* allows margin auto to work */
-  width: 390px;             /* set your desired fixed width */
+  display: block;           
+  width: 390px;             
   max-width: 90vw;
-  margin-bottom: 0.2rem;   /* responsive max-width for small screens */         /* centers the button */
+  margin-bottom: 0.2rem;          
   padding: 0.6rem 2rem;
 
   background-color: #ad9f8b;
@@ -142,14 +138,12 @@ body, html, #root {
   text-align: center;
 }
 
-
-
-
 .login-button:hover {
   background-color: #948670;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35);
 }
 
+/* Divider */
 .divider {
   display: flex;
   align-items: center;
@@ -169,8 +163,7 @@ body, html, #root {
   margin: 0 0.5rem;
 }
 
-
-/* Social Buttons Container */
+/* Social Buttons */
 .social-buttons {
   display: flex;
   flex-direction: row;
@@ -180,9 +173,8 @@ body, html, #root {
   justify-content: center;
 }
 
-/* Shared style for both buttons */
 .social-button {
-  flex: none;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -197,53 +189,104 @@ body, html, #root {
   box-shadow: none;
   background-color: transparent;
   color: black;
-  flex: 1;
 }
 
-/* Facebook specific styles */
 .social-button.facebook:hover {
   border-color: #3b5998;
   color: #3b5998;
 }
 
-/* Google specific styles */
 .social-button.google:hover {
   border-color: #db4437;
   color: #db4437;
 }
 
-/* Social Icons */
 .social-icon {
   height: 20px;
   width: 20px;
-
 }
 
-/*margins*/
-.login-button {
-  margin-bottom: 0.005rem;
-}
+/* Margins */
+.login-button { margin-bottom: 0.005rem; }
+.divider { margin: 0.00005rem auto; }
+.social-buttons { margin-top: 0.005rem; }
 
-.divider {
-  margin: 0.00005rem auto;
-}
-
-.social-buttons {
-  margin-top: 0.005rem;
-}
-
-/* Sign-up prompt container */
+/* Sign-up */
 .signup-prompt {
-  margin-top: 1.2rem; /* spacing above */
+  margin-top: 1.2rem;
   font-size: 0.75rem;
   color: #2c2c2c;
   text-align: center;
 }
 
-/* Sign-up link styling */
 .signup-prompt a {
   color: #000000;
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* --------------------
+   📱 RESPONSIVENESS
+--------------------- */
+
+/* Tablet & smaller laptops */
+@media (max-width: 1024px) {
+  .login-rectangle {
+    width: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .login-logo {
+    width: 300px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 600px) {
+  .login-rectangle {
+    width: 95%;
+    height: auto;
+    padding: 1.5rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .logo-wrapper {
+    padding-top: 2rem;
+  }
+
+  .login-logo {
+    width: 200px;
+  }
+
+  .login-input {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .login-button {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  .forgot-password {
+    padding-right: 1rem;
+    font-size: 0.7rem;
+  }
+
+  .divider {
+    font-size: 0.75rem;
+  }
+
+  .social-button {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+
+  .signup-prompt {
+    font-size: 0.8rem;
+  }
 }
