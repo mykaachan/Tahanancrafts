@@ -253,7 +253,6 @@ const AddProduct = () => {
                 </div>
               </div>
             </div>
-
             {/* Right Column - Product Gallery */}
             <div className="form-right-column">
               {/* Main Image Placeholder */}

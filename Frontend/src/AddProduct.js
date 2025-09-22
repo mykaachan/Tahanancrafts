@@ -26,10 +26,14 @@ const AddProduct = () => {
         const categoriesData = await fetchCategories();
         const materialsData = await fetchMaterials();
 
-        setCategoryOptions(categoriesData.map(cat => ({ value: cat.id, label: cat.name })));
-        setMaterialOptions(materialsData.map(mat => ({ value: mat.id, label: mat.name })));
+        setCategoryOptions(
+          categoriesData.map(cat => ({ value: cat.id, label: cat.name }))
+        );
+        setMaterialOptions(
+          materialsData.map(mat => ({ value: mat.id, label: mat.name }))
+        );
       } catch (error) {
-        console.error("Error fetching options:", error);
+        console.error('Error fetching options:', error);
       }
     }
     fetchOptions();
@@ -62,12 +66,18 @@ const AddProduct = () => {
 
   const handleMainImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) setMainImage({ file, preview: URL.createObjectURL(file), name: file.name });
+    if (file) {
+      setMainImage({
+        file,
+        preview: URL.createObjectURL(file),
+        name: file.name
+      });
+    }
     e.target.value = '';
   };
 
   const deleteAllImages = () => {
-    if (window.confirm("Are you sure you want to clear everything?")) {
+    if (window.confirm('Are you sure you want to clear everything?')) {
       setFormData({
         name: '',
         description: '',
@@ -87,7 +97,6 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const dataToSend = {
         name: formData.name,
@@ -101,12 +110,15 @@ const AddProduct = () => {
       };
 
       const response = await addProduct(dataToSend, mainImage, images);
-      alert("Product added successfully!");
+      alert('Product added successfully!');
       console.log(response);
       deleteAllImages();
     } catch (error) {
-      console.error("Error adding product:", error.response ? error.response.data : error);
-      alert("Failed to add product. Check console for details.");
+      console.error(
+        'Error adding product:',
+        error.response ? error.response.data : error
+      );
+      alert('Failed to add product. Check console for details.');
     }
   };
 
@@ -148,10 +160,14 @@ const AddProduct = () => {
                 options={categoryOptions}
                 isMulti
                 onChange={(selected) => {
-                  const selectedIds = selected ? selected.map(opt => opt.value) : [];
+                  const selectedIds = selected
+                    ? selected.map(opt => opt.value)
+                    : [];
                   setFormData(prev => ({ ...prev, categories: selectedIds }));
                 }}
-                value={categoryOptions.filter(opt => formData.categories.includes(opt.value))}
+                value={categoryOptions.filter(opt =>
+                  formData.categories.includes(opt.value)
+                )}
                 closeMenuOnSelect={false}
               />
             </div>
@@ -212,41 +228,126 @@ const AddProduct = () => {
               <Select
                 options={materialOptions}
                 isMulti
-                onChange={(selected) => setMaterials(selected ? selected.map(opt => opt.value) : [])}
-                value={materialOptions.filter(opt => materials.includes(opt.value))}
+                onChange={(selected) =>
+                  setMaterials(selected ? selected.map(opt => opt.value) : [])
+                }
+                value={materialOptions.filter(opt =>
+                  materials.includes(opt.value)
+                )}
                 closeMenuOnSelect={false}
               />
             </div>
 
+            {/* Main Image Upload */}
             <div className="form-group">
               <label>Main Product Image</label>
-              <input type="file" accept="image/*" onChange={handleMainImageUpload} />
-              {mainImage && (
-                <div className="main-image-preview">
-                  <img src={mainImage.preview} alt={mainImage.name} />
-                  <button type="button" onClick={() => setMainImage(null)}>×</button>
-                </div>
-              )}
+              <div className="main-image-placeholder">
+                {mainImage ? (
+                  <div className="main-image-preview">
+                    <img src={mainImage.preview} alt={mainImage.name} />
+                    <button
+                      type="button"
+                      className="remove-main-image"
+                      onClick={() => setMainImage(null)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div className="main-image-content">
+                    <img
+                      src="/images/blankimage.png"
+                      alt="Upload main"
+                      className="blank-image"
+                    />
+                    <span className="image-text">Main Product Image</span>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleMainImageUpload}
+                  className="main-image-input"
+                />
+              </div>
             </div>
 
-            <div className="form-group">
-              <label>Gallery Images</label>
-              <input type="file" multiple accept="image/*" onChange={handleImageUpload} />
-              <div className="image-thumbnails">
-                {images.map((image) => (
-                  <div key={image.id} className="thumbnail-item">
-                    <img src={image.preview} alt={image.name} />
-                    <button type="button" onClick={() => removeImage(image.id)}>×</button>
-                  </div>
-                ))}
+            {/* Gallery Upload */}
+            <div className="gallery-section">
+              <h3 className="gallery-title">Product Gallery</h3>
+              <div className="upload-area">
+                <div className="upload-content">
+                  <img
+                    src="/images/blankimage.png"
+                    alt="Upload images"
+                    className="upload-image"
+                  />
+                  <span className="upload-text">
+                    Drop your image here, or upload
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="file-input"
+                />
               </div>
+
+              {images.length > 0 && (
+                <div className="image-thumbnails">
+                  {images.map((image) => (
+                    <div key={image.id} className="thumbnail-item">
+                      <div className="thumbnail-preview">
+                        <img src={image.preview} alt={image.name} />
+                        <button
+                          type="button"
+                          className="remove-thumbnail"
+                          onClick={() => removeImage(image.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <span className="thumbnail-name">{image.name}</span>
+                    </div>
+                  ))}
+
+                  {/* Empty slots */}
+                  {Array.from({ length: Math.max(0, 4 - images.length) }).map(
+                    (_, index) => (
+                      <div
+                        key={`empty-${index}`}
+                        className="thumbnail-item empty"
+                      >
+                        <div className="thumbnail-preview">
+                          <img
+                            src="/images/blankimage.png"
+                            alt="Empty slot"
+                            className="empty-thumbnail-icon"
+                          />
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
+        {/* Action Buttons */}
         <div className="form-actions">
-          <button type="button" onClick={deleteAllImages} className="btn-secondary">Clear</button>
-          <button type="submit" className="btn-primary">Save and Publish</button>
+          <button
+            type="button"
+            onClick={deleteAllImages}
+            className="btn-secondary"
+          >
+            Clear
+          </button>
+          <button type="submit" className="btn-primary">
+            Save and Publish
+          </button>
         </div>
       </form>
     </div>
