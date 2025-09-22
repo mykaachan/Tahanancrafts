@@ -19,6 +19,7 @@ import Layout from './Layout';
 import AddProduct from './AddProduct'; 
 import SignupVerifyContact from './SignupVerify';
 import AllProducts from './AllProducts';
+import OrderList from './OrderList';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -43,6 +44,7 @@ root.render(
           <Route path="/admin" element={<Layout><AllProducts /></Layout>} /> {/* Admin default: All Products */}
           <Route path="/add-product" element={<Layout><AddProduct /></Layout>} /> {/* Admin Add Product route */}
           <Route path="/all-products" element={<Layout><AllProducts /></Layout>} />
+          <Route path="/order-list" element={<Layout><OrderList /></Layout>} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

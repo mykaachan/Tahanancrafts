@@ -35,10 +35,10 @@ const Layout = ({ children }) => {
               <img src="/images/ALLPRODUCTS.png" alt="All Products" className="nav-icon" />
               <span className="nav-text">ALL PRODUCTS</span>
             </Link>
-            <div className="nav-item">
+            <Link to="/order-list" className="nav-item no-underline">
               <img src="/images/ORDERLIST.png" alt="Order List" className="nav-icon" />
               <span className="nav-text">ORDER LIST</span>
-            </div>
+            </Link>
           </nav>
         </aside>
 
