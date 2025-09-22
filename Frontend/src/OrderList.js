@@ -64,7 +64,7 @@ const statusFilterMap = {
   'to-ship': order => order.status === 'To Ship',
   shipping: order => order.status === 'Shipping',
   delivered: order => order.status === 'Delivered',
-  refund: order => order.status === 'Refunded',
+  refund: order => order.status === 'Refunded' || order.status === 'Cancelled',
   requests: order => order.status === 'Pending',
 };
 
