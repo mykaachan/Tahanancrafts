@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+// src/Products.js
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Products.css";
 import { ReactComponent as Logo } from "./Logo.svg";
+import {
+  fetchProducts,
+  fetchCategories,
+  fetchMaterials,
+  getImageUrl,
+} from "./api";
 
-// ✅ Images
-import balisong1 from "./images/balisong1.png";
-import bag from "./images/bag.png";
-import basket from "./images/basket1.png";
-import mat from "./images/mat.png";
-import barong from "./images/barong1.png";
-import bag1 from "./images/bag1.png";
-import apron from "./images/apron.png";
-import hat from "./images/hat.png";
 
-function FilterGroup({ title, items }) {
+// --- Filter Group ---
+function FilterGroup({ title, items, selected, onChange }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -21,10 +20,15 @@ function FilterGroup({ title, items }) {
       <h4>{title}</h4>
       {items.map((item, index) => (
         <label
-          key={index}
+          key={item.id}
           style={{ display: !expanded && index >= 4 ? "none" : "block" }}
         >
-          <input type="checkbox" /> {item}
+          <input
+            type="checkbox"
+            checked={selected.includes(item.id)}
+            onChange={() => onChange(item.id)}
+          />{" "}
+          {item.name}
         </label>
       ))}
       {items.length > 4 && (
@@ -40,6 +44,53 @@ function FilterGroup({ title, items }) {
 }
 
 function Products() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [materials, setMaterials] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+
+  // --- Load initial data ---
+  useEffect(() => {
+    async function loadData() {
+      const [prodData, catData, matData] = await Promise.all([
+        fetchProducts(),
+        fetchCategories(),
+        fetchMaterials(),
+      ]);
+      setProducts(prodData);
+      setCategories(catData);
+      setMaterials(matData);
+    }
+    loadData();
+  }, []);
+
+  // --- Handle filter changes ---
+  const toggleCategory = (id) => {
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+    );
+  };
+
+  const toggleMaterial = (id) => {
+    setSelectedMaterials((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
+    );
+  };
+
+  // --- Apply filters locally (optional, could also refetch via API query) ---
+  const filteredProducts = products.filter((p) => {
+    const matchCategory =
+      selectedCategories.length === 0 ||
+      p.categories.some((catId) => selectedCategories.includes(catId));
+
+    const matchMaterial =
+      selectedMaterials.length === 0 ||
+      p.materials.some((matId) => selectedMaterials.includes(matId));
+
+    return matchCategory && matchMaterial;
+  });
+
   return (
     <div className="products-page">
       {/* ===== HEADER ===== */}
@@ -84,107 +135,34 @@ function Products() {
 
           <FilterGroup
             title="Category"
-            items={[
-              "Home Decor",
-              "Kitchenware",
-              "Clothing & Apparel",
-              "Bags & Accessories",
-              "Jewelry",
-              "Footwear",
-              "Furniture",
-              "Stationery & Paper Goods",
-              "Arts & Paintings",
-              "Musical Instruments",
-              "Toys & Games",
-              "Health & Wellness Products",
-              "Festive & Seasonal Items",
-              "Souvenirs & Gifts",
-              "Gardening & Outdoor",
-            ]}
+            items={categories}
+            selected={selectedCategories}
+            onChange={toggleCategory}
           />
 
           <FilterGroup
             title="Material"
-            items={[
-              "Abaca",
-              "Bamboo",
-              "Capiz Shell",
-              "Coconut Husk",
-              "Rattan",
-              "Wood",
-              "Metal",
-              "Clay",
-              "Cotton",
-              "Woven Fabric",
-              "Leather",
-              "Recycled Materials",
-            ]}
+            items={materials}
+            selected={selectedMaterials}
+            onChange={toggleMaterial}
           />
         </aside>
 
         {/* RIGHT PRODUCTS GRID */}
         <section className="products-content">
           <div className="products-grid">
-            <div className="product-card">
-              <img src={balisong1} alt="Balisong" />
-              <h2>Kalis Taal</h2>
-              <p>Butterfly knife (Balisong)</p>
-              <span className="price">₱349</span>
-            </div>
-
-            <div className="product-card">
-              <img src={bag} alt="Handmade Bag" />
-              <h2>Habing Ibaan</h2>
-              <p>Weaved Bag</p>
-              <span className="price">₱1,200</span>
-            </div>
-
-            <div className="product-card">
-            <Link
-              to="/iraya"
-              style={{ textDecoration: "none", color: "inherit" }}
-  >
-              <img src={basket} alt="Basket" />
-              <h2>Iraya Basket Lipa</h2>
-              <p>Colored Wooven Tray Basket</p>
-              <span className="price">₱500</span>
-            </Link>
-            </div>
-
-            <div className="product-card">
-              <img src={mat} alt="Banig Mat" />
-              <h2>Burdang Taal Lace Medallions</h2>
-              <p>Table Runner</p>
-              <span className="price">₱149</span>
-            </div>
-
-            <div className="product-card">
-              <img src={barong} alt="Barong Tagalog" />
-              <h2>Piña Ginoo</h2>
-              <p>Barong Tagalog</p>
-              <span className="price">₱1,199</span>
-            </div>
-
-            <div className="product-card">
-              <img src={bag1} alt="Bag" />
-              <h2>Habing Ibaan</h2>
-              <p>Weaved Sling Bag</p>
-              <span className="price">₱250</span>
-            </div>
-
-            <div className="product-card">
-              <img src={apron} alt="Apron" />
-              <h2>Habing Ibaan</h2>
-              <p>Weaved Apron</p>
-              <span className="price">₱350</span>
-            </div>
-
-            <div className="product-card">
-              <img src={hat} alt="Hat" />
-              <h2>Habing Ibaan</h2>
-              <p>Bucket Hat</p>
-              <span className="price">₱500</span>
-            </div>
+            {filteredProducts.length === 0 ? (
+              <p>No products found.</p>
+            ) : (
+              filteredProducts.map((product) => (
+                <div className="product-card" key={product.id}>
+                  <img src={getImageUrl(product.main_image)} alt={product.name} />
+                  <h2>{product.name}</h2>
+                  <p>{product.description}</p>
+                  <span className="price">₱{product.regular_price}</span>
+                </div>
+              ))
+            )}
           </div>
         </section>
       </div>

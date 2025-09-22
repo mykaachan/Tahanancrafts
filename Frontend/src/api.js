@@ -56,15 +56,21 @@ export async function ChangePassword(userData) {
 
 // --- PRODUCT FUNCTIONS ---
 
+// Fetch all products
+export async function fetchProducts() {
+  const res = await api.get("/products/product/products/"); 
+  return res.data;
+}
+
 // Fetch all categories
 export async function fetchCategories() {
-  const res = await api.get("products/product/categories/");
+  const res = await api.get("/products/product/categories/");
   return res.data;
 }
 
 // Fetch all materials
 export async function fetchMaterials() {
-  const res = await api.get("products/product/materials/");
+  const res = await api.get("/products/product/materials/");
   return res.data;
 }
 
@@ -86,9 +92,16 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
   // Gallery images
   galleryImages.forEach(img => data.append("images", img.file));
 
-  const res = await api.post("/products/product/add_product/", data, {
+  const res = await api.post("/products/product/products/", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
   return res.data;
+}
+
+export const MEDIA_URL = "http://127.0.0.1:8000";
+
+export function getImageUrl(path) {
+  if (!path) return "/images/blankimage.png"; // fallback image
+  return `${MEDIA_URL}${path}`;
 }

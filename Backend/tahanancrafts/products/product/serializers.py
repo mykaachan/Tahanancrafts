@@ -2,51 +2,50 @@ from requests import request
 from rest_framework import serializers  # For creating API serializers
 from products.models import Product, Category, Material, ProductImage
 
-# Serializer for additional product images
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = ['image']  # Only include the image field
+        fields = ['id', 'image']  
 
-# Main serializer for Product creation and representation
-# Main serializer for Product creation and representation
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['id', 'name']
+
 class ProductSerializer(serializers.ModelSerializer):
-    categories = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), many=True
-    )
-    materials = serializers.PrimaryKeyRelatedField(
-        queryset=Material.objects.all(), many=True
-    )
-    # Accept multiple images directly from form-data
-    images = serializers.ListField(
-        child=serializers.ImageField(), write_only=True, required=False
-    )
+    categories = CategorySerializer(many=True, read_only=True)
+    materials = MaterialSerializer(many=True, read_only=True)
+    images = ProductImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = [
-            'name', 'description', 'brandName', 
-            'stock_quantity', 'regular_price', 'sales_price', 
-            'categories', 'materials', 'main_image', 'images'
+            'id', 'name', 'brandName', 'description', 'stock_quantity',
+            'regular_price', 'sales_price', 'main_image',
+            'categories', 'materials', 'images', 'created_at'
         ]
 
-    def create(self, validated_data):
-        categories = validated_data.pop('categories', [])
-        materials = validated_data.pop('materials', [])
-        images = validated_data.pop('images', [])
 
-        # Create product
-        product = Product.objects.create(**validated_data)
+class ProductReadSerializer(serializers.ModelSerializer):
+    categories = serializers.StringRelatedField(many=True)
+    materials = serializers.StringRelatedField(many=True)
+    images = ProductImageSerializer(many=True, read_only=True)
+    artisan = serializers.CharField(source="artisan.Name", read_only=True)
 
-        # Set many-to-many
-        product.categories.set(categories)
-        product.materials.set(materials)
+    class Meta:
+        model = Product
+        fields = [
+            "id", "name", "description", "brandName",
+            "stock_quantity", "regular_price", "sales_price",
+            "main_image", "created_at", "categories",
+            "materials", "images", "artisan"
+        ]
 
-        # Save extra images
-        for image in images:
-            ProductImage.objects.create(product=product, image=image)
-
-        return product
 
 
 class UpdateProductSerializer(serializers.ModelSerializer):
