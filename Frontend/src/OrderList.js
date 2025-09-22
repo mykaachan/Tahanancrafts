@@ -14,7 +14,7 @@ const STATUS_TABS = [
 const placeholderOrders = [
   {
     id: '123445',
-    productImage: '/images/bag.png',
+    productImage: '/images/blankimage.png',
     productName: 'Sabit Habiing Ibaan',
     productCategory: 'Woven Bag',
     status: 'Pending',
@@ -23,7 +23,7 @@ const placeholderOrders = [
   },
   {
     id: '124445',
-    productImage: '/images/bag.png',
+    productImage: '/images/blankimage.png',
     productName: 'Sabit Habiing Ibaan',
     productCategory: 'Coin Purse',
     status: 'To Ship',
@@ -32,7 +32,7 @@ const placeholderOrders = [
   },
   {
     id: '125445',
-    productImage: '/images/bag.png',
+    productImage: '/images/blankimage.png',
     productName: 'Sabit Habiing Ibaan',
     productCategory: 'Coin Purse',
     status: 'Shipping',
@@ -41,7 +41,7 @@ const placeholderOrders = [
   },
   {
     id: '126445',
-    productImage: '/images/bag.png',
+    productImage: '/images/blankimage.png',
     productName: 'Sabit Habiing Ibaan',
     productCategory: 'Coin Purse',
     status: 'Delivered',
@@ -50,7 +50,7 @@ const placeholderOrders = [
   },
   {
     id: '127445',
-    productImage: '/images/bag.png',
+    productImage: '/images/blankimage.png',
     productName: 'Sabit Habiing Ibaan',
     productCategory: 'Coin Purse',
     status: 'Refunded',
