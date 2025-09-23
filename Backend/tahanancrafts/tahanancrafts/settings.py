@@ -108,13 +108,14 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tahanancrafts_db',        # Your dummy DB name
-        'USER': 'root',
-        'PASSWORD': '092521',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'railway',  
+        'USER': 'root',     
+        'PASSWORD': 'rKNvbhEiQXVsQYgrFVhngiMOzgezdkEs',
+        'HOST': 'turntable.proxy.rlwy.net',  
+        'PORT': '55874',                     
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
