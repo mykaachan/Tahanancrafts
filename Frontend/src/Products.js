@@ -1,18 +1,10 @@
-// src/Products.js
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Products.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-import {
-  fetchProducts,
-  fetchCategories,
-  fetchMaterials,
-  getImageUrl,
-} from "./api";
+import { fetchProducts, fetchCategories, fetchMaterials, getImageUrl } from "./api";
 
-
-// --- Filter Group ---
-function FilterGroup({ title, items, selected, onChange }) {
+function FilterGroup({ title, items }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -20,15 +12,10 @@ function FilterGroup({ title, items, selected, onChange }) {
       <h4>{title}</h4>
       {items.map((item, index) => (
         <label
-          key={item.id}
+          key={index}
           style={{ display: !expanded && index >= 4 ? "none" : "block" }}
         >
-          <input
-            type="checkbox"
-            checked={selected.includes(item.id)}
-            onChange={() => onChange(item.id)}
-          />{" "}
-          {item.name}
+          <input type="checkbox" /> {item}
         </label>
       ))}
       {items.length > 4 && (
@@ -47,49 +34,27 @@ function Products() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [materials, setMaterials] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedMaterials, setSelectedMaterials] = useState([]);
 
-  // --- Load initial data ---
   useEffect(() => {
     async function loadData() {
-      const [prodData, catData, matData] = await Promise.all([
-        fetchProducts(),
-        fetchCategories(),
-        fetchMaterials(),
-      ]);
-      setProducts(prodData);
-      setCategories(catData);
-      setMaterials(matData);
+      try {
+        const [prodData, catData, matData] = await Promise.all([
+          fetchProducts(),
+          fetchCategories(),
+          fetchMaterials()
+        ]);
+
+        // Randomize products on each refresh
+        setProducts(prodData.sort(() => Math.random() - 0.5));
+        setCategories(catData);
+        setMaterials(matData);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
     }
+
     loadData();
   }, []);
-
-  // --- Handle filter changes ---
-  const toggleCategory = (id) => {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-    );
-  };
-
-  const toggleMaterial = (id) => {
-    setSelectedMaterials((prev) =>
-      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-    );
-  };
-
-  // --- Apply filters locally (optional, could also refetch via API query) ---
-  const filteredProducts = products.filter((p) => {
-    const matchCategory =
-      selectedCategories.length === 0 ||
-      p.categories.some((catId) => selectedCategories.includes(catId));
-
-    const matchMaterial =
-      selectedMaterials.length === 0 ||
-      p.materials.some((matId) => selectedMaterials.includes(matId));
-
-    return matchCategory && matchMaterial;
-  });
 
   return (
     <div className="products-page">
@@ -98,23 +63,9 @@ function Products() {
         <Logo className="logo-svg homepage-logo" />
         <nav className="nav-links">
           <ul>
-            <li>
-              <Link
-                to="/homepage"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Home
-              </Link>
-            </li>
+            <li><Link to="/homepage" style={{ textDecoration: "none", color: "inherit" }}>Home</Link></li>
             <li>Products</li>
-            <li>
-              <Link
-                to="/story"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                Story
-              </Link>
-            </li>
+            <li><Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>Story</Link></li>
             <li>Profile</li>
           </ul>
         </nav>
@@ -132,29 +83,17 @@ function Products() {
         {/* LEFT FILTERS */}
         <aside className="products-filters">
           <h3>Filter</h3>
-
-          <FilterGroup
-            title="Category"
-            items={categories}
-            selected={selectedCategories}
-            onChange={toggleCategory}
-          />
-
-          <FilterGroup
-            title="Material"
-            items={materials}
-            selected={selectedMaterials}
-            onChange={toggleMaterial}
-          />
+          <FilterGroup title="Category" items={categories.map(c => c.name)} />
+          <FilterGroup title="Material" items={materials.map(m => m.name)} />
         </aside>
 
         {/* RIGHT PRODUCTS GRID */}
         <section className="products-content">
           <div className="products-grid">
-            {filteredProducts.length === 0 ? (
+            {products.length === 0 ? (
               <p>No products found.</p>
             ) : (
-              filteredProducts.map((product) => (
+              products.map((product) => (
                 <div className="product-card" key={product.id}>
                   <img src={getImageUrl(product.main_image)} alt={product.name} />
                   <h2>{product.name}</h2>
@@ -170,14 +109,8 @@ function Products() {
       {/* ===== FOOTER ===== */}
       <footer className="footer">
         <div className="footer-left">
-          <h2>
-            Join us, <br /> artisans!
-          </h2>
-          <p>
-            This is a sample description and does not hold any valuable meaning.
-            This is a description that describes nothing. It can either be
-            nothing or nothing at all.
-          </p>
+          <h2>Join us, <br /> artisans!</h2>
+          <p>This is a sample description and does not hold any valuable meaning.</p>
           <button className="register-btn">Register</button>
         </div>
 

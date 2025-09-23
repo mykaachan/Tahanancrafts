@@ -92,16 +92,22 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
   // Gallery images
   galleryImages.forEach(img => data.append("images", img.file));
 
-  const res = await api.post("/products/product/products/", data, {
+  const res = await api.post("/products/product/add_product/", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
   return res.data;
 }
 
+
 export const MEDIA_URL = "http://127.0.0.1:8000";
 
+// src/api.js
 export function getImageUrl(path) {
-  if (!path) return "/images/blankimage.png"; // fallback image
-  return `${MEDIA_URL}${path}`;
+  if (!path) return ""; // handle missing image
+  // if path already starts with http, return it as is
+  if (path.startsWith("http")) return path;
+  // otherwise prepend host
+  return `http://127.0.0.1:8000${path}`;
 }
+
