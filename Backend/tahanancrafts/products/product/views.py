@@ -1,41 +1,53 @@
-# views.py
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
+from django.db.models import Q
+
 from products.models import Product, Category, Material
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 
-# LIST (uses ProductReadSerializer so the frontend gets readable fields)
-class ProductListView(ListAPIView):
-    serializer_class = ProductReadSerializer
 
-    def get_queryset(self):
-        qs = Product.objects.all().prefetch_related('categories', 'materials', 'images')
-        serializer_class = ProductSerializer
-        category = self.request.query_params.get("category")
-        material = self.request.query_params.get("material")
+# LIST (Product list with search + filters)
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from .serializers import ProductReadSerializer
+from products.models import Product
 
+class ProductListView(APIView):
+    def get(self, request, *args, **kwargs):
+        return self.filter_products(request.query_params)
+
+    def post(self, request, *args, **kwargs):
+        return self.filter_products(request.data)
+
+    def filter_products(self, params):
+        category = params.get("category", "")
+        material = params.get("material", "")
+
+        qs = Product.objects.all().prefetch_related("categories", "materials", "images")
 
         if category:
-            # accept either name or id
-            if category.isdigit():
+            if str(category).isdigit():
                 qs = qs.filter(categories__id=category)
             else:
                 qs = qs.filter(categories__name__icontains=category)
 
         if material:
-            if material.isdigit():
+            if str(material).isdigit():
                 qs = qs.filter(materials__id=material)
             else:
                 qs = qs.filter(materials__name__icontains=material)
 
-        return qs.distinct()
+        serializer = ProductReadSerializer(qs.distinct(), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# Category List (keeps same shape as you attempted)
+# Category List
 class CategoryListView(ListAPIView):
     queryset = Category.objects.all()
 
@@ -59,14 +71,12 @@ class MaterialListView(ListAPIView):
     serializer_class = _MaterialSerializer
 
 
-# CREATE product (keeps your parser_classes and validations)
+# CREATE product
 class AddProductView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, *args, **kwargs):
         data = request.data
-
-        # Debug print
         print("Incoming Data keys:", list(data.keys()))
 
         required_fields = ["name", "description", "brandName", "stock_quantity", "regular_price", "categories", "materials"]
@@ -74,13 +84,11 @@ class AddProductView(APIView):
         if missing:
             return Response({"error": f"Missing required fields: {', '.join(missing)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # validate categories (works with form-data lists)
         categories = data.getlist("categories") if hasattr(data, "getlist") else data.get("categories", [])
         invalid_cats = [cid for cid in categories if not Category.objects.filter(id=cid).exists()]
         if invalid_cats:
             return Response({"error": f"Invalid category IDs: {invalid_cats}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # validate materials
         materials = data.getlist("materials") if hasattr(data, "getlist") else data.get("materials", [])
         invalid_mats = [mid for mid in materials if not Material.objects.filter(id=mid).exists()]
         if invalid_mats:
@@ -105,7 +113,7 @@ class ProductTestView(APIView):
         return Response({"message": "POST product works too!"})
 
 
-# DELETE -- keeps your original behavior (id in body), but also accepts ?id=... for convenience
+# DELETE product
 class DeleteProductView(APIView):
     def delete(self, request, *args, **kwargs):
         product_id = request.data.get('id') or request.query_params.get('id') or kwargs.get('id')
@@ -119,7 +127,7 @@ class DeleteProductView(APIView):
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-# UPDATE -- corrected serializer usage (instance + data)
+# UPDATE product
 class UpdateProductView(APIView):
     parser_classes = [MultiPartParser, FormParser]
 
@@ -135,12 +143,12 @@ class UpdateProductView(APIView):
 
         serializer = UpdateProductSerializer(instance=product, data=request.data)
         if serializer.is_valid():
-            serializer.save()  # calls your custom update()
+            serializer.save()
             return Response({"message": "Product updated successfully", "product": serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# READ single product -- accepts ?id=... or id in kwargs
+# READ single product
 class ReadProductView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = request.query_params.get('id') or kwargs.get('id')

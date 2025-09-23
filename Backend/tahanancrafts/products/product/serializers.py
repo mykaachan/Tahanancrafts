@@ -35,7 +35,6 @@ class ProductReadSerializer(serializers.ModelSerializer):
     categories = serializers.StringRelatedField(many=True)
     materials = serializers.StringRelatedField(many=True)
     images = ProductImageSerializer(many=True, read_only=True)
-    artisan = serializers.CharField(source="artisan.Name", read_only=True)
 
     class Meta:
         model = Product
@@ -43,7 +42,7 @@ class ProductReadSerializer(serializers.ModelSerializer):
             "id", "name", "description", "brandName",
             "stock_quantity", "regular_price", "sales_price",
             "main_image", "created_at", "categories",
-            "materials", "images", "artisan"
+            "materials", "images"
         ]
 
 

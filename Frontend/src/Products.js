@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Products.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-import { fetchProducts, fetchCategories, fetchMaterials, getImageUrl } from "./api";
+import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
 
-function FilterGroup({ title, items }) {
+function FilterGroup({ title, items, selectedItems, onChange }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -15,7 +15,12 @@ function FilterGroup({ title, items }) {
           key={index}
           style={{ display: !expanded && index >= 4 ? "none" : "block" }}
         >
-          <input type="checkbox" /> {item}
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(item)}
+            onChange={() => onChange(item)}
+          />{" "}
+          {item}
         </label>
       ))}
       {items.length > 4 && (
@@ -35,26 +40,67 @@ function Products() {
   const [categories, setCategories] = useState([]);
   const [materials, setMaterials] = useState([]);
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const [prodData, catData, matData] = await Promise.all([
-          fetchProducts(),
-          fetchCategories(),
-          fetchMaterials()
-        ]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
 
-        // Randomize products on each refresh
-        setProducts(prodData.sort(() => Math.random() - 0.5));
+  // ✅ Fetch categories + materials on load
+  useEffect(() => {
+    async function loadFilters() {
+      try {
+        const [catData, matData] = await Promise.all([
+          fetchCategories(),
+          fetchMaterials(),
+        ]);
         setCategories(catData);
         setMaterials(matData);
       } catch (error) {
-        console.error("Error loading data:", error);
+        console.error("Error loading filters:", error);
       }
     }
-
-    loadData();
+    loadFilters();
   }, []);
+
+  // ✅ Fetch products whenever filters change
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const url = new URL("http://127.0.0.1:8000/api/products/product/products/");
+
+        if (selectedCategories.length > 0) {
+          url.searchParams.append("category", selectedCategories.join(","));
+        }
+        if (selectedMaterials.length > 0) {
+          url.searchParams.append("material", selectedMaterials.join(","));
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch products");
+
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error loading products:", error);
+      }
+    }
+    loadProducts();
+  }, [selectedCategories, selectedMaterials]);
+
+  // ✅ Handle checkbox toggle
+  const toggleCategory = (category) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const toggleMaterial = (material) => {
+    setSelectedMaterials((prev) =>
+      prev.includes(material)
+        ? prev.filter((m) => m !== material)
+        : [...prev, material]
+    );
+  };
 
   return (
     <div className="products-page">
@@ -63,9 +109,23 @@ function Products() {
         <Logo className="logo-svg homepage-logo" />
         <nav className="nav-links">
           <ul>
-            <li><Link to="/homepage" style={{ textDecoration: "none", color: "inherit" }}>Home</Link></li>
+            <li>
+              <Link
+                to="/homepage"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Home
+              </Link>
+            </li>
             <li>Products</li>
-            <li><Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>Story</Link></li>
+            <li>
+              <Link
+                to="/story"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Story
+              </Link>
+            </li>
             <li>Profile</li>
           </ul>
         </nav>
@@ -83,8 +143,18 @@ function Products() {
         {/* LEFT FILTERS */}
         <aside className="products-filters">
           <h3>Filter</h3>
-          <FilterGroup title="Category" items={categories.map(c => c.name)} />
-          <FilterGroup title="Material" items={materials.map(m => m.name)} />
+          <FilterGroup
+            title="Category"
+            items={categories.map((c) => c.name)}
+            selectedItems={selectedCategories}
+            onChange={toggleCategory}
+          />
+          <FilterGroup
+            title="Material"
+            items={materials.map((m) => m.name)}
+            selectedItems={selectedMaterials}
+            onChange={toggleMaterial}
+          />
         </aside>
 
         {/* RIGHT PRODUCTS GRID */}
@@ -95,7 +165,10 @@ function Products() {
             ) : (
               products.map((product) => (
                 <div className="product-card" key={product.id}>
-                  <img src={getImageUrl(product.main_image)} alt={product.name} />
+                  <img
+                    src={getImageUrl(product.main_image)}
+                    alt={product.name}
+                  />
                   <h2>{product.name}</h2>
                   <p>{product.description}</p>
                   <span className="price">₱{product.regular_price}</span>
@@ -109,7 +182,9 @@ function Products() {
       {/* ===== FOOTER ===== */}
       <footer className="footer">
         <div className="footer-left">
-          <h2>Join us, <br /> artisans!</h2>
+          <h2>
+            Join us, <br /> artisans!
+          </h2>
           <p>This is a sample description and does not hold any valuable meaning.</p>
           <button className="register-btn">Register</button>
         </div>
