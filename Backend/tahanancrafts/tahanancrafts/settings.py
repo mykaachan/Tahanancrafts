@@ -105,6 +105,8 @@ DATABASES = {
   }
 }
 """
+
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -114,7 +116,19 @@ DATABASES = {
         'HOST': 'turntable.proxy.rlwy.net',  
         'PORT': '55874',                     
     }
+}"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tahanancrafts_db',  
+        'USER': 'root',     
+        'PASSWORD': '092521',
+        'HOST': '127.0.0.1',  
+        'PORT': '3306',                     
+    }
 }
+
 
 
 # Password validation

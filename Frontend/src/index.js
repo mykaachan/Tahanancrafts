@@ -14,6 +14,7 @@ import HomePage from './HomePage';
 import StoryPage from './StoryPage';
 import Products from './Products';
 import Iraya from './Iraya';
+import ProductDetails from './ProductDetails';
 import Cart from './Cart';
 import Layout from './Layout';      
 import AddProduct from './AddProduct'; 
@@ -21,7 +22,9 @@ import SignupVerifyContact from './SignupVerify';
 import AllProducts from './AllProducts';
 import OrderList from './OrderList';
 
+
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import ProductDetail from './Iraya';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -45,6 +48,7 @@ root.render(
           <Route path="/add-product" element={<Layout><AddProduct /></Layout>} /> {/* Admin Add Product route */}
           <Route path="/all-products" element={<Layout><AllProducts /></Layout>} />
           <Route path="/order-list" element={<Layout><OrderList /></Layout>} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

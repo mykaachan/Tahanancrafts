@@ -42,8 +42,9 @@ function Products() {
 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ search state
 
-  // ✅ Fetch categories + materials on load
+  // Fetch categories + materials on load
   useEffect(() => {
     async function loadFilters() {
       try {
@@ -60,7 +61,7 @@ function Products() {
     loadFilters();
   }, []);
 
-  // ✅ Fetch products whenever filters change
+  // Fetch products whenever filters change
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -85,7 +86,7 @@ function Products() {
     loadProducts();
   }, [selectedCategories, selectedMaterials]);
 
-  // ✅ Handle checkbox toggle
+  // Handle checkbox toggle
   const toggleCategory = (category) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -101,6 +102,13 @@ function Products() {
         : [...prev, material]
     );
   };
+
+  // ✅ Filter products by search query
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="products-page">
@@ -131,7 +139,12 @@ function Products() {
         </nav>
         <div className="header-actions">
           <div className="search-box">
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // ✅ update search
+            />
             <button className="search-btn">🔍</button>
           </div>
           <button className="cart-btn">CART 🛒</button>
@@ -157,26 +170,33 @@ function Products() {
           />
         </aside>
 
-        {/* RIGHT PRODUCTS GRID */}
-        <section className="products-content">
-          <div className="products-grid">
-            {products.length === 0 ? (
-              <p>No products found.</p>
-            ) : (
-              products.map((product) => (
-                <div className="product-card" key={product.id}>
-                  <img
-                    src={getImageUrl(product.main_image)}
-                    alt={product.name}
-                  />
-                  <h2>{product.name}</h2>
-                  <p>{product.description}</p>
-                  <span className="price">₱{product.regular_price}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
+        {/* ===== RIGHT PRODUCTS GRID ===== */}
+          <section className="products-content">
+            <div className="products-grid">
+              {filteredProducts.length === 0 ? (
+                <p>No products found.</p>
+              ) : (
+                filteredProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={`/product/${product.id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div className="product-card">
+                      <img
+                        src={getImageUrl(product.main_image)}
+                        alt={product.name}
+                      />
+                      <h2>{product.name}</h2>
+                      <p>{product.description}</p>
+                      <span className="price">₱{product.regular_price}</span>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </section>
+
       </div>
 
       {/* ===== FOOTER ===== */}
@@ -185,7 +205,9 @@ function Products() {
           <h2>
             Join us, <br /> artisans!
           </h2>
-          <p>This is a sample description and does not hold any valuable meaning.</p>
+          <p>
+            This is a sample description and does not hold any valuable meaning.
+          </p>
           <button className="register-btn">Register</button>
         </div>
 

@@ -8,6 +8,7 @@ from .views import (
     ProductListView,   
     CategoryListView,  
     MaterialListView,  
+    ProductDetailView,
 )
 
 urlpatterns = [
@@ -19,5 +20,6 @@ urlpatterns = [
     path('products/', ProductListView.as_view(), name='product-list'),
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('materials/', MaterialListView.as_view(), name='material-list'),
+    path('products/<int:id>/', ProductDetailView.as_view(), name='product-detail'),  # New URL pattern for product detail
    
 ]
