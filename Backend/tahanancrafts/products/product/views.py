@@ -148,19 +148,7 @@ class UpdateProductView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# READ single product
-class ReadProductView(APIView):
-    def get(self, request, *args, **kwargs):
-        product_id = request.query_params.get('id') or kwargs.get('id')
-        if not product_id:
-            return Response({"error": "Product id is required"}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            product = Product.objects.get(id=product_id)
-            serializer = ProductReadSerializer(product)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
 class ProductDetailView(APIView):
     def get(self, request, *args, **kwargs):
         product_id = kwargs.get('id')
