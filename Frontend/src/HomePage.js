@@ -19,17 +19,21 @@ function HomePage() {
         <nav className="nav-links">
           <ul>
             <li>Home</li>
-              <li>
-      <Link to="/products" style={{ textDecoration: "none", color: "inherit" }}>
-        Products
-      </Link>
-    </li>
             <li>
-    <Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>
-      Story
-    </Link>
-  </li>
-            <li>Profile</li>
+              <Link to="/products" style={{ textDecoration: "none", color: "inherit" }}>
+                Products
+              </Link>
+            </li>
+            <li>
+              <Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>
+                Story
+              </Link>
+            </li>
+            <li>
+  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+    Profile
+  </Link>
+</li>
           </ul>
         </nav>
         <div className="header-actions">
@@ -37,7 +41,11 @@ function HomePage() {
             <input type="text" placeholder="Search" />
             <button className="search-btn">🔍</button>
           </div>
-          <button className="cart-btn">CART 🛒</button>
+
+          {/* ✅ Cart button now links to /cart */}
+          <Link to="/cart" style={{ textDecoration: "none" }}>
+            <button className="cart-btn">CART 🛒</button>
+          </Link>
         </div>
       </header>
 
@@ -71,70 +79,72 @@ function HomePage() {
       </section>
 
       {/* ✅ Latest Products Section */}
-        <section className="latest-products">
+      <section className="latest-products">
         <div className="latest-products-grid">
-        <img src={featuredphoto2} alt="Product 2" className="product-card" />
-        <img src={featuredphoto3} alt="Product 3" className="product-card" />
+          <img src={featuredphoto2} alt="Product 2" className="product-card" />
+          <img src={featuredphoto3} alt="Product 3" className="product-card" />
         </div>
         <h2 className="latest-products-title">Latest Products</h2>
-    </section>
-    {/* ✅ Extra Products Section */}
-<section className="extra-products">
-  <div className="extra-products-grid">
-    
-    <div className="product-item">
-      <img src={balisong} alt="balisong" className="product-card" />
-      <p className="product-name">Kalis Taal</p>
-    </div>
+      </section>
 
-    <div className="product-item">
-      <img src={basket} alt="basket" className="product-card" />
-      <p className="product-name">Colored Wooven Tray Basket</p>
-    </div>
+      {/* ✅ Extra Products Section */}
+      <section className="extra-products">
+        <div className="extra-products-grid">
+          <div className="product-item">
+            <img src={balisong} alt="balisong" className="product-card" />
+            <p className="product-name">Kalis Taal</p>
+          </div>
 
-    <div className="product-item">
-      <img src={barong} alt="barong" className="product-card" />
-      <p className="product-name">Piña Ginoo</p>
-    </div>
+          <div className="product-item">
+            <img src={basket} alt="basket" className="product-card" />
+            <p className="product-name">Colored Wooven Tray Basket</p>
+          </div>
 
-  </div>
-</section>
-{/* Heritage Section */}
-<section className="heritage-section">
-  <div className="heritage-container">
-    {/* Left: Image */}
-    <div className="heritage-image">
-      <img src={Taal} alt="Taal Heritage" />
-    </div>
+          <div className="product-item">
+            <img src={barong} alt="barong" className="product-card" />
+            <p className="product-name">Piña Ginoo</p>
+          </div>
+        </div>
+      </section>
 
-    {/* Right: Content */}
-    <div className="heritage-content">
-      <h2>The Heritage Heart of Batangas</h2>
-      <p>
-        Taal, Batangas is where heritage breathes. <br />
-        Through blades forged with pride and threads woven with grace, <br />
-        each craft a quiet poem of the Filipino soul.
-      </p>
-      <button className="heritage-btn">View More</button>
-    </div>
-  </div>
-</section>
-{/* ✅ TahananCrafts Section */}
-<section className="tahanancrafts-section">
-  <Logo className="tahanancrafts-logo" />
-  <div className="description-box">
-    <p>
-      TahananCrafts is an online marketplace where you can discover and
-      support Filipino artisans and their handmade creations. We bring
-      traditional craftsmanship to the digital world, giving local makers a
-      space to grow their businesses and share their culture with more
-      people. With the help of smart data tools, we make it easier for
-      artisans to understand what customers love and improve their products.
-      At TahananCrafts, you're not just shopping—you’re helping preserve
-      Filipino art, support communities, and celebrate local talent.
-    </p>
-  </div>
-</section>
+      {/* Heritage Section */}
+      <section className="heritage-section">
+        <div className="heritage-container">
+          {/* Left: Image */}
+          <div className="heritage-image">
+            <img src={Taal} alt="Taal Heritage" />
+          </div>
+
+          {/* Right: Content */}
+          <div className="heritage-content">
+            <h2>The Heritage Heart of Batangas</h2>
+            <p>
+              Taal, Batangas is where heritage breathes. <br />
+              Through blades forged with pride and threads woven with grace, <br />
+              each craft a quiet poem of the Filipino soul.
+            </p>
+            <button className="heritage-btn">View More</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ✅ TahananCrafts Section */}
+      <section className="tahanancrafts-section">
+        <Logo className="tahanancrafts-logo" />
+        <div className="description-box">
+          <p>
+            TahananCrafts is an online marketplace where you can discover and
+            support Filipino artisans and their handmade creations. We bring
+            traditional craftsmanship to the digital world, giving local makers a
+            space to grow their businesses and share their culture with more
+            people. With the help of smart data tools, we make it easier for
+            artisans to understand what customers love and improve their products.
+            At TahananCrafts, you're not just shopping—you’re helping preserve
+            Filipino art, support communities, and celebrate local talent.
+          </p>
+        </div>
+      </section>
+
       {/* ✅ Footer Section */}
       <footer className="footer">
         {/* Left Section */}
@@ -143,9 +153,7 @@ function HomePage() {
             Join us, <br /> artisans!
           </h2>
           <p>
-            This is a sample description and does not hold any valuable meaning.
-            This is a description that describes nothing. It can either be
-            nothing or nothing at all.
+            This is a sample description and does not hold any valuable meaning
           </p>
           <button className="register-btn">Register</button>
         </div>
@@ -180,11 +188,8 @@ function HomePage() {
           </div>
         </div>
       </footer>
-
-
     </div>
   );
 }
 
 export default HomePage;
-

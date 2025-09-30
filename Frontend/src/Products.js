@@ -134,7 +134,11 @@ function Products() {
                 Story
               </Link>
             </li>
-            <li>Profile</li>
+            <li>
+  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+    Profile
+  </Link>
+</li>
           </ul>
         </nav>
         <div className="header-actions">
@@ -147,8 +151,11 @@ function Products() {
             />
             <button className="search-btn">🔍</button>
           </div>
-          <button className="cart-btn">CART 🛒</button>
-        </div>
+           {/* ✅ Cart button now links to /cart */}
+  <Link to="/cart" style={{ textDecoration: "none" }}>
+    <button className="cart-btn">CART 🛒</button>
+  </Link>
+</div>
       </header>
 
       {/* ===== PRODUCTS LAYOUT ===== */}

@@ -43,7 +43,11 @@ function Iraya() {
                 Story
               </Link>
             </li>
-            <li>Profile</li>
+            <li>
+  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+    Profile
+  </Link>
+</li>
           </ul>
         </nav>
         <div className="header-actions">
@@ -51,8 +55,11 @@ function Iraya() {
             <input type="text" placeholder="Search" />
             <button className="search-btn">🔍</button>
           </div>
-          <button className="cart-btn">CART 🛒</button>
-        </div>
+           {/* ✅ Cart button links to Cart page */}
+    <Link to="/cart" style={{ textDecoration: "none" }}>
+      <button className="cart-btn">CART 🛒</button>
+    </Link>
+  </div>
       </header>
 
       {/* ===== MAIN CONTENT ===== */}

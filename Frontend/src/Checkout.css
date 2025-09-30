@@ -1,0 +1,242 @@
+
+/* ===== GENERAL ===== */
+.checkout-page {
+  padding: 2.5px 5px;  /* ⬅️ already reduced top padding */
+  background: #fafafa; /* same as cart */
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.checkout-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-top: 5px;     /* ⬅️ changed from default (big) margin */
+  margin-bottom: 25px; /* keep bottom spacing */
+}
+
+
+/* ===== ADDRESS BAR ===== */
+.address-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #d9c2a5; /* beige like cart section header */
+  padding: 12px 18px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.address-info {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start; /* ✅ aligns text nicely with the icon */
+}
+
+.address-icon {
+  font-size: 18px;
+  margin-top: 2px; /* ✅ centers icon with text */
+}
+
+.address-title {
+  font-weight: 600;
+  margin: 0;
+  font-size: 15px;
+  color: #222;
+}
+
+.address-details {
+  font-size: 13px;
+  color: #555;
+  margin-top: 2px;
+  line-height: 1.4;  /* ✅ improves readability */
+}
+
+.change-btn {
+  background: #fff;
+  border: 1px solid #bbb;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.change-btn:hover {
+  background: #f2e7da;
+}
+
+
+/* ===== CONTAINER ===== */
+.checkout-container {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+/* ===== LEFT SIDE ===== */
+.checkout-details {
+  flex: 2;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.checkout-details h2 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #e0d2c0;
+  padding-bottom: 8px;
+}
+
+
+/* Product Table Header */
+.product-header {
+  display: grid;
+  grid-template-columns: 100px 2fr 1fr 1fr 1fr; /* match product-item */
+  align-items: center;
+  font-weight: bold;
+  margin: 10px 0;
+  font-size: 15px;
+  text-align: center;
+  padding-left: 0; /* remove forced left padding */
+}
+
+.product-header span:first-child {
+  grid-column: 3;  /* Move "Unit Price" above the unit-price values */
+}
+
+.product-header span:nth-child(2) {
+  grid-column: 4;  /* Quantity */
+}
+
+.product-header span:nth-child(3) {
+  grid-column: 5;  /* Item Subtotal */
+}
+
+/* Product Item */
+.product-item {
+  display: grid;
+  grid-template-columns: 100px 2fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.unit-price,
+.quantity,
+.subtotal {
+  text-align: center;
+  font-size: 15px;
+}
+
+
+/* Footer Section (Message + Shipping) */
+.checkout-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* ✅ align top instead of overlapping */
+  gap: 20px; /* ✅ space between sections */
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f4ef;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.message-box {
+  flex: 2; /* ✅ give more space to input */
+  min-width: 250px; /* ✅ prevents shrinking too small */
+}
+
+.message-box input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 5px;
+  box-sizing: border-box; /* ✅ keeps it inside its box */
+}
+
+.shipping-info {
+  flex: 1; /* ✅ takes only the needed space */
+  text-align: right;
+  min-width: 220px;
+}
+
+
+.shipping-info .shipping-fee {
+  font-weight: bold;
+}
+
+.guarantee {
+  font-size: 13px;
+  color: #333;
+}
+
+.order-total {
+  text-align: right;
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* ===== RIGHT SIDE ===== */
+.checkout-summary {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.checkout-summary h2 {
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #e0d2c0;
+  padding-bottom: 8px;
+}
+
+.payment-method {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.summary-details p {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+.summary-details .total {
+  font-weight: bold;
+  font-size: 17px;
+  margin-top: 10px;
+}
+
+/* ===== BUTTON ===== */
+.btn-place-order {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #d9c2a5;
+  border: none;
+  color: black;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-place-order:hover {
+  background: #c4a784;
+}

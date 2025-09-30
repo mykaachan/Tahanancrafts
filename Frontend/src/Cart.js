@@ -92,7 +92,11 @@ function Cart() {
                 Story
               </Link>
             </li>
-            <li>Profile</li>
+            <li>
+  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+    Profile
+  </Link>
+</li>
           </ul>
         </nav>
         <div className="header-actions">

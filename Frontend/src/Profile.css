@@ -1,0 +1,294 @@
+/* ===== Page Layout ===== */
+.profile-page {
+  display: flex;
+  gap: 30px;
+  padding: 0 40px;
+  background: #ffffff;
+  min-height: 80vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 250px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.username {
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.profile-nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-nav li {
+  margin: 15px 0;
+}
+
+.profile-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.profile-nav a:hover {
+  color: #7a5a36;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition: color 0.2s ease;
+  width: 100%;
+  font-family: inherit;
+}
+
+.toggle-btn:hover {
+  color: #7a5a36;
+}
+
+.submenu {
+  margin-top: 5px;
+  margin-left: 15px;
+  list-style: none;
+  padding: 0;
+}
+
+.submenu li {
+  margin: 8px 0;
+}
+
+/* ===== Main Content ===== */
+.profile-content {
+  flex: 1;
+  background: #faf0e2;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-content h2 {
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* ===== Profile Box (shared for view + edit) ===== */
+.profile-box {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Profile details */
+.profile-details p {
+  margin: 8px 0;
+  font-size: 15px;
+}
+
+.btn-edit {
+  margin-top: 15px;
+  background: #7a5a36;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background: #5a4028;
+}
+
+/* Avatar section */
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #ddd;
+  margin-bottom: 10px;
+}
+
+.btn-select {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-select:hover {
+  background: #eee;
+}
+
+/* Logout */
+.btn-logout {
+  margin-top: 10px;
+  background: #7a5a36;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+}
+
+.btn-logout:hover {
+  background: #5a4028;
+}
+
+/* ===== Edit Profile Form (inside box) ===== */
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-profile-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #333;
+}
+
+.edit-profile-form input,
+.edit-profile-form select {
+  margin-top: 5px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #fafafa;
+}
+
+.edit-profile-form input:focus,
+.edit-profile-form select:focus {
+  outline: none;
+  border-color: #7a5a36;
+  box-shadow: 0 0 0 2px rgba(122, 90, 54, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-save {
+  background: #7a5a36;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #5a4028;
+}
+
+.btn-cancel {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: #aaa;
+}
+
+
+
+
+
+
+
+.change-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  background: #fffdf9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.change-password-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.change-password-form .btn-save {
+  margin-top: 10px;
+  background: #e67300; /* Different from Edit Profile */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+
+/* ===== Request Account Deletion Button ===== */
+.btn-delete {
+  margin-top: 15px;
+  background: #ec6c76;   /* red tone */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  background: #c82333;   /* darker red */
+}
+
+
+
+

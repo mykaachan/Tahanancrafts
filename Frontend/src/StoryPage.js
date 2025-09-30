@@ -40,7 +40,11 @@ function StoryPage() {
                 Story
               </Link>
             </li>
-            <li>Profile</li>
+            <li>
+  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+    Profile
+  </Link>
+</li>
           </ul>
         </nav>
         <div className="header-actions">
@@ -48,8 +52,11 @@ function StoryPage() {
             <input type="text" placeholder="Search" />
             <button className="search-btn">🔍</button>
           </div>
-          <button className="cart-btn">CART 🛒</button>
-        </div>
+          {/* ✅ Link the cart button to /cart */}
+  <Link to="/cart" style={{ textDecoration: "none" }}>
+    <button className="cart-btn">CART 🛒</button>
+  </Link>
+</div>
       </header>
 
       {/* ===== STORY CONTENT ===== */}
@@ -154,8 +161,7 @@ function StoryPage() {
           </h2>
           <p>
             This is a sample description and does not hold any valuable meaning.
-            This is a description that describes nothing. It can either be
-            nothing or nothing at all.
+          
           </p>
           <button className="register-btn">Register</button>
         </div>
