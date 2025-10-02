@@ -48,6 +48,7 @@ root.render(
           <Route path="/order-list" element={<Layout><OrderList /></Layout>} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
+      
 
           {/* ✅ Profile Routes */}
           <Route path="/profile" element={<Profile />}>
@@ -106,6 +107,24 @@ root.render(
                 <div className="profile-box">
                   <p>You can request account deletion. This action is irreversible.</p>
                   <button className="btn-delete">Request Account Deletion</button>
+                </div>
+              </div>
+            }/>
+
+            {/* ✅ My Purchases */}
+            <Route path="purchase" element={
+              <div className="purchase-page">
+                <h2>My Purchases</h2>
+                <div className="purchase-tabs">
+                  <button className="active">All</button>
+                  <button>To Pay</button>
+                  <button>To Ship</button>
+                  <button>To Receive</button>
+                  <button>Completed</button>
+                </div>
+                <div className="purchase-empty">
+                  <img src="/images/empty-box.png" alt="No orders" />
+                  <p>No orders yet</p>
                 </div>
               </div>
             }/>

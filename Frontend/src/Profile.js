@@ -1,13 +1,14 @@
 // src/Profile.js
 import React, { useState } from "react"; 
-import { Link, useLocation } from "react-router-dom";  // ✅ useLocation added
+import { Link, useLocation } from "react-router-dom";  
 import HeaderFooter from "./HeaderFooter";
 import "./Profile.css";
 
 function Profile() {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const location = useLocation(); // ✅ detect current route
+  const [activeTab, setActiveTab] = useState("all"); // ✅ for purchases tabs
+  const location = useLocation();
 
   const toggleAccountMenu = () => {
     setIsAccountOpen(!isAccountOpen);
@@ -171,7 +172,7 @@ function Profile() {
                     <button 
                       type="button" 
                       className="btn-cancel"
-                      onClick={() => window.history.back()} // go back
+                      onClick={() => window.history.back()}
                     >
                       Cancel
                     </button>
@@ -198,6 +199,125 @@ function Profile() {
               </div>
             </>
           )}
+
+          {/* ✅ My Purchases Page */}
+{location.pathname === "/profile/purchase" && (
+  <>
+    <h2>My Purchases</h2>
+    <p className="subtitle">Track your order status here</p>
+
+    {/* Tabs */}
+    <div className="purchases-tabs">
+      <button 
+        className={activeTab === "all" ? "active" : ""} 
+        onClick={() => setActiveTab("all")}
+      >
+        All
+      </button>
+      <button 
+        className={activeTab === "to-pay" ? "active" : ""} 
+        onClick={() => setActiveTab("to-pay")}
+      >
+        To Pay
+      </button>
+      <button 
+        className={activeTab === "to-ship" ? "active" : ""} 
+        onClick={() => setActiveTab("to-ship")}
+      >
+        To Ship
+      </button>
+      <button 
+        className={activeTab === "to-receive" ? "active" : ""} 
+        onClick={() => setActiveTab("to-receive")}
+      >
+        To Receive
+      </button>
+      <button 
+        className={activeTab === "completed" ? "active" : ""} 
+        onClick={() => setActiveTab("completed")}
+      >
+        Completed
+      </button>
+    </div>
+
+    {/* Orders List */}
+    <div className="purchase-box">
+      {activeTab === "all" && (
+        <div className="orders-list">
+          {/* ===== Order 1 ===== */}
+          <div className="order-card">
+            <div className="order-header">
+              <h3>Burdang Taal Lace Medallions</h3>
+              <div className="order-actions">
+                <button className="btn-small">Message</button>
+                <button className="btn-small">View Shop</button>
+              </div>
+              <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
+            </div>
+            
+            <div className="order-body">
+              <img 
+                src="https://via.placeholder.com/120" 
+                alt="Product Placeholder" 
+                className="order-img"
+              />
+              <div className="order-info">
+                <h4>Burdang Taal Lace Medallions</h4>
+                <p>Table runner</p>
+              </div>
+            </div>
+
+            <div className="order-footer">
+              <p className="order-total">Order Total: <strong>₱149</strong></p>
+              <div className="order-buttons">
+                <button className="btn-buy">Buy Again</button>
+                <button className="btn-contact">Contact Artisan</button>
+              </div>
+            </div>
+          </div>
+
+          {/* ===== Order 2 ===== */}
+          <div className="order-card">
+            <div className="order-header">
+              <h3>Habing Ibaan</h3>
+              <div className="order-actions">
+                <button className="btn-small">Message</button>
+                <button className="btn-small">View Shop</button>
+              </div>
+              <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
+            </div>
+            
+            <div className="order-body">
+              <img 
+                src="https://via.placeholder.com/120" 
+                alt="Product Placeholder" 
+                className="order-img"
+              />
+              <div className="order-info">
+                <h4>Kalpi</h4>
+                <p>Hand-woven Coin Purse</p>
+              </div>
+            </div>
+
+            <div className="order-footer">
+              <p className="order-total">Order Total: <strong>₱149</strong></p>
+              <div className="order-buttons">
+                <button className="btn-buy">Buy Again</button>
+                <button className="btn-contact">Contact Artisan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "to-pay" && <p>No items to pay.</p>}
+      {activeTab === "to-ship" && <p>No items to ship.</p>}
+      {activeTab === "to-receive" && <p>No items to receive.</p>}
+      {activeTab === "completed" && <p>No completed orders yet.</p>}
+    </div>
+  </>
+)}
+
         </main>
       </div>
     </HeaderFooter>
