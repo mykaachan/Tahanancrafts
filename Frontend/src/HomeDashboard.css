@@ -1,0 +1,337 @@
+.dashboard-container {
+  padding: 32px 0 0 0;
+  background: #f7f0e4;
+  min-height: 100vh;
+}
+.dashboard-header {
+  margin-bottom: 16px;
+}
+.dashboard-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #4d3c2e;
+}
+.dashboard-breadcrumb {
+  font-size: 1rem;
+  color: #7c6a58;
+  margin-top: 4px;
+}
+.dashboard-main {
+  display: flex;
+  gap: 32px;
+}
+.dashboard-left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.dashboard-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.dashboard-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 24px;
+  margin-bottom: 0;
+}
+.todo-list-items {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.todo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  background: #f7f0e4;
+  border-radius: 8px;
+  padding: 12px 18px;
+  min-width: 120px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+.todo-item:hover {
+  background: #e0d3c0;
+}
+.todo-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d97a00;
+}
+.todo-label {
+  font-size: 1rem;
+  color: #4d3c2e;
+}
+.business-insights {
+  display: flex;
+  gap: 32px;
+}
+.insight-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.insight-label {
+  font-size: 1rem;
+  color: #7c6a58;
+}
+.insight-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #4d3c2e;
+}
+.graph-card .graph-placeholder,
+.forecast-card .graph-placeholder {
+  background: #f7f0e4;
+  border-radius: 8px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b8a48a;
+  font-size: 1rem;
+}
+.transaction-history-list {
+  margin-top: 12px;
+}
+.transaction-row {
+  display: grid;
+  grid-template-columns: 120px 1.5fr 120px 120px 120px;
+  align-items: center;
+  gap: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  justify-items: start
+}
+.transaction-history-list-header {
+  display: grid;
+  grid-template-columns: 120px 1.5fr 120px 120px 120px;
+  align-items: center;
+  font-weight: bold;
+  color: #4d3c2e;
+  margin-bottom: 8px;
+}
+.transaction-order-id {
+  font-size: 1rem;
+  color: #4d3c2e;
+  min-width: 80px;
+}
+.transaction-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.transaction-product-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f7f0e4;
+}
+.transaction-product-details {
+  display: flex;
+  flex-direction: column;
+}
+.transaction-product-name {
+  font-weight: 500;
+  color: #4d3c2e;
+}
+.transaction-product-category {
+  font-size: 0.95rem;
+  color: #7c6a58;
+}
+.transaction-product-stock {
+  font-size: 0.95rem;
+  color: #7c6a58;
+}
+.transaction-product-total {
+  font-size: 1rem;
+  color: #4d3c2e;
+}
+.transaction-product-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  background: #e6f7e6;
+  color: #2e7d32;
+}
+.transaction-product-date {
+  font-size: 1rem;
+  color: #b8a48a;
+}
+.products-card .products-count {
+  font-size: 1rem;
+  color: #7c6a58;
+}
+.products-list {
+  margin-top: 12px;
+}
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+.product-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f7f0e4;
+}
+.product-details {
+  display: flex;
+  flex-direction: column;
+}
+.product-name {
+  font-weight: 500;
+  color: #4d3c2e;
+}
+.product-category {
+  font-size: 0.95rem;
+  color: #7c6a58;
+}
+.product-stock {
+  font-size: 1rem;
+  color: #4d3c2e;
+}
+.product-price {
+  font-size: 1rem;
+  color: #4d3c2e;
+}
+.product-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+  text-align: center;
+  background: #ffe5d0;
+  color: #d97a00;
+}
+.product-status.status-lowstock {
+  background: #ffe5d0;
+  color: #d97a00;
+}
+.product-status.status-onstock {
+  background: #e6f7e6;
+  color: #2e7d32;
+}
+.product-status.status-nostock {
+  background: #fbeaea;
+  color: #c62828;
+}
+.product-date {
+  font-size: 1rem;
+  color: #b8a48a;
+}
+.shop-performance-card {
+  text-align: center;
+}
+.shop-performance-status {
+  display: inline-block;
+  background: #e6f7e6;
+  color: #2e7d32;
+  font-weight: 600;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  margin-top: 12px;
+}
+.top-seller-list {
+  margin-top: 12px;
+}
+.top-seller-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+.top-seller-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f7f0e4;
+}
+.top-seller-details {
+  display: flex;
+  flex-direction: column;
+}
+.top-seller-name {
+  font-weight: 500;
+  color: #4d3c2e;
+}
+.top-seller-category {
+  font-size: 0.95rem;
+  color: #7c6a58;
+}
+.top-seller-price {
+  font-size: 1rem;
+  color: #4d3c2e;
+}
+.top-seller-sales {
+  font-size: 1rem;
+  color: #4d3c2e;
+  font-weight: 600;
+  margin-left: 12px;
+}
+.dashboard-forecast {
+  margin-top: 32px;
+}
+.dashboard-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+.forecast-card, .trending-categories-card, .product-trends-card, .export-report-card {
+  flex: 1;
+}
+.trending-placeholder, .product-trends-placeholder {
+  background: #f7f0e4;
+  border-radius: 8px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b8a48a;
+  font-size: 1rem;
+}
+.export-report-btn {
+  background: #d97a00;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.export-report-btn:hover {
+  background: #b85f00;
+}
+.transaction-history-full-card {
+  margin-top: 32px;
+}
+.transaction-history-full-placeholder {
+  background: #f7f0e4;
+  border-radius: 8px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b8a48a;
+  font-size: 1.1rem;
+}

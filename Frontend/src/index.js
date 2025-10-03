@@ -22,6 +22,7 @@ import AllProducts from './AllProducts';
 import OrderList from './OrderList';
 import Checkout from './Checkout';
 import Profile from './Profile'; // ✅ import profile
+import HomeDashboard from './HomeDashboard';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -44,8 +45,9 @@ root.render(
           <Route path="/signup-verify" element={<SignupVerifyContact />} />
           <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
           <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
-          <Route path="/all-products" element={<Layout><AllProducts /></Layout>} />
-          <Route path="/order-list" element={<Layout><OrderList /></Layout>} />
+          <Route path="/dashboard" element={<HomeDashboard />} />
+          <Route path="/all-products" element={<AllProducts />} />
+          <Route path="/order-list" element={<OrderList />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
       

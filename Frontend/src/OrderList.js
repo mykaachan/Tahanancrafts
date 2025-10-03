@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Layout from './components/Layout';
 import './OrderList.css';
 
 const STATUS_TABS = [
@@ -102,91 +103,93 @@ const OrderList = () => {
   };
 
   return (
-    <div className="order-list-page-container">
-      <h1 className="page-title">Product Details</h1>
-      <div className="orders-section">
-        <h2>Orders List</h2>
-        <div className="orders-tabs">
-          {STATUS_TABS.map(tab => (
-            <button
-              key={tab.key}
-              className={`orders-tab${activeTab === tab.key ? ' active' : ''}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <div className="orders-controls">
-          <input
-            type="text"
-            placeholder="Input Order ID"
-            value={orderIdFilter}
-            onChange={e => setOrderIdFilter(e.target.value)}
-            className="order-id-input"
-          />
-          <button className="export-btn">Export</button>
-          <button className="export-btn">Export History</button>
-        </div>
-        <div className="orders-list-container">
-          <div className="orders-list-header">
-            <span>Products(s)</span>
-            <span>Order ID</span>
-            <span>Status</span>
-            <span>Orders</span>
-            <span>Date</span>
+    <Layout>
+      <div className="order-list-page-container">
+        <h1 className="page-title">Product Details</h1>
+        <div className="orders-section">
+          <h2>Orders List</h2>
+          <div className="orders-tabs">
+            {STATUS_TABS.map(tab => (
+              <button
+                key={tab.key}
+                className={`orders-tab${activeTab === tab.key ? ' active' : ''}`}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
-          <div className="orders-list">
-            {filteredOrders.length === 0 ? (
-              <div className="no-orders">No orders found.</div>
-            ) : (
-              filteredOrders.map(order => (
-                <div className="order-row" key={order.id}>
-                  <div className="order-product">
-                    <img src={order.productImage} alt={order.productName} className="order-product-image" />
-                    <div className="order-product-details">
-                      <div className="order-product-name">{order.productName}</div>
-                      <div className="order-product-category">{order.productCategory}</div>
-                    </div>
-                  </div>
-                  <div className="order-id">#{order.id}</div>
-                  <div className={`order-status status-${order.status.replace(/\s+/g, '').toLowerCase()}`}
-                    style={{ position: 'relative', cursor: 'pointer' }}
-                    onClick={() => handleStatusClick(order.id)}
-                  >
-                    {order.status}
-                    {editingStatusId === order.id && STATUS_TRANSITIONS[order.status] && (
-                      <div className="status-dropdown">
-                        {STATUS_TRANSITIONS[order.status].map(nextStatus => (
-                          <div
-                            key={nextStatus}
-                            className={`status-option status-${nextStatus.replace(/\s+/g, '').toLowerCase()}`}
-                            onClick={e => {
-                              e.stopPropagation();
-                              handleStatusChange(order.id, nextStatus);
-                            }}
-                          >
-                            {nextStatus}
-                          </div>
-                        ))}
+          <div className="orders-controls">
+            <input
+              type="text"
+              placeholder="Input Order ID"
+              value={orderIdFilter}
+              onChange={e => setOrderIdFilter(e.target.value)}
+              className="order-id-input"
+            />
+            <button className="export-btn">Export</button>
+            <button className="export-btn">Export History</button>
+          </div>
+          <div className="orders-list-container">
+            <div className="orders-list-header">
+              <span>Products(s)</span>
+              <span>Order ID</span>
+              <span>Status</span>
+              <span>Orders</span>
+              <span>Date</span>
+            </div>
+            <div className="orders-list">
+              {filteredOrders.length === 0 ? (
+                <div className="no-orders">No orders found.</div>
+              ) : (
+                filteredOrders.map(order => (
+                  <div className="order-row" key={order.id}>
+                    <div className="order-product">
+                      <img src={order.productImage} alt={order.productName} className="order-product-image" />
+                      <div className="order-product-details">
+                        <div className="order-product-name">{order.productName}</div>
+                        <div className="order-product-category">{order.productCategory}</div>
                       </div>
-                    )}
+                    </div>
+                    <div className="order-id">#{order.id}</div>
+                    <div className={`order-status status-${order.status.replace(/\s+/g, '').toLowerCase()}`}
+                      style={{ position: 'relative', cursor: 'pointer' }}
+                      onClick={() => handleStatusClick(order.id)}
+                    >
+                      {order.status}
+                      {editingStatusId === order.id && STATUS_TRANSITIONS[order.status] && (
+                        <div className="status-dropdown">
+                          {STATUS_TRANSITIONS[order.status].map(nextStatus => (
+                            <div
+                              key={nextStatus}
+                              className={`status-option status-${nextStatus.replace(/\s+/g, '').toLowerCase()}`}
+                              onClick={e => {
+                                e.stopPropagation();
+                                handleStatusChange(order.id, nextStatus);
+                              }}
+                            >
+                              {nextStatus}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="order-orders">{order.orders}</div>
+                    <div className="order-date">{order.date}</div>
                   </div>
-                  <div className="order-orders">{order.orders}</div>
-                  <div className="order-date">{order.date}</div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
-        {/* Pagination placeholder */}
-        <div className="orders-pagination">
-          <button className="pagination-btn active">1</button>
-          <button className="pagination-btn">2</button>
-          <button className="pagination-btn">...</button>
+          {/* Pagination placeholder */}
+          <div className="orders-pagination">
+            <button className="pagination-btn active">1</button>
+            <button className="pagination-btn">2</button>
+            <button className="pagination-btn">...</button>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
