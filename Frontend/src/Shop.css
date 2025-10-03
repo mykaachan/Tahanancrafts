@@ -1,0 +1,233 @@
+/* ===== Shop Home Page ===== */
+.shop-page {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fefdfb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Banner Section ===== */
+.shop-banner {
+  background: #f1e1d0;
+  padding: 25px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.shop-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.shop-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ddd; /* placeholder for profile */
+}
+
+/* Shop name + description */
+.shop-info h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.shop-info p {
+  margin: 5px 0 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Follow / Message buttons */
+.btn {
+  background: #fff;
+  border: 1px solid #a67855;
+  color: #a67855;
+  padding: 8px 16px;
+  margin-right: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #a67855;
+  color: #fff;
+}
+
+/* ===== Tabs ===== */
+.shop-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px auto;
+  flex-wrap: wrap;
+}
+
+.shop-tabs button {
+  padding: 10px 25px;
+  border: none;
+  background: #e2c6a6;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.shop-tabs button:hover {
+  background: #caa987;
+}
+
+.shop-tabs .active {
+  background: #a67855;
+  color: white;
+}
+
+/* ===== Recommended Products ===== */
+.recommended {
+  margin: 40px 50px;
+}
+
+.recommended h3 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+}
+
+/* Match products-page grid style */
+.recommended .product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns like products page */
+  grid-auto-rows: auto;
+  gap: 35px;
+  padding-bottom: 20px;
+}
+
+@media (max-width: 1200px) {
+  .recommended .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .recommended .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .recommended .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Match product card style */
+.recommended .product-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  text-align: left;
+  width: 260px;  /* same width as product page */
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.recommended .product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 18px rgba(0,0,0,0.15);
+}
+
+/* Image */
+.recommended .product-card img,
+.recommended .product-card .placeholder-img {
+  width: 100%;
+  height: 220px;  /* match product page */
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #ddd; /* placeholder */
+}
+
+/* Product Title */
+.recommended .product-card h2 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 6px 0;
+}
+
+/* Product Description */
+.recommended .product-card p {
+  font-size: 0.95rem;
+  color: #444;
+  margin: 6px 0;
+}
+
+/* Price */
+.recommended .product-card .price {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 8px;
+  color: #000;
+}
+
+/* Optional show more/less */
+.recommended .show-more-btn {
+  font-size: 0.85rem;
+  color: #998759;
+  cursor: pointer;
+  margin-top: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+
+/* ===== About Shop ===== */
+.about-shop {
+  background: #f6e6d6;
+  display: flex;
+  gap: 25px;
+  margin: 40px 50px;
+  padding: 25px;
+  border-radius: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.about-shop .banner {
+  flex: 1;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #ccc; /* ✅ placeholder for cover */
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-text h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.about-text p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  color: #444;
+}

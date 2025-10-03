@@ -7,7 +7,7 @@ import App from './App';
 import LoginPage from './LoginPage';
 import ForgotPass from './ForgotPass';
 import ForgotPass2 from './ForgotPass2';
-import SignUp from './SignUp';   
+import SignUp from './SignUp';
 import VerifyCode from './VerifyCode';
 import HomePage from './HomePage';
 import StoryPage from './StoryPage';
@@ -15,14 +15,15 @@ import Products from './Products';
 import Iraya from './Iraya';
 import ProductDetails from './ProductDetails';
 import Cart from './Cart';
-import Layout from './Layout';      
-import AddProduct from './AddProduct'; 
+import Layout from './Layout';
+import AddProduct from './AddProduct';
 import SignupVerifyContact from './SignupVerify';
 import AllProducts from './AllProducts';
 import OrderList from './OrderList';
 import Checkout from './Checkout';
 import Profile from './Profile'; // ✅ import profile
 import HomeDashboard from './HomeDashboard';
+import Shop from './Shop'; // ✅ added shop
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -35,11 +36,11 @@ root.render(
           <Route path="/" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/forgotpass2" element={<ForgotPass2 />} />
-          <Route path="/signup" element={<SignUp />} />  
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/verify" element={<VerifyCode />} />
-          <Route path="/homepage" element={<HomePage />} />  
-          <Route path="/story" element={<StoryPage />} />   
-          <Route path="/products" element={<Products />} /> 
+          <Route path="/homepage" element={<HomePage />} />
+          <Route path="/story" element={<StoryPage />} />
+          <Route path="/products" element={<Products />} />
           <Route path="/iraya" element={<Iraya />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/signup-verify" element={<SignupVerifyContact />} />
@@ -50,87 +51,104 @@ root.render(
           <Route path="/order-list" element={<OrderList />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
-      
 
           {/* ✅ Profile Routes */}
           <Route path="/profile" element={<Profile />}>
-            <Route index element={
-              <div>
-                <h2>My Profile</h2>
-                <div className="profile-box">
-                  <p><strong>Name:</strong> Juan Dela Cruz</p>
-                  <p><strong>Email:</strong> juan@email.com</p>
-                  <p><strong>Phone:</strong> 09123456789</p>
+            <Route
+              index
+              element={
+                <div>
+                  <h2>My Profile</h2>
+                  <div className="profile-box">
+                    <p><strong>Name:</strong> Juan Dela Cruz</p>
+                    <p><strong>Email:</strong> juan@email.com</p>
+                    <p><strong>Phone:</strong> 09123456789</p>
+                  </div>
                 </div>
-              </div>
-            }/>
+              }
+            />
 
-            <Route path="edit" element={
-              <div>
-                <h2>Edit Profile</h2>
-                <form className="profile-form">
-                  <label>Name</label>
-                  <input type="text" defaultValue="Juan Dela Cruz" />
+            <Route
+              path="edit"
+              element={
+                <div>
+                  <h2>Edit Profile</h2>
+                  <form className="profile-form">
+                    <label>Name</label>
+                    <input type="text" defaultValue="Juan Dela Cruz" />
 
-                  <label>Email</label>
-                  <input type="email" defaultValue="juan@email.com" />
+                    <label>Email</label>
+                    <input type="email" defaultValue="juan@email.com" />
 
-                  <label>Phone</label>
-                  <input type="text" defaultValue="09123456789" />
+                    <label>Phone</label>
+                    <input type="text" defaultValue="09123456789" />
 
-                  <button type="submit" className="btn-save">Save</button>
-                </form>
-              </div>
-            }/>
+                    <button type="submit" className="btn-save">Save</button>
+                  </form>
+                </div>
+              }
+            />
 
             {/* ✅ Change Password */}
-            <Route path="change-password" element={
-              <div>
-                <h2>Change Password</h2>
-                <form className="change-password-form">
-                  <label>Old Password</label>
-                  <input type="password" placeholder="Enter old password" />
+            <Route
+              path="change-password"
+              element={
+                <div>
+                  <h2>Change Password</h2>
+                  <form className="change-password-form">
+                    <label>Old Password</label>
+                    <input type="password" placeholder="Enter old password" />
 
-                  <label>New Password</label>
-                  <input type="password" placeholder="Enter new password" />
+                    <label>New Password</label>
+                    <input type="password" placeholder="Enter new password" />
 
-                  <label>Confirm New Password</label>
-                  <input type="password" placeholder="Confirm new password" />
+                    <label>Confirm New Password</label>
+                    <input type="password" placeholder="Confirm new password" />
 
-                  <button type="submit" className="btn-save">Update Password</button>
-                </form>
-              </div>
-            }/>
+                    <button type="submit" className="btn-save">Update Password</button>
+                  </form>
+                </div>
+              }
+            />
 
             {/* ✅ Privacy Settings */}
-            <Route path="privacy" element={
-              <div>
-                <h2>Privacy Settings</h2>
-                <div className="profile-box">
-                  <p>You can request account deletion. This action is irreversible.</p>
-                  <button className="btn-delete">Request Account Deletion</button>
+            <Route
+              path="privacy"
+              element={
+                <div>
+                  <h2>Privacy Settings</h2>
+                  <div className="profile-box">
+                    <p>You can request account deletion. This action is irreversible.</p>
+                    <button className="btn-delete">Request Account Deletion</button>
+                  </div>
                 </div>
-              </div>
-            }/>
+              }
+            />
 
             {/* ✅ My Purchases */}
-            <Route path="purchase" element={
-              <div className="purchase-page">
-                <h2>My Purchases</h2>
-                <div className="purchase-tabs">
-                  <button className="active">All</button>
-                  <button>To Pay</button>
-                  <button>To Ship</button>
-                  <button>To Receive</button>
-                  <button>Completed</button>
+            <Route
+              path="purchase"
+              element={
+                <div className="purchase-page">
+                  <h2>My Purchases</h2>
+                  <div className="purchase-tabs">
+                    <button className="active">All</button>
+                    <button>To Pay</button>
+                    <button>To Ship</button>
+                    <button>To Receive</button>
+                    <button>Completed</button>
+                  </div>
+                  <div className="purchase-empty">
+                    <img src="/images/empty-box.png" alt="No orders" />
+                    <p>No orders yet</p>
+                  </div>
                 </div>
-                <div className="purchase-empty">
-                  <img src="/images/empty-box.png" alt="No orders" />
-                  <p>No orders yet</p>
-                </div>
-              </div>
-            }/>
+              }
+            />
           </Route>
+
+          {/* ✅ Shop Route */}
+          <Route path="/shop" element={<Shop />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>
