@@ -15,8 +15,23 @@ class ProfileView(APIView):
         
         try:
             user = CustomUser.objects.get(id=user_id)
-            profile = user.profile  # assuming you have a OneToOne profile
-            serializer = ProfileSerializer(profile)
-            return Response(serializer.data)
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Safely get or create profile
+        profile = getattr(user, "profile", None)
+        if profile is None:
+            profile_data = {
+                "username": user.name,
+                "name": user.name,
+                "email": user.email,
+                "phone": user.phone,
+                "gender": None,
+                "date_of_birth": None,
+                "avatar_url": f"https://ui-avatars.com/api/?name={user.name[0].upper()}&background=random&color=fff"
+            }
+            return Response({"user": profile_data}, status=status.HTTP_200_OK)
+
+        # Serialize existing profile
+        serializer = ProfileSerializer(profile, context={"request": request})
+        return Response({"user": serializer.data}, status=status.HTTP_200_OK)

@@ -76,18 +76,20 @@ class Profile(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
-
     def __str__(self):
         return self.user.username
 
     @property
     def avatar_or_default(self):
-        """Return uploaded avatar if available, else a generated letter avatar."""
         if self.avatar:
             return self.avatar.url
-        # Return placeholder avatar URL (first letter of username)
-        first_letter = self.user.username[0].upper()
-        return f"https://ui-avatars.com/api/?name={first_letter}&background=random&color=fff"
+        # fallback to first letter of username, default 'U'
+        if self.user.username:
+            first_letter = self.user.username[0].upper()
+        else:
+            first_letter = "U"
+        # You can return a placeholder image URL or generate an avatar with the letter
+        return f"https://via.placeholder.com/150?text={first_letter}"
 
 @receiver(post_save, sender=CustomUser)
 def create_or_update_profile(sender, instance, created, **kwargs):
@@ -95,3 +97,4 @@ def create_or_update_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     else:
         instance.profile.save()
+

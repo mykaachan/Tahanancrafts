@@ -15,25 +15,23 @@ function VerifyCode() {
   try {
     const res = await loginOtp({ otp, contact });
 
-    // Correctly access the user object
-    const user = res.data.user;  
+    // Backend returns { message, user }
+    if (res.user && res.user.id) {
+      console.log("OTP verified:", res);
 
-    if (!user || !user.id) {
+      localStorage.setItem("user_id", res.user.id);
+      localStorage.setItem("user_role", res.user.role);
+      localStorage.setItem("user_email", res.user.name);
+
+      navigate("/homepage");
+    } else {
       throw new Error("Invalid code");
     }
-
-    // Save user info
-    localStorage.setItem("user_id", user.id);
-    localStorage.setItem("user_name", user.username);
-
-    // Redirect
-    navigate("/homepage");
   } catch (err) {
-    console.error("OTP verification failed:", err.response?.data || err.message);
+    console.error("OTP verification failed:", err.message || err);
     alert("Invalid code. Please try again.");
   }
 };
-
 
   return (
     <div className="App">

@@ -253,8 +253,8 @@ class LoginVerifyOTPView(APIView):
             # Return user info along with message
             user_data = {
                 "id": user.id,
-                "username": user.username,
                 "role": user.role,
+                "username": user.name,
             }
 
             return Response({

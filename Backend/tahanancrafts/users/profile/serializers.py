@@ -16,6 +16,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_avatar_url(self, obj):
         request = self.context.get('request')
         avatar = obj.avatar_or_default
-        if request is not None:
+        if request:
             return request.build_absolute_uri(avatar)
         return avatar

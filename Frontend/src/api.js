@@ -55,16 +55,43 @@ export async function ChangePassword(userData) {
 }
 
 // api.js
+export const BASE_URL = "http://127.0.0.1:8000/api";
+
+// Fetch user profile
 export async function getProfile() {
   const userId = localStorage.getItem("user_id");
   if (!userId) throw new Error("No user ID found");
 
-  const res = await fetch(`http://127.0.0.1:8000/api/users/profile/profile/?user_id=${userId}`);
+  const res = await fetch(`${BASE_URL}/users/profile/profile/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch profile");
 
   const data = await res.json();
-  return data;
+  return data.user; // returns { id, role, username, name, email, phone, gender, date_of_birth, avatar_url }
 }
+
+// Update profile (example)
+export async function updateProfile(profileData) {
+  const res = await fetch(`${BASE_URL}/users/profile/profile/`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(profileData),
+  });
+  if (!res.ok) throw new Error("Failed to update profile");
+  return res.json();
+}
+
+// Helper for image URLs
+export function getAvatarUrl(path, username = "User") {
+  if (!path) 
+    return `https://ui-avatars.com/api/?name=${username[0].toUpperCase()}&background=random&color=fff`;
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
+
+
+// You can also add APIs for password change, purchases, etc.
+
+
 
 
 // --- PRODUCT FUNCTIONS ---
