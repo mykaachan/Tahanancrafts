@@ -16,7 +16,7 @@
 
 /* Left Sidebar Filters */
 .products-page .products-filters {
-  width: 200px;
+  width: 180px;
   flex-shrink: 0;
 }
 
@@ -54,7 +54,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4 columns */
   grid-auto-rows: auto;
-  gap: 35px;
+  gap: 20px;
   padding-bottom: 20px;
 }
 

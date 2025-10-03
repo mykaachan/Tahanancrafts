@@ -250,7 +250,7 @@ const AddProduct = () => {
                       className="remove-main-image"
                       onClick={() => setMainImage(null)}
                     >
-                      ×
+                      
                     </button>
                   </div>
                 ) : (

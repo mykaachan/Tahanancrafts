@@ -1,22 +1,92 @@
-# Import required Django REST Framework and Django modules
+# users/views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from django.core.cache import cache
-
-# Import serializers to handle request validation
-from .serializers import RequestOTPSerializer, VerifyOTPSerializer, LoginRequestSerializer, LoginVerifyOTPSerializer, ForgotPasswordSerializer, ForgotPasswordOtpVerifySerializer, ChangePasswordSerializer
-
-# Import utility functions and models
-from users.utils import send_otp_email, send_otp_sms, normalize_phone_number, validate_and_return_new_password, verify_google_token
-from users.models import CustomUser
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from users.models import CustomUser, Profile
+from users.utils import normalize_phone_number, send_otp_email, send_otp_sms
+from .serializers import (
+    RequestOTPSerializer, VerifyOTPSerializer,
+    LoginRequestSerializer, LoginVerifyOTPSerializer,
+    ForgotPasswordSerializer, ForgotPasswordOtpVerifySerializer,
+    ChangePasswordSerializer
+)
 
 import random
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter # type: ignore
-from dj_rest_auth.registration.views import SocialLoginView # type: ignore
+
+# -------------------------------
+# JWT Login View (for React)
+# -------------------------------
+class JWTLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        contact = request.data.get("contact")
+        password = request.data.get("password")
+
+        if not contact or not password:
+            return Response({"error": "Email/Phone and password required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Determine contact type
+        if "@" in contact:
+            user = CustomUser.objects.filter(email=contact).first()
+        else:
+            contact = normalize_phone_number(contact)
+            user = CustomUser.objects.filter(phone=contact).first()
+
+        if not user or not user.check_password(password):
+            return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Issue JWT tokens
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": {
+                "username": user.username,
+                "name": user.name,
+                "email": user.email,
+                "phone": user.phone,
+            }
+        }, status=status.HTTP_200_OK)
+
+
+# -------------------------------
+# Fetch Profile (Protected)
+# -------------------------------
+class ProfileView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user = request.user
+        profile = getattr(user, "profile", None)
+        if profile:
+            avatar_url = profile.avatar.url if profile.avatar else f"https://ui-avatars.com/api/?name={user.username[0].upper()}&background=random&color=fff"
+            data = {
+                "username": user.username,
+                "name": user.name,
+                "email": user.email,
+                "phone": user.phone,
+                "gender": profile.gender,
+                "date_of_birth": profile.date_of_birth,
+                "avatar": avatar_url
+            }
+        else:
+            data = {
+                "username": user.username,
+                "name": user.name,
+                "email": user.email,
+                "phone": user.phone,
+                "gender": None,
+                "date_of_birth": None,
+                "avatar": f"https://ui-avatars.com/api/?name={user.username[0].upper()}&background=random&color=fff"
+            }
+        return Response(data, status=status.HTTP_200_OK)
 
 
 # Simple test to check if authentication-related endpoints are working
@@ -31,6 +101,7 @@ class TestAuthConnection(APIView):
 
 # Sends an OTP to a contact (email or phone)
 class UserRegistrationView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = RequestOTPSerializer(data=request.data)
         if serializer.is_valid():
@@ -69,6 +140,7 @@ class UserRegistrationView(APIView):
 
 # Verifies if OTP entered is correct (for either email or phone)
 class VerifyRegisterOTPView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = VerifyOTPSerializer(data=request.data)
         if serializer.is_valid():
@@ -107,6 +179,7 @@ class VerifyRegisterOTPView(APIView):
 
 # Request OTP for login
 class LoginRequestOTPView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = LoginRequestSerializer(data=request.data)
         if serializer.is_valid():
@@ -145,7 +218,14 @@ class LoginRequestOTPView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Verify OTP for login
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+
 class LoginVerifyOTPView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = LoginVerifyOTPSerializer(data=request.data)
         if serializer.is_valid():
@@ -162,13 +242,31 @@ class LoginVerifyOTPView(APIView):
             if not login_data or login_data['otp'] != otp:
                 return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
 
-            user = CustomUser.objects.get(id=login_data['user_id'])
+            try:
+                user = CustomUser.objects.get(id=login_data['user_id'])
+            except CustomUser.DoesNotExist:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            # Clear the OTP from cache
             cache.delete(f"login_{normalized_contact}")
-            return Response({"message": f"Successfully logged in as {user.role}."}, status=status.HTTP_200_OK)
+
+            # Return user info along with message
+            user_data = {
+                "id": user.id,
+                "username": user.username,
+                "role": user.role,
+            }
+
+            return Response({
+                "message": f"Successfully logged in as {user.role}.",
+                "user": user_data
+            }, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #this is for forgot password
 class ForgotPasswordView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = ForgotPasswordSerializer(data=request.data)
         if serializer.is_valid():
@@ -191,6 +289,7 @@ class ForgotPasswordView(APIView):
 
 
 class ForgotPasswordOtpVerify(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = ForgotPasswordOtpVerifySerializer(data=request.data)
         if serializer.is_valid():
@@ -212,6 +311,7 @@ class ForgotPasswordOtpVerify(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePassword(APIView):
+    permission_classes = [AllowAny]
     """Step 2: Change password after OTP verification"""
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Iraya.css";
+import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 
 // Images

@@ -9,15 +9,10 @@ urlpatterns = [
     path('api/products/', include('products.urls')),  # Combined routes for products and reviews
     path('api/search/', include('search.urls')),  # Search routes
     path('admin/', admin.site.urls),
-    path('auth/', include('dj_rest_auth.urls')),               # login/logout/password reset
     path('auth/registration/', include('dj_rest_auth.registration.urls')),  # signup
     path('auth/', include('allauth.socialaccount.urls')),      # social auth
 ]
 
-
-urlpatterns = [
-    path('api/products/', include('products.urls')),
-]
 
 if settings.DEBUG:  # only for dev
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

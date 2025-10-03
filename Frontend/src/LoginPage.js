@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "./api"; // your backend API for normal login
+import { login } from "./api"; // login request (sends contact + password, receives OTP)
 import { GoogleLogin } from '@react-oauth/google'; // Google login component
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ function LoginPage() {
   const [enteredPassword, setEnteredPassword] = useState("");
 
   // -------------------------------
-  // Normal login
+  // Normal login (OTP request)
   // -------------------------------
   const handleLogin = async () => {
     const userData = {
@@ -22,10 +22,11 @@ function LoginPage() {
     };
 
     try {
-      const res = await login(userData);
-      console.log("Login success:", res);
+      // Step 1: request OTP from backend
+      const res = await login(userData); // should return { message: "OTP sent..." }
+      console.log("OTP request success:", res);
 
-      // go to Verify page
+      // Redirect to OTP verification page, passing contact
       navigate("/verify", { state: { contact: enteredEmailOrPhone } });
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
@@ -39,10 +40,12 @@ function LoginPage() {
   const handleGoogleLoginSuccess = (response) => {
     const code = response.credential; // Google sends the ID token
 
-    axios.post('http://localhost:8000/auth/social/google/', { code })
+    axios.post('http://localhost:8000/api/users/auth/google_callback/', { credential: code })
       .then(res => {
         console.log('Logged in with Google:', res.data);
         alert('Login successful!');
+        localStorage.setItem("user_email", res.data.email);
+        localStorage.setItem("user_name", res.data.name);
         navigate('/homepage'); // redirect to homepage
       })
       .catch(err => {
@@ -56,7 +59,7 @@ function LoginPage() {
   };
 
   // -------------------------------
-  // JSX
+  // JSX (your original styling)
   // -------------------------------
   return (
     <div className="App">

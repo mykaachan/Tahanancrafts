@@ -1,8 +1,7 @@
-# users/auth/urls.py
-
+# users/urls.py
 from django.urls import path
-from .views import TestAuthConnection
+from .views import ProfileView
 
 urlpatterns = [
-    path('test_profile/', TestAuthConnection.as_view(), name='auth-test'),
+    path('profile/', ProfileView.as_view(), name='profile'),
 ]
