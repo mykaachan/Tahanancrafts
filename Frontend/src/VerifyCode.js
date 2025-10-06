@@ -8,19 +8,30 @@ function VerifyCode() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  //  this gets what we passed from login
+  // Get contact info passed from login
   const contact = location.state?.contact || "your email/phone";
 
   const handleVerify = async () => {
-    try {
-      const res = await loginOtp({ otp, contact }); 
+  try {
+    const res = await loginOtp({ otp, contact });
+
+    // Backend returns { message, user }
+    if (res.user && res.user.id) {
       console.log("OTP verified:", res);
+
+      localStorage.setItem("user_id", res.user.id);
+      localStorage.setItem("user_role", res.user.role);
+      localStorage.setItem("user_email", res.user.name);
+
       navigate("/homepage");
-    } catch (err) {
-      console.error("OTP verification failed:", err.response?.data || err.message);
-      alert("Invalid code. Please try again.");
+    } else {
+      throw new Error("Invalid code");
     }
-  };
+  } catch (err) {
+    console.error("OTP verification failed:", err.message || err);
+    alert("Invalid code. Please try again.");
+  }
+};
 
   return (
     <div className="App">
@@ -32,7 +43,6 @@ function VerifyCode() {
         </div>
 
         <div className="form-wrapper">
-          {/*  show dynamic contact */}
           <p className="verify-text">
             Code sent to <b>{contact}</b>
           </p>

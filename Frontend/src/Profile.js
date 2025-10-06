@@ -1,10 +1,15 @@
 // src/Profile.js
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import { Link, useLocation } from "react-router-dom";  
 import HeaderFooter from "./HeaderFooter";
+import { getProfile, getAvatarUrl } from "./api"; // Use your API helper
 import "./Profile.css";
 
 function Profile() {
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("all"); // ✅ for purchases tabs
@@ -14,6 +19,38 @@ function Profile() {
     setIsAccountOpen(!isAccountOpen);
   };
 
+  // Fetch profile data from API
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const data = await getProfile();
+        setProfileData(data);
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        setError("Failed to load profile. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfileData();
+  }, []);
+
+  if (loading) return <p>Loading profile...</p>;
+  if (error) return <p>{error}</p>;
+  if (!profileData) return null;
+
+  // Safely generate avatar URL
+  const initials = profileData.name
+    ? profileData.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "U";
+
+  const avatarSrc = getAvatarUrl(profileData.avatar_url || initials);
+
   return (
     <HeaderFooter>
       <div className="profile-page">
@@ -21,11 +58,11 @@ function Profile() {
         <aside className="sidebar">
           <div className="profile-info">
             <img
-              src="/images/profile.jpg"
+              src={avatarSrc}
               alt="Profile"
               className="profile-img"
             />
-            <h3 className="username">kathrynbernardo</h3>
+            <h3 className="username">{profileData.username || profileData.name}</h3>
           </div>
 
           <nav className="profile-nav">
@@ -61,12 +98,13 @@ function Profile() {
 
               <div className="profile-box">
                 <div className="profile-details">
-                  <p><strong>Username:</strong> kathrynbernardo</p>
-                  <p><strong>Name:</strong> Kath</p>
-                  <p><strong>Email:</strong> kathrynbernardo@gmail.com</p>
-                  <p><strong>Phone Number:</strong> 09610375896</p>
-                  <p><strong>Gender:</strong> Female</p>
-                  <p><strong>Date of Birth:</strong> **/**/2000</p>
+                  <img src={avatarSrc} alt="Profile" className="profile-img" />
+                  <p><strong>Username:</strong> {profileData.username || "-"}</p>
+                  <p><strong>Name:</strong> {profileData.name || "-"}</p>
+                  <p><strong>Email:</strong> {profileData.email || "-"}</p>
+                  <p><strong>Phone Number:</strong> {profileData.phone || "-"}</p>
+                  <p><strong>Gender:</strong> {profileData.gender || "-"}</p>
+                  <p><strong>Date of Birth:</strong> {profileData.date_of_birth || "-"}</p>
                   
                   <button 
                     className="btn-edit" 
@@ -90,29 +128,29 @@ function Profile() {
               <div className="profile-box">
                 <form className="edit-profile-form">
                   <div className="profile-avatar">
-                    <div className="avatar-circle"></div>
+                    <img src={avatarSrc} alt="Profile" className="profile-img" />
                     <button className="btn-select" type="button">Select Image</button>
                   </div>
 
                   <label>
                     Username:
-                    <input type="text" defaultValue="kathrynbernardo" />
+                    <input type="text" defaultValue={profileData.username || ""} />
                   </label>
                   <label>
                     Name:
-                    <input type="text" defaultValue="Kath" />
+                    <input type="text" defaultValue={profileData.name || ""} />
                   </label>
                   <label>
                     Email:
-                    <input type="email" defaultValue="kathrynbernardo@gmail.com" />
+                    <input type="email" defaultValue={profileData.email || ""} />
                   </label>
                   <label>
                     Phone Number:
-                    <input type="text" defaultValue="09610375896" />
+                    <input type="text" defaultValue={profileData.phone || ""} />
                   </label>
                   <label>
                     Gender:
-                    <select defaultValue="Female">
+                    <select defaultValue={profileData.gender || "Other"}>
                       <option>Male</option>
                       <option>Female</option>
                       <option>Other</option>
@@ -120,7 +158,7 @@ function Profile() {
                   </label>
                   <label>
                     Date of Birth:
-                    <input type="date" />
+                    <input type="date" defaultValue={profileData.date_of_birth || ""} />
                   </label>
 
                   <div className="form-actions">
@@ -201,123 +239,122 @@ function Profile() {
           )}
 
           {/* ✅ My Purchases Page */}
-{location.pathname === "/profile/purchase" && (
-  <>
-    <h2>My Purchases</h2>
-    <p className="subtitle">Track your order status here</p>
+          {location.pathname === "/profile/purchase" && (
+            <>
+              <h2>My Purchases</h2>
+              <p className="subtitle">Track your order status here</p>
 
-    {/* Tabs */}
-    <div className="purchases-tabs">
-      <button 
-        className={activeTab === "all" ? "active" : ""} 
-        onClick={() => setActiveTab("all")}
-      >
-        All
-      </button>
-      <button 
-        className={activeTab === "to-pay" ? "active" : ""} 
-        onClick={() => setActiveTab("to-pay")}
-      >
-        To Pay
-      </button>
-      <button 
-        className={activeTab === "to-ship" ? "active" : ""} 
-        onClick={() => setActiveTab("to-ship")}
-      >
-        To Ship
-      </button>
-      <button 
-        className={activeTab === "to-receive" ? "active" : ""} 
-        onClick={() => setActiveTab("to-receive")}
-      >
-        To Receive
-      </button>
-      <button 
-        className={activeTab === "completed" ? "active" : ""} 
-        onClick={() => setActiveTab("completed")}
-      >
-        Completed
-      </button>
-    </div>
-
-    {/* Orders List */}
-    <div className="purchase-box">
-      {activeTab === "all" && (
-        <div className="orders-list">
-          {/* ===== Order 1 ===== */}
-          <div className="order-card">
-            <div className="order-header">
-              <h3>Burdang Taal Lace Medallions</h3>
-              <div className="order-actions">
-                <button className="btn-small">Message</button>
-                <button className="btn-small">View Shop</button>
+              {/* Tabs */}
+              <div className="purchases-tabs">
+                <button 
+                  className={activeTab === "all" ? "active" : ""} 
+                  onClick={() => setActiveTab("all")}
+                >
+                  All
+                </button>
+                <button 
+                  className={activeTab === "to-pay" ? "active" : ""} 
+                  onClick={() => setActiveTab("to-pay")}
+                >
+                  To Pay
+                </button>
+                <button 
+                  className={activeTab === "to-ship" ? "active" : ""} 
+                  onClick={() => setActiveTab("to-ship")}
+                >
+                  To Ship
+                </button>
+                <button 
+                  className={activeTab === "to-receive" ? "active" : ""} 
+                  onClick={() => setActiveTab("to-receive")}
+                >
+                  To Receive
+                </button>
+                <button 
+                  className={activeTab === "completed" ? "active" : ""} 
+                  onClick={() => setActiveTab("completed")}
+                >
+                  Completed
+                </button>
               </div>
-              <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
-            </div>
-            
-            <div className="order-body">
-              <img 
-                src="https://via.placeholder.com/120" 
-                alt="Product Placeholder" 
-                className="order-img"
-              />
-              <div className="order-info">
-                <h4>Burdang Taal Lace Medallions</h4>
-                <p>Table runner</p>
-              </div>
-            </div>
 
-            <div className="order-footer">
-              <p className="order-total">Order Total: <strong>₱149</strong></p>
-              <div className="order-buttons">
-                <button className="btn-buy">Buy Again</button>
-                <button className="btn-contact">Contact Artisan</button>
-              </div>
-            </div>
-          </div>
+              {/* Orders List */}
+              <div className="purchase-box">
+                {activeTab === "all" && (
+                  <div className="orders-list">
+                    {/* ===== Order 1 ===== */}
+                    <div className="order-card">
+                      <div className="order-header">
+                        <h3>Burdang Taal Lace Medallions</h3>
+                        <div className="order-actions">
+                          <button className="btn-small">Message</button>
+                          <button className="btn-small">View Shop</button>
+                        </div>
+                        <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
+                      </div>
+                      
+                      <div className="order-body">
+                        <img 
+                          src="https://via.placeholder.com/120" 
+                          alt="Product Placeholder" 
+                          className="order-img"
+                        />
+                        <div className="order-info">
+                          <h4>Burdang Taal Lace Medallions</h4>
+                          <p>Table runner</p>
+                        </div>
+                      </div>
 
-          {/* ===== Order 2 ===== */}
-          <div className="order-card">
-            <div className="order-header">
-              <h3>Habing Ibaan</h3>
-              <div className="order-actions">
-                <button className="btn-small">Message</button>
-                <button className="btn-small">View Shop</button>
-              </div>
-              <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
-            </div>
-            
-            <div className="order-body">
-              <img 
-                src="https://via.placeholder.com/120" 
-                alt="Product Placeholder" 
-                className="order-img"
-              />
-              <div className="order-info">
-                <h4>Kalpi</h4>
-                <p>Hand-woven Coin Purse</p>
-              </div>
-            </div>
+                      <div className="order-footer">
+                        <p className="order-total">Order Total: <strong>₱149</strong></p>
+                        <div className="order-buttons">
+                          <button className="btn-buy">Buy Again</button>
+                          <button className="btn-contact">Contact Artisan</button>
+                        </div>
+                      </div>
+                    </div>
 
-            <div className="order-footer">
-              <p className="order-total">Order Total: <strong>₱149</strong></p>
-              <div className="order-buttons">
-                <button className="btn-buy">Buy Again</button>
-                <button className="btn-contact">Contact Artisan</button>
+                    {/* ===== Order 2 ===== */}
+                    <div className="order-card">
+                      <div className="order-header">
+                        <h3>Habing Ibaan</h3>
+                        <div className="order-actions">
+                          <button className="btn-small">Message</button>
+                          <button className="btn-small">View Shop</button>
+                        </div>
+                        <span className="order-status">Parcel has been delivered | <strong>COMPLETED</strong></span>
+                      </div>
+                      
+                      <div className="order-body">
+                        <img 
+                          src="https://via.placeholder.com/120" 
+                          alt="Product Placeholder" 
+                          className="order-img"
+                        />
+                        <div className="order-info">
+                          <h4>Kalpi</h4>
+                          <p>Hand-woven Coin Purse</p>
+                        </div>
+                      </div>
+
+                      <div className="order-footer">
+                        <p className="order-total">Order Total: <strong>₱149</strong></p>
+                        <div className="order-buttons">
+                          <button className="btn-buy">Buy Again</button>
+                          <button className="btn-contact">Contact Artisan</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "to-pay" && <p>No items to pay.</p>}
+                {activeTab === "to-ship" && <p>No items to ship.</p>}
+                {activeTab === "to-receive" && <p>No items to receive.</p>}
+                {activeTab === "completed" && <p>No completed orders yet.</p>}
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "to-pay" && <p>No items to pay.</p>}
-      {activeTab === "to-ship" && <p>No items to ship.</p>}
-      {activeTab === "to-receive" && <p>No items to receive.</p>}
-      {activeTab === "completed" && <p>No completed orders yet.</p>}
-    </div>
-  </>
-)}
-
+            </>
+          )}
         </main>
       </div>
     </HeaderFooter>

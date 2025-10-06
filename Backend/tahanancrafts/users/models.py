@@ -3,6 +3,9 @@ from django.db import models
 from users.utils import normalize_phone_number 
 import uuid
 from django.utils import timezone
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email=None, phone=None, password=None, **extra_fields):
@@ -61,3 +64,37 @@ class EmailOTP(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.otp}"
+    
+class Profile(models.Model):
+    GENDER_CHOICES = [
+        ("M", "Male"),
+        ("F", "Female"),
+        ("O", "Other"),
+    ]
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="profile")
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+    def __str__(self):
+        return self.user.username
+
+    @property
+    def avatar_or_default(self):
+        if self.avatar:
+            return self.avatar.url
+        # fallback to first letter of username, default 'U'
+        if self.user.username:
+            first_letter = self.user.username[0].upper()
+        else:
+            first_letter = "U"
+        # You can return a placeholder image URL or generate an avatar with the letter
+        return f"https://via.placeholder.com/150?text={first_letter}"
+
+@receiver(post_save, sender=CustomUser)
+def create_or_update_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    else:
+        instance.profile.save()
+

@@ -38,6 +38,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 # Application definition
 
@@ -181,6 +183,17 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tahanancrafts.shop@gmail.com'  # create this Gmail account
 EMAIL_HOST_PASSWORD = 'xakqeqpetfuqsdws'          # use App Password (not your Gmail password)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

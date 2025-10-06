@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
 
-from products.models import Product, Category, Material
+from products.models import Product, Category, Material,ProductImage
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 
 
@@ -19,6 +19,8 @@ from .serializers import ProductReadSerializer
 from products.models import Product
 
 class ProductListView(APIView):
+
+    permission_classes = [AllowAny]
     def get(self, request, *args, **kwargs):
         return self.filter_products(request.query_params)
 
@@ -49,6 +51,7 @@ class ProductListView(APIView):
 
 # Category List
 class CategoryListView(ListAPIView):
+    permission_classes = [AllowAny]
     queryset = Category.objects.all()
 
     class _CategorySerializer(drf_serializers.ModelSerializer):
@@ -61,6 +64,7 @@ class CategoryListView(ListAPIView):
 
 # Material List
 class MaterialListView(ListAPIView):
+    permission_classes = [AllowAny]
     queryset = Material.objects.all()
 
     class _MaterialSerializer(drf_serializers.ModelSerializer):
@@ -73,35 +77,32 @@ class MaterialListView(ListAPIView):
 
 # CREATE product
 class AddProductView(APIView):
-    parser_classes = [MultiPartParser, FormParser]
-
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
-        data = request.data
-        print("Incoming Data keys:", list(data.keys()))
+        serializer = ProductSerializer(data=request.data)
 
-        required_fields = ["name", "description", "brandName", "stock_quantity", "regular_price", "categories", "materials"]
-        missing = [f for f in required_fields if f not in data]
-        if missing:
-            return Response({"error": f"Missing required fields: {', '.join(missing)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        categories = data.getlist("categories") if hasattr(data, "getlist") else data.get("categories", [])
-        invalid_cats = [cid for cid in categories if not Category.objects.filter(id=cid).exists()]
-        if invalid_cats:
-            return Response({"error": f"Invalid category IDs: {invalid_cats}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        materials = data.getlist("materials") if hasattr(data, "getlist") else data.get("materials", [])
-        invalid_mats = [mid for mid in materials if not Material.objects.filter(id=mid).exists()]
-        if invalid_mats:
-            return Response({"error": f"Invalid material IDs: {invalid_mats}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = ProductSerializer(data=data)
         if serializer.is_valid():
             product = serializer.save()
-            return Response({"message": "Product successfully added ✅", "product": serializer.data}, status=status.HTTP_201_CREATED)
 
-        print("Serializer errors:", serializer.errors)
-        return Response({"error": "Serializer validation failed", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            # Handle categories (expecting list of IDs)
+            category_ids = request.data.getlist("categories")
+            if category_ids:
+                product.categories.set(Category.objects.filter(id__in=category_ids))
 
+            # Handle materials (expecting list of IDs)
+            material_ids = request.data.getlist("materials")
+            if material_ids:
+                product.materials.set(Material.objects.filter(id__in=material_ids))
+
+            # Handle images (expecting multiple uploaded files)
+            images = request.FILES.getlist("images")
+            for img in images:
+                ProductImage.objects.create(product=product, image=img)
+
+            return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
+
+        # if invalid
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Small test view
 class ProductTestView(APIView):
@@ -150,13 +151,12 @@ class UpdateProductView(APIView):
 
 
 class ProductDetailView(APIView):
-    def get(self, request, *args, **kwargs):
-        product_id = kwargs.get('id')
-        if not product_id:
-            return Response({"error": "Product id is required"}, status=status.HTTP_400_BAD_REQUEST)
+    permission_classes = [AllowAny]
+    def get(self, request, id):
         try:
-            product = Product.objects.get(id=product_id)
-            serializer = ProductReadSerializer(product)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            product = Product.objects.get(id=id)
+            serializer = ProductSerializer(product)
+            return Response(serializer.data)
         except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Product not found"}, status=404)
+

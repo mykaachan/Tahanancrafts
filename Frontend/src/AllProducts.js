@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Layout from './components/Layout';
 import './AllProducts.css';
 
 // Placeholder product data for frontend only
@@ -51,56 +52,58 @@ const AllProducts = () => {
   };
 
   return (
-    <div className="all-products-page-container">
-      <h1 className="page-title">Product Details</h1>
-      <div className="products-section">
-        <div className="products-header">
-          <h2>Products</h2>
-        </div>
-        <table className="products-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Stock</th>
-              <th>Price</th>
-              <th>Status</th>
-              <th>Orders</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {placeholderProducts.map(product => (
-              <tr key={product.id}>
-                <td className="product-info">
-                  <img src={product.image} alt={product.name} className="product-image" />
-                  <div className="product-details">
-                    <div className="product-name">{product.name}</div>
-                    <div className="product-category">{product.category}</div>
-                    <div className="product-date">{product.dateAdded}</div>
-                  </div>
-                </td>
-                <td>{product.stock}</td>
-                <td>₱{product.price}</td>
-                <td>
-                  <span className={`product-status ${getStatusClass(product.status)}`}>{product.status}</span>
-                </td>
-                <td>{product.orders}</td>
-                <td>
-                  <button className="delete-btn" onClick={() => handleDelete(product.id)} title="Delete Product">
-                    <img src="/images/trash.png" alt="Delete" className="delete-icon" />
-                  </button>
-                </td>
+    <Layout>
+      <div className="all-products-page-container">
+        <h1 className="page-title">Product Details</h1>
+        <div className="products-section">
+          <div className="products-header">
+            <h2>Products</h2>
+          </div>
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Orders</th>
+                <th>Action</th>
               </tr>
-            ))}
-            {/* Placeholder row for backend integration */}
-            {/* Example: <tr><td colSpan="6">Loading products...</td></tr> */}
-          </tbody>
-        </table>
-        <div className="add-product-btn-container">
-          <button className="btn-primary" onClick={() => navigate('/add-product')}>+ Add a New Product</button>
+            </thead>
+            <tbody>
+              {placeholderProducts.map(product => (
+                <tr key={product.id}>
+                  <td className="product-info">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <div className="product-details">
+                      <div className="product-name">{product.name}</div>
+                      <div className="product-category">{product.category}</div>
+                      <div className="product-date">{product.dateAdded}</div>
+                    </div>
+                  </td>
+                  <td>{product.stock}</td>
+                  <td>₱{product.price}</td>
+                  <td>
+                    <span className={`product-status ${getStatusClass(product.status)}`}>{product.status}</span>
+                  </td>
+                  <td>{product.orders}</td>
+                  <td>
+                    <button className="delete-btn" onClick={() => handleDelete(product.id)} title="Delete Product">
+                      <img src="/images/trash.png" alt="Delete" className="delete-icon" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {/* Placeholder row for backend integration */}
+              {/* Example: <tr><td colSpan="6">Loading products...</td></tr> */}
+            </tbody>
+          </table>
+          <div className="add-product-btn-container">
+            <button className="btn-primary" onClick={() => navigate('/add-product')}>+ Add a New Product</button>
+          </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

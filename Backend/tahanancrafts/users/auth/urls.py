@@ -6,7 +6,7 @@ from .views import UserRegistrationView # Removed TestAuthConnection
 from .views import VerifyRegisterOTPView
 from .views import LoginRequestOTPView, LoginVerifyOTPView, ForgotPasswordView, ForgotPasswordOtpVerify, ChangePassword
 from .views import GoogleLoginAPIView
-
+from .views import JWTLoginView
 
 
 urlpatterns = [
@@ -19,6 +19,7 @@ urlpatterns = [
     path('forgot_password_verify/', ForgotPasswordOtpVerify.as_view(), name='auth-forgot-password-verify-otp'),
     path('change_password/', ChangePassword.as_view(), name='auth-change-password'),
     path('google_callback/', GoogleLoginAPIView.as_view(), name='google-login'),
+    path("jwt-login/", JWTLoginView.as_view(), name="jwt-login"),
 ]
 
 

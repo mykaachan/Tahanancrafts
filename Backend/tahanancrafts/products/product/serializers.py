@@ -2,11 +2,6 @@ from requests import request
 from rest_framework import serializers  # For creating API serializers
 from products.models import Product, Category, Material, ProductImage
 
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductImage
-        fields = ['id', 'image']  
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -17,18 +12,73 @@ class MaterialSerializer(serializers.ModelSerializer):
         model = Material
         fields = ['id', 'name']
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image']
+
 class ProductSerializer(serializers.ModelSerializer):
-    categories = CategorySerializer(many=True, read_only=True)
-    materials = MaterialSerializer(many=True, read_only=True)
-    images = ProductImageSerializer(many=True, read_only=True)
+    categories = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(), many=True
+    )
+    materials = serializers.PrimaryKeyRelatedField(
+        queryset=Material.objects.all(), many=True
+    )
+    images = ProductImageSerializer(many=True, required=False)
 
     class Meta:
         model = Product
-        fields = [
-            'id', 'name', 'brandName', 'description', 'stock_quantity',
-            'regular_price', 'sales_price', 'main_image',
-            'categories', 'materials', 'images', 'created_at'
-        ]
+        fields = '__all__'
+
+    def create(self, validated_data):
+        categories = validated_data.pop('categories', [])
+        materials = validated_data.pop('materials', [])
+        images = validated_data.pop('images', [])
+
+        # Create product
+        product = Product.objects.create(**validated_data)
+
+        # Add categories and materials (M2M)
+        product.categories.set(categories)
+        product.materials.set(materials)
+
+        # Save product images
+        for image_data in images:
+            ProductImage.objects.create(product=product, **image_data)
+
+        return product
+
+    def update(self, instance, validated_data):
+        categories_data = validated_data.pop("categories", [])
+        materials_data = validated_data.pop("materials", [])
+        images_data = validated_data.pop("images", [])
+
+        # Update fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Update categories
+        if categories_data:
+            instance.categories.clear()
+            for category in categories_data:
+                cat, _ = Category.objects.get_or_create(name=category["name"])
+                instance.categories.add(cat)
+
+        # Update materials
+        if materials_data:
+            instance.materials.clear()
+            for material in materials_data:
+                mat, _ = Material.objects.get_or_create(name=material["name"])
+                instance.materials.add(mat)
+
+        # Update images
+        if images_data:
+            instance.images.all().delete()
+            for image_data in images_data:
+                ProductImage.objects.create(product=instance, **image_data)
+
+        return instance
 
 
 class ProductReadSerializer(serializers.ModelSerializer):
