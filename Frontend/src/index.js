@@ -24,6 +24,7 @@ import Checkout from './Checkout';
 import Profile from './Profile'; // ✅ import profile
 import HomeDashboard from './HomeDashboard';
 import Shop from './Shop'; // ✅ added shop
+import ShopAllProducts from './ShopAllProducts'; // ✅ added shop
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -51,6 +52,9 @@ root.render(
           <Route path="/order-list" element={<OrderList />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/shopallproducts" element={<ShopAllProducts />} />
+
 
           {/* ✅ Profile Routes */}
           <Route path="/profile" element={<Profile />}>

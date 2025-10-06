@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import "./Shop.css";
 
-function Shop() {
+function ShopAllProducts() {
   return (
     <HeaderFooter>
       <div className="shop-page">
-        {/* ===== Header Banner ===== */}
+        {/* ===== Banner Section ===== */}
         <div className="shop-banner">
           <div className="shop-info">
             <div className="shop-logo placeholder-img"></div>
@@ -20,50 +20,37 @@ function Shop() {
           </div>
         </div>
 
-        {/* ===== Nav Tabs ===== */}
+        {/* ===== Tabs ===== */}
         <div className="shop-tabs">
-          <button className="active">Home</button>
-          <Link to="/shopallproducts">
-            <button>All Products</button>
+          <Link to="/shop">
+            <button>Home</button>
           </Link>
+          <button className="active">All Products</button>
         </div>
 
-        {/* ===== Recommended Section ===== */}
+        {/* ===== Top Products Section ===== */}
         <div className="recommended">
-          <h3>RECOMMENDED FOR YOU</h3>
+          <h3>TOP PRODUCTS</h3>
           <div className="product-grid">
             {[1, 2, 3, 4].map((i) => (
-              <div className="product-card" key={i}>
+              <div className="product-card" key={`top-${i}`}>
                 <div className="placeholder-img"></div>
-                <p>Sample Product {i}</p>
-                <span>₱000</span>
+                <p>Top Product {i}</p>
+                <span>₱{i * 250}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ===== About Section ===== */}
-        <div className="about-shop">
-          <div className="placeholder-img banner"></div>
-          <div className="about-text">
-            <h3>About Shop</h3>
-            <p>
-              SM Sunrise Weaving Association is a local weaving group known for
-              creating handcrafted products using traditional methods. Each
-              piece reflects the artistry and heritage of Filipino craftsmanship.
-            </p>
-          </div>
-        </div>
-
-        {/* ===== More Recommended ===== */}
+        {/* ===== All Products Section ===== */}
         <div className="recommended">
-          <h3>RECOMMENDED FOR YOU</h3>
+          <h3>ALL PRODUCTS</h3>
           <div className="product-grid">
-            {[1, 2, 3, 4].map((i) => (
-              <div className="product-card" key={i}>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div className="product-card" key={`all-${i}`}>
                 <div className="placeholder-img"></div>
                 <p>Sample Product {i}</p>
-                <span>₱000</span>
+                <span>₱{i * 150}</span>
               </div>
             ))}
           </div>
@@ -73,4 +60,4 @@ function Shop() {
   );
 }
 
-export default Shop;
+export default ShopAllProducts;
