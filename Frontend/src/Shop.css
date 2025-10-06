@@ -7,42 +7,59 @@
   flex-direction: column;
 }
 
-/* ===== Banner Section ===== */
+/* ===== Banner Section (Updated) ===== */
 .shop-banner {
   background: #f1e1d0;
-  padding: 25px 40px;
+  padding: 25px 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start; /* ✅ align content to the left side */
+  gap: 30px; /* ✅ space between logo and text */
   flex-wrap: wrap;
 }
 
-.shop-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
+/* Profile Placeholder (Shop Logo) on the Side */
 .shop-logo {
-  width: 90px;
-  height: 90px;
+  width: 110px;      /* slightly larger for visibility */
+  height: 110px;
   border-radius: 50%;
   object-fit: cover;
-  background: #ddd; /* placeholder for profile */
+  background: linear-gradient(145deg, #e0c5a6, #c2a68d); /* ✅ stylish placeholder gradient */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fffdf9;
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0; /* ✅ prevents it from shrinking on smaller screens */
+  border: 3px solid #fff; /* clean border around placeholder */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* Shop Info beside the logo */
+.shop-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  text-align: left; /* ✅ keep text aligned beside the logo */
 }
 
 /* Shop name + description */
 .shop-info h2 {
   margin: 0;
-  font-size: 1.3rem;
-  color: #333;
+  font-size: 1.4rem;
+  color: #3a2f27;
+  font-weight: 700;
 }
 
 .shop-info p {
-  margin: 5px 0 10px;
+  margin: 5px 0;
   font-size: 0.95rem;
-  color: #555;
+  color: #5a4a3d;
+  max-width: 500px;
 }
+
 
 /* Follow / Message buttons */
 .btn {

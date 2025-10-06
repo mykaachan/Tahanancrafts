@@ -145,8 +145,13 @@
 }
 
 /* Quantity */
+/* Quantity alignment fix */
 .iraya-container .quantity {
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* align left with other labels */
+  width: fit-content; /* keeps it consistent in width */
 }
 
 .iraya-container .quantity label {
@@ -154,7 +159,9 @@
   font-weight: 600;
   margin-bottom: 8px;
   display: block;
+  color: #333;
 }
+
 
 .iraya-container .quantity-controls {
   display: flex;
