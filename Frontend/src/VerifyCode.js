@@ -11,6 +11,10 @@ function VerifyCode() {
   // Get contact info passed from login
   const contact = location.state?.contact || "your email/phone";
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleVerify();
+  };
+
   const handleVerify = async () => {
   try {
     const res = await loginOtp({ otp, contact });
@@ -53,6 +57,7 @@ function VerifyCode() {
             className="login-input"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
 
           <button className="login-button" onClick={handleVerify}>

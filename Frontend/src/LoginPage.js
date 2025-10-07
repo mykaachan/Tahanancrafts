@@ -34,6 +34,10 @@ function LoginPage() {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleLogin();
+  };
+
   // -------------------------------
   // Google login
   // -------------------------------
@@ -77,6 +81,7 @@ function LoginPage() {
             placeholder="Email or Phone Number"
             value={enteredEmailOrPhone}
             onChange={(e) => setEnteredEmailOrPhone(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <input
             type="password"

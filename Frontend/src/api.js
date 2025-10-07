@@ -58,38 +58,67 @@ export async function ChangePassword(userData) {
 export const BASE_URL = "http://127.0.0.1:8000/api";
 
 // Fetch user profile
-export async function getProfile() {
-  const userId = localStorage.getItem("user_id");
-  if (!userId) throw new Error("No user ID found");
-
+export async function getProfile(userId) {
+  if (!userId) throw new Error("User ID is required for profile fetch");
   const res = await fetch(`${BASE_URL}/users/profile/profile/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch profile");
-
   const data = await res.json();
-  return data.user; // returns { id, role, username, name, email, phone, gender, date_of_birth, avatar_url }
+  return data.user; // backend returns { user: {...} }
 }
 
-// Update profile (example)
-export async function updateProfile(profileData) {
-  const res = await fetch(`${BASE_URL}/users/profile/profile/`, {
-    method: "PUT",
+// Update profile
+export async function updateProfile(userId, profileData) {
+  const res = await fetch(`${BASE_URL}/users/profile/edit/?user_id=${userId}`, {  // note 'edit' endpoint
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(profileData),
   });
-  if (!res.ok) throw new Error("Failed to update profile");
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Failed to update profile: ${errText}`);
+  }
+
   return res.json();
 }
 
-// Helper for image URLs
-export function getAvatarUrl(path, username = "User") {
-  if (!path) 
-    return `https://ui-avatars.com/api/?name=${username[0].toUpperCase()}&background=random&color=fff`;
-  if (path.startsWith("http")) return path;
-  return `${BASE_URL}${path}`;
+// Helper to generate avatar URL or initials placeholder
+export function getAvatarUrl(avatarPath, name) {
+  if (avatarPath) return avatarPath; // uploaded avatar
+  // generate initials placeholder
+  const initials = name
+    ? name.split(" ").map((n) => n[0]).join("").toUpperCase()
+    : "U";
+  return `https://via.placeholder.com/150?text=${initials}`;
 }
 
+export async function changePassword(oldPassword, newPassword, confirmPassword) {
+  const user = JSON.parse(localStorage.getItem("user_id"));
+  if (!user || !user.id) {
+    throw new Error("User not logged in");
+  }
 
-// You can also add APIs for password change, purchases, etc.
+  const response = await fetch(`${BASE_URL}/users/profile/change_password/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user_id: user.id,
+      old_password: oldPassword,
+      new_password: newPassword,
+      confirm_password: confirmPassword,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to change password");
+  }
+
+  return data;
+}
 
 
 

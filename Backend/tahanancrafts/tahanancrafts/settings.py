@@ -108,7 +108,7 @@ DATABASES = {
 }
 """
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -118,8 +118,8 @@ DATABASES = {
         'HOST': 'turntable.proxy.rlwy.net',  
         'PORT': '55874',                     
     }
-}"""
-
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -130,7 +130,7 @@ DATABASES = {
         'PORT': '3306',                     
     }
 }
-
+"""
 
 
 # Password validation
