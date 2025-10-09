@@ -27,6 +27,8 @@ import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
 import AdminLogin from './AdminLogin';
+import Sidebar from './Sidebar';
+import AdminDashboard from './AdminDashboard';
 import TransactionHistory from './TransactionHistory';
 
 
@@ -85,6 +87,9 @@ function MainApp() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/sidebar" element={<Sidebar />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
+
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
 
         {/* ✅ Profile and its nested routes */}
