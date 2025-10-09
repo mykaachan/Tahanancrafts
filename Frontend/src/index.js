@@ -26,16 +26,10 @@ import HomeDashboard from './HomeDashboard';
 import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
-<<<<<<< HEAD
 import AdminLogin from './AdminLogin';
-
-
-=======
 import TransactionHistory from './TransactionHistory';  
->>>>>>> f8f68d30f2bc955c4f1aacc0bbd3f34a2a2cf1e5
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 
 // ✅ Step 1: Create a conditional wrapper for the popup
 function ConditionalChatPopup() {
@@ -56,7 +50,6 @@ function ConditionalChatPopup() {
   if (shouldHide) return null; // Don't render popup on those pages
   return <ChatPopup />;        // Render on all others
 }
-
 
 // ✅ Step 2: Main App Wrapper
 function MainApp() {
@@ -86,13 +79,8 @@ function MainApp() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
-<<<<<<< HEAD
         <Route path="/adminlogin" element={<AdminLogin />} />
-
-=======
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
->>>>>>> f8f68d30f2bc955c4f1aacc0bbd3f34a2a2cf1e5
-
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>
