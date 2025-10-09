@@ -18,23 +18,53 @@ class ProfileView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Safely get or create profile
+        # Try to access user's profile
         profile = getattr(user, "profile", None)
+
         if profile is None:
+            # If profile not yet created, fall back to initials based on name
+            if user.name:
+                parts = user.name.strip().split()
+                if len(parts) >= 2:
+                    initials = (parts[0][0] + parts[1][0]).upper()
+                else:
+                    initials = user.name[0].upper()
+            else:
+                initials = "U"
+
             profile_data = {
-                "username": user.name,
+                "username": user.username,
                 "name": user.name,
                 "email": user.email,
                 "phone": user.phone,
                 "gender": None,
                 "date_of_birth": None,
-                "avatar_url": f"https://ui-avatars.com/api/?name={user.name[0].upper()}&background=random&color=fff"
+                "initials": initials,
+                "avatar_url": f"https://ui-avatars.com/api/?name={initials}&background=random&color=fff",
             }
             return Response({"user": profile_data}, status=status.HTTP_200_OK)
 
-        # Serialize existing profile
+        # ✅ Profile exists — use serializer for full data
         serializer = ProfileSerializer(profile, context={"request": request})
-        return Response({"user": serializer.data}, status=status.HTTP_200_OK)
+        data = serializer.data
+
+        # Add initials fallback in case not generated yet
+        if not data.get("initials"):
+            if user.name:
+                parts = user.name.strip().split()
+                if len(parts) >= 2:
+                    data["initials"] = (parts[0][0] + parts[1][0]).upper()
+                else:
+                    data["initials"] = user.name[0].upper()
+            else:
+                data["initials"] = "U"
+
+        # If avatar is missing, use generated avatar from initials
+        if not data.get("avatar"):
+            data["avatar_url"] = f"https://ui-avatars.com/api/?name={data['initials']}&background=random&color=fff"
+
+        return Response({"user": data}, status=status.HTTP_200_OK)
+
 
 class EditProfileView(APIView):
     permission_classes = [AllowAny]  # or you could require authentication

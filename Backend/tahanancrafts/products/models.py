@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -21,3 +22,35 @@ class Product(models.Model):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/products/others/')
+
+from django.db import models
+from products.models import Product  # adjust path if needed
+
+class Cart(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        'users.CustomUser', 
+        related_name='cart_items', 
+        on_delete=models.CASCADE
+    )
+    product = models.ForeignKey(
+        Product, 
+        related_name='cart_entries', 
+        on_delete=models.CASCADE
+    )
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "cart"
+        verbose_name = "Cart Item"
+        verbose_name_plural = "Cart Items"
+        unique_together = ('user', 'product')  # Prevent duplicate same product for same user
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} (x{self.quantity})"
+
+    @property
+    def total_price(self):
+        """Optional helper for serializers/templates"""
+        return self.product.price * self.quantity

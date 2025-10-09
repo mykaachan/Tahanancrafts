@@ -1,8 +1,8 @@
 // src/Profile.js
-import React, { useState, useEffect } from "react"; 
-import { Link, useLocation } from "react-router-dom";  
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
-import { getProfile, getAvatarUrl, updateProfile } from "./api"; // Use your API helper
+import { getProfile, updateProfile } from "./api"; // Simplified import
 import "./Profile.css";
 
 function Profile() {
@@ -12,23 +12,20 @@ function Profile() {
 
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("all"); // ✅ for purchases tabs
   const location = useLocation();
 
-  const toggleAccountMenu = () => {
-    setIsAccountOpen(!isAccountOpen);
-  };
+  const toggleAccountMenu = () => setIsAccountOpen(!isAccountOpen);
 
-  // Get user ID from localStorage or auth context
-  const userId = localStorage.getItem("user_id"); // Adjust based on your auth
+  const userId = localStorage.getItem("user_id"); // assumes saved after login
 
-  // Fetch profile data from API
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         setLoading(true);
         const data = await getProfile(userId);
-        setProfileData(data);
+        // Ensure we access the nested user object if backend wraps in { user: ... }
+        const user = data.user || data;
+        setProfileData(user);
       } catch (err) {
         console.error("Failed to fetch profile:", err);
         setError("Failed to load profile. Please try again.");
@@ -43,8 +40,10 @@ function Profile() {
   if (error) return <p>{error}</p>;
   if (!profileData) return null;
 
-  // Safely generate avatar URL
-  const initials = profileData.name
+  // ✅ Use backend initials if available; otherwise compute locally
+  const initials = profileData.initials
+    ? profileData.initials
+    : profileData.name
     ? profileData.name
         .split(" ")
         .map((n) => n[0])
@@ -52,10 +51,10 @@ function Profile() {
         .toUpperCase()
     : "U";
 
-  const avatarSrc = getAvatarUrl(
-    profileData?.avatar_url,   // avatar path (if uploaded)
-    profileData?.name || "User" // fallback name for initials
-  );
+  // ✅ Use avatar_url from backend or generate one with initials
+  const avatarSrc =
+    profileData.avatar_url ||
+    `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff`;
 
   return (
     <HeaderFooter>
@@ -63,21 +62,16 @@ function Profile() {
         {/* ===== Sidebar ===== */}
         <aside className="sidebar">
           <div className="profile-info">
-            <img
-              src={avatarSrc}
-              alt="Profile"
-              className="profile-img"
-            />
-            <h3 className="username">{profileData.username || profileData.name}</h3>
+            <img src={avatarSrc} alt="Profile" className="profile-img" />
+            <h3 className="username">
+              {profileData.username || profileData.name || "User"}
+            </h3>
           </div>
 
           <nav className="profile-nav">
             <ul>
               <li className="parent-item">
-                <button 
-                  className="toggle-btn" 
-                  onClick={toggleAccountMenu}
-                >
+                <button className="toggle-btn" onClick={toggleAccountMenu}>
                   My Account
                 </button>
                 {isAccountOpen && (
@@ -96,7 +90,7 @@ function Profile() {
 
         {/* ===== Main Content ===== */}
         <main className="profile-content">
-          {/* ✅ Profile Page */}
+          {/* ✅ My Profile View */}
           {location.pathname === "/profile" && !isEditing && (
             <>
               <h2>My Profile</h2>
@@ -108,12 +102,12 @@ function Profile() {
                   <p><strong>Username:</strong> {profileData.username || "-"}</p>
                   <p><strong>Name:</strong> {profileData.name || "-"}</p>
                   <p><strong>Email:</strong> {profileData.email || "-"}</p>
-                  <p><strong>Phone Number:</strong> {profileData.phone || "-"}</p>
+                  <p><strong>Phone:</strong> {profileData.phone || "-"}</p>
                   <p><strong>Gender:</strong> {profileData.gender || "-"}</p>
                   <p><strong>Date of Birth:</strong> {profileData.date_of_birth || "-"}</p>
                   
-                  <button 
-                    className="btn-edit" 
+                  <button
+                    className="btn-edit"
                     onClick={() => setIsEditing(true)}
                   >
                     Edit profile
@@ -151,7 +145,7 @@ function Profile() {
                     <input type="email" name="email" defaultValue={profileData.email || ""} />
                   </label>
                   <label>
-                    Phone Number:
+                    Phone:
                     <input type="text" name="phone" defaultValue={profileData.phone || ""} />
                   </label>
                   <label>
@@ -168,8 +162,8 @@ function Profile() {
                   </label>
 
                   <div className="form-actions">
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn-save"
                       onClick={async () => {
                         try {
@@ -185,7 +179,7 @@ function Profile() {
                           alert("Profile updated successfully!");
                           setIsEditing(false);
                           const updated = await getProfile(userId);
-                          setProfileData(updated);
+                          setProfileData(updated.user || updated);
                         } catch (err) {
                           console.error(err);
                           alert("Failed to update profile");
@@ -194,8 +188,8 @@ function Profile() {
                     >
                       Save
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn-cancel"
                       onClick={() => setIsEditing(false)}
                     >
@@ -204,70 +198,6 @@ function Profile() {
                   </div>
                 </form>
               </div>
-            </>
-          )}
-
-          {/* ===== Remaining pages (Change Password, Privacy, Purchases) remain unchanged ===== */}
-          {location.pathname === "/profile/change-password" && (
-            <>
-              <h2>Change Password</h2>
-              <p className="subtitle">Secure your account by changing your password</p>
-
-              <div className="profile-box">
-                <form className="edit-profile-form">
-                  <label>
-                    Old Password:
-                    <input type="password" placeholder="Enter old password" />
-                  </label>
-                  <label>
-                    New Password:
-                    <input type="password" placeholder="Enter new password" />
-                  </label>
-                  <label>
-                    Confirm New Password:
-                    <input type="password" placeholder="Confirm new password" />
-                  </label>
-
-                  <div className="form-actions">
-                    <button type="submit" className="btn-save">
-                      Save
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn-cancel"
-                      onClick={() => window.history.back()}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </>
-          )}
-
-          {location.pathname === "/profile/privacy" && (
-            <>
-              <h2>Privacy Settings</h2>
-              <p className="subtitle">Manage your privacy and account settings</p>
-
-              <div className="profile-box">
-                <p>
-                  If you would like to permanently delete your account, you can send a
-                  request below. This action cannot be undone.
-                </p>
-                <button className="btn-delete">
-                  Request Account Deletion
-                </button>
-              </div>
-            </>
-          )}
-
-          {location.pathname === "/profile/purchase" && (
-            <>
-              <h2>My Purchases</h2>
-              <p className="subtitle">Track your order status here</p>
-
-              {/* Tabs and orders list remain unchanged */}
             </>
           )}
         </main>

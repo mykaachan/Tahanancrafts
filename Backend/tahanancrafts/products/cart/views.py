@@ -1,0 +1,80 @@
+# products/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from products.models import Cart, Product
+from users.models import CustomUser
+from rest_framework import status
+
+
+class CartView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        product_id = request.data.get("product_id")
+        quantity = int(request.data.get("quantity", 1))
+
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        cart_item, created = Cart.objects.get_or_create(
+            user=user,
+            product=product,
+            defaults={"quantity": quantity}
+        )
+        if not created:
+            cart_item.quantity += quantity
+            cart_item.save()
+
+        return Response({"message": "✅ Added to cart successfully!"}, status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        user_id = request.query_params.get("user_id")
+        if not user_id:
+            return Response({"error": "Missing user_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        cart_items = Cart.objects.filter(user_id=user_id).select_related("product")
+
+        data = [
+            {
+                "id": item.id,
+                "product": {
+                    "id": item.product.id,
+                    "name": item.product.name,
+                    "price": float(item.product.sales_price or item.product.regular_price),
+                    "image": item.product.main_image.url if item.product.main_image else None,
+                },
+                "quantity": item.quantity,
+                "total_price": float((item.product.sales_price or item.product.regular_price) * item.quantity),
+            }
+            for item in cart_items
+        ]
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class CartListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, user_id):
+        cart_items = Cart.objects.filter(user_id=user_id).select_related('product')
+
+        data = [
+            {
+                "id": item.id,
+                "product_id": item.product.id,
+                "product_name": item.product.name,
+                "quantity": item.quantity,
+                "price": float(item.product.sales_price or item.product.regular_price),
+                "total_price": float((item.product.sales_price or item.product.regular_price) * item.quantity),
+            }
+            for item in cart_items
+        ]
+        return Response(data)

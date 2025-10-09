@@ -14,6 +14,20 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
+from dotenv import load_dotenv
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+TELESIGN_CUSTOMER_ID = os.getenv("TELESIGN_CUSTOMER_ID")
+TELESIGN_API_KEY = os.getenv("TELESIGN_API_KEY")
+
+# settings.py
+KUDOSITY_API_KEY = "e834c8bc9c463333308a375e834b1f10"
+KUDOSITY_API_SECRET = "TahananCrafts"
+
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

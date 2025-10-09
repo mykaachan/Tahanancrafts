@@ -4,8 +4,12 @@ from django.forms import ValidationError
 from users.auth.validators import validate_password_strength
 # users/utils.py
 from google.oauth2 import id_token
-from google.auth.transport import requests
 from django.conf import settings
+from telesign.messaging import MessagingClient
+from base64 import b64encode
+import requests
+
+
 
 CLIENT_ID = "284499389727-dnqo999fk03kvkqug19bupignpgjahq6.apps.googleusercontent.com"
 
@@ -33,13 +37,14 @@ def verify_google_token(token):
 def normalize_phone_number(phone):
     phone = re.sub(r'\D', '', phone)  # Remove non-digit characters
     if phone.startswith('09'):
-        return '+63' + phone[1:]
-    elif phone.startswith('63'):
-        return '+' + phone
-    elif phone.startswith('+63'):
-        return phone
+        return '+63' + phone[1:]      # ✅ 09 → +639
+    elif phone.startswith('639'):
+        return '+63' + phone[2:]            # ✅ 63 → +63
+    elif phone.startswith('+639'):
+        return phone                  # ✅ already normalized
     else:
-        return phone  # fallback
+        return phone                  # fallback
+
 
 ### these are for Globe Lab
     ### Short Code 21665947 (Cross-telco: 225645947)
@@ -59,9 +64,82 @@ def send_otp_email(email,code):
 
 #send-contact-OTP
 def send_otp_sms(contact, otp):
+    
+    #Sends OTP via SMS.
+    
     # Simulate sending by printing
     print(f"OTP sent to {contact}: {otp}")
 
+    # Sends OTP via TeleSign SMS API.
+    """
+    try:
+        # Normalize number to +63 format
+        contact = normalize_phone_number(contact)
+        
+        customer_id = settings.TELESIGN_CUSTOMER_ID
+        api_key = settings.TELESIGN_API_KEY
+
+        message = f"Your TahananCrafts OTP is {otp}. It expires in 5 minutes."
+        message_type = "ARN"  # Alerts, Reminders, and Notifications
+
+        messaging = MessagingClient(customer_id, api_key)
+        response = messaging.message(contact, message, message_type)
+
+        print("TeleSign Response:", response.body)
+        return True
+    except Exception as e:
+        print("TeleSign Error:", str(e))
+        return False
+    
+
+def send_otp_sms(contact, otp):
+    
+    Sends OTP via Kudosity / TransmitSMS API.
+    
+    try:
+        # ✅ Normalize to +63 format
+        contact = normalize_phone_number(contact)
+
+        api_key = settings.KUDOSITY_API_KEY
+        api_secret = settings.KUDOSITY_API_SECRET
+
+        # ✅ Build Basic Auth header
+        auth_str = f"{api_key}:{api_secret}"
+        auth_header = {
+            "Authorization": "Basic " + b64encode(auth_str.encode()).decode("utf-8")
+        }
+
+        # ✅ Prepare message
+        message = f"Your TahananCrafts OTP is {otp}. It expires in 5 minutes."
+
+        payload = {
+            "to": contact,
+            "message": message,
+        }
+
+        # ✅ Make request
+        response = requests.post(
+            "https://api.transmitsms.com/send-sms.json",
+            headers=auth_header,
+            data=payload,
+            timeout=10,
+        )
+
+        # ✅ Handle response
+        data = response.json()
+        print("Kudosity Response:", data)
+
+        if response.status_code == 200 and data.get("error", {}).get("code") == 0:
+            print("✅ OTP sent successfully via Kudosity!")
+            return True
+        else:
+            print("⚠️ Kudosity Error:", data.get("error"))
+            return False
+
+    except Exception as e:
+        print("❌ Kudosity Exception:", str(e))
+        return False
+    """
 #enter new password and repeat password with validation
 def validate_and_return_new_password(newpass1, newpass2):
     """

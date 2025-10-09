@@ -27,8 +27,9 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email=email, phone=phone, password=password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=150, unique=True, null=True, blank=True)  # Optional field
+    username = models.CharField(max_length=150, unique=True, null=True, blank=True)
     email = models.EmailField(unique=True, null=True, blank=True)
     phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
     name = models.CharField(max_length=255)
@@ -42,14 +43,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomUserManager()
 
-    USERNAME_FIELD = 'email'  # Keep as 'email' if you want email login
-    REQUIRED_FIELDS = ['']      # Leave empty or add only fields you want required for createsuperuser
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.email or self.phone
+        return self.email or self.phone or self.username
+
 
 class OTP(models.Model):
-    contact = models.CharField(max_length=100)  # email or phone
+    contact = models.CharField(max_length=100)
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(default=timezone.now)
     is_verified = models.BooleanField(default=False)
@@ -57,6 +59,7 @@ class OTP(models.Model):
     def is_expired(self):
         return timezone.now() > self.created_at + timezone.timedelta(minutes=5)
     
+
 class EmailOTP(models.Model):
     email = models.EmailField(unique=True)
     otp = models.CharField(max_length=6)
@@ -64,7 +67,8 @@ class EmailOTP(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.otp}"
-    
+
+
 class Profile(models.Model):
     GENDER_CHOICES = [
         ("M", "Male"),
@@ -75,21 +79,32 @@ class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="profile")
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
+    initials = models.CharField(max_length=5, blank=True, null=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
-    def __str__(self):
-        return self.user.username
+
+    def save(self, *args, **kwargs):
+        # ✅ Generate initials from CustomUser.name
+        if self.user and self.user.name:
+            parts = self.user.name.strip().split()
+            if len(parts) >= 2:
+                self.initials = (parts[0][0] + parts[1][0]).upper()
+            else:
+                self.initials = parts[0][0].upper()
+        super().save(*args, **kwargs)
 
     @property
     def avatar_or_default(self):
+        # ✅ If user uploaded an avatar, return it
         if self.avatar:
             return self.avatar.url
-        # fallback to first letter of username, default 'U'
-        if self.user.username:
-            first_letter = self.user.username[0].upper()
-        else:
-            first_letter = "U"
-        # You can return a placeholder image URL or generate an avatar with the letter
-        return f"https://via.placeholder.com/150?text={first_letter}"
+
+        # ✅ Otherwise use initials or 'U'
+        initials = self.initials or "U"
+        return f"https://via.placeholder.com/150?text={initials}"
+
+    def __str__(self):
+        return self.user.name or self.user.username or "Unnamed User"
+
 
 @receiver(post_save, sender=CustomUser)
 def create_or_update_profile(sender, instance, created, **kwargs):
@@ -97,4 +112,3 @@ def create_or_update_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     else:
         instance.profile.save()
-

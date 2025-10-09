@@ -1,57 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-import balisong1 from "./images/balisong1.png";
-import bag from "./images/bag.png";
-import basket from "./images/basket1.png";
-import mat from "./images/mat.png";
-import barong from "./images/barong1.png";
-import bag1 from "./images/bag1.png";
-import apron from "./images/apron.png";
-import hat from "./images/hat.png";
-
-// Images
-import basketRed from "./images/basketr.png";
-import basketYellow from "./images/baskety.png";
+import {
+  getCartItems,
+  updateCartItem,
+  removeCartItem,
+} from "./api"; // ✅ make sure path is correct
 
 function Cart() {
-  // ✅ Cart state with "selected"
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "Iraya Basket Lipa",
-      desc: "Red Woven Tray Basket",
-      price: 500,
-      qty: 1,
-      img: basketRed,
-      selected: false,
-    },
-    {
-      id: 2,
-      name: "Iraya Basket Lipa",
-      desc: "Yellow Woven Tray Basket",
-      price: 500,
-      qty: 1,
-      img: basketYellow,
-      selected: false,
-    },
-  ]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // ✅ Update quantity
-  const updateQty = (id, delta) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, qty: Math.max(1, item.qty + delta) }
-          : item
-      )
-    );
+  // ✅ Fetch user's cart from backend
+  useEffect(() => {
+    const fetchCart = async () => {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        alert("Please log in to view your cart.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await getCartItems(userId);
+        const formatted = data.map((cartItem) => ({
+          id: cartItem.id,
+          name: cartItem.product.name,
+          desc: cartItem.product.description || "No description available",
+          price: cartItem.product.price,
+          qty: cartItem.quantity,
+          img: cartItem.product.image
+            ? cartItem.product.image
+            : "https://via.placeholder.com/150?text=No+Image",
+          selected: false,
+        }));
+        setItems(formatted);
+      } catch (err) {
+        console.error("Failed to fetch cart:", err);
+        alert("Failed to load cart items.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  // ✅ Update quantity (sync backend)
+  const updateQty = async (id, delta) => {
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
+
+    const newQty = Math.max(1, item.qty + delta);
+    try {
+      await updateCartItem(id, newQty);
+      setItems((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, qty: newQty } : i))
+      );
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+      alert("Failed to update quantity.");
+    }
   };
 
-  // ✅ Remove item
-  const removeItem = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  // ✅ Remove cart item (sync backend)
+  const removeItem = async (id) => {
+    try {
+      await removeCartItem(id);
+      setItems((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+      alert("Failed to remove item from cart.");
+    }
   };
 
   // ✅ Toggle selection
@@ -63,12 +84,14 @@ function Cart() {
     );
   };
 
-  // ✅ Totals (only selected items count)
+  // ✅ Calculate totals
   const subtotal = items
     .filter((item) => item.selected)
     .reduce((sum, item) => sum + item.price * item.qty, 0);
   const shipping = subtotal > 0 ? 58 : 0;
   const total = subtotal + shipping;
+
+  if (loading) return <p>Loading cart...</p>;
 
   return (
     <>
@@ -93,10 +116,10 @@ function Cart() {
               </Link>
             </li>
             <li>
-  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-    Profile
-  </Link>
-</li>
+              <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+                Profile
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="header-actions">
@@ -123,7 +146,7 @@ function Cart() {
                     <div className="cart-item-box">
                       <div className="item-header">{item.name}</div>
                       <div className="item-body">
-                        {/* ✅ Selection checkbox */}
+                        {/* Selection checkbox */}
                         <input
                           type="checkbox"
                           className="select-item"
@@ -143,10 +166,7 @@ function Cart() {
                             <button onClick={() => updateQty(item.id, -1)}>-</button>
                             <button onClick={() => updateQty(item.id, 1)}>+</button>
                           </div>
-                          <span
-                            className="remove"
-                            onClick={() => removeItem(item.id)}
-                          >
+                          <span className="remove" onClick={() => removeItem(item.id)}>
                             Remove
                           </span>
                         </div>
@@ -158,7 +178,6 @@ function Cart() {
                 <p>Your cart is empty.</p>
               )}
 
-              {/* Back to shop */}
               <Link to="/products">
                 <button className="back-btn">Back to Shop</button>
               </Link>
@@ -186,107 +205,6 @@ function Cart() {
           </div>
         </div>
       </main>
-
-      {/* ===== YOU MAY ALSO LIKE ===== */}
-<section className="related-section">
-  <h2 className="related-title">You may also like</h2>
-  <div className="related-grid">
-    <div className="related-card">
-      <img src={balisong1} alt="Balisong" />
-      <h4>Kalis Taal</h4>
-      <p>Butterfly knife (Balisong)</p>
-      <span className="price">₱349</span>
-    </div>
-
-    <div className="related-card">
-      <img src={bag} alt="Weaved Bag" />
-      <h4>Habing Ibaan</h4>
-      <p>Weaved Bag</p>
-      <span className="price">₱1,200</span>
-    </div>
-
-    <div className="related-card">
-      <img src={basket} alt="Basket" />
-      <h4>Iraya Basket Lipa</h4>
-      <p>Colored Wooven Tray Basket</p>
-      <span className="price">₱500</span>
-    </div>
-
-    <div className="related-card">
-      <img src={mat} alt="Mat" />
-      <h4>Burdang Taal Lace Medallions</h4>
-      <p>Table Runner</p>
-      <span className="price">₱149</span>
-    </div>
-
-    <div className="related-card">
-      <img src={barong} alt="Barong Tagalog" />
-      <h4>Piña Ginoo</h4>
-      <p>Barong Tagalog</p>
-      <span className="price">₱1,199</span>
-    </div>
-
-    <div className="related-card">
-      <img src={bag1} alt="Sling Bag" />
-      <h4>Habing Ibaan</h4>
-      <p>Weaved Sling Bag</p>
-      <span className="price">₱250</span>
-    </div>
-
-    <div className="related-card">
-      <img src={apron} alt="Apron" />
-      <h4>Habing Ibaan</h4>
-      <p>Weaved Apron</p>
-      <span className="price">₱350</span>
-    </div>
-
-    <div className="related-card">
-      <img src={hat} alt="Hat" />
-      <h4>Habing Ibaan</h4>
-      <p>Bucket Hat</p>
-      <span className="price">₱500</span>
-    </div>
-  </div>
-</section>
-    
-
-      {/* ===== FOOTER ===== */}
-      <footer className="footer">
-        <div className="footer-left">
-          <h2>
-            Join us, <br /> artisans!
-          </h2>
-          <p>This is a sample description and does not hold any valuable meaning.</p>
-          <button className="register-btn">Register</button>
-        </div>
-        <div className="footer-right">
-          <hr />
-          <div className="footer-content">
-            <h1 className="footer-logo">THC</h1>
-            <div className="footer-links">
-              <div>
-                <h4>ABOUT US</h4>
-                <p>TahananCrafts</p>
-                <p>About</p>
-              </div>
-              <div>
-                <h4>SUPPORT</h4>
-                <p>Customer Support</p>
-                <p>Contact</p>
-              </div>
-              <div>
-                <h4>EMAIL</h4>
-                <p>Sample@email.com</p>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="footer-bottom">
-            <p>© 2025 - TahananCrafts</p>
-            <p>Privacy — Terms</p>
-          </div>
-        </div>
-      </footer>
     </>
   );
 }

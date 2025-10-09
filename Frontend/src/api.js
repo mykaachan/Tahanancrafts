@@ -180,3 +180,57 @@ export function getImageUrl(path) {
   return `http://127.0.0.1:8000${path}`;
 }
 
+export async function getProduct(id) {
+  const res = await fetch(`${BASE_URL}/products/products/${id}/`);
+  if (!res.ok) throw new Error("Failed to fetch product");
+  return await res.json();
+}
+
+// ✅ Add item to cart (no JWT, just send user_id)
+export async function addToCart(userId, productId, quantity) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user_id: userId,       // ✅ must match your Django view (request.data.get("user"))
+      product_id: productId,
+      quantity: quantity,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to add to cart");
+  }
+
+  return await res.json();
+}
+
+// ✅ Get all cart items for a specific user
+export async function getCartItems(userId) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/?user_id=${userId}`);
+  if (!res.ok) throw new Error("Failed to fetch cart");
+  return await res.json();
+}
+
+// ✅ Update cart item quantity
+export async function updateCartItem(cartId, quantity) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantity }),
+  });
+  if (!res.ok) throw new Error("Failed to update cart item");
+  return await res.json();
+}
+
+// ✅ Remove cart item
+export async function removeCartItem(cartId) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete cart item");
+  return true;
+}

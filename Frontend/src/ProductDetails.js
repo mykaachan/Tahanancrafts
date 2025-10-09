@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
+import { addToCart } from "./api"; // API call to add items to cart
 
 // fallback image if no product image
 import defaultImg from "./images/basket1.png";
@@ -147,16 +148,39 @@ function ProductDetail() {
               </div>
             </div>
             <div className="add-to-cart">
-              <Link to="/cart">
-                <button>Add to Cart</button>
-              </Link>
+              <button
+                onClick={async () => {
+                  try {
+                    const userId = localStorage.getItem("user_id");
+                    if (!userId) {
+                      alert("⚠️ Please log in to add items to your cart.");
+                      return;
+                    }
+
+                    // Ensure quantity is always at least 1
+                    const qty = quantity && quantity > 0 ? quantity : 1;
+
+                    // Call your API function
+                    await addToCart(userId, product.id, qty);
+
+                    alert("✅ Item added to cart!");
+                  } catch (err) {
+                    console.error("Add to cart failed:", err);
+                    alert(`❌ Failed to add to cart: ${err.message}`);
+                  }
+                }}
+              >
+                Add to Cart
+              </button>
+            </div>
+
               <p className="total">
                 ₱{(product.regular_price * quantity).toLocaleString()}
               </p>
             </div>
           </div>
         </div>
-      </div>
+      
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">
