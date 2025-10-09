@@ -83,9 +83,15 @@ function Profile() {
                 )}
               </li>
               <li><Link to="/profile/purchase">My Purchase</Link></li>
-              <li><Link to="/profile/notifications">Notifications</Link></li>
-            </ul>
-          </nav>
+               <li>
+      <li>
+  <Link to="/notification" className="toggle-btn">
+    Notifications
+  </Link>
+</li>
+    </li>
+  </ul>
+</nav>
         </aside>
 <main className="profile-content">
  {/* ✅ My Profile View */}
