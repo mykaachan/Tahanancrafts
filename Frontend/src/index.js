@@ -75,7 +75,6 @@ function MainApp() {
         <Route path="/iraya" element={<Iraya />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
-        <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
         <Route path="/dashboard" element={<HomeDashboard />} />
         <Route path="/all-products" element={<AllProducts />} />

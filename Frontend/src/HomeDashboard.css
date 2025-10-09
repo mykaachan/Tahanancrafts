@@ -102,13 +102,13 @@
 }
 .transaction-row {
   display: grid;
-  grid-template-columns: 120px 1.5fr 120px 120px 120px;
+  grid-template-columns: 120px 120px 120px 120px 120px;
   align-items: center;
   gap: 0;
   padding: 12px 0;
   border-bottom: 1px solid #eee;
   cursor: pointer;
-  justify-items: start
+  justify-items: center
 }
 .transaction-history-list-header {
   display: grid;
