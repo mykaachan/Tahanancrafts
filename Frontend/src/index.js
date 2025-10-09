@@ -26,6 +26,8 @@ import HomeDashboard from './HomeDashboard';
 import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
+import AdminLogin from './AdminLogin';
+
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -36,19 +38,21 @@ function ConditionalChatPopup() {
 
   // List of routes where popup should be hidden
   const hiddenPaths = [
-    "/",                // login
+    "/",                // user login
     "/signup",
     "/forgot-password",
     "/forgotpass2",
     "/verify",
-    "/signup-verify"
+    "/signup-verify",
+    "/adminlogin"       // ✅ hide popup on admin login too
   ];
 
   const shouldHide = hiddenPaths.includes(location.pathname);
 
-  if (shouldHide) return null; // Don't render popup on those pages
-  return <ChatPopup />;        // Render on all others
+  if (shouldHide) return null; // Don't render popup on these pages
+  return <ChatPopup />;        // Render everywhere else
 }
+
 
 
 // ✅ Step 2: Main App Wrapper
@@ -79,6 +83,7 @@ function MainApp() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>

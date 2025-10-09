@@ -1,3 +1,5 @@
+
+
 /* ===== Shop Home Page ===== */
 .shop-page {
   font-family: 'Segoe UI', sans-serif;
@@ -7,16 +9,24 @@
   flex-direction: column;
 }
 
-/* ===== Banner Section (Updated) ===== */
+/* ===== Shop Banner (Full Cover Placeholder) ===== */
 .shop-banner {
-  background: #f1e1d0;
-  padding: 25px 60px;
+  width: 100%;
+  height: 250px; /* adjust height as needed */
+  background: linear-gradient(145deg, #d4b896, #b38b6d); /* fallback gradient */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* ✅ align content to the left side */
-  gap: 30px; /* ✅ space between logo and text */
-  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 30px;
+  padding: 25px 60px;
+  margin: 0; /* ✅ removes gaps around banner */
+  border-radius: 0; /* ✅ ensures no curved edges causing visible space */
 }
+
 
 /* Profile Placeholder (Shop Logo) on the Side */
 .shop-logo {
@@ -247,4 +257,11 @@
   line-height: 1.6;
   margin: 0;
   color: #444;
+}
+
+
+
+/* ===== Fix white gap under header (Shop page only) ===== */
+.shop-page {
+  margin-top: -30px; /* ✅ pulls banner up to meet header */
 }

@@ -1,10 +1,10 @@
 // src/LoginPage.js
 import React, { useState } from "react";
-import { ReactComponent as Logo } from "./Logo.svg";
+import logo from "./Logo.svg"; // ✅ use image import, not SVG component
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "./api"; // login request (sends contact + password, receives OTP)
-import { GoogleLogin } from '@react-oauth/google'; // Google login component
-import axios from 'axios';
+import { GoogleLogin } from "@react-oauth/google"; // Google login component
+import axios from "axios";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -22,11 +22,8 @@ function LoginPage() {
     };
 
     try {
-      // Step 1: request OTP from backend
-      const res = await login(userData); // should return { message: "OTP sent..." }
+      const res = await login(userData);
       console.log("OTP request success:", res);
-
-      // Redirect to OTP verification page, passing contact
       navigate("/verify", { state: { contact: enteredEmailOrPhone } });
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
@@ -42,28 +39,31 @@ function LoginPage() {
   // Google login
   // -------------------------------
   const handleGoogleLoginSuccess = (response) => {
-    const code = response.credential; // Google sends the ID token
+    const code = response.credential;
 
-    axios.post('http://localhost:8000/api/users/auth/google_callback/', { credential: code })
-      .then(res => {
-        console.log('Logged in with Google:', res.data);
-        alert('Login successful!');
+    axios
+      .post("http://localhost:8000/api/users/auth/google_callback/", {
+        credential: code,
+      })
+      .then((res) => {
+        console.log("Logged in with Google:", res.data);
+        alert("Login successful!");
         localStorage.setItem("user_email", res.data.email);
         localStorage.setItem("user_name", res.data.name);
-        navigate('/homepage'); // redirect to homepage
+        navigate("/homepage");
       })
-      .catch(err => {
-        console.error('Google login failed:', err.response?.data || err.message);
-        alert('Google login failed');
+      .catch((err) => {
+        console.error("Google login failed:", err.response?.data || err.message);
+        alert("Google login failed");
       });
   };
 
   const handleGoogleLoginFailure = () => {
-    alert('Google login failed');
+    alert("Google login failed");
   };
 
   // -------------------------------
-  // JSX (your original styling)
+  // JSX
   // -------------------------------
   return (
     <div className="App">
@@ -71,7 +71,8 @@ function LoginPage() {
 
       <div className="login-rectangle">
         <div className="logo-wrapper">
-          <Logo className="logo-svg login-logo" />
+          {/* ✅ Unified logo style */}
+          <img src={logo} alt="Tahanan Crafts Logo" className="auth-logo" />
         </div>
 
         <div className="form-wrapper">
@@ -106,13 +107,11 @@ function LoginPage() {
           </div>
 
           <div className="social-buttons">
-            {/* Facebook login placeholder */}
             <button className="social-button facebook">
               <img src="/Facebook.png" alt="Facebook" className="social-icon" />
               Sign in with Facebook
             </button>
 
-            {/* Google login */}
             <GoogleLogin
               onSuccess={handleGoogleLoginSuccess}
               onError={handleGoogleLoginFailure}

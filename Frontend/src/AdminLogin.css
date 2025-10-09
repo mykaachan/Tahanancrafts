@@ -1,0 +1,126 @@
+/* ===== Admin Login Page ===== */
+.admin-login-page {
+  height: 100vh;
+  width: 100%;
+  background: url("./background.png") no-repeat center center / cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* Dark overlay for better contrast */
+.admin-login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(40, 35, 25, 0.35);
+  backdrop-filter: blur(3px);
+  z-index: 1;
+}
+
+/* ===== Glass Login Box ===== */
+.login-container {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.315);
+  backdrop-filter: blur(6px);
+  padding: 40px 60px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Centered TC Logo (Roman Style) ===== */
+.login-logo {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 5rem;
+  color: #4d3b2f;
+  margin-bottom: 25px;
+  font-weight: 700;
+  letter-spacing: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+
+/* ===== Login Form ===== */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.login-form label {
+  text-align: left;
+  font-weight: 600;
+  color: #4d3b2f;
+  font-size: 0.9rem;
+}
+
+.login-form input {
+  padding: 8px 10px;
+  border: 1px solid #b0a597;
+  border-radius: 5px;
+  outline: none;
+  font-size: 0.95rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #3a2c22;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-form input:focus {
+  border-color: #7b6856;
+  box-shadow: 0 0 4px rgba(123, 104, 86, 0.4);
+}
+
+/* ===== Login Button ===== */
+.login-btn {
+  background: #4d3b2f;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.login-btn:hover {
+  background: #9d816a;
+  transform: translateY(-1px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .login-container {
+    width: 90%;
+    padding: 30px 25px;
+  }
+
+  .login-logo {
+    font-size: 2.8rem;
+    letter-spacing: 5px;
+  }
+
+  .login-form input {
+    font-size: 0.9rem;
+  }
+
+  .login-btn {
+    font-size: 0.9rem;
+  }
+}
