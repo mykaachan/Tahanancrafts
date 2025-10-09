@@ -30,8 +30,8 @@ function Cart() {
           desc: cartItem.product.description || "No description available",
           price: cartItem.product.price,
           qty: cartItem.quantity,
-          img: cartItem.product.image
-            ? cartItem.product.image
+          img: cartItem.product.main_image
+            ? cartItem.product.main_image
             : "https://via.placeholder.com/150?text=No+Image",
           selected: false,
         }));
