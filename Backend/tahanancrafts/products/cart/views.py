@@ -15,11 +15,13 @@ class CartView(APIView):
         product_id = request.data.get("product_id")
         quantity = int(request.data.get("quantity", 1))
 
+        # Validate user
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
+        # Validate product
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
@@ -49,11 +51,19 @@ class CartView(APIView):
                 "product": {
                     "id": item.product.id,
                     "name": item.product.name,
+                    "description": item.product.description,
                     "price": float(item.product.sales_price or item.product.regular_price),
-                    "image": item.product.main_image.url if item.product.main_image else None,
+                    "main_image": (
+                        request.build_absolute_uri(item.product.main_image.url)
+                        if item.product.main_image
+                        else None
+                    ),
                 },
                 "quantity": item.quantity,
-                "total_price": float((item.product.sales_price or item.product.regular_price) * item.quantity),
+                "total_price": float(
+                    (item.product.sales_price or item.product.regular_price)
+                    * item.quantity
+                ),
             }
             for item in cart_items
         ]
