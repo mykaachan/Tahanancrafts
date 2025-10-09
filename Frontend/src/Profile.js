@@ -87,120 +87,181 @@ function Profile() {
             </ul>
           </nav>
         </aside>
+<main className="profile-content">
+ {/* ✅ My Profile View */}
+{location.pathname === "/profile" && !isEditing && (
+  <>
+    <h2>My Profile</h2>
+    <p className="subtitle">Manage and protect your account</p>
 
-        {/* ===== Main Content ===== */}
-        <main className="profile-content">
-          {/* ✅ My Profile View */}
-          {location.pathname === "/profile" && !isEditing && (
-            <>
-              <h2>My Profile</h2>
-              <p className="subtitle">Manage and protect your account</p>
+    <div className="profile-box">
+      <div className="profile-avatar">
+        <img src={avatarSrc} alt="Profile" className="profile-img" />
+      </div>
 
-              <div className="profile-box">
-                <div className="profile-details">
-                  <img src={avatarSrc} alt="Profile" className="profile-img" />
-                  <p><strong>Username:</strong> {profileData.username || "-"}</p>
-                  <p><strong>Name:</strong> {profileData.name || "-"}</p>
-                  <p><strong>Email:</strong> {profileData.email || "-"}</p>
-                  <p><strong>Phone:</strong> {profileData.phone || "-"}</p>
-                  <p><strong>Gender:</strong> {profileData.gender || "-"}</p>
-                  <p><strong>Date of Birth:</strong> {profileData.date_of_birth || "-"}</p>
-                  
-                  <button
-                    className="btn-edit"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Edit profile
-                  </button>
-                </div>
-              </div>
+      <div className="profile-details">
+        <p><strong>Username:</strong> {profileData.username || "-"}</p>
+        <p><strong>Name:</strong> {profileData.name || "-"}</p>
+        <p><strong>Email:</strong> {profileData.email || "-"}</p>
+        <p><strong>Phone:</strong> {profileData.phone || "-"}</p>
+        <p><strong>Gender:</strong> {profileData.gender || "-"}</p>
+        <p><strong>Date of Birth:</strong> {profileData.date_of_birth || "-"}</p>
+        <p><strong>Address:</strong> {profileData.address || "-"}</p> {/* NEW */}
 
-              <button className="btn-logout">Log out</button>
-            </>
-          )}
+        <button
+          className="btn-edit"
+          onClick={() => setIsEditing(true)}
+        >
+          Edit profile
+        </button>
+      </div>
+    </div>
 
-          {/* ✅ Edit Profile */}
-          {location.pathname === "/profile" && isEditing && (
-            <>
-              <h2>Edit Profile</h2>
-              <p className="subtitle">Update your account information</p>
+    <button className="btn-logout">Log out</button>
+  </>
+)}
 
-              <div className="profile-box">
-                <form className="edit-profile-form">
-                  <div className="profile-avatar">
-                    <img src={avatarSrc} alt="Profile" className="profile-img" />
-                    <button className="btn-select" type="button">Select Image</button>
-                  </div>
+{/* ✅ Edit Profile */}
+{location.pathname === "/profile" && isEditing && (
+  <>
+    <h2>Edit Profile</h2>
+    <p className="subtitle">Update your account information</p>
 
-                  <label>
-                    Username:
-                    <input type="text" name="username" defaultValue={profileData.username || ""} />
-                  </label>
-                  <label>
-                    Name:
-                    <input type="text" name="name" defaultValue={profileData.name || ""} />
-                  </label>
-                  <label>
-                    Email:
-                    <input type="email" name="email" defaultValue={profileData.email || ""} />
-                  </label>
-                  <label>
-                    Phone:
-                    <input type="text" name="phone" defaultValue={profileData.phone || ""} />
-                  </label>
-                  <label>
-                    Gender:
-                    <select name="gender" defaultValue={profileData.gender || "Other"}>
-                      <option>Male</option>
-                      <option>Female</option>
-                      <option>Other</option>
-                    </select>
-                  </label>
-                  <label>
-                    Date of Birth:
-                    <input type="date" name="date_of_birth" defaultValue={profileData.date_of_birth || ""} />
-                  </label>
+    <div className="profile-box">
+      <form className="edit-profile-form">
+        <div className="profile-avatar">
+          <img src={avatarSrc} alt="Profile" className="profile-img" />
+          <button className="btn-select" type="button">Select Image</button>
+        </div>
 
-                  <div className="form-actions">
-                    <button
-                      type="button"
-                      className="btn-save"
-                      onClick={async () => {
-                        try {
-                          const formData = {
-                            username: document.querySelector('input[name="username"]').value,
-                            name: document.querySelector('input[name="name"]').value,
-                            email: document.querySelector('input[name="email"]').value,
-                            phone: document.querySelector('input[name="phone"]').value,
-                            gender: document.querySelector('select[name="gender"]').value,
-                            date_of_birth: document.querySelector('input[name="date_of_birth"]').value,
-                          };
-                          await updateProfile(userId, formData);
-                          alert("Profile updated successfully!");
-                          setIsEditing(false);
-                          const updated = await getProfile(userId);
-                          setProfileData(updated.user || updated);
-                        } catch (err) {
-                          console.error(err);
-                          alert("Failed to update profile");
-                        }
-                      }}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      className="btn-cancel"
-                      onClick={() => setIsEditing(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </>
-          )}
-        </main>
+        <label>
+          Username:
+          <input type="text" name="username" defaultValue={profileData.username || ""} />
+        </label>
+        <label>
+          Name:
+          <input type="text" name="name" defaultValue={profileData.name || ""} />
+        </label>
+        <label>
+          Email:
+          <input type="email" name="email" defaultValue={profileData.email || ""} />
+        </label>
+        <label>
+          Phone:
+          <input type="text" name="phone" defaultValue={profileData.phone || ""} />
+        </label>
+        <label>
+          Gender:
+          <select name="gender" defaultValue={profileData.gender || "Other"}>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>
+          Date of Birth:
+          <input type="date" name="date_of_birth" defaultValue={profileData.date_of_birth || ""} />
+        </label>
+        <label>
+          Address:
+          <input type="text" name="address" defaultValue={profileData.address || ""} /> {/* NEW */}
+        </label>
+
+        <div className="form-actions">
+          <button
+            type="button"
+            className="btn-save"
+            onClick={async () => {
+              try {
+                const formData = {
+                  username: document.querySelector('input[name="username"]').value,
+                  name: document.querySelector('input[name="name"]').value,
+                  email: document.querySelector('input[name="email"]').value,
+                  phone: document.querySelector('input[name="phone"]').value,
+                  gender: document.querySelector('select[name="gender"]').value,
+                  date_of_birth: document.querySelector('input[name="date_of_birth"]').value,
+                  address: document.querySelector('input[name="address"]').value, // NEW
+                };
+                await updateProfile(userId, formData);
+                alert("Profile updated successfully!");
+                setIsEditing(false);
+                const updated = await getProfile(userId);
+                setProfileData(updated.user || updated);
+              } catch (err) {
+                console.error(err);
+                alert("Failed to update profile");
+              }
+            }}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            className="btn-cancel"
+            onClick={() => setIsEditing(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </>
+)}
+
+{/* ✅ Change Password */}
+{location.pathname === "/profile/change-password" && (
+  <>
+    <h2>Change Password</h2>
+    <p className="subtitle">Update your password for security</p>
+
+    <div className="profile-box">
+      <form className="profile-form">
+        <label>
+          Old Password:
+          <input type="password" name="old_password" placeholder="Enter old password" />
+        </label>
+        <label>
+          New Password:
+          <input type="password" name="new_password" placeholder="Enter new password" />
+        </label>
+        <label>
+          Confirm New Password:
+          <input type="password" name="confirm_password" placeholder="Confirm new password" />
+        </label>
+
+        <div className="form-actions">
+          <button type="submit" className="btn-save">Update Password</button>
+          <button type="button" className="btn-cancel">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </>
+)}
+
+
+
+  {/* ✅ Privacy Settings */}
+  {location.pathname === "/profile/privacy" && (
+    <div>
+      <h2>Privacy Settings</h2>
+      <div className="profile-box">
+        <p>You can request account deletion. This action is irreversible.</p>
+        <button className="btn-delete">Request Account Deletion</button>
+      </div>
+    </div>
+  )}
+
+  {/* ✅ My Purchase */}
+  {location.pathname === "/profile/purchase" && (
+    <div>
+      <h2>My Purchase</h2>
+      <div className="purchase-box">
+        <p>No purchases yet.</p>
+      </div>
+    </div>
+  )}
+</main>
+
       </div>
     </HeaderFooter>
   );
