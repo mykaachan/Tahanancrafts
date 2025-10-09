@@ -26,9 +26,7 @@ import HomeDashboard from './HomeDashboard';
 import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
-import AdminLogin from './AdminLogin';
-import Sidebar from './Sidebar';
-
+import TransactionHistory from './TransactionHistory';  
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -39,21 +37,19 @@ function ConditionalChatPopup() {
 
   // List of routes where popup should be hidden
   const hiddenPaths = [
-    "/",                // user login
+    "/",                // login
     "/signup",
     "/forgot-password",
     "/forgotpass2",
     "/verify",
-    "/signup-verify",
-    "/adminlogin"       // ✅ hide popup on admin login too
+    "/signup-verify"
   ];
 
   const shouldHide = hiddenPaths.includes(location.pathname);
 
-  if (shouldHide) return null; // Don't render popup on these pages
-  return <ChatPopup />;        // Render everywhere else
+  if (shouldHide) return null; // Don't render popup on those pages
+  return <ChatPopup />;        // Render on all others
 }
-
 
 
 // ✅ Step 2: Main App Wrapper
@@ -75,6 +71,7 @@ function MainApp() {
         <Route path="/iraya" element={<Iraya />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
+        <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
         <Route path="/dashboard" element={<HomeDashboard />} />
         <Route path="/all-products" element={<AllProducts />} />
@@ -83,8 +80,7 @@ function MainApp() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
-        <Route path="/adminlogin" element={<AdminLogin />} />
-        <Route path="/sidebar" element={<Sidebar />} />
+        <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
 
 
         {/* ✅ Profile and its nested routes */}
