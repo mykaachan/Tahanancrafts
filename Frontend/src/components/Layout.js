@@ -1,9 +1,8 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Layout.css';
 
 const Layout = ({ children }) => {
-  const navigate = useNavigate();
   return (
     <div className="layout">
       {/* Header */}
@@ -26,17 +25,17 @@ const Layout = ({ children }) => {
 
       <div className="main-container">
         {/* Sidebar */}
-        <aside className="sidebar">
+        <aside className="dashboard-sidebar">
           <nav className="sidebar-nav">
-            <Link to="/dashboard" className="nav-item">
+            <div className="nav-item">
               <img src="/images/Home.png" alt="Home" className="nav-icon" />
               <span className="nav-text">HOME</span>
-            </Link>
-            <Link to="/all-products" className="nav-item">
+            </div>
+            <Link to="/all-products" className="nav-item no-underline">
               <img src="/images/ALLPRODUCTS.png" alt="All Products" className="nav-icon" />
               <span className="nav-text">ALL PRODUCTS</span>
             </Link>
-            <Link to="/order-list" className="nav-item">
+            <Link to="/order-list" className="nav-item no-underline">
               <img src="/images/ORDERLIST.png" alt="Order List" className="nav-icon" />
               <span className="nav-text">ORDER LIST</span>
             </Link>

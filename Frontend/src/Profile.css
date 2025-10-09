@@ -17,6 +17,10 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+.profile-nav > ul > li {
+  margin-left: 20px; /* only top-level items */
+}
+
 .profile-info {
   text-align: center;
   margin-bottom: 30px;
@@ -44,27 +48,32 @@
   margin: 15px 0;
 }
 
-.profile-nav a,
-.toggle-btn {
+.profile-nav a {
   text-decoration: none;
   color: #333;
   font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
   transition: color 0.2s ease;
+}
+
+.profile-nav a:hover {
+  color: #7a5a36;
 }
 
 .toggle-btn {
   background: none;
   border: none;
   font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
   padding: 0;
-  width: 100%;
   text-align: left;
+  transition: color 0.2s ease;
+  width: 100%;
+  font-family: inherit;
 }
 
-.toggle-btn:hover,
-.profile-nav a:hover {
+.toggle-btn:hover {
   color: #7a5a36;
 }
 
@@ -86,7 +95,6 @@
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  font-family: inherit;
 }
 
 .profile-content h2 {
@@ -98,36 +106,47 @@
   margin-bottom: 20px;
 }
 
-/* ===== Unified Profile Box (for all sections) ===== */
+/* ===== Profile Box (shared for view + edit) ===== */
 .profile-box {
   background: #fff;
-  padding: 30px;
+  padding: 25px;
   border-radius: 16px;
   margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-  /* adjustable width */
-  width: 100%;       /* change this to 80%, 100%, etc. */
-  max-width: 990px; /* change this to limit maximum width */
-
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
+/* Profile details */
+.profile-details p {
+  margin: 8px 0;
+  font-size: 15px;
+}
 
-/* ===== Avatar Section ===== */
+.btn-edit {
+  margin-top: 15px;
+  background: #7a5a36;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background: #5a4028;
+}
+
+/* Avatar section */
 .profile-avatar {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.profile-avatar img {
-  width: 90px;
-  height: 90px;
+.avatar-circle {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  object-fit: cover;
+  background: #ddd;
   margin-bottom: 10px;
 }
 
@@ -138,77 +157,43 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
 .btn-select:hover {
   background: #eee;
 }
 
-/* ===== Buttons ===== */
-.btn-edit,
-.btn-save,
-.btn-cancel,
-.btn-delete,
+/* Logout */
 .btn-logout {
-  padding: 10px 18px;
-  border-radius: 6px;
+  margin-top: 10px;
+  background: #7a5a36;
+  color: white;
+  padding: 8px 16px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
-  font-family: inherit;
+  float: right;
 }
 
-.btn-edit,
-.btn-save {
-  background: #7a5a36;
-  color: #fff;
-}
-.btn-edit:hover,
-.btn-save:hover {
-  background: #5a4028;
-}
-
-.btn-cancel {
-  background: #ccc;
-  color: #333;
-}
-.btn-cancel:hover {
-  background: #aaa;
-}
-
-.btn-delete {
-  background: #ec6c76;
-  color: #fff;
-  align-self: flex-start;
-}
-.btn-delete:hover {
-  background: #c82333;
-}
-
-.btn-logout {
-  background: #7a5a36;
-  color: #fff;
-  align-self: flex-end;
-}
 .btn-logout:hover {
   background: #5a4028;
 }
 
-/* ===== Forms inside Profile Box ===== */
-.profile-box form {
+/* ===== Edit Profile Form (inside box) ===== */
+.edit-profile-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 100%;
 }
 
-.profile-box label {
+.edit-profile-form label {
   display: flex;
   flex-direction: column;
   font-weight: 500;
   color: #333;
 }
 
-.profile-box input,
-.profile-box select {
+.edit-profile-form input,
+.edit-profile-form select {
   margin-top: 5px;
   padding: 10px 12px;
   border: 1px solid #ccc;
@@ -217,19 +202,249 @@
   background: #fafafa;
 }
 
-.profile-box input:focus,
-.profile-box select:focus {
+.edit-profile-form input:focus,
+.edit-profile-form select:focus {
   outline: none;
   border-color: #7a5a36;
   box-shadow: 0 0 0 2px rgba(122, 90, 54, 0.2);
 }
 
-/* ===== Form Actions ===== */
 .form-actions {
   display: flex;
   gap: 10px;
   margin-top: 20px;
-  flex-wrap: wrap;
+}
+
+.btn-save {
+  background: #7a5a36;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-save:hover {
+  background: #5a4028;
+}
+
+.btn-cancel {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: #aaa;
+}
+
+
+
+
+
+
+
+.change-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  background: #fffdf9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.change-password-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.change-password-form .btn-save {
+  margin-top: 10px;
+  background: #e67300; /* Different from Edit Profile */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+
+/* ===== Request Account Deletion Button ===== */
+.btn-delete {
+  margin-top: 15px;
+  background: #ec6c76;   /* red tone */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.btn-delete:hover {
+  background: #c82333;   /* darker red */
+}
+
+
+
+
+/* ===== Purchases Section ===== */
+.purchases-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.purchases-tabs button {
+  background: none;
+  border: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.purchases-tabs button.active {
+  color: #7a5a36;
+  border-bottom: 2px solid #7a5a36;
+}
+
+.purchase-box {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  min-height: 200px; /* ✅ ensures visible box even if empty */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 15px;
+}
+
+
+
+
+/* ===== Orders List ===== */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+}
+
+.order-card {
+  background: #f8f3ed;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  padding: 15px;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.order-header h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #5a422b;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-small {
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.order-status {
+  font-size: 12px;
+  color: #777;
+}
+
+.order-body {
+  display: flex;
+  gap: 15px;
+  padding: 10px 0;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  align-items: center;
+}
+
+.order-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #ddd;
+}
+
+.order-info h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.order-info p {
+  margin: 5px 0 0;
+  color: #555;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.order-total {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-buy {
+  background: #d9c5aa;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-contact {
+  background: #fff;
+  border: 1px solid #7a5a36;
+  color: #7a5a36;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 

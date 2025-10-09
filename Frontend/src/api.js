@@ -216,19 +216,25 @@ export async function getCartItems(userId) {
 }
 
 // ✅ Update cart item quantity
-export async function updateCartItem(cartId, quantity) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/`, {
+export async function updateCartItem(cartId, quantity, userId) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/qty/${cartId}/${userId}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ quantity }),
   });
-  if (!res.ok) throw new Error("Failed to update cart item");
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Failed to update cart item: ${errText}`);
+  }
+
   return await res.json();
 }
 
+
 // ✅ Remove cart item
-export async function removeCartItem(cartId) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/`, {
+export async function removeCartItem(cartId, userId) {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/qty/${cartId}/?user_id=${userId}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete cart item");

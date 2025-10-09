@@ -15,7 +15,7 @@ import Products from './Products';
 import Iraya from './Iraya';
 import ProductDetails from './ProductDetails';
 import Cart from './Cart';
-import Layout from './Layout';
+import Layout from './components/Layout';
 import AddProduct from './AddProduct';
 import SignupVerifyContact from './SignupVerify';
 import AllProducts from './AllProducts';
@@ -28,6 +28,8 @@ import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
 import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
+import MyPurchases from './MyPurchases';
+import Notification from './Notification';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -83,6 +85,8 @@ function MainApp() {
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/my-purchases" element={<MyPurchases />} />
+        <Route path="/notification" element={<Notification />} />
 
 
         {/* ✅ Profile and its nested routes */}
@@ -150,6 +154,25 @@ function MainApp() {
             }
           />
         </Route>
+
+         {/* ✅ My Purchases */}
+            <Route path="purchase" element={
+              <div className="purchase-page">
+                <h2>My Purchases</h2>
+                <div className="purchase-tabs">
+                  <button className="active">All</button>
+                  <button>To Pay</button>
+                  <button>To Ship</button>
+                  <button>To Receive</button>
+                  <button>Completed</button>
+                </div>
+                <div className="purchase-empty">
+                  <img src="/images/empty-box.png" alt="No orders" />
+                  <p>No orders yet</p>
+                </div>
+              </div>
+            }/>
+            
       </Routes>
     </BrowserRouter>
   );
