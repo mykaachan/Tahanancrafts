@@ -114,11 +114,11 @@ const HomeDashboard = () => {
                   {/* TODO: Integrate backend sales trend graph here */}
                 </div>
               </div>
-              <div className="dashboard-card">
+              <div className="dashboard-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard/transaction-history')}>
                 <h4>Transaction History</h4>
                 <div className="transaction-history-list">
                   {latestTransactions.map((tx, idx) => (
-                    <div key={idx} className="transaction-row" onClick={() => setShowHistory(true)}>
+                    <div key={idx} className="transaction-row">
                       <span className="transaction-order-id">{tx.orderId}</span>
                       <img src={tx.icon} alt={tx.name} className="transaction-product-image" />
                       <div className="transaction-product-details">
@@ -131,6 +131,7 @@ const HomeDashboard = () => {
                     </div>
                   ))}
                 </div>
+                <button className="export-report-btn" style={{ marginTop: '16px' }} onClick={e => { e.stopPropagation(); navigate('/dashboard/transaction-history'); }}>View All Transactions</button>
               </div>
               <div className="dashboard-card products-card" style={{ marginTop: '24px', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', borderRadius: '12px', padding: '24px' }}>
                 <span className="products-count" style={{ color: '#7c6a58', fontSize: '1rem' }}>Products (6)</span>

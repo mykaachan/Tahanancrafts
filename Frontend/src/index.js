@@ -27,6 +27,7 @@ import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
 import AdminLogin from './AdminLogin';
+import TransactionHistory from './TransactionHistory';
 
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -84,6 +85,7 @@ function MainApp() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>
