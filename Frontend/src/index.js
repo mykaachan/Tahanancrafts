@@ -30,9 +30,11 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
+import AdminLogin from './AdminLogin';
+import TransactionHistory from './TransactionHistory';  
+import Notification from './Notification'; 
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 
 // ✅ Step 1: Create a conditional wrapper for the popup
 function ConditionalChatPopup() {
@@ -53,7 +55,6 @@ function ConditionalChatPopup() {
   if (shouldHide) return null; // Don't render popup on those pages
   return <ChatPopup />;        // Render on all others
 }
-
 
 // ✅ Step 2: Main App Wrapper
 function MainApp() {
@@ -83,11 +84,13 @@ function MainApp() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
 
+        <Route path="/notification" element={<Notification />} />
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>
