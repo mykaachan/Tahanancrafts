@@ -28,7 +28,7 @@ function Cart() {
           id: cartItem.id,
           name: cartItem.product.name,
           desc: cartItem.product.description || "No description available",
-          price: cartItem.product.price,
+          price: cartItem.product.price * cartItem.quantity,
           qty: cartItem.quantity,
           img: cartItem.product.main_image
             ? cartItem.product.main_image
@@ -49,21 +49,38 @@ function Cart() {
 
   // ✅ Update quantity (sync backend)
   const updateQty = async (id, delta) => {
-    const item = items.find((i) => i.id === id);
-    if (!item) return;
+  const item = items.find((i) => i.id === id);
+  if (!item) return;
 
-    const newQty = Math.max(1, item.qty + delta);
-    try {
-      await updateCartItem(id, newQty);
-      setItems((prev) =>
-        prev.map((i) => (i.id === id ? { ...i, qty: newQty } : i))
-      );
-    } catch (err) {
-      console.error("Failed to update quantity:", err);
-      alert("Failed to update quantity.");
-    }
-  };
+  const userId = localStorage.getItem("user_id");
+  const newQty = Math.max(1, item.qty + delta);
 
+  try {
+    // Update on backend
+    await updateCartItem(id, newQty, userId);
+
+    // Compute per-unit price (since your item.price currently stores total price)
+    const unitPrice = item.price / item.qty;
+
+    // Recalculate new total for that item
+    const newTotalPrice = unitPrice * newQty;
+
+    // Update local state
+    setItems((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? { ...i, qty: newQty, price: newTotalPrice } // ✅ price now reflects total correctly
+          : i
+      )
+    );
+  } catch (err) {
+    console.error("Failed to update quantity:", err);
+    alert("Failed to update quantity.");
+  }
+};
+
+
+  
   // ✅ Remove cart item (sync backend)
   const removeItem = async (id) => {
     try {
