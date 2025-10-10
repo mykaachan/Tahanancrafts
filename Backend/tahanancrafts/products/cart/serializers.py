@@ -5,7 +5,7 @@ from products.models import Cart, Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'main_image', 'description']
+        fields = ['id', 'name', 'regular_price', 'main_image', 'description']
 
 class CartSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
@@ -16,7 +16,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'user', 'product', 'product_id', 'quantity', 'created_at', 'total_price']
-        read_only_fields = ['id', 'created_at', 'total_price', 'user']
+        read_only_fields = ['id', 'created_at', 'user', 'total_price']
 
     def create(self, validated_data):
         user = self.context['request'].user

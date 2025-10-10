@@ -2,6 +2,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from .serializers import CartSerializer
 from products.models import Cart, Product
 from users.models import CustomUser
 from rest_framework import status
@@ -88,3 +89,37 @@ class CartListView(APIView):
             for item in cart_items
         ]
         return Response(data)
+
+class CartDetailView(APIView):
+    permission_classes = [AllowAny]
+
+    def patch(self, request, pk, user_id):
+        try:
+            cart_item = Cart.objects.get(pk=pk, user_id=user_id)
+        except Cart.DoesNotExist:
+            return Response({"error": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CartSerializer(
+            cart_item,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            cart_item = Cart.objects.get(pk=pk, user_id=user_id)
+        except Cart.DoesNotExist:
+            return Response({"error": "Item not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        cart_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
