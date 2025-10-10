@@ -234,7 +234,7 @@ export async function updateCartItem(cartId, quantity, userId) {
 
 // ✅ Remove cart item
 export async function removeCartItem(cartId, userId) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/qty/${cartId}/?user_id=${userId}`, {
+  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/delete/?user_id=${userId}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete cart item");

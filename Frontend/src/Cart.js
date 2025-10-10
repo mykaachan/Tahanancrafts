@@ -28,7 +28,7 @@ function Cart() {
           id: cartItem.id,
           name: cartItem.product.name,
           desc: cartItem.product.description || "No description available",
-          price: cartItem.product.price * cartItem.quantity,
+          price: cartItem.product.price * cartItem.quantity, // Total price for the quantity
           qty: cartItem.quantity,
           img: cartItem.product.main_image
             ? cartItem.product.main_image
@@ -46,6 +46,8 @@ function Cart() {
 
     fetchCart();
   }, []);
+
+  
 
   // ✅ Update quantity (sync backend)
   const updateQty = async (id, delta) => {
@@ -83,8 +85,13 @@ function Cart() {
   
   // ✅ Remove cart item (sync backend)
   const removeItem = async (id) => {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) {
+      alert("Please log in to remove items from cart.");
+      return;
+    }
     try {
-      await removeCartItem(id);
+      await removeCartItem(id, userId);
       setItems((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error("Failed to remove item:", err);
@@ -104,7 +111,7 @@ function Cart() {
   // ✅ Calculate totals
   const subtotal = items
     .filter((item) => item.selected)
-    .reduce((sum, item) => sum + item.price * item.qty, 0);
+    .reduce((sum, item) => sum + item.price, 0);
   const shipping = subtotal > 0 ? 58 : 0;
   const total = subtotal + shipping;
 
