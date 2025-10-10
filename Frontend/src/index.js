@@ -30,9 +30,7 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
-import AdminLogin from './AdminLogin';
-import TransactionHistory from './TransactionHistory';  
-import Notification from './Notification'; 
+
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
