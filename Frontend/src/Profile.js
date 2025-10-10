@@ -1,5 +1,6 @@
 // src/Profile.js
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import { getProfile, updateProfile } from "./api";
@@ -12,11 +13,18 @@ function Profile() {
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) {
+        alert("Please log in to view your cart.");
+        navigate("/login");
+        return;
+      }
       try {
         setLoading(true);
         const data = await getProfile(userId);
@@ -46,6 +54,11 @@ function Profile() {
     profileData.avatar_url ||
     `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff`;
 
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    navigate("/");
+  };
+
   return (
     <HeaderFooter>
       <div className="profile-page">
@@ -73,7 +86,7 @@ function Profile() {
                   </button>
                 </div>
               </div>
-              <button className="btn-logout">Log out</button>
+              <button className="btn-logout" onClick={handleLogout}>Log out</button>
             </>
           )}
 

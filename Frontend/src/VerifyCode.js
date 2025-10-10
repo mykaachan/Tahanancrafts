@@ -27,7 +27,7 @@ function VerifyCode() {
       localStorage.setItem("user_role", res.user.role);
       localStorage.setItem("user_email", res.user.name);
 
-      navigate("/homepage");
+      navigate("/");
     } else {
       throw new Error("Invalid code");
     }

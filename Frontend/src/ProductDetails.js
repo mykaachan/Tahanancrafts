@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { addToCart } from "./api"; // API call to add items to cart
@@ -13,6 +14,7 @@ function ProductDetail() {
   const [selectedImg, setSelectedImg] = useState(defaultImg);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // for navigation after actions
 
   useEffect(() => {
     // fetch product details from Django backend
@@ -154,6 +156,7 @@ function ProductDetail() {
                     const userId = localStorage.getItem("user_id");
                     if (!userId) {
                       alert("⚠️ Please log in to add items to your cart.");
+                      navigate("/login");
                       return;
                     }
 

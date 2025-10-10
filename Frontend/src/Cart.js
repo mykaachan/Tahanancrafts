@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import {
@@ -11,6 +12,7 @@ import {
 function Cart() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // for navigation after actions
 
   // ✅ Fetch user's cart from backend
   useEffect(() => {
@@ -18,7 +20,7 @@ function Cart() {
       const userId = localStorage.getItem("user_id");
       if (!userId) {
         alert("Please log in to view your cart.");
-        setLoading(false);
+        navigate("/login");
         return;
       }
 
@@ -125,7 +127,7 @@ function Cart() {
         <nav className="nav-links">
           <ul>
             <li>
-              <Link to="/homepage" style={{ textDecoration: "none", color: "inherit" }}>
+              <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
                 Home
               </Link>
             </li>

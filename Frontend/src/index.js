@@ -62,12 +62,12 @@ function MainApp() {
       <ConditionalChatPopup />
 
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/forgotpass2" element={<ForgotPass2 />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/story" element={<StoryPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/iraya" element={<Iraya />} />
@@ -84,10 +84,7 @@ function MainApp() {
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
-        <Route path="/notification" element={<Notification />} />
-
         <Route path="/notification" element={<Notification />} />
 
         {/* ✅ Profile and its nested routes */}
