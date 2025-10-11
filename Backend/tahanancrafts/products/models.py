@@ -1,5 +1,8 @@
 from django.db import models
 from users.models import CustomUser
+from django.conf import settings
+from django.utils import timezone
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -54,3 +57,21 @@ class Cart(models.Model):
     def total_price(self):
         """Optional helper for serializers/templates"""
         return self.product.price * self.quantity
+
+
+class UserActivity(models.Model):
+    ACTION_CHOICES = [
+        ("view", "Viewed"),
+        ("like", "Liked"),
+        ("cart", "Added to Cart"),
+        ("purchase", "Purchased"),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} {self.action} {self.product.name}"

@@ -1,52 +1,50 @@
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
-
-from products.models import Product, Category, Material,ProductImage
+from machineLearning.recommendations.recommendation import get_recommendations, get_personalized_recommendations
+from users.models import CustomUser
+from products.models import Product, Category, Material,ProductImage, UserActivity
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-
-# LIST (Product list with search + filters)
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.db.models import Q
-from .serializers import ProductReadSerializer
-from products.models import Product
 
 class ProductListView(APIView):
-
     permission_classes = [AllowAny]
-    def get(self, request, *args, **kwargs):
-        return self.filter_products(request.query_params)
 
-    def post(self, request, *args, **kwargs):
-        return self.filter_products(request.data)
+    def get(self, request):
+        params = request.query_params
+        return self.filter_products(params)
 
     def filter_products(self, params):
-        category = params.get("category", "")
-        material = params.get("material", "")
+        category_param = params.get("category", "")
+        material_param = params.get("material", "")
 
         qs = Product.objects.all().prefetch_related("categories", "materials", "images")
 
-        if category:
-            if str(category).isdigit():
-                qs = qs.filter(categories__id=category)
+        # ✅ Handle multiple categories (OR logic)
+        if category_param:
+            category_list = [c.strip() for c in category_param.split(",") if c.strip()]
+            if all(c.isdigit() for c in category_list):
+                qs = qs.filter(categories__id__in=category_list)
             else:
-                qs = qs.filter(categories__name__icontains=category)
+                qs = qs.filter(categories__name__in=category_list)
 
-        if material:
-            if str(material).isdigit():
-                qs = qs.filter(materials__id=material)
+        # ✅ Handle multiple materials (OR logic)
+        if material_param:
+            material_list = [m.strip() for m in material_param.split(",") if m.strip()]
+            if all(m.isdigit() for m in material_list):
+                qs = qs.filter(materials__id__in=material_list)
             else:
-                qs = qs.filter(materials__name__icontains=material)
+                qs = qs.filter(materials__name__in=material_list)
 
+        # ✅ Distinct to avoid duplicates
         serializer = ProductReadSerializer(qs.distinct(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 # Category List
@@ -151,12 +149,70 @@ class UpdateProductView(APIView):
 
 
 class ProductDetailView(APIView):
+    # Keep public access
     permission_classes = [AllowAny]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]  # important
+
     def get(self, request, id):
         try:
             product = Product.objects.get(id=id)
+
             serializer = ProductSerializer(product)
             return Response(serializer.data)
+
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=404)
 
+        
+class RecommendedProductsView(APIView):
+    def get(self, request, product_id):
+        try:
+            recommended_products = get_recommendations(product_id)
+            serializer = ProductSerializer(recommended_products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# products/views.py
+class LogProductView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        product_id = request.data.get("product_id")
+        user_id = request.data.get("user_id")  # <- get it from body
+        user = None
+        if user_id:
+            try:
+                user = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                pass
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=404)
+
+        UserActivity.objects.create(
+            user=user,
+            product=product,
+            action="View"
+        )
+        return Response({"message": "View logged successfully."}, status=201)
+
+class ProductDetailRecommendedView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, product_id):
+        recommended_products = get_recommendations(product_id, top_n=8)
+        # Make sure it's always a list
+        recommended_products = recommended_products or []
+        serializer = ProductSerializer(recommended_products, many=True)
+        return Response(serializer.data)
+
+class ProductPersonalizedView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, user_id):
+        recommended = get_personalized_recommendations(user_id, top_n=50)
+        serializer = ProductReadSerializer(recommended, many=True)
+        return Response(serializer.data)

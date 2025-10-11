@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .serializers import CartSerializer
-from products.models import Cart, Product
+from products.models import Cart, Product, UserActivity
 from users.models import CustomUser
 from rest_framework import status
 
@@ -33,9 +33,16 @@ class CartView(APIView):
             product=product,
             defaults={"quantity": quantity}
         )
+        
         if not created:
             cart_item.quantity += quantity
             cart_item.save()
+
+        UserActivity.objects.create(
+            user=user,
+            product=product,
+            action="Added to cart"
+        )
 
         return Response({"message": "✅ Added to cart successfully!"}, status=status.HTTP_201_CREATED)
 

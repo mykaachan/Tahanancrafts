@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Products.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
@@ -43,7 +44,7 @@ function Products() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // ✅ search state
-
+  const navigate = useNavigate(); 
   // Fetch categories + materials on load
   useEffect(() => {
     async function loadFilters() {
@@ -63,28 +64,41 @@ function Products() {
 
   // Fetch products whenever filters change
   useEffect(() => {
-    async function loadProducts() {
-      try {
-        const url = new URL("http://127.0.0.1:8000/api/products/product/products/");
+  async function loadProducts() {
+    try {
+      const userId = localStorage.getItem("user_id");
+      let url;
 
-        if (selectedCategories.length > 0) {
-          url.searchParams.append("category", selectedCategories.join(","));
-        }
-        if (selectedMaterials.length > 0) {
-          url.searchParams.append("material", selectedMaterials.join(","));
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch products");
-
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error loading products:", error);
+      if (userId) {
+        // ✅ Personalized products for logged-in user
+        url = new URL(
+          `http://127.0.0.1:8000/api/products/product/personalized/${userId}/`
+        );
+      } else {
+        // ✅ Random products for anonymous users
+        url = new URL("http://127.0.0.1:8000/api/products/product/products/");
+        url.searchParams.append("random", true);
       }
+
+      // Apply filters if selected
+      if (selectedCategories.length > 0) {
+        url.searchParams.append("category", selectedCategories.join(","));
+      }
+      if (selectedMaterials.length > 0) {
+        url.searchParams.append("material", selectedMaterials.join(","));
+      }
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch products");
+
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error loading products:", error);
     }
-    loadProducts();
-  }, [selectedCategories, selectedMaterials]);
+  }
+  loadProducts();
+}, [selectedCategories, selectedMaterials]);
 
   // Handle checkbox toggle
   const toggleCategory = (category) => {
@@ -110,6 +124,19 @@ function Products() {
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  function handleProductClick(productId) {
+  const userId = localStorage.getItem("user_id");
+
+  fetch("http://127.0.0.1:8000/api/products/product/log-view/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ product_id: productId, user_id: userId }),
+  });
+
+  navigate(`/product/${productId}`);
+}
+
+
   return (
     <div className="products-page">
       {/* ===== HEADER ===== */}
@@ -119,7 +146,7 @@ function Products() {
           <ul>
             <li>
               <Link
-                to="/homepage"
+                to="/"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 Home
@@ -189,7 +216,7 @@ function Products() {
                     to={`/product/${product.id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
-                    <div className="product-card">
+                    <div className="product-card" onClick={() => handleProductClick(product.id)}>
                       <img
                         src={getImageUrl(product.main_image)}
                         alt={product.name}

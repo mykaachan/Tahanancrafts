@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { addToCart } from "./api"; // API call to add items to cart
+import RecommendedProducts from "./YouMayLike";
 
 // fallback image if no product image
 import defaultImg from "./images/basket1.png";
@@ -15,6 +16,15 @@ function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate(); // for navigation after actions
+
+  let productId = id; // Ensure productId is defined
+
+  const handleProductClick = (id) => {
+    navigate(`/product/${id}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+
 
   useEffect(() => {
     // fetch product details from Django backend
@@ -184,6 +194,88 @@ function ProductDetail() {
           </div>
         </div>
       
+      {/* ===== RATINGS & REVIEWS ===== */}
+      <div className="reviews-section">
+        <h2>RATINGS & REVIEWS</h2>
+
+        <div className="reviews-header">
+          <p>All Reviews (6)</p>
+          <div className="reviews-actions">
+            <select>
+              <option>Latest</option>
+              <option>Oldest</option>
+              <option>Highest Rated</option>
+              <option>Lowest Rated</option>
+            </select>
+            <button className="review-btn">Write a Review</button>
+          </div>
+        </div>
+
+        <div className="reviews-grid">
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐⭐</p>
+            <h4>Juan D.</h4>
+            <p>salamat po mabilis delivery at maganda nman Ang bilao thank you po ng marami.....😊😊😊😊😊😊😊</p>
+            <small>Posted on May 14, 2025</small>
+          </div>
+
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐⭐</p>
+            <h4>Mikaela M.</h4>
+            <p>SUPER LEGIT GUYS, WALANG LABIS, WALANG KULANG, SOBRANG LAKI NITO. WORTH IT NAMAN SIYA GUYSS!!💞💞</p>
+            <small>Posted on May 15, 2025</small>
+          </div>
+
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐½</p>
+            <h4>Missy R.</h4>
+            <p>satisfied buyer here, well packed and maganda yung bilao, sakto para sa mga paorder kong kakanin...</p>
+            <small>Posted on May 16, 2025</small>
+          </div>
+
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐</p>
+            <h4>Angela P.</h4>
+            <p>Double-stitched for extra strength, Support local small businesses, eco-friendly bamboo material...</p>
+            <small>Posted on May 17, 2025</small>
+          </div>
+
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐⭐</p>
+            <h4>Gabrielo K.</h4>
+            <p>salamat po ng marami dumating on time sakto sakto, salamat din Kay kuya rider na mabait...</p>
+            <small>Posted on May 18, 2025</small>
+          </div>
+
+          <div className="review-card">
+            <p className="stars">⭐⭐⭐⭐½</p>
+            <h4>Inday H.</h4>
+            <p>nice product 👍👍👍...will order again soon. thanks much po sa nag deliver... keepsafe always</p>
+            <small>Posted on May 19, 2025</small>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== SHOP SECTION ===== */}
+      <section className="shop-section">
+        <hr className="shop-divider" />
+        <div className="shop-card-horizontal">
+          <div className="shop-image-horizontal">
+            {/* Use an image or just a colored circle */}
+          </div>
+          <div className="shop-info">
+            <h3 className="shop-name">Iraya Lipa</h3>
+            <button className="view-shop-btn">View Shop</button>
+          </div>
+        </div>
+        <hr className="shop-divider" />
+      </section>
+
+
+
+
+      {/* ===== YOU MAY ALSO LIKE ===== */}
+      <RecommendedProducts productId={productId} />
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">

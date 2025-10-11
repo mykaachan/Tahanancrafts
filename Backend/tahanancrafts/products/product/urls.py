@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    ProductPersonalizedView,
     ProductTestView,
     AddProductView,
     DeleteProductView,
@@ -8,6 +9,9 @@ from .views import (
     CategoryListView,  
     MaterialListView,  
     ProductDetailView,
+    RecommendedProductsView,
+    ProductDetailRecommendedView,
+    LogProductView
 )
 
 urlpatterns = [
@@ -19,5 +23,7 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('materials/', MaterialListView.as_view(), name='material-list'),
     path('products/<int:id>/', ProductDetailView.as_view(), name='product-detail'),  # New URL pattern for product detail
-   
+    path('recommendations/<int:product_id>/', ProductDetailRecommendedView.as_view(), name='recommendations'),
+    path('log-view/', LogProductView.as_view(), name='log-view'),
+    path('personalized/<int:user_id>/', ProductPersonalizedView.as_view(), name='personalized'),
 ]
