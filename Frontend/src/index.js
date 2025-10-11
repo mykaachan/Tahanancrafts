@@ -30,7 +30,7 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
-
+import UserForm from './UserForm';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -75,7 +75,7 @@ function MainApp() {
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
         <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
-        <Route path="/dashboard" element={<HomeDashboard />} />
+        <Route path="/seller-dashboard" element={<HomeDashboard />} />
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="/order-list" element={<OrderList />} />
         <Route path="/product/:id" element={<ProductDetails />} />
@@ -86,6 +86,8 @@ function MainApp() {
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
+        <Route path="/create-user" element={<UserForm />} />
+
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>

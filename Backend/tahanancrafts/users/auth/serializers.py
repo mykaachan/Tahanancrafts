@@ -31,10 +31,15 @@ class LoginRequestSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate_contact(self, value):
-        if value == "admin":
+        # ✅ Allow any string with "admin" and no '@'
+        if "admin" in value.lower() and "@" not in value:
             return value
-        validate_email_or_phone(value)  # your existing validation
-        return value
+        # ✅ Otherwise must be email or phone
+        if '@' in value:
+            return value  # let email through
+        else:
+            # normalize phone (if you already have a helper for that)
+            return normalize_phone_number(value)
 
 class LoginVerifyOTPSerializer(serializers.Serializer):
     contact = serializers.CharField()
@@ -64,3 +69,22 @@ class ChangePasswordSerializer(serializers.Serializer):
     contact = serializers.CharField()
     newpass1 = serializers.CharField(write_only=True)
     newpass2 = serializers.CharField(write_only=True)
+
+
+class CustomUserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, validators=[validate_password_strength])
+    role = serializers.ChoiceField(choices=[("admin", "Admin"), ("seller", "Seller")])
+
+    class Meta:
+        model = CustomUser
+        fields = ["username", "name", "email", "phone", "role", "password"]
+
+    def validate_phone(self, value):
+        return normalize_phone_number(value)
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        user = CustomUser(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user

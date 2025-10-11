@@ -55,7 +55,7 @@ function ProductDetail() {
              <nav className="nav-links">
                <ul>
                  <li>
-                   <Link to="/homepage" style={{ textDecoration: "none", color: "inherit" }}>
+                   <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
                      Home
                    </Link>
                  </li>

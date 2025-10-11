@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ReactComponent as Logo } from "./Logo.svg";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";
 import { loginOtp } from "./api";
 
 function VerifyCode() {
@@ -16,26 +16,33 @@ function VerifyCode() {
   };
 
   const handleVerify = async () => {
-  try {
-    const res = await loginOtp({ otp, contact });
+    try {
+      const res = await loginOtp({ otp, contact });
 
-    // Backend returns { message, user }
-    if (res.user && res.user.id) {
-      console.log("OTP verified:", res);
+      // Backend returns { message, user }
+      if (res.user && res.user.id) {
+        console.log("OTP verified:", res);
 
-      localStorage.setItem("user_id", res.user.id);
-      localStorage.setItem("user_role", res.user.role);
-      localStorage.setItem("user_email", res.user.name);
+        const user = res.user;
+        localStorage.setItem("user_id", user.id);
+        localStorage.setItem("user_role", user.role);
+        localStorage.setItem("user_email", user.email || contact);
+        localStorage.setItem("user_name", user.name || "");
 
-      navigate("/");
-    } else {
-      throw new Error("Invalid code");
+        // ✅ Navigate based on role
+        if (user.role === "seller") {
+          navigate("/seller-dashboard");
+        } else {
+          navigate("/");
+        }
+      } else {
+        throw new Error("Invalid code");
+      }
+    } catch (err) {
+      console.error("OTP verification failed:", err.message || err);
+      alert("Invalid code. Please try again.");
     }
-  } catch (err) {
-    console.error("OTP verification failed:", err.message || err);
-    alert("Invalid code. Please try again.");
-  }
-};
+  };
 
   return (
     <div className="App">

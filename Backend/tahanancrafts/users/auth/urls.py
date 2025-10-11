@@ -7,6 +7,7 @@ from .views import VerifyRegisterOTPView
 from .views import LoginRequestOTPView, LoginVerifyOTPView, ForgotPasswordView, ForgotPasswordOtpVerify, ChangePassword
 from .views import GoogleLoginAPIView
 from .views import JWTLoginView
+from .views import CreateCustomUserView
 
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path('change_password/', ChangePassword.as_view(), name='auth-change-password'),
     path('google_callback/', GoogleLoginAPIView.as_view(), name='google-login'),
     path("jwt-login/", JWTLoginView.as_view(), name="jwt-login"),
+    path("create-user/", CreateCustomUserView.as_view(), name="create-user"),   
 ]
 
 

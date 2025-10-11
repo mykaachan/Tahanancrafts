@@ -2,7 +2,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework import serializers
 from rest_framework import status
+from django.db.models import Q
 from django.core.cache import cache
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,7 +14,7 @@ from .serializers import (
     RequestOTPSerializer, VerifyOTPSerializer,
     LoginRequestSerializer, LoginVerifyOTPSerializer,
     ForgotPasswordSerializer, ForgotPasswordOtpVerifySerializer,
-    ChangePasswordSerializer
+    ChangePasswordSerializer,CustomUserCreateSerializer
 )
 
 import random
@@ -178,26 +180,51 @@ class VerifyRegisterOTPView(APIView):
 
 
 # Request OTP for login
+# Request OTP for login
 class LoginRequestOTPView(APIView):
     permission_classes = [AllowAny]
+
     def post(self, request):
+        from django.db.models import Q  # ensure import for combined query
+
         serializer = LoginRequestSerializer(data=request.data)
         if serializer.is_valid():
-            contact = serializer.validated_data['contact']
-            password = serializer.validated_data['password']
+            contact = serializer.validated_data["contact"]
+            password = serializer.validated_data["password"]
 
-            # Special case for admin login
-            if contact == "admin":
-                user = CustomUser.objects.filter(role="admin", name="admin").first()
+            # 🔹 1. Admin-type login (skip OTP)
+            # Matches 'admin', 'admin1', 'admin2', etc. (no '@')
+            if "admin" in contact.lower() and "@" not in contact:
+                user = CustomUser.objects.filter(
+                    Q(username__iexact=contact) | Q(email__iexact=contact),
+                    role__iexact="admin"
+                ).first()
+
                 if user and user.check_password(password):
-                    return Response({"message": "Successfully logged in as admin."}, status=status.HTTP_200_OK)
-                else:
-                    return Response({"error": "Invalid admin credentials."}, status=status.HTTP_400_BAD_REQUEST)
+                    # ✅ Direct login (no OTP)
+                    refresh = RefreshToken.for_user(user)
+                    return Response(
+                        {
+                            "message": f"Successfully logged in as {user.username}.",
+                            "role": user.role,
+                            "redirect": "/admin-dashboard/",  # 👈 added for frontend redirect
+                            "user": {
+                                "id": user.id,
+                                "username": user.username,
+                                "name": user.name,
+                                "email": user.email,
+                            },
+                            "access": str(refresh.access_token),
+                            "refresh": str(refresh),
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                return Response({"error": "Invalid admin credentials."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Normalize contact
-            if '@' in contact:
+            # 🔹 2. Regular users (OTP login)
+            if "@" in contact:
+                user = CustomUser.objects.filter(email=contact).first()
                 normalized_contact = contact
-                user = CustomUser.objects.filter(email=normalized_contact).first()
             else:
                 normalized_contact = normalize_phone_number(contact)
                 user = CustomUser.objects.filter(phone=normalized_contact).first()
@@ -205,23 +232,32 @@ class LoginRequestOTPView(APIView):
             if not user or not user.check_password(password):
                 return Response({"error": "Invalid credentials."}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Generate and send OTP
             otp = str(random.randint(100000, 999999))
             cache.set(f"login_{normalized_contact}", {"otp": otp, "user_id": user.id}, timeout=300)
 
-            # Send OTP
-            if '@' in contact:
+            if "@" in contact:
                 send_otp_email(normalized_contact, otp)
             else:
                 send_otp_sms(normalized_contact, otp)
 
-            return Response({"message": "OTP sent. Please verify to login."}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": "OTP sent. Please verify to login.",
+                    "contact": normalized_contact,
+                    "otp_required": True,  # 👈 added for frontend logic
+                },
+                status=status.HTTP_200_OK,
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+
 # Verify OTP for login
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+
 
 class LoginVerifyOTPView(APIView):
     permission_classes = [AllowAny]
@@ -369,3 +405,14 @@ class GoogleLoginAPIView(APIView):
 
         # Optionally: create session / JWT
         return Response({"message": "Login successful", "email": user.email, "name": user.name})
+    
+
+class CreateCustomUserView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = CustomUserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

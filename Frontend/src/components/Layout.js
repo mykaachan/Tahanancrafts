@@ -27,10 +27,10 @@ const Layout = ({ children }) => {
         {/* Sidebar */}
         <aside className="dashboard-sidebar">
           <nav className="sidebar-nav">
-            <div className="nav-item">
-              <img src="/images/Home.png" alt="Home" className="nav-icon" />
-              <span className="nav-text">HOME</span>
-            </div>
+            <Link to="/seller-dashboard" className="nav-item no-underline">
+                <img src="/images/Home.png" alt="Home" className="nav-icon" />
+                <span className="nav-text">HOME</span>
+            </Link>
             <Link to="/all-products" className="nav-item no-underline">
               <img src="/images/ALLPRODUCTS.png" alt="All Products" className="nav-icon" />
               <span className="nav-text">ALL PRODUCTS</span>

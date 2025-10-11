@@ -1,9 +1,9 @@
 // src/LoginPage.js
 import React, { useState } from "react";
-import logo from "./Logo.svg"; // ✅ use image import, not SVG component
+import logo from "./Logo.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "./api"; // login request (sends contact + password, receives OTP)
-import { GoogleLogin } from "@react-oauth/google"; // Google login component
+import { login } from "./api";
+import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 function LoginPage() {
@@ -13,23 +13,42 @@ function LoginPage() {
   const [enteredPassword, setEnteredPassword] = useState("");
 
   // -------------------------------
-  // Normal login (OTP request)
+  // Normal login (OTP request + admin shortcut)
   // -------------------------------
-  const handleLogin = async () => {
-    const userData = {
-      contact: enteredEmailOrPhone,
-      password: enteredPassword,
-    };
+  const handleLogin = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await login(userData);
-      console.log("OTP request success:", res);
-      navigate("/verify", { state: { contact: enteredEmailOrPhone } });
-    } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
-      alert("Login failed. Please check your credentials.");
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/users/auth/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contact: enteredEmailOrPhone, password: enteredPassword }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // ✅ If backend sent a redirect (admin detected)
+      if (data.redirect === "/admin-dashboard/") {
+        alert(data.message); // optional
+        window.location.href = "/admin-dashboard";
+        return;
+      }
+
+      // ✅ Normal OTP-required flow
+      if (data.otp_required) {
+        navigate("/verify", { state: { contact: enteredEmailOrPhone } }); // 👈 pass contact from login input
+      }
+    } else {
+      alert(data.error || "Please check your credentials and try again.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleLogin();
@@ -47,10 +66,23 @@ function LoginPage() {
       })
       .then((res) => {
         console.log("Logged in with Google:", res.data);
+
+        const userEmail = res.data.email;
+        const userName = res.data.name;
+        const userRole = res.data.role || "customer";
+
+        localStorage.setItem("user_email", userEmail);
+        localStorage.setItem("user_name", userName);
+        localStorage.setItem("user_role", userRole);
+
         alert("Login successful!");
-        localStorage.setItem("user_email", res.data.email);
-        localStorage.setItem("user_name", res.data.name);
-        navigate("/homepage");
+
+        // ✅ Admins skip OTP, others go through verify
+        if (userRole === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/verify", { state: { contact: userEmail } });
+        }
       })
       .catch((err) => {
         console.error("Google login failed:", err.response?.data || err.message);
@@ -71,7 +103,6 @@ function LoginPage() {
 
       <div className="login-rectangle">
         <div className="logo-wrapper">
-          {/* ✅ Unified logo style */}
           <img src={logo} alt="Tahanan Crafts Logo" className="auth-logo" />
         </div>
 
