@@ -92,9 +92,9 @@ export function getAvatarUrl(avatarPath, name) {
   return `https://via.placeholder.com/150?text=${initials}`;
 }
 
-export async function changePassword(oldPassword, newPassword, confirmPassword) {
-  const user = JSON.parse(localStorage.getItem("user_id"));
-  if (!user || !user.id) {
+export async function changePassword(oldPassword, newPassword, repeatPassword) {
+  const userId = JSON.parse(localStorage.getItem("user_id"));
+  if (!userId) {
     throw new Error("User not logged in");
   }
 
@@ -104,10 +104,10 @@ export async function changePassword(oldPassword, newPassword, confirmPassword) 
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user_id: user.id,
+      user_id: userId,
       old_password: oldPassword,
       new_password: newPassword,
-      confirm_password: confirmPassword,
+      repeat_password: repeatPassword, // must match backend
     }),
   });
 

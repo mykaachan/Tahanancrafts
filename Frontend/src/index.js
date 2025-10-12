@@ -9,6 +9,7 @@ import ForgotPass from './ForgotPass';
 import ForgotPass2 from './ForgotPass2';
 import SignUp from './SignUp';
 import VerifyCode from './VerifyCode';
+import ChangePassword from './ChangePassword';
 import HomePage from './HomePage';
 import StoryPage from './StoryPage';
 import Products from './Products';
@@ -65,6 +66,7 @@ function MainApp() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/forgotpass2" element={<ForgotPass2 />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
         <Route path="/" element={<HomePage />} />

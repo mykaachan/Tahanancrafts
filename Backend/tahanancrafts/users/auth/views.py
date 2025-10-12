@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import CustomUser, Profile
-from users.utils import normalize_phone_number, send_otp_email, send_otp_sms
+from users.utils import normalize_phone_number, send_otp_email, send_otp_sms, validate_and_return_new_password
 from .serializers import (
     RequestOTPSerializer, VerifyOTPSerializer,
     LoginRequestSerializer, LoginVerifyOTPSerializer,
@@ -348,7 +348,6 @@ class ForgotPasswordOtpVerify(APIView):
 
 class ChangePassword(APIView):
     permission_classes = [AllowAny]
-    """Step 2: Change password after OTP verification"""
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():

@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from users.models import CustomUser
 from .serializers import ProfileSerializer, EditProfileSerializer
+from users.utils import validate_and_return_new_password
+from django.contrib.auth.hashers import check_password
+
 
 class ProfileView(APIView):
     permission_classes = [AllowAny]  # no JWT/auth needed
@@ -94,45 +97,30 @@ class ChangeUserPasswordView(APIView):
     permission_classes = [AllowAny]  # change to IsAuthenticated once you use tokens
 
     def post(self, request):
-        # Try to get user_id either from frontend or session
-        user_id = request.query_params.get("user_id") or request.data.get("user_id")
+        data = request.data
+        user_id = data.get("user_id")  # get user_id from frontend
+        old_password = data.get("old_password")
+        new_password = data.get("new_password")
+        repeat_password = data.get("repeat_password")
 
-        # If not using token/session, require user_id explicitly
-        if not user_id:
-            return Response({"error": "User ID required."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Fetch the user
+        # Get the user by ID
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "User not found."}, status=404)
 
-        # Get form fields
-        old_password = request.data.get("old_password")
-        new_password = request.data.get("new_password")
-        confirm_password = request.data.get("confirm_password")
+        # Verify old password
+        if not check_password(old_password, user.password):
+            return Response({"error": "Old password is incorrect."}, status=400)
 
-        # Check missing fields
-        if not all([old_password, new_password, confirm_password]):
-            return Response(
-                {"error": "All fields (old_password, new_password, confirm_password) are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Validate old password
-        if not user.check_password(old_password):
-            return Response({"error": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Match new passwords
-        if new_password != confirm_password:
-            return Response({"error": "New passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Prevent reuse
-        if old_password == new_password:
-            return Response({"error": "New password cannot be the same as the old password."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validate new password and repeat password
+        try:
+            valid_password = validate_and_return_new_password(new_password, repeat_password)
+        except ValueError as e:
+            return Response({"error": str(e)}, status=400)
 
         # Update password
-        user.set_password(new_password)
+        user.set_password(valid_password)
         user.save()
 
-        return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+        return Response({"success": "Password changed successfully."}, status=200)

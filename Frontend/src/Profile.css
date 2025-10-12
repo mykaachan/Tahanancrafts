@@ -113,19 +113,33 @@
   border-radius: 16px;
   margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+  display: flex;            /* row layout */
+  align-items: flex-start;  /* align items to top */
+  gap: 30px;                /* spacing between details and avatar */
+  flex-wrap: wrap;          /* for small screens */
 }
+
+.profile-box.editing {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
 
 /* Profile details */
 .profile-details p {
   margin: 8px 0;
   font-size: 15px;
+  flex: 1;  /* take available space */
 }
 
 .btn-edit {
-  margin-top: 15px;
+  margin-top: 20px;
   background: #7a5a36;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 20px;       /* bigger button */
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -140,6 +154,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 150px;
+}
+
+.profile-avatar img.profile-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .avatar-circle {
@@ -153,9 +176,10 @@
 .btn-select {
   background: white;
   border: 1px solid #ccc;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .btn-select:hover {
@@ -178,10 +202,36 @@
   background: #5a4028;
 }
 
+/* Responsive: stack for smaller screens */
+@media (max-width: 768px) {
+   .profile-avatar {
+    margin-top: 20px;
+  }
+
+  .profile-box.editing {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .edit-profile-form {
+    width: 100%;
+  }
+
+  .edit-profile-form .dob-gender {
+    flex-direction: column;
+  }
+}
+
 /* ===== Edit Profile Form (inside box) ===== */
 .edit-profile-form {
+  flex: 1; /* take available space */
   display: flex;
   flex-direction: column;
+  gap: 15px;
+}
+
+.edit-profile-form .dob-gender {
+  display: flex;
   gap: 15px;
 }
 
@@ -195,12 +245,13 @@
 .edit-profile-form input,
 .edit-profile-form select {
   margin-top: 5px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 15px;
+  font-size: 16px;
   background: #fafafa;
 }
+
 
 .edit-profile-form input:focus,
 .edit-profile-form select:focus {
@@ -211,17 +262,22 @@
 
 .form-actions {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   margin-top: 20px;
+  justify-content: flex-start; /* align buttons to left */
+}
+
+.btn-save, .btn-cancel {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
 }
 
 .btn-save {
   background: #7a5a36;
   color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .btn-save:hover {
@@ -232,20 +288,11 @@
   background: #ccc;
   color: #333;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .btn-cancel:hover {
   background: #aaa;
 }
-
-
-
-
-
-
 
 .change-password-form {
   display: flex;
