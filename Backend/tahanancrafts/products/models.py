@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import CustomUser
+from users.models import CustomUser, Artisan
 from django.conf import settings
 from django.utils import timezone
 
@@ -21,6 +21,13 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category, related_name='products')
     materials = models.ManyToManyField(Material, related_name='products')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    artisan = models.ForeignKey(
+        'users.Artisan',   # or 'yourappname.Artisan' if Artisan is in another app
+        on_delete=models.CASCADE,
+        related_name='products'
+    )
+    
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)

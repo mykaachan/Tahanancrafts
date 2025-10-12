@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from users.utils import normalize_phone_number 
 import uuid
+from django.conf import settings
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -112,3 +113,30 @@ def create_or_update_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
     else:
         instance.profile.save()
+
+
+class Artisan(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="artisans")
+    name = models.CharField(max_length=100)
+    short_description = models.CharField(max_length=255, blank=True)
+    location = models.CharField(max_length=150, blank=True)
+    about_shop = models.TextField(blank=True)
+    vision = models.TextField(blank=True)
+    mission = models.TextField(blank=True)
+
+    # Optional: a main photo reference (not required but useful)
+    main_photo = models.ImageField(upload_to="artisan_photos/", blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+    
+class ArtisanPhoto(models.Model):
+    artisan = models.ForeignKey(Artisan, on_delete=models.CASCADE, related_name="photos")
+    photo = models.ImageField(upload_to="artisan_photos/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Photo for {self.artisan.name}"

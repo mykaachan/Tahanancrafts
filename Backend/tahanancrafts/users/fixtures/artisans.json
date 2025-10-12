@@ -1,0 +1,130 @@
+[
+  {
+    "model": "users.artisan",
+    "pk": 1,
+    "fields": {
+      "user": 22,
+      "name": "Taal Weavers Cooperative",
+      "short_description": "Handwoven embroidery and traditional crafts from Taal",
+      "location": "Taal, Batangas",
+      "about_shop": "Taal Weavers Cooperative preserves the art of Taal embroidery and weaving, creating intricate handmade pieces passed down through generations.",
+      "vision": "To preserve and promote the traditional weaving culture of Taal for future generations.",
+      "mission": "To empower local artisans through sustainable livelihoods and global appreciation of Taal craftsmanship.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 2,
+    "fields": {
+      "user": 23,
+      "name": "Lipa Clayworks Studio",
+      "short_description": "Handmade pottery and ceramic home décor",
+      "location": "Lipa City, Batangas",
+      "about_shop": "Lipa Clayworks Studio produces handmade ceramic pieces inspired by local landscapes and traditional Filipino pottery.",
+      "vision": "To bring Batangueño artistry into every home through functional art.",
+      "mission": "To support local potters by providing fair trade opportunities and modern design training.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 3,
+    "fields": {
+      "user": 24,
+      "name": "Bauan Bamboo Crafts",
+      "short_description": "Sustainable bamboo furniture and accessories",
+      "location": "Bauan, Batangas",
+      "about_shop": "Bauan Bamboo Crafts focuses on eco-friendly bamboo products designed for modern homes while supporting local craftsmen.",
+      "vision": "To promote sustainable living through bamboo craftsmanship.",
+      "mission": "To innovate and popularize bamboo as a versatile material for eco-conscious consumers.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 4,
+    "fields": {
+      "user": 25,
+      "name": "Alitagtag Handicraft Corner",
+      "short_description": "Locally made bags and ornaments",
+      "location": "Alitagtag, Batangas",
+      "about_shop": "A small community-based shop making abaca bags, woven ornaments, and decor with modern Filipino flair.",
+      "vision": "To connect Batangas craftsmanship with contemporary Filipino style.",
+      "mission": "To empower local women artisans through livelihood and creativity.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 5,
+    "fields": {
+      "user": 26,
+      "name": "Nasugbu Coastal Crafts",
+      "short_description": "Seashell-based home decor and accessories",
+      "location": "Nasugbu, Batangas",
+      "about_shop": "Nasugbu Coastal Crafts creates coastal-inspired décor using locally sourced shells and driftwood.",
+      "vision": "To celebrate Batangas’ coastal beauty through sustainable craftsmanship.",
+      "mission": "To provide livelihood for coastal families while protecting marine resources.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 6,
+    "fields": {
+      "user": 27,
+      "name": "Batangas Basketry Hub",
+      "short_description": "Handwoven baskets and storage crafts",
+      "location": "Rosario, Batangas",
+      "about_shop": "A family-run enterprise specializing in rattan and buri baskets for home and lifestyle use.",
+      "vision": "To make Batangas the leading source of quality handwoven products.",
+      "mission": "To promote eco-friendly practices and preserve basketry traditions.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 7,
+    "fields": {
+      "user": 28,
+      "name": "San Juan Handmade Textiles",
+      "short_description": "Loom-woven textiles and fashion accessories",
+      "location": "San Juan, Batangas",
+      "about_shop": "Specializes in handloom textiles using traditional patterns combined with contemporary designs.",
+      "vision": "To keep the handloom tradition alive through innovation.",
+      "mission": "To uplift weavers’ communities through fair trade and design education.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.artisan",
+    "pk": 8,
+    "fields": {
+      "user": 29,
+      "name": "Calaca Woodworks",
+      "short_description": "Custom wooden crafts and home décor",
+      "location": "Calaca, Batangas",
+      "about_shop": "Calaca Woodworks creates handcrafted wooden décor, blending traditional techniques with modern minimalism.",
+      "vision": "To be a leading advocate of sustainable woodworking in Batangas.",
+      "mission": "To craft with purpose and preserve woodworking traditions through education.",
+      "main_photo": "",
+      "created_at": "2025-10-12T00:00:00Z",
+      "updated_at": "2025-10-12T00:00:00Z"
+    }
+  }
+]
