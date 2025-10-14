@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./StoryPage.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-
-import story1 from "./images/story1.png";
-import story2 from "./images/story2.png";
-import story3 from "./images/story3.png";
-import story4 from "./images/story4.png";
+import { fetchArtisanStories } from "./api";
 
 function StoryPage() {
+  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const BASE_URL = "http://127.0.0.1:8000"; // Django backend URL
+
+  useEffect(() => {
+    async function loadStories() {
+      try {
+        // Fetch all artisans (no artisan_id filter)
+        const data = await fetchArtisanStories();
+        setStories(data);
+      } catch (error) {
+        console.error("Failed to load artisan stories:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadStories();
+  }, []);
+
   return (
     <div className="story-page">
       {/* ===== HEADER ===== */}
@@ -16,22 +32,22 @@ function StoryPage() {
         <Logo className="logo-svg homepage-logo" />
         <nav className="nav-links">
           <ul>
-             <li>
-        <Link
-          to="/homepage"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          Home
-        </Link>
-      </li>
             <li>
-  <Link
-    to="/products"
-    style={{ textDecoration: "none", color: "inherit" }}
-  >
-    Products
-  </Link>
-</li>
+              <Link
+                to="/homepage"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/products"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Products
+              </Link>
+            </li>
             <li>
               <Link
                 to="/story"
@@ -41,116 +57,60 @@ function StoryPage() {
               </Link>
             </li>
             <li>
-  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-    Profile
-  </Link>
-</li>
+              <Link
+                to="/profile"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                Profile
+              </Link>
+            </li>
           </ul>
         </nav>
+
         <div className="header-actions">
           <div className="search-box">
             <input type="text" placeholder="Search" />
             <button className="search-btn">🔍</button>
           </div>
-          {/* ✅ Link the cart button to /cart */}
-  <Link to="/cart" style={{ textDecoration: "none" }}>
-    <button className="cart-btn">CART 🛒</button>
-  </Link>
-</div>
+
+          <Link to="/cart" style={{ textDecoration: "none" }}>
+            <button className="cart-btn">CART 🛒</button>
+          </Link>
+        </div>
       </header>
 
       {/* ===== STORY CONTENT ===== */}
       <section className="story-content">
-  <h1 className="story-title">Stories</h1>
+        <h1 className="story-title">Stories</h1>
 
-   {/* Story 1 */}
-  <div className="story-row">
-    <img
-      src={story1}
-      alt="SM Sunrise Weaving Association"
-      className="story-image"
-    />
-    <div className="story-text">
-      <h2 className="story-heading">SM Sunrise Weaving Association</h2>
-      <p className="story-paragraph">
-        Ibaan, Batangas
-      </p>
-      <p className="story-paragraph">
-        The SM Sunrise Weaving Association, founded in 2017 in Ibaan, Batangas,
-        is a group of women preserving Habing Ibaan, the town’s traditional
-        handloom weaving. They craft bags, scarves, and blankets, keeping local
-        heritage alive and supporting community livelihoods with help from
-        government support.
-      </p>
-    </div>
-  </div>
+        {loading ? (
+          <p className="loading-text">Loading artisan stories...</p>
+        ) : stories.length === 0 ? (
+          <p className="loading-text">No artisan stories found.</p>
+        ) : (
+          stories.map((story, index) => (
+            <div
+              className="story-row"
+              key={story.id}
+              style={{
+                flexDirection: index % 2 === 0 ? "row" : "row-aligned",
+              }}
+            >
+              <img
+                src={`${BASE_URL}${story.main_photo}`}
+                alt={story.name}
+                className="story-image"
+              />
 
-   {/* Story 2 */}
-  <div className="story-row">
-    <img
-      src={story2}
-      alt="The Iraya Basket"
-      className="story-image"
-    />
-    <div className="story-text">
-      <h2 className="story-heading">The Iraya Basket</h2>
-      <p className="story-paragraph">
-        Lipa, Batangas
-      </p>
-      <p className="story-paragraph">
-        Ibaan, Batangas is a quiet town known for its traditional crafts and
-        rich heritage. Called the “Kulambo Capital of the Philippines,” it’s
-        famous for handwoven mosquito nets and local treats like tamales. With
-        its colorful and long-standing traditions, Ibaan keeps its culture alive
-        through everyday craft and community pride.
-      </p>
-    </div>
-  </div>
- {/* Story 3 */}
-  <div className="story-row">
-    <img
-      src={story3}
-      alt="Lipa, Batangas"
-      className="story-image"
-    />
-    <div className="story-text">
-      <h2 className="story-heading">Lipa, Batangas</h2>
-      <p className="story-paragraph">
-        Lipa, Batangas
-      </p>
-      <p className="story-paragraph">
-        Lipa, Batangas is a city with a rich cultural history, celebrated for
-        its local crafts like intricate woodwork, woven textiles, and pottery.
-        These crafts are showcased during festivals like the Lomi and Walistik
-        Festivals, which highlight the city’s artistic traditions and deep
-        community pride.
-      </p>
-    </div>
-  </div>
-
-  {/* Story 4 */}
-  <div className="story-row">
-    <img
-      src={story4}
-      alt="Tuy, Batangas"
-      className="story-image"
-    />
-    <div className="story-text">
-      <h2 className="story-heading">Tuy, Batangas</h2>
-      <p className="story-paragraph">
-        Tuy, Batangas
-      </p>
-      <p className="story-paragraph">
-        Tuy, Batangas is known for eco-friendly crafts, with artisans turning
-        agricultural waste into handmade paper, bags, and more. Tuy Arts and
-        Designs promotes sustainability, while local painters and sculptors
-        enrich the art scene. The town also offers workshops that support
-        creativity and livelihood.
-      </p>
-    </div>
-  </div>
-</section>
-
+              <div className="story-text">
+                <h2 className="story-heading">{story.name}</h2>
+                <p className="story-paragraph">{story.location}</p>
+                <p className="story-paragraph">{story.about_shop}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </section>
 
       {/* ===== FOOTER ===== */}
       <footer className="footer">
@@ -161,7 +121,6 @@ function StoryPage() {
           </h2>
           <p>
             This is a sample description and does not hold any valuable meaning.
-          
           </p>
           <button className="register-btn">Register</button>
         </div>

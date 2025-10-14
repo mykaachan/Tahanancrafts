@@ -240,3 +240,10 @@ export async function removeCartItem(cartId, userId) {
   if (!res.ok) throw new Error("Failed to delete cart item");
   return true;
 }
+
+//stories api
+export async function fetchArtisanStories(artisan_id) {
+  const res = await fetch(`${BASE_URL}/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
+  if (!res.ok) throw new Error("Failed to fetch artisan stories");
+  return await res.json();
+}
