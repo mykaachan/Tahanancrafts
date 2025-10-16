@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
-import { FaBell, FaTrash } from "react-icons/fa"; // ✅ FIX: added FaTrash import
+import { FaBell, FaTrash } from "react-icons/fa";
 
-export default function AdminProd() {
+export default function AdminArtisan() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
     "🧺 New artisan shop registered",
@@ -11,75 +11,67 @@ export default function AdminProd() {
     "💬 New message from a customer",
   ]);
 
-  const products = [
+  const artisans = [
     {
-      id: 1,
-      name: "Iraya Basket Lipa",
-      category: "Basket",
-      date: "1 May 2025",
-      stock: 250,
-      price: 500,
-      status: "Low Stock",
-      orders: 10,
-      img: "https://i.imgur.com/9yN6M5a.png",
-    },
-    {
-      id: 2,
-      name: "Kalpi Habing Ibaan",
-      category: "Coin Purse",
-      date: "29 April 2025",
-      stock: 250,
-      price: 349,
-      status: "On Stock",
-      orders: 10,
-      img: "https://i.imgur.com/Vv6D9Q4.png",
-    },
-    {
-      id: 3,
-      name: "Burdang Taal Lace",
-      category: "Table Runner",
-      date: "28 April 2025",
-      stock: 250,
-      price: 149,
-      status: "On Stock",
-      orders: 7,
-      img: "https://i.imgur.com/gH8ZC3D.png",
-    },
-    {
-      id: 4,
-      name: "Kalis Taal",
-      category: "Butterfly Knife",
-      date: "27 April 2025",
-      stock: 250,
-      price: 349,
-      status: "On Stock",
-      orders: 8,
-      img: "https://i.imgur.com/sJ3rFvA.png",
-    },
-    {
-      id: 5,
-      name: "Sakbit Habing Ibaan",
-      category: "Weaved Bag",
-      date: "27 April 2025",
-      stock: 250,
-      price: 1200,
-      status: "On Stock",
+      name: "SM Sunrise Weavers",
+      email: "HabingIbaan@email.com",
+      phone: "09888888888",
       orders: 3,
-      img: "https://i.imgur.com/fZlqQ7p.png",
+      status: "Active",
+      created: "15 February 2025",
+      logo: "https://via.placeholder.com/40",
+    },
+    {
+      name: "Iraya Baskets Lipa",
+      email: "IrayaBask_Lipa@email.com",
+      phone: "09777777777",
+      orders: 1,
+      status: "Active",
+      created: "10 February 2025",
+      logo: "https://via.placeholder.com/40",
+    },
+    {
+      name: "Banig ni Lola",
+      email: "baniglola@email.com",
+      phone: "09993999997",
+      orders: 0,
+      status: "Inactive",
+      created: "3 January 2025",
+      logo: "https://via.placeholder.com/40",
+    },
+    {
+      name: "Weave & Co.",
+      email: "weaveco@email.com",
+      phone: "09999599996",
+      orders: 0,
+      status: "Inactive",
+      created: "29 December 2024",
+      logo: "https://via.placeholder.com/40",
+    },
+    {
+      name: "Artisan Hub",
+      email: "artisanhub@email.com",
+      phone: "09996999995",
+      orders: 0,
+      status: "Inactive",
+      created: "3 August 2024",
+      logo: "https://via.placeholder.com/40",
     },
   ];
 
   return (
     <div className="admindash-container">
+      {/* ===== SIDEBAR ===== */}
       <AdminSidebar />
 
+      {/* ===== MAIN CONTENT ===== */}
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
           <input
             type="text"
             className="admindash-search"
-            placeholder="🔍 Search products..."
+            placeholder="🔍 Search artisans..."
           />
           <div className="admindash-header-right">
             <div
@@ -107,56 +99,51 @@ export default function AdminProd() {
 
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
-          <h2>Products</h2>
+          <h2>Artisans</h2>
         </div>
 
-        {/* ===== PRODUCT TABLE ===== */}
+        {/* ===== ARTISAN TABLE (styled like AdminCustDetails) ===== */}
         <div className="admincust-table">
           <table>
             <thead>
               <tr>
                 <th></th>
-                <th>Product</th>
-                <th>Stock</th>
-                <th>Price</th>
-                <th>Status</th>
+                <th>Shop Name</th>
+                <th>Phone</th>
                 <th>Orders</th>
+                <th>Status</th>
+                <th>Created</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((item) => (
-                <tr key={item.id}>
+              {artisans.map((a, index) => (
+                <tr key={index}>
                   <td>
-                    <input type="radio" name="selectProduct" />
+                    <input type="radio" name="artisanSelect" />
                   </td>
                   <td>
                     <div className="cust-info">
-                      <img src={item.img} alt={item.name} />
+                      <img src={a.logo} alt={a.name} />
                       <div>
-                        <p className="cust-name">{item.name}</p>
-                        <p className="cust-email">
-                          {item.category}
-                          <br />
-                          {item.date}
-                        </p>
+                        <p className="cust-name">{a.name}</p>
+                        <p className="cust-email">{a.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td>{item.stock}</td>
-                  <td>₱{item.price.toLocaleString()}</td>
+                  <td>{a.phone}</td>
+                  <td>{a.orders}</td>
                   <td>
                     <span
                       className={`status-badge ${
-                        item.status === "Low Stock" ? "inactive" : "active"
+                        a.status === "Active" ? "active" : "inactive"
                       }`}
                     >
-                      {item.status}
+                      {a.status}
                     </span>
                   </td>
-                  <td>{item.orders}</td>
+                  <td>{a.created}</td>
                   <td>
-                    {/* ✅ Standardized Delete Button */}
                     <button className="action-delete">
                       <FaTrash />
                     </button>
@@ -166,18 +153,17 @@ export default function AdminProd() {
             </tbody>
           </table>
 
-          {/* FOOTER */}
+          {/* ===== FOOTER ===== */}
           <div className="table-footer">
             <p>Showing 1 - 5 from 100</p>
             <div className="pagination">
-              <button>&lt;</button>
+              <button disabled>{"<"}</button>
               <button className="active">1</button>
               <button>2</button>
               <button>3</button>
               <button>4</button>
               <button>5</button>
-              <button>...</button>
-              <button>&gt;</button>
+              <button disabled>{">"}</button>
             </div>
           </div>
         </div>

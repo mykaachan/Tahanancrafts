@@ -151,9 +151,10 @@ const AdminCust = () => {
                   </td>
                   <td>{cust.created}</td>
                   <td>
-                    <button className="delete-btn" title="Delete Customer">
-  <i className="fa-regular fa-trash-can"></i>
+                    <button className="action-delete">
+  <FaTrash />
 </button>
+
                   </td>
                 </tr>
               ))}

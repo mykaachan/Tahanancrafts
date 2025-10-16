@@ -23,7 +23,9 @@ function AdminSidebar() {
           <li><Link to="/admincust" style={{ textDecoration: "none", color: "inherit" }}>
               Customers
             </Link></li>
-          <li>Artisans</li>
+          <li><Link to="/adminartisan" style={{ textDecoration: "none", color: "inherit" }}>
+              Artisans
+            </Link></li>
           <li>Orders</li>
           <li>Forecast & Trends</li>
         </ul>

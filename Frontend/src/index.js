@@ -2,7 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
+// Page imports
 import App from './App';
 import LoginPage from './LoginPage';
 import ForgotPass from './ForgotPass';
@@ -25,7 +27,7 @@ import Profile from './Profile';
 import HomeDashboard from './HomeDashboard';
 import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
-import ChatPopup from './ChatPopup'; // ✅ Global popup
+import ChatPopup from './ChatPopup';
 import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
@@ -33,45 +35,26 @@ import Notification from './Notification';
 import AdminSidebar from './AdminSidebar';
 import AdminDash from './AdminDash';
 import AdminProd from "./AdminProd";
-import AdminDet from "./AdminDet"; // import at top
+import AdminDet from "./AdminDet";
 import AdminCust from "./AdminCust";
 import AdminCustDetails from "./AdminCustDetails";
+import AdminArtisan from "./AdminArtisan";
 
-
-
-
-
-
-
-import "@fortawesome/fontawesome-free/css/all.min.css";
-
-// ✅ Step 1: Create a conditional wrapper for the popup
+// ✅ Hide ChatPopup on login/signup pages
 function ConditionalChatPopup() {
   const location = useLocation();
-
-  // List of routes where popup should be hidden
   const hiddenPaths = [
-    "/",                // login
-    "/signup",
-    "/forgot-password",
-    "/forgotpass2",
-    "/verify",
-    "/signup-verify"
+    "/", "/signup", "/forgot-password", "/forgotpass2", "/verify", "/signup-verify"
   ];
-
-  const shouldHide = hiddenPaths.includes(location.pathname);
-
-  if (shouldHide) return null; // Don't render popup on those pages
-  return <ChatPopup />;        // Render on all others
+  if (hiddenPaths.includes(location.pathname)) return null;
+  return <ChatPopup />;
 }
 
-// ✅ Step 2: Main App Wrapper
+// ✅ Main Router
 function MainApp() {
   return (
     <BrowserRouter>
-      {/* Chat Popup shows everywhere except hidden paths */}
       <ConditionalChatPopup />
-
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
@@ -95,7 +78,6 @@ function MainApp() {
         <Route path="/shopallproducts" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/adminsidebar" element={<AdminSidebar />} />
@@ -104,6 +86,9 @@ function MainApp() {
         <Route path="/admindet" element={<AdminDet />} />
         <Route path="/admincust" element={<AdminCust />} />
         <Route path="/admincustdetails" element={<AdminCustDetails />} />
+        <Route path="/adminartisan" element={<AdminArtisan />} />
+
+
 
 
 
