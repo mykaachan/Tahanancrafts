@@ -30,6 +30,17 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
+import AdminSidebar from './AdminSidebar';
+import AdminDash from './AdminDash';
+import AdminProd from "./AdminProd";
+import AdminDet from "./AdminDet"; // import at top
+import AdminCust from "./AdminCust";
+import AdminCustDetails from "./AdminCustDetails";
+
+
+
+
+
 
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -87,8 +98,19 @@ function MainApp() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
+        <Route path="/adminsidebar" element={<AdminSidebar />} />
+        <Route path="/admindash" element={<AdminDash />} />
+        <Route path="/adminprod" element={<AdminProd />} />
+        <Route path="/admindet" element={<AdminDet />} />
+        <Route path="/admincust" element={<AdminCust />} />
+        <Route path="/admincustdetails" element={<AdminCustDetails />} />
 
-        <Route path="/notification" element={<Notification />} />
+
+
+
+
+        
+
 
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>
