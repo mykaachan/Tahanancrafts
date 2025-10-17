@@ -40,7 +40,9 @@ import AdminArtisan from "./AdminArtisan";
 import AdminArtisanDetails from "./AdminArtisanDetails";
 import ArtisanProducts from "./ArtisanProducts";
 import AdminTransHistory from "./AdminTransHistory";
-
+import AdminNotification from './AdminNotification';
+import AdminOrders from './AdminOrders';
+import AdminForecast from './AdminForecast';
 
 
 
@@ -112,15 +114,15 @@ function MainApp() {
         <Route path="/adminartisandetails" element={<AdminArtisanDetails />} />
         <Route path="/artisanproducts" element={<ArtisanProducts />} />
         <Route path="/admintranshistory" element={<AdminTransHistory />} />
+        <Route path="/adminnotification" element={<AdminNotification />} />
+        <Route path="/adminorders" element={<AdminOrders />} /> // ✅ correct
+        <Route path="/adminforecast" element={<AdminForecast />} />
 
 
 
 
 
 
-
-
-        
 
 
         {/* ✅ Profile and its nested routes */}

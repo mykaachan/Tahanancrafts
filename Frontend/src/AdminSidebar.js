@@ -26,8 +26,12 @@ function AdminSidebar() {
           <li><Link to="/adminartisan" style={{ textDecoration: "none", color: "inherit" }}>
               Artisans
             </Link></li>
-          <li>Orders</li>
-          <li>Forecast & Trends</li>
+          <li><Link to="/adminorders" style={{ textDecoration: "none", color: "inherit" }}>
+              Orders
+            </Link></li>
+          <li><Link to="/adminforecast" style={{ textDecoration: "none", color: "inherit" }}>
+              Forecast & Trends
+            </Link></li>
         </ul>
         <p className="admin-menu-label">View as</p>
         <ul>
