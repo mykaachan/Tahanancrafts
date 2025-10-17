@@ -33,7 +33,28 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
+<<<<<<< HEAD
 import UserForm from './UserForm';
+=======
+import AdminSidebar from './AdminSidebar';
+import AdminDash from './AdminDash';
+import AdminProd from "./AdminProd";
+import AdminDet from "./AdminDet"; // import at top
+import AdminCust from "./AdminCust";
+import AdminCustDetails from "./AdminCustDetails";
+import AdminArtisan from "./AdminArtisan";
+import AdminArtisanDetails from "./AdminArtisanDetails";
+import ArtisanProducts from "./ArtisanProducts";
+import AdminTransHistory from "./AdminTransHistory";
+import AdminNotification from './AdminNotification';
+import AdminOrders from './AdminOrders';
+import AdminForecast from './AdminForecast';
+
+
+
+
+
+>>>>>>> 82088eec0d680beb98b10e5446bcb5d44d6ba9b6
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -90,7 +111,29 @@ function MainApp() {
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
+<<<<<<< HEAD
         <Route path="/create-user" element={<UserForm />} />
+=======
+        <Route path="/adminsidebar" element={<AdminSidebar />} />
+        <Route path="/admindash" element={<AdminDash />} />
+        <Route path="/adminprod" element={<AdminProd />} />
+        <Route path="/admindet" element={<AdminDet />} />
+        <Route path="/admincust" element={<AdminCust />} />
+        <Route path="/admincustdetails" element={<AdminCustDetails />} />
+        <Route path="/adminartisan" element={<AdminArtisan />} />
+        <Route path="/adminartisandetails" element={<AdminArtisanDetails />} />
+        <Route path="/artisanproducts" element={<ArtisanProducts />} />
+        <Route path="/admintranshistory" element={<AdminTransHistory />} />
+        <Route path="/adminnotification" element={<AdminNotification />} />
+        <Route path="/adminorders" element={<AdminOrders />} /> // ✅ correct
+        <Route path="/adminforecast" element={<AdminForecast />} />
+
+
+
+
+
+
+>>>>>>> 82088eec0d680beb98b10e5446bcb5d44d6ba9b6
 
 
         {/* ✅ Profile and its nested routes */}
