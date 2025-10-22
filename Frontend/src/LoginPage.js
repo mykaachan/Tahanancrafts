@@ -29,9 +29,9 @@ function LoginPage() {
 
     if (response.ok) {
       // ✅ If backend sent a redirect (admin detected)
-      if (data.redirect === "/admin-dashboard/") {
+      if (data.redirect === "/AdminDash") {
         alert(data.message); // optional
-        window.location.href = "/admin-dashboard";
+        window.location.href = "/AdminDash";
         return;
       }
 
@@ -79,7 +79,7 @@ function LoginPage() {
 
         // ✅ Admins skip OTP, others go through verify
         if (userRole === "admin") {
-          navigate("/admin-dashboard");
+          navigate("/AdminDash");
         } else {
           navigate("/verify", { state: { contact: userEmail } });
         }

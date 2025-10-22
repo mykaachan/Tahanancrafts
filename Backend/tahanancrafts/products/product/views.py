@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from machineLearning.recommendations.recommendation import get_recommendations, get_personalized_recommendations
-from users.models import CustomUser
+from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -216,3 +216,55 @@ class ProductPersonalizedView(APIView):
         recommended = get_personalized_recommendations(user_id, top_n=50)
         serializer = ProductReadSerializer(recommended, many=True)
         return Response(serializer.data)
+    
+# views.py
+class FeaturedProductsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user_id = request.query_params.get("user_id")  # ✅ fetch from query params
+        featured_products = get_personalized_recommendations(user_id, top_n=1)
+        serializer = ProductReadSerializer(featured_products, many=True)
+        return Response(serializer.data)
+
+    
+class ShopProductsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, artisan_id):
+        # Fetch products by artisan
+        products = Product.objects.filter(artisan__id=artisan_id).prefetch_related(
+            "categories", "materials", "images"
+        )
+        product_serializer = ProductReadSerializer(products, many=True)
+
+        # Fetch artisan info
+        try:
+            artisan_obj = Artisan.objects.get(id=artisan_id)
+            artisan = {
+                "name": artisan_obj.name,
+                "location": artisan_obj.location,
+                "main_photo": artisan_obj.main_photo.url if artisan_obj.main_photo else None,
+            }
+        except Artisan.DoesNotExist:
+            artisan = None
+
+        return Response({
+            "products": product_serializer.data,
+            "artisan": artisan
+        }, status=status.HTTP_200_OK)
+
+class LatestProductsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        latest_products = Product.objects.only("id", "name", "main_image").order_by("-created_at")[:3]
+        data = [
+            {
+                "id": p.id,
+                "name": p.name,
+                "main_image": request.build_absolute_uri(p.main_image.url) if p.main_image else None,
+            }
+            for p in latest_products
+        ]
+        return Response(data, status=status.HTTP_200_OK)

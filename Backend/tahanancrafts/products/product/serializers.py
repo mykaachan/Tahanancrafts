@@ -1,6 +1,7 @@
 from requests import request
 from rest_framework import serializers  # For creating API serializers
 from products.models import Product, Category, Material, ProductImage
+from users.models import Artisan
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -80,11 +81,16 @@ class ProductSerializer(serializers.ModelSerializer):
 
         return instance
 
-
+class ArtisanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artisan
+        fields = ["id", "name", "main_photo"]
+        
 class ProductReadSerializer(serializers.ModelSerializer):
     categories = serializers.StringRelatedField(many=True)
     materials = serializers.StringRelatedField(many=True)
     images = ProductImageSerializer(many=True, read_only=True)
+    artisan = ArtisanSerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -92,7 +98,7 @@ class ProductReadSerializer(serializers.ModelSerializer):
             "id", "name", "description", "brandName",
             "stock_quantity", "regular_price", "sales_price",
             "main_image", "created_at", "categories",
-            "materials", "images"
+            "materials", "images", "artisan"
         ]
 
 
@@ -138,3 +144,4 @@ class UpdateProductSerializer(serializers.ModelSerializer):
 
         
         return instance
+

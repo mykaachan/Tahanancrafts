@@ -415,6 +415,20 @@
   border: 3px solid #c59d5f;
   flex-shrink: 0;
 }
+.shop-avatar-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.shop-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 
 .shop-info {
   display: flex;

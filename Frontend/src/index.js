@@ -33,9 +33,7 @@ import TransactionHistory from './TransactionHistory';
 import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
-<<<<<<< HEAD
 import UserForm from './UserForm';
-=======
 import AdminSidebar from './AdminSidebar';
 import AdminDash from './AdminDash';
 import AdminProd from "./AdminProd";
@@ -54,7 +52,6 @@ import AdminForecast from './AdminForecast';
 
 
 
->>>>>>> 82088eec0d680beb98b10e5446bcb5d44d6ba9b6
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -106,14 +103,12 @@ function MainApp() {
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/shopallproducts" element={<ShopAllProducts />} />
+        <Route path="/shop/:artisan_id/products" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/my-purchases" element={<MyPurchases />} />
         <Route path="/notification" element={<Notification />} />
-<<<<<<< HEAD
         <Route path="/create-user" element={<UserForm />} />
-=======
         <Route path="/adminsidebar" element={<AdminSidebar />} />
         <Route path="/admindash" element={<AdminDash />} />
         <Route path="/adminprod" element={<AdminProd />} />
@@ -133,7 +128,6 @@ function MainApp() {
 
 
 
->>>>>>> 82088eec0d680beb98b10e5446bcb5d44d6ba9b6
 
 
         {/* ✅ Profile and its nested routes */}

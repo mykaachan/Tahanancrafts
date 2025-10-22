@@ -24,7 +24,13 @@ function ProductDetail() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
+  const handleViewShop = () => {
+    if (product?.artisan?.id) {
+      navigate(`/shop/${product.artisan.id}`);
+    } else {
+      console.warn("No artisan associated with this product");
+    }
+  };
 
   useEffect(() => {
     // fetch product details from Django backend
@@ -256,21 +262,35 @@ function ProductDetail() {
         </div>
       </div>
 
-      {/* ===== SHOP SECTION ===== */}
+     {/* ===== SHOP SECTION ===== */}
       <section className="shop-section">
         <hr className="shop-divider" />
-        <div className="shop-card-horizontal">
+        <div className="shop-card-horizontal" onClick={() => {
+            if (product.artisan?.id) {
+              navigate(`/shop/${product.artisan.id}/products`);
+            } else {
+              console.warn("No artisan associated with this product");
+            }
+          }}
+          style={{ cursor: "pointer" }}
+        >
           <div className="shop-image-horizontal">
-            {/* Use an image or just a colored circle */}
+            <img
+              src={product.artisan?.main_photo || "https://via.placeholder.com/150?text=Artisan"}
+              alt={product.artisan?.name || "Artisan"}
+              className="shop-avatar"
+              style={{ borderRadius: "50%", width: "60px", height: "60px", objectFit: "cover" }}
+            />
           </div>
           <div className="shop-info">
-            <h3 className="shop-name">Iraya Lipa</h3>
-            <button className="view-shop-btn">View Shop</button>
+            <h3 className="shop-name">{product.artisan?.name || "Artisan Shop"}</h3>
+            <button className="view-shop-btn">
+              View Shop
+            </button>
           </div>
         </div>
         <hr className="shop-divider" />
       </section>
-
 
 
 

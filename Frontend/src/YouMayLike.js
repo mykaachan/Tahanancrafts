@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "./api"; // your helper to get image URL
-import "./Products.css";
+import "./ProductDetails.css";
 
 function RecommendedProducts({ productId }) {
   const [recommendedProducts, setRecommendedProducts] = useState([]);

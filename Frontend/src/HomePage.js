@@ -9,47 +9,49 @@ import barong from "./images/barong.png";
 import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
+import HeaderFooter from "./HeaderFooter";
+import { fetchLatestProducts,fetchFeaturedProducts } from "./api"; // Import the API function
+import { useNavigate } from "react-router-dom";
+
+// ✅ HomePage Component  with dynamic latest products
 
 function HomePage() {
+  const [latestProducts, setLatestProducts] = React.useState([]);
+  const [featuredProducts, setFeaturedProducts] = React.useState([]);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    async function getLatestProducts() {
+      try {
+        const products = await fetchLatestProducts();
+        setLatestProducts(products);
+      } catch (error) {
+        console.error("Error fetching latest products:", error);
+      }
+    }
+
+    getLatestProducts();
+
+    async function getFeaturedProducts() {
+      try {
+        const userId = localStorage.getItem("user_id");
+        const products = await fetchFeaturedProducts(userId);
+        setFeaturedProducts(products);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+      }
+    }
+
+    getFeaturedProducts();
+  }, []);
+      
+  const featured = featuredProducts[0];
+
   return (
-    <div className="homepage">
-      {/* Header */}
-      <header className="homepage-header">
-        <Logo className="logo-svg homepage-logo" />
-        <nav className="nav-links">
-          <ul>
-            <li>Home</li>
-            <li>
-              <Link to="/products" style={{ textDecoration: "none", color: "inherit" }}>
-                Products
-              </Link>
-            </li>
-            <li>
-              <Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>
-                Story
-              </Link>
-            </li>
-            <li>
-  <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-    Profile
-  </Link>
-</li>
-          </ul>
-        </nav>
-        <div className="header-actions">
-          <div className="search-box">
-            <input type="text" placeholder="Search" />
-            <button className="search-btn">🔍</button>
-          </div>
+    <HeaderFooter>
+      <div className="homepage-container">
 
-          {/* ✅ Cart button now links to /cart */}
-          <Link to="/cart" style={{ textDecoration: "none" }}>
-            <button className="cart-btn">CART 🛒</button>
-          </Link>
-        </div>
-      </header>
-
-      {/* Featured Section */}
+     {/* Featured Section */}
       <section className="featured-section">
         <img
           src={featuredphoto1}
@@ -87,25 +89,27 @@ function HomePage() {
         <h2 className="latest-products-title">Latest Products</h2>
       </section>
 
-      {/* ✅ Extra Products Section */}
-      <section className="extra-products">
-        <div className="extra-products-grid">
-          <div className="product-item">
-            <img src={balisong} alt="balisong" className="product-card" />
-            <p className="product-name">Kalis Taal</p>
+       {/* ✅ Extra Products Section (Dynamic) */}
+        <section className="extra-products">
+          <div className="extra-products-grid">
+            {latestProducts.length > 0 ? (
+              latestProducts.map((product) => (
+                <div className="product-item" key={product.id}>
+                  <img
+                    src={product.main_image || "https://via.placeholder.com/150?text=No+Image"}
+                    alt={product.name}
+                    className="product-card"
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      style={{ cursor: "pointer" }}
+                  />
+                  <p className="product-name">{product.name}</p>
+                </div>
+              ))
+            ) : (
+              <p>Loading latest products...</p>
+            )}
           </div>
-
-          <div className="product-item">
-            <img src={basket} alt="basket" className="product-card" />
-            <p className="product-name">Colored Wooven Tray Basket</p>
-          </div>
-
-          <div className="product-item">
-            <img src={barong} alt="barong" className="product-card" />
-            <p className="product-name">Piña Ginoo</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
       {/* Heritage Section */}
       <section className="heritage-section">
@@ -144,51 +148,8 @@ function HomePage() {
           </p>
         </div>
       </section>
-
-      {/* ✅ Footer Section */}
-      <footer className="footer">
-        {/* Left Section */}
-        <div className="footer-left">
-          <h2>
-            Join us, <br /> artisans!
-          </h2>
-          <p>
-            This is a sample description and does not hold any valuable meaning
-          </p>
-          <button className="register-btn">Register</button>
-        </div>
-
-        {/* Right Section */}
-        <div className="footer-right">
-          <hr />
-          <div className="footer-content">
-            <h1 className="footer-logo">THC</h1>
-
-            <div className="footer-links">
-              <div>
-                <h4>ABOUT US</h4>
-                <p>TahananCrafts</p>
-                <p>About</p>
-              </div>
-              <div>
-                <h4>SUPPORT</h4>
-                <p>Customer Support</p>
-                <p>Contact</p>
-              </div>
-              <div>
-                <h4>EMAIL</h4>
-                <p>Sample@email.com</p>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="footer-bottom">
-            <p>© 2025 - TahananCrafts</p>
-            <p>Privacy — Terms</p>
-          </div>
-        </div>
-      </footer>
     </div>
+    </HeaderFooter>
   );
 }
 

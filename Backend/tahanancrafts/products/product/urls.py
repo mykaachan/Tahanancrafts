@@ -4,6 +4,7 @@ from .views import (
     ProductTestView,
     AddProductView,
     DeleteProductView,
+    ShopProductsView,
     UpdateProductView,
     ProductListView,   
     CategoryListView,  
@@ -11,7 +12,9 @@ from .views import (
     ProductDetailView,
     RecommendedProductsView,
     ProductDetailRecommendedView,
-    LogProductView
+    LogProductView,
+    LatestProductsView,
+    FeaturedProductsView
 )
 
 urlpatterns = [
@@ -26,4 +29,7 @@ urlpatterns = [
     path('recommendations/<int:product_id>/', ProductDetailRecommendedView.as_view(), name='recommendations'),
     path('log-view/', LogProductView.as_view(), name='log-view'),
     path('personalized/<int:user_id>/', ProductPersonalizedView.as_view(), name='personalized'),
+    path('shop/<int:artisan_id>/', ShopProductsView.as_view()),
+    path('latest-products/', LatestProductsView.as_view(), name='latest-products'),
+    path('featured-products/<int:user_id>/', FeaturedProductsView.as_view(), name='featured-products'),
 ]

@@ -66,12 +66,12 @@ export async function getProfile(userId) {
   return data.user; // backend returns { user: {...} }
 }
 
-// Update profile
-export async function updateProfile(userId, profileData) {
-  const res = await fetch(`${BASE_URL}/users/profile/edit/?user_id=${userId}`, {  // note 'edit' endpoint
+// update profile
+export async function updateProfile(userId, profileData, isFormData = false) {
+  const res = await fetch(`${BASE_URL}/users/profile/edit/?user_id=${userId}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(profileData),
+    headers: isFormData ? {} : { "Content-Type": "application/json" },
+    body: isFormData ? profileData : JSON.stringify(profileData),
   });
 
   if (!res.ok) {
@@ -81,6 +81,8 @@ export async function updateProfile(userId, profileData) {
 
   return res.json();
 }
+
+
 
 // Helper to generate avatar URL or initials placeholder
 export function getAvatarUrl(avatarPath, name) {
@@ -245,5 +247,25 @@ export async function removeCartItem(cartId, userId) {
 export async function fetchArtisanStories(artisan_id) {
   const res = await fetch(`${BASE_URL}/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
   if (!res.ok) throw new Error("Failed to fetch artisan stories");
+  return await res.json();
+}
+
+//products by shop
+export async function fetchShopProducts(artisan_id) {
+  const res = await fetch(`${BASE_URL}/products/product/shop/${artisan_id}/`);
+  if (!res.ok) throw new Error("Failed to fetch shop products");
+  return await res.json();
+}
+
+//HOMEPAGE - latest products
+export async function fetchLatestProducts() {
+  const res = await fetch(`${BASE_URL}/products/product/latest-products/`);
+  if (!res.ok) throw new Error("Failed to fetch latest products");
+  return await res.json();
+}
+//HOMEPAGE - featured products
+export async function fetchFeaturedProducts(userId) {
+  const res = await fetch(`${BASE_URL}/products/product/featured-products/?user_id=${userId}`);
+  if (!res.ok) throw new Error("Failed to fetch featured products");
   return await res.json();
 }
