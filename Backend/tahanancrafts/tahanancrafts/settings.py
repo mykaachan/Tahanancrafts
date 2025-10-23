@@ -133,8 +133,16 @@ DATABASES = {
 """
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get("mysql://root:rKNvbhEiQXVsQYgrFVhngiMOzgezdkEs@turntable.proxy.rlwy.net:55874/railway"))
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME', 'railway'),
+        'USER': os.environ.get('DB_USER', 'root'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'rKNvbhEiQXVsQYgrFVhngiMOzgezdkEs'),
+        'HOST': os.environ.get('DB_HOST', 'turntable.proxy.rlwy.net'),
+        'PORT': os.environ.get('DB_PORT', '55874'),
+    }
 }
+
 
 
 """
