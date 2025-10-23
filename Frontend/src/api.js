@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Base URL of your Django backend
 const API_URL = fetch(`${process.env.REACT_APP_API_URL}/api`)
-
+const BASE_URL = fetch(`${process.env.REACT_APP_API_URL}/api`);
 // Create an axios instance
 const api = axios.create({
   baseURL: API_URL,
