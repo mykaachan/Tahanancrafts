@@ -133,6 +133,11 @@ DATABASES = {
 """
 
 DATABASES = {
+    'default': dj_database_url.config(conn_max_age=600)
+}
+
+"""
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME', 'railway'),
@@ -142,7 +147,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '55874'),
     }
 }
-
+"""
 
 
 """
