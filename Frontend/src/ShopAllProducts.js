@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import "./Shop.css";
-import API_URL,{getImageUrl } from "./api";
+import {getImageUrl } from "./api";
 
 function ShopAllProducts() {
   const { artisan_id } = useParams();
@@ -10,12 +10,13 @@ function ShopAllProducts() {
   const [artisan, setArtisan] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL;
 
 
   useEffect(() => {
     const fetchShopProducts = async () => {
       try {
-        const res = await fetch(`${API_URL}/products/product/shop/${artisan_id}/`);
+        const res = await fetch(`${API_URL}/api/products/product/shop/${artisan_id}/`);
         const data = await res.json();
         setProducts(data.products || data);
         setArtisan(data.artisan || null);
@@ -32,7 +33,7 @@ function ShopAllProducts() {
     const userId = localStorage.getItem("user_id");
 
     // Log product view
-    fetch(`${API_URL}/products/product/log-view/`, {
+    fetch(`${API_URL}/api/products/product/log-view/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId, user_id: userId }),
