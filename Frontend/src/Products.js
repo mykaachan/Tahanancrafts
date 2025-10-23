@@ -72,11 +72,11 @@ function Products() {
       if (userId) {
         // ✅ Personalized products for logged-in user
         url = new URL(
-          `http://127.0.0.1:8000/api/products/product/personalized/${userId}/`
+          `fetch(${process.env.REACT_APP_API_URL}/api/products/product/personalized/${userId}/)`
         );
       } else {
         // ✅ Random products for anonymous users
-        url = new URL("http://127.0.0.1:8000/api/products/product/products/");
+        url = new URL(`fetch(${process.env.REACT_APP_API_URL}/api/products/product/products/`);
         url.searchParams.append("random", true);
       }
 
@@ -127,7 +127,7 @@ function Products() {
   function handleProductClick(productId) {
   const userId = localStorage.getItem("user_id");
 
-  fetch("http://127.0.0.1:8000/api/products/product/log-view/", {
+  fetch(`${process.env.REACT_APP_API_URL}api/products/product/log-view/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ product_id: productId, user_id: userId }),

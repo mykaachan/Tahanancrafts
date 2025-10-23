@@ -61,7 +61,7 @@ function Profile() {
     (profileData.avatar
       ? profileData.avatar.startsWith("http")
         ? profileData.avatar
-        : `${process.env.REACT_APP_BASE_URL || "http://127.0.0.1:8000"}${profileData.avatar}`
+        : `${process.env.REACT_APP_BASE_URL || `fetch(${process.env.REACT_APP_API_URL}`}${profileData.avatar}`
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
           initials
         )}&background=random&color=fff`);

@@ -7,7 +7,7 @@ import { fetchArtisanStories } from "./api";
 function StoryPage() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = "http://127.0.0.1:8000"; // Django backend URL
+  const BASE_URL = `fetch(${process.env.REACT_APP_API_URL}127.0.0.1:8000`; // Django backend URL
 
   useEffect(() => {
     async function loadStories() {

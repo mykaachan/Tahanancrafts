@@ -36,8 +36,7 @@ function ProductDetail() {
     // fetch product details from Django backend
     const fetchProduct = async () => {
       try {
-        const res = await fetch(
-          `http://127.0.0.1:8000/api/products/product/products/${id}/`
+        const res = await fetch(`${process.env.REACT_APP_API_URL}api/products/product/products/${id}/`
         );
         if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
@@ -45,9 +44,9 @@ function ProductDetail() {
 
         // Check if multiple images exist, or just main_image
         if (data.images && data.images.length > 0) {
-          setSelectedImg(`http://127.0.0.1:8000${data.images[0].image}`);
+          setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${data.images[0].image})`);
         } else if (data.main_image) {
-          setSelectedImg(`http://127.0.0.1:8000${data.main_image}`);
+          setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${data.main_image})`);
         } else {
           setSelectedImg(defaultImg);
         }
@@ -119,16 +118,16 @@ function ProductDetail() {
                 product.images.map((img, i) => (
                   <img
                     key={i}
-                    src={`http://127.0.0.1:8000${img.image}`}
+                    src={`fetch(${process.env.REACT_APP_API_URL}${img.image})`}
                     alt={product.name}
                     onClick={() =>
-                      setSelectedImg(`http://127.0.0.1:8000${img.image}`)
+                      setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${img.image})`)
                     }
                   />
                 ))
               ) : product.main_image ? (
                 <img
-                  src={`http://127.0.0.1:8000${product.main_image}`}
+                  src={`fetch(${process.env.REACT_APP_API_URL}${product.main_image})`}
                   alt={product.name}
                 />
               ) : (

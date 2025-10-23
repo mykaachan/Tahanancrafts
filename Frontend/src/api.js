@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // Base URL of your Django backend
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = fetch(`${process.env.REACT_APP_API_URL}/api`)
 
 // Create an axios instance
 const api = axios.create({
@@ -54,13 +54,11 @@ export async function ChangePassword(userData) {
   return res.data;
 }
 
-// api.js
-export const BASE_URL = "http://127.0.0.1:8000/api";
 
 // Fetch user profile
 export async function getProfile(userId) {
   if (!userId) throw new Error("User ID is required for profile fetch");
-  const res = await fetch(`${BASE_URL}/users/profile/profile/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/users/profile/profile/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch profile");
   const data = await res.json();
   return data.user; // backend returns { user: {...} }
@@ -68,7 +66,7 @@ export async function getProfile(userId) {
 
 // update profile
 export async function updateProfile(userId, profileData, isFormData = false) {
-  const res = await fetch(`${BASE_URL}/users/profile/edit/?user_id=${userId}`, {
+  const res = await fetch(`${API_URL}/users/profile/edit/?user_id=${userId}`, {
     method: "PATCH",
     headers: isFormData ? {} : { "Content-Type": "application/json" },
     body: isFormData ? profileData : JSON.stringify(profileData),
@@ -100,7 +98,7 @@ export async function changePassword(oldPassword, newPassword, repeatPassword) {
     throw new Error("User not logged in");
   }
 
-  const response = await fetch(`${BASE_URL}/users/profile/change_password/`, {
+  const response = await fetch(`${API_URL}/users/profile/change_password/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -171,7 +169,7 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
 }
 
 
-export const MEDIA_URL = "http://127.0.0.1:8000";
+export const MEDIA_URL = fetch(`${process.env.REACT_APP_API_URL}`)
 
 // src/api.js
 export function getImageUrl(path) {
@@ -179,18 +177,18 @@ export function getImageUrl(path) {
   // if path already starts with http, return it as is
   if (path.startsWith("http")) return path;
   // otherwise prepend host
-  return `http://127.0.0.1:8000${path}`;
+  return `${MEDIA_URL}${path}`;
 }
 
 export async function getProduct(id) {
-  const res = await fetch(`${BASE_URL}/products/products/${id}/`);
+  const res = await fetch(`${API_URL}/products/products/${id}/`);
   if (!res.ok) throw new Error("Failed to fetch product");
   return await res.json();
 }
 
 // ✅ Add item to cart (no JWT, just send user_id)
 export async function addToCart(userId, productId, quantity) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/`, {
+  const res = await fetch(`${API_URL}/products/cart/carts/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -212,14 +210,14 @@ export async function addToCart(userId, productId, quantity) {
 
 // ✅ Get all cart items for a specific user
 export async function getCartItems(userId) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/products/cart/carts/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch cart");
   return await res.json();
 }
 
 // ✅ Update cart item quantity
 export async function updateCartItem(cartId, quantity, userId) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/qty/${cartId}/${userId}/`, {
+  const res = await fetch(`${API_URL}/products/cart/carts/qty/${cartId}/${userId}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ quantity }),
@@ -236,7 +234,7 @@ export async function updateCartItem(cartId, quantity, userId) {
 
 // ✅ Remove cart item
 export async function removeCartItem(cartId, userId) {
-  const res = await fetch(`${BASE_URL}/products/cart/carts/${cartId}/delete/?user_id=${userId}`, {
+  const res = await fetch(`${API_URL}/products/cart/carts/${cartId}/delete/?user_id=${userId}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete cart item");
@@ -245,27 +243,27 @@ export async function removeCartItem(cartId, userId) {
 
 //stories api
 export async function fetchArtisanStories(artisan_id) {
-  const res = await fetch(`${BASE_URL}/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
+  const res = await fetch(`${API_URL}/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
   if (!res.ok) throw new Error("Failed to fetch artisan stories");
   return await res.json();
 }
 
 //products by shop
 export async function fetchShopProducts(artisan_id) {
-  const res = await fetch(`${BASE_URL}/products/product/shop/${artisan_id}/`);
+  const res = await fetch(`${API_URL}/products/product/shop/${artisan_id}/`);
   if (!res.ok) throw new Error("Failed to fetch shop products");
   return await res.json();
 }
 
 //HOMEPAGE - latest products
 export async function fetchLatestProducts() {
-  const res = await fetch(`${BASE_URL}/products/product/latest-products/`);
+  const res = await fetch(`${API_URL}/products/product/latest-products/`);
   if (!res.ok) throw new Error("Failed to fetch latest products");
   return await res.json();
 }
 //HOMEPAGE - featured products
 export async function fetchFeaturedProducts(userId) {
-  const res = await fetch(`${BASE_URL}/products/product/featured-products/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/products/product/featured-products/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch featured products");
   return await res.json();
 }
