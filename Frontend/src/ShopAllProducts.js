@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import "./Shop.css";
-import { API_URL, getImageUrl } from "./api";
+import {getImageUrl } from "./api";
 
 function ShopAllProducts() {
   const { artisan_id } = useParams();
