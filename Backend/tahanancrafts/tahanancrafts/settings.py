@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import dj_database_url
+import os
+
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -87,7 +90,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # add this
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CORS_ALLOW_ALL_ORIGINS = True  # Or restrict to your React domain
 
@@ -122,7 +130,12 @@ DATABASES = {
 }
 """
 
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get("mysql://root:rKNvbhEiQXVsQYgrFVhngiMOzgezdkEs@turntable.proxy.rlwy.net:55874/railway"))
+}
 
+
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -133,6 +146,7 @@ DATABASES = {
         'PORT': '55874',                     
     }
 }
+"""
 """
 DATABASES = {
     'default': {
