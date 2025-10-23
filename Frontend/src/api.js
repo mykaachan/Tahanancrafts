@@ -1,8 +1,11 @@
 // src/api.js
 import axios from "axios";
 
-// Base URL of your Django backend
-const API_URL = fetch(`${process.env.REACT_APP_API_URL}/api`)// Create an axios instance
+// ✅ Base URL of your Django backend
+const API_URL = `${process.env.REACT_APP_API_URL}/api`;
+const MEDIA_URL = process.env.REACT_APP_API_URL;
+
+// ✅ Create an axios instance
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -167,16 +170,14 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
 }
 
 
-export const MEDIA_URL = fetch(`${process.env.REACT_APP_API_URL}`)
 
 // src/api.js
 export function getImageUrl(path) {
-  if (!path) return ""; // handle missing image
-  // if path already starts with http, return it as is
+  if (!path) return "";
   if (path.startsWith("http")) return path;
-  // otherwise prepend host
   return `${MEDIA_URL}${path}`;
 }
+
 
 export async function getProduct(id) {
   const res = await fetch(`${API_URL}/products/products/${id}/`);

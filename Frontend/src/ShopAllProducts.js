@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import "./Shop.css";
-import {getImageUrl } from "./api";
+import API_URL,{getImageUrl } from "./api";
 
 function ShopAllProducts() {
   const { artisan_id } = useParams();
@@ -10,7 +10,6 @@ function ShopAllProducts() {
   const [artisan, setArtisan] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL;
 
 
   useEffect(() => {
