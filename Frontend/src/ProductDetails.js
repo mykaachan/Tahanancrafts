@@ -20,13 +20,13 @@ function ProductDetail() {
   let productId = id; // Ensure productId is defined
 
   const handleProductClick = (id) => {
-    navigate(`/product/${id}`);
+    navigate(`/api/product/${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleViewShop = () => {
     if (product?.artisan?.id) {
-      navigate(`/shop/${product.artisan.id}`);
+      navigate(`/api/shop/${product.artisan.id}`);
     } else {
       console.warn("No artisan associated with this product");
     }

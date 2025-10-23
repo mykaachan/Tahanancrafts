@@ -6,12 +6,12 @@ import "./ProductDetails.css";
 function RecommendedProducts({ productId }) {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const navigate = useNavigate();
-
+  const API_URL = process.env.REACT_APP_API_URL;
   useEffect(() => {
     async function fetchRecommendations() {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/products/product/recommendations/${productId}/`
+          `${API_URL}/api/products/product/recommendations/${productId}/`
         );
         if (!response.ok) throw new Error("Failed to fetch recommendations");
         const data = await response.json();
