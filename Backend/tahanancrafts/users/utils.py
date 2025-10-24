@@ -3,6 +3,8 @@ from django.core.mail import send_mail
 from django.forms import ValidationError
 from users.auth.validators import validate_password_strength
 # users/utils.py
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
 from google.oauth2 import id_token
 from django.conf import settings
 from telesign.messaging import MessagingClient
@@ -54,13 +56,37 @@ def normalize_phone_number(phone):
 
 # OTP funtion - will generate otp and save to model and send to contact.
 #send-email-OTP
-def send_otp_email(email,code):
-    send_mail(
-        subject='Your TahananCrafts Verification Code',
-        message=f'Your verification code is {code}. It expires in 5 minutes.',
-        from_email='no-reply@tahanancrafts.com',
-        recipient_list=[email],
-    )
+def send_otp_email(email, code):
+    subject = 'Your TahananCrafts Verification Code'
+    from_email = f'TahananCrafts <{settings.DEFAULT_FROM_EMAIL}>'
+    to_email = [email]
+
+    # Plain text version (fallback)
+    text_content = f'Your verification code is {code}. It expires in 5 minutes.'
+
+    # HTML version
+    html_content = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height:1.6;">
+            <h2 style="color:#4CAF50;">TahananCrafts Verification</h2>
+            <p>Hi,</p>
+            <p>Your verification code is:</p>
+            <h1 style="color:#333; text-align:center;">{code}</h1>
+            <p>This code will expire in <strong>5 minutes</strong>.</p>
+            <hr>
+            <p style="font-size:12px; color:gray;">
+                If you did not request this, please ignore this email.
+            </p>
+        </body>
+    </html>
+    """
+
+    # Create the email
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    msg.attach_alternative(html_content, "text/html")
+    
+    # Send the email
+    msg.send(fail_silently=False)
 
 #send-contact-OTP
 def send_otp_sms(contact, otp):
