@@ -34,7 +34,7 @@ function StoryPage() {
           <ul>
             <li>
               <Link
-                to="/homepage"
+                to="/"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 Home

@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // ✅ Base URL of your Django backend
-const API_URL = `${process.env.REACT_APP_API_URL}/api`;
+const API_URL = `${process.env.REACT_APP_API_URL}`;
 const MEDIA_URL = process.env.REACT_APP_API_URL;
 
 // ✅ Create an axios instance
