@@ -88,6 +88,8 @@ def send_otp_email(email, code):
     # Send the email
     msg.send(fail_silently=False)
 
+    
+
 #send-contact-OTP
 def send_otp_sms(contact, otp):
     

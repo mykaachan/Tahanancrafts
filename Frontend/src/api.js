@@ -128,19 +128,19 @@ export async function changePassword(oldPassword, newPassword, repeatPassword) {
 
 // Fetch all products
 export async function fetchProducts() {
-  const res = await api.get("/products/product/products/"); 
+  const res = await api.get("/api/products/product/products/"); 
   return res.data;
 }
 
 // Fetch all categories
 export async function fetchCategories() {
-  const res = await api.get("/products/product/categories/");
+  const res = await api.get("/api/products/product/categories/");
   return res.data;
 }
 
 // Fetch all materials
 export async function fetchMaterials() {
-  const res = await api.get("/products/product/materials/");
+  const res = await api.get("/api/products/product/materials/");
   return res.data;
 }
 
@@ -162,7 +162,7 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
   // Gallery images
   galleryImages.forEach(img => data.append("images", img.file));
 
-  const res = await api.post("/products/product/add_product/", data, {
+  const res = await api.post("/api/products/product/add_product/", data, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
@@ -180,14 +180,14 @@ export function getImageUrl(path) {
 
 
 export async function getProduct(id) {
-  const res = await fetch(`${API_URL}/products/products/${id}/`);
+  const res = await fetch(`${API_URL}/api/products/products/${id}/`);
   if (!res.ok) throw new Error("Failed to fetch product");
   return await res.json();
 }
 
 // ✅ Add item to cart (no JWT, just send user_id)
 export async function addToCart(userId, productId, quantity) {
-  const res = await fetch(`${API_URL}/products/cart/carts/`, {
+  const res = await fetch(`${API_URL}/api/products/cart/carts/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
