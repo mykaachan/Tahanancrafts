@@ -42,6 +42,13 @@
   line-height: 1.6;
 }
 
+.underdev-disclaimer {
+  font-size: 1.20rem;
+  color: #da0f0f;
+  margin-top: 1.5rem;
+  font-weight: bold;
+}
+
 /* Button */
 .underdev-btn {
   background-color: #6b4f2f;

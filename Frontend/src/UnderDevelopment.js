@@ -25,6 +25,10 @@ function UnderDevelopment() {
           real and are used solely for development and testing purposes.
         </p>
 
+        <p className="underdev-disclaimer">
+          Disclaimer: Images shown are for demonstration purposes only and belong to their respective owners. No copyright infringement intended.
+        </p>
+
         <p className="underdev-thanks">
           Thank you for your patience and understanding 💛
         </p>

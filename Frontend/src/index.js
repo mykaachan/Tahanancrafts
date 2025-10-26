@@ -61,12 +61,14 @@ function ConditionalChatPopup() {
 
   // List of routes where popup should be hidden
   const hiddenPaths = [
-    "/",                // login
+    "/",
+    "/login",                // login
     "/signup",
     "/forgot-password",
     "/forgotpass2",
     "/verify",
-    "/signup-verify"
+    "/signup-verify",
+    "/change-password"
   ];
 
   const shouldHide = hiddenPaths.includes(location.pathname);
