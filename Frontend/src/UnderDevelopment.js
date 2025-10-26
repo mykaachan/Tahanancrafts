@@ -26,9 +26,9 @@ function UnderDevelopment() {
         </p>
 
         <p className="underdev-disclaimer">
-          Disclaimer: Images shown are for demonstration purposes only and belong to their respective owners. No copyright infringement intended.
+          Disclaimer: This website is for demonstration and development purposes only. Most of the products and artisans displayed are fictional, and some images are sourced from the internet. All image rights belong to their respective owners. No copyright infringement intended. Not for commercial use.
         </p>
-
+        
         <p className="underdev-thanks">
           Thank you for your patience and understanding 💛
         </p>
