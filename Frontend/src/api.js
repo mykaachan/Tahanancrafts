@@ -209,14 +209,14 @@ export async function addToCart(userId, productId, quantity) {
 
 // ✅ Get all cart items for a specific user
 export async function getCartItems(userId) {
-  const res = await fetch(`${API_URL}/products/cart/carts/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/api/products/cart/carts/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch cart");
   return await res.json();
 }
 
 // ✅ Update cart item quantity
 export async function updateCartItem(cartId, quantity, userId) {
-  const res = await fetch(`${API_URL}/products/cart/carts/qty/${cartId}/${userId}/`, {
+  const res = await fetch(`${API_URL}/api/products/cart/carts/qty/${cartId}/${userId}/`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ quantity }),
@@ -233,7 +233,7 @@ export async function updateCartItem(cartId, quantity, userId) {
 
 // ✅ Remove cart item
 export async function removeCartItem(cartId, userId) {
-  const res = await fetch(`${API_URL}/products/cart/carts/${cartId}/delete/?user_id=${userId}`, {
+  const res = await fetch(`${API_URL}/api/products/cart/carts/${cartId}/delete/?user_id=${userId}`, {
     method: "DELETE",
   });
   if (!res.ok) throw new Error("Failed to delete cart item");
@@ -242,27 +242,27 @@ export async function removeCartItem(cartId, userId) {
 
 //stories api
 export async function fetchArtisanStories(artisan_id) {
-  const res = await fetch(`${API_URL}/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
+  const res = await fetch(`${API_URL}/api/users/artisan/artisan-stories/?artisan_id=${artisan_id}`);
   if (!res.ok) throw new Error("Failed to fetch artisan stories");
   return await res.json();
 }
 
 //products by shop
 export async function fetchShopProducts(artisan_id) {
-  const res = await fetch(`${API_URL}/products/product/shop/${artisan_id}/`);
+  const res = await fetch(`${API_URL}/api/products/product/shop/${artisan_id}/`);
   if (!res.ok) throw new Error("Failed to fetch shop products");
   return await res.json();
 }
 
 //HOMEPAGE - latest products
 export async function fetchLatestProducts() {
-  const res = await fetch(`${API_URL}/products/product/latest-products/`);
+  const res = await fetch(`${API_URL}/api/products/product/latest-products/`);
   if (!res.ok) throw new Error("Failed to fetch latest products");
   return await res.json();
 }
 //HOMEPAGE - featured products
 export async function fetchFeaturedProducts(userId) {
-  const res = await fetch(`${API_URL}/products/product/featured-products/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/api/products/product/featured-products/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch featured products");
   return await res.json();
 }
