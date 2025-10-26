@@ -136,14 +136,14 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': 'defaultdb',  # from your Aiven info
+        'USER': 'avnadmin',   # your Aiven user
+        'PASSWORD': 'AVNS_jYMpPGTkR_HQX5ZHn4W',  # copy it from the Aiven dashboard
+        'HOST': 'tahanancrafts-db2025-mykaelaperegrino-23e1.f.aivencloud.com',
+        'PORT': '19427',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
+            'ssl': {'ssl-mode': 'REQUIRED'},
+        },
     }
 }
 
