@@ -7,7 +7,7 @@ import { fetchArtisanStories } from "./api";
 function StoryPage() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = `fetch(${process.env.REACT_APP_API_URL})`; // Django backend URL
+  const BASE_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
 
   useEffect(() => {
     async function loadStories() {
@@ -96,7 +96,7 @@ function StoryPage() {
                 flexDirection: index % 2 === 0 ? "row" : "row-aligned",
               }}
             >
-              <img
+             <img
                 src={`${BASE_URL}${story.main_photo}`}
                 alt={story.name}
                 className="story-image"
