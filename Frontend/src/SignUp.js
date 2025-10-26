@@ -64,7 +64,7 @@ function SignUp() {
 
           <div className="signup-prompt">
             <span>Already have an account? </span>
-            <Link to="/">LOG IN</Link>
+            <Link to="/login">LOG IN</Link>
           </div>
         </div>
       </div>
