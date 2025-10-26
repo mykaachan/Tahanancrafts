@@ -47,8 +47,7 @@ import AdminTransHistory from "./AdminTransHistory";
 import AdminNotification from './AdminNotification';
 import AdminOrders from './AdminOrders';
 import AdminForecast from './AdminForecast';
-import underdev from './underdev';
-
+import UnderDevelopment from './UnderDevelopment';
 
 
 
@@ -84,6 +83,7 @@ function MainApp() {
       <ConditionalChatPopup />
 
       <Routes>
+        <Route path="/" element={<UnderDevelopment />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/forgotpass2" element={<ForgotPass2 />} />
@@ -91,7 +91,6 @@ function MainApp() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
         <Route path="/homepage" element={<HomePage />} />
-        <Route path="/" element={<underdev />} />
         <Route path="/story" element={<StoryPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/iraya" element={<Iraya />} />

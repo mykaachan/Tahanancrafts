@@ -1,0 +1,80 @@
+/* Background and layout */
+.underdev-container {
+  height: 100vh;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: linear-gradient(
+    to bottom right,
+    #f7f3ef,
+    #efe7e1
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Card container */
+.underdev-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  padding: 3rem 2.5rem;
+  max-width: 480px;
+  text-align: center;
+  border: 2px solid #e2d7ca;
+}
+
+/* Title */
+.underdev-title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #3e2b20;
+  margin-bottom: 1rem;
+}
+
+/* Description */
+.underdev-text {
+  font-size: 1rem;
+  color: #5a4b3a;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Button */
+.underdev-btn {
+  background-color: #6b4f2f;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.underdev-btn:hover {
+  background-color: #846141;
+  transform: translateY(-2px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .underdev-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .underdev-title {
+    font-size: 1.5rem;
+  }
+
+  .underdev-text {
+    font-size: 0.95rem;
+  }
+
+  .underdev-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
