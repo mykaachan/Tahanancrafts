@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; 
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-import { addToCart } from "./api"; // API call to add items to cart
+import { addToCart, getProduct } from "./api"; // API call to add items to cart
 import RecommendedProducts from "./YouMayLike";
 
 // fallback image if no product image
@@ -33,30 +33,27 @@ function ProductDetail() {
   };
 
   useEffect(() => {
-  const fetchProduct = async () => {
-    try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}api/products/product/products/${id}/`);
-      if (!res.ok) throw new Error("Failed to fetch product");
-      const data = await res.json();
-      setProduct(data);
+    const fetchProduct = async () => {
+      try {
+        const data = await getProduct(id); // use the helper
+        setProduct(data);
 
-      if (data.images && data.images.length > 0) {
-        setSelectedImg(`${process.env.REACT_APP_API_URL}${data.images[0].image}`);
-      } else if (data.main_image) {
-        setSelectedImg(`${process.env.REACT_APP_API_URL}${data.main_image}`);
-      } else {
-        setSelectedImg(defaultImg);
+        if (data.images && data.images.length > 0) {
+          setSelectedImg(`${process.env.REACT_APP_API_URL}${data.images[0].image}`);
+        } else if (data.main_image) {
+          setSelectedImg(`${process.env.REACT_APP_API_URL}${data.main_image}`);
+        } else {
+          setSelectedImg(defaultImg);
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching product:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchProduct();
-}, [id]);
-
+    fetchProduct();
+  }, [id]);
 
   if (loading) return <p className="loading">Loading product...</p>;
   if (!product) return <p className="error">Product not found</p>;
