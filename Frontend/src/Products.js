@@ -71,12 +71,10 @@ function Products() {
 
       if (userId) {
         // ✅ Personalized products for logged-in user
-        url = new URL(
-          `fetch(${process.env.REACT_APP_API_URL}/api/products/product/personalized/${userId}/)`
-        );
+        url = new URL(`${process.env.REACT_APP_API_URL}/api/products/product/personalized/${userId}/`);
       } else {
         // ✅ Random products for anonymous users
-        url = new URL(`fetch(${process.env.REACT_APP_API_URL}/api/products/product/products/`);
+        url = new URL(`${process.env.REACT_APP_API_URL}/api/products/product/products/`);
         url.searchParams.append("random", true);
       }
 
