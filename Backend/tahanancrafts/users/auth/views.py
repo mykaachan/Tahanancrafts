@@ -119,6 +119,15 @@ class UserRegistrationView(APIView):
                 contact_type = 'phone'
                 contact = normalize_phone_number(contact)
 
+            try:
+                validate_email(contact)
+                contact_type = 'email'
+                print("✅ Detected email:", contact)
+            except ValidationError:
+                contact_type = 'phone'
+                print("📱 Detected phone:", contact)
+
+
             otp = str(random.randint(100000, 999999))
 
             # Store registration data and OTP in cache (expires in 5 min)
@@ -132,7 +141,10 @@ class UserRegistrationView(APIView):
 
             # TODO: Send OTP via email or SMS here
             if contact_type == 'email':
-                send_otp_email(contact, otp)
+                try:
+                    send_otp_email(contact, otp)
+                except Exception as e:
+                    print("❌ Email error:", e)
             else:
                 send_otp_sms(contact, otp)
 
