@@ -16,42 +16,42 @@ const api = axios.create({
 // --- AUTH FUNCTIONS ---
 
 export async function registerUser(userData) {
-  const res = await api.post("/users/auth/user_register/", userData);
+  const res = await api.post("/api/users/auth/user_register/", userData);
   return res.data;
 }
 
 export async function login(userData) {
-  const res = await api.post("/users/auth/login/", userData);
+  const res = await api.post("/api/users/auth/login/", userData);
   return res.data;
 }
 
 export async function forgotPassword(userData) {
-  const res = await api.post("/users/auth/forgot_password/", userData);
+  const res = await api.post("/api/users/auth/forgot_password/", userData);
   return res.data;
 }
 
 export async function registerUserOtp(userData) {
-  const res = await api.post("/users/auth/register_otp_verify/", userData);
+  const res = await api.post("/api/users/auth/register_otp_verify/", userData);
   return res.data;
 }
 
 export async function loginOtp(userData) {
-  const res = await api.post("/users/auth/login_otp_verify/", userData);
+  const res = await api.post("/api/users/auth/login_otp_verify/", userData);
   return res.data;
 }
 
 export async function forgotPasswordOtp(userData) {
-  const res = await api.post("/users/auth/forgot_password_verify/", userData);
+  const res = await api.post("/api/users/auth/forgot_password_verify/", userData);
   return res.data;
 }
 
 export async function google(userData) {
-  const res = await api.post("/users/auth/google_callback/", userData);
+  const res = await api.post("/api/users/auth/google_callback/", userData);
   return res.data;
 }
 
 export async function ChangePassword(userData) {
-  const res = await api.post("/users/auth/change_password/", userData);
+  const res = await api.post("/api/users/auth/change_password/", userData);
   return res.data;
 }
 
