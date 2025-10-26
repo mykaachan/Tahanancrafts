@@ -110,23 +110,36 @@ function ProductDetail() {
               className="main-image"
             />
             <div className="thumbnails">
-              {product.images && product.images.length > 0 ? (
-                product.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={`fetch(${process.env.REACT_APP_API_URL}${img.image})`}
-                    alt={product.name}
-                    onClick={() =>
-                      setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${img.image})`)
-                    }
-                  />
-                ))
-              ) : product.main_image ? (
-                <img
-                  src={`fetch(${process.env.REACT_APP_API_URL}${product.main_image})`}
-                  alt={product.name}
-                />
+              {/* If there are multiple images or a main image */}
+              {((product.images && product.images.length > 0) || product.main_image) ? (
+                <>
+                  {/* ✅ Show main image first if it exists */}
+                  {product.main_image && (
+                    <img
+                      src={`${process.env.REACT_APP_API_URL}${product.main_image}`}
+                      alt={`${product.name} main`}
+                      onClick={() =>
+                        setSelectedImg(`${process.env.REACT_APP_API_URL}${product.main_image}`)
+                      }
+                      className={selectedImg === `${process.env.REACT_APP_API_URL}${product.main_image}` ? "active" : ""}
+                    />
+                  )}
+
+                  {/* ✅ Show additional images */}
+                  {product.images && product.images.map((img, i) => (
+                    <img
+                      key={i}
+                      src={`${process.env.REACT_APP_API_URL}${img.image}`}
+                      alt={`${product.name} ${i + 1}`}
+                      onClick={() =>
+                        setSelectedImg(`${process.env.REACT_APP_API_URL}${img.image}`)
+                      }
+                      className={selectedImg === `${process.env.REACT_APP_API_URL}${img.image}` ? "active" : ""}
+                    />
+                  ))}
+                </>
               ) : (
+                // Fallback image if no product images
                 <img src={defaultImg} alt="Default" />
               )}
             </div>
