@@ -20,44 +20,43 @@ function ProductDetail() {
   let productId = id; // Ensure productId is defined
 
   const handleProductClick = (id) => {
-    navigate(`/api/product/${id}`);
+    navigate(`/product/${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleViewShop = () => {
     if (product?.artisan?.id) {
-      navigate(`/api/shop/${product.artisan.id}`);
+      navigate(`/shop/${product.artisan.id}/products`);
     } else {
       console.warn("No artisan associated with this product");
     }
   };
 
   useEffect(() => {
-    // fetch product details from Django backend
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}api/products/product/products/${id}/`
-        );
-        if (!res.ok) throw new Error("Failed to fetch product");
-        const data = await res.json();
-        setProduct(data);
+  const fetchProduct = async () => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}api/products/product/products/${id}/`);
+      if (!res.ok) throw new Error("Failed to fetch product");
+      const data = await res.json();
+      setProduct(data);
 
-        // Check if multiple images exist, or just main_image
-        if (data.images && data.images.length > 0) {
-          setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${data.images[0].image})`);
-        } else if (data.main_image) {
-          setSelectedImg(`fetch(${process.env.REACT_APP_API_URL}${data.main_image})`);
-        } else {
-          setSelectedImg(defaultImg);
-        }
-      } catch (err) {
-        console.error("Error fetching product:", err);
-      } finally {
-        setLoading(false);
+      if (data.images && data.images.length > 0) {
+        setSelectedImg(`${process.env.REACT_APP_API_URL}${data.images[0].image}`);
+      } else if (data.main_image) {
+        setSelectedImg(`${process.env.REACT_APP_API_URL}${data.main_image}`);
+      } else {
+        setSelectedImg(defaultImg);
       }
-    };
-    fetchProduct();
-  }, [id]);
+    } catch (err) {
+      console.error("Error fetching product:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProduct();
+}, [id]);
+
 
   if (loading) return <p className="loading">Loading product...</p>;
   if (!product) return <p className="error">Product not found</p>;

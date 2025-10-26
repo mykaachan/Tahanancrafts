@@ -180,7 +180,7 @@ export function getImageUrl(path) {
 
 
 export async function getProduct(id) {
-  const res = await fetch(`${API_URL}/api/products/products/${id}/`);
+  const res = await fetch(`${API_URL}/api/products/product/products/${id}/`);
   if (!res.ok) throw new Error("Failed to fetch product");
   return await res.json();
 }
