@@ -47,6 +47,7 @@ import AdminTransHistory from "./AdminTransHistory";
 import AdminNotification from './AdminNotification';
 import AdminOrders from './AdminOrders';
 import AdminForecast from './AdminForecast';
+import underdev from './underdev';
 
 
 
@@ -89,7 +90,8 @@ function MainApp() {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<underdev />} />
         <Route path="/story" element={<StoryPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/iraya" element={<Iraya />} />
