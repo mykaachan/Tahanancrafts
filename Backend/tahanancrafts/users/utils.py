@@ -10,6 +10,8 @@ from django.conf import settings
 from telesign.messaging import MessagingClient
 from base64 import b64encode
 import requests
+from resend import Emails
+
 
 
 
@@ -59,32 +61,33 @@ def normalize_phone_number(phone):
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
+from resend import Emails
+from django.conf import settings
+
+client = Emails()  # Reads RESEND_API_KEY from environment automatically
+
 def send_otp_email(email, code):
-    subject = 'Your TahananCrafts Verification Code'
-    from_email = f'TahananCrafts <{settings.DEFAULT_FROM_EMAIL}>'
-    to_email = [email]
-
-    print(f"📤 Preparing email to {email}")
-
-    text_content = f'Your verification code is {code}. It expires in 5 minutes.'
-    html_content = f"""
-    <html><body>
-        <h2>TahananCrafts Verification</h2>
-        <p>Your verification code is:</p>
-        <h1>{code}</h1>
-        <p>Expires in 5 minutes.</p>
-    </body></html>
-    """
-
-    # Use Django's EmailMultiAlternatives which now works with Resend backend
-    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-    msg.attach_alternative(html_content, "text/html")
-
     try:
-        result = msg.send(fail_silently=False)
-        print(f"✅ Email sent result: {result}")  # Resend returns 1 if successful
+        # Send email via Resend
+        client.send(
+            {
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [email],
+                "subject": "Your TahananCrafts Verification Code",
+                "html": f"""
+                    <html><body>
+                    <h2>TahananCrafts Verification</h2>
+                    <p>Your OTP code is:</p>
+                    <h1>{code}</h1>
+                    <p>Expires in 5 minutes.</p>
+                    </body></html>
+                """,
+                "text": f"Your OTP code is {code}. Expires in 5 minutes."
+            }
+        )
+        print(f"✅ OTP email sent to {email}")
     except Exception as e:
-        print(f"❌ Email send failed: {e}")
+        print(f"❌ Failed to send OTP email: {e}")
 
 
 #send-contact-OTP
