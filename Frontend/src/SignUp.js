@@ -13,18 +13,32 @@ function SignUp() {
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-    try {
-      //  Call backend API
-      const res = await registerUser({ name, contact, password });
-      console.log("Signup response:", res);
+    console.log("🔹 Sign up button clicked");
+    console.log("📤 Sending data:", { name, contact, password });
 
-      //  Navigate to verify page, pass contact in state
+    // Check if any fields are empty
+    if (!name || !contact || !password) {
+      console.warn("⚠️ Missing fields");
+      alert("Please fill in all fields before signing up.");
+      return;
+    }
+
+    try {
+      console.log("⏳ Calling registerUser API...");
+      const res = await registerUser({ name, contact, password });
+      console.log("✅ Signup successful, response:", res);
+
+      // Navigate to next page
+      console.log("➡️ Navigating to /signup-verify with contact:", contact);
       navigate('/signup-verify', { state: { contact } });
+
     } catch (err) {
-      console.error("Signup failed:", err.response?.data || err.message);
+      console.error("❌ Signup failed:", err);
+      console.error("🧩 Error details:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Signup failed. Please try again.");
     }
   };
+
 
   return (
     <div className="App">
