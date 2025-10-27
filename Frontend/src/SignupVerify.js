@@ -17,22 +17,18 @@ function SignupVerifyContact() {
       const res = await registerUserOtp({ contact, otp });
       console.log("Verification success:", res);
 
-      // ✅ Store user_id only after successful verification
-      const userId = res?.user?.id || res?.user_id || res?.id;
-      if (userId) {
-        localStorage.setItem("user_id", userId);
-        console.log("✅ Saved user_id:", userId);
-      } else {
-        console.warn("⚠️ No user ID found in response:", res);
-      }
-
       alert("Account created successfully!");
-      navigate("/homepage");
+
+      // ✅ Save contact instead of user_id
+      localStorage.setItem("user_contact", contact);
+
+      navigate('/homepage');
     } catch (err) {
       console.error("Verification failed:", err.response?.data || err.message);
       alert("Invalid OTP. Please try again.");
     }
   };
+
 
   return (
     <div className="App">

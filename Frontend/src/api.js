@@ -55,6 +55,12 @@ export async function ChangePassword(userData) {
   return res.data;
 }
 
+export async function getUserByContact(contact) {
+  const res = await fetch(`https://tahanancrafts.onrender.com/api/users/auth/get_user_by_contact/?contact=${contact}`);
+  if (!res.ok) throw new Error("Failed to fetch user");
+  return await res.json();
+}
+
 
 // Fetch user profile
 export async function getProfile(userId) {

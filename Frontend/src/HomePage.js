@@ -10,7 +10,7 @@ import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
 import HeaderFooter from "./HeaderFooter";
-import { fetchLatestProducts,fetchFeaturedProducts } from "./api"; // Import the API function
+import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact } from "./api"; // Import the API function
 import { useNavigate } from "react-router-dom";
 
 // ✅ HomePage Component  with dynamic latest products
@@ -20,7 +20,8 @@ function HomePage() {
   const [featuredProducts, setFeaturedProducts] = React.useState([]);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
+    React.useEffect(() => {
+    // ✅ Fetch latest products
     async function getLatestProducts() {
       try {
         const products = await fetchLatestProducts();
@@ -32,9 +33,35 @@ function HomePage() {
 
     getLatestProducts();
 
+    // ✅ Fetch featured products (with fallback for contact)
     async function getFeaturedProducts() {
       try {
-        const userId = localStorage.getItem("user_id");
+        let userId = localStorage.getItem("user_id");
+
+        // 🧩 If user_id missing, fetch via contact
+        if (!userId) {
+          const contact = localStorage.getItem("user_contact");
+          if (contact) {
+            console.log("🔍 Fetching user_id using contact:", contact);
+            try {
+              const user = await getUserByContact(contact);
+              if (user?.id) {
+                localStorage.setItem("user_id", user.id);
+                userId = user.id;
+              }
+            } catch (fetchError) {
+              console.warn("⚠️ Could not fetch user by contact:", fetchError);
+            }
+          }
+        }
+
+        // 🚫 If still no userId, skip
+        if (!userId) {
+          console.warn("⚠️ No user_id found. Skipping featured fetch.");
+          return;
+        }
+
+        // ✅ Fetch featured products
         const products = await fetchFeaturedProducts(userId);
         setFeaturedProducts(products);
       } catch (error) {

@@ -413,6 +413,8 @@ class GoogleLoginAPIView(APIView):
     
 
 class CreateCustomUserView(APIView):
+
+
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -421,3 +423,14 @@ class CreateCustomUserView(APIView):
             serializer.save()
             return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class GetUserIdView(APIView):
+    permission_classses = [AllowAny]
+
+    
+    def get(request):
+        contact = request.GET.get('contact')
+        user = CustomUser.objects.filter(contact=contact).first()
+        if not user:
+            return Response({'error': 'User not found'}, status=404)
+        return Response({'id': user.id, 'name': user.name, 'contact': user.contact})
