@@ -20,6 +20,7 @@ function SignupVerifyContact() {
       console.log("Verification success:", res);
 
       alert("Account created successfully!");
+      localStorage.setItem("user_id", res.user.id);
       navigate('/homepage'); //  back to homepage
     } catch (err) {
       console.error("Verification failed:", err.response?.data || err.message);
