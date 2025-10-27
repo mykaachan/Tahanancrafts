@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; 
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-import { addToCart, getProduct } from "./api"; // API call to add items to cart
+import { addToCart, getProduct, getImageUrl } from "./api"; // API call to add items to cart
 import RecommendedProducts from "./YouMayLike";
 
 // fallback image if no product image
@@ -286,11 +286,8 @@ function ProductDetail() {
         >
           <div className="shop-image-horizontal">
             <img
-              src={
-                product.artisan?.main_photo ||
-                "https://via.placeholder.com/150?text=Artisan"
-              }
-              alt={product.artisan?.name || "Artisan"}
+              src={getImageUrl(artisan.main_photo)}
+              alt={artisan.name}
               className="shop-avatar"
               style={{
                 borderRadius: "50%",
