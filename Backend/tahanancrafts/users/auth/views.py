@@ -111,21 +111,15 @@ class UserRegistrationView(APIView):
             name = serializer.validated_data['name']
             password = serializer.validated_data['password']
 
-            # Determine contact type
-            try:
-                validate_email(contact)
-                contact_type = 'email'
-            except ValidationError:
-                contact_type = 'phone'
-                contact = normalize_phone_number(contact)
-
             try:
                 validate_email(contact)
                 contact_type = 'email'
                 print("✅ Detected email:", contact)
             except ValidationError:
                 contact_type = 'phone'
+                contact = normalize_phone_number(contact)
                 print("📱 Detected phone:", contact)
+
 
 
             otp = str(random.randint(100000, 999999))

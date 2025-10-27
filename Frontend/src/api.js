@@ -59,7 +59,7 @@ export async function ChangePassword(userData) {
 // Fetch user profile
 export async function getProfile(userId) {
   if (!userId) throw new Error("User ID is required for profile fetch");
-  const res = await fetch(`${API_URL}/users/profile/profile/?user_id=${userId}`);
+  const res = await fetch(`${API_URL}/api/users/profile/profile/?user_id=${userId}`);
   if (!res.ok) throw new Error("Failed to fetch profile");
   const data = await res.json();
   return data.user; // backend returns { user: {...} }
@@ -67,7 +67,7 @@ export async function getProfile(userId) {
 
 // update profile
 export async function updateProfile(userId, profileData, isFormData = false) {
-  const res = await fetch(`${API_URL}/users/profile/edit/?user_id=${userId}`, {
+  const res = await fetch(`${API_URL}/api/users/profile/edit/?user_id=${userId}`, {
     method: "PATCH",
     headers: isFormData ? {} : { "Content-Type": "application/json" },
     body: isFormData ? profileData : JSON.stringify(profileData),
