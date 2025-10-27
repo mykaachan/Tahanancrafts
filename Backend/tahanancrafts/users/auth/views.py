@@ -425,12 +425,19 @@ class CreateCustomUserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class GetUserIdView(APIView):
-    permission_classses = [AllowAny]
+    permission_classes = [AllowAny]  # ✅ typo fixed (classes, not classses)
 
-    
-    def get(request):
+    def get(self, request):  # ✅ added self and request
         contact = request.GET.get('contact')
+        if not contact:
+            return Response({'error': 'Contact is required'}, status=400)
+
         user = CustomUser.objects.filter(contact=contact).first()
         if not user:
             return Response({'error': 'User not found'}, status=404)
-        return Response({'id': user.id, 'name': user.name, 'contact': user.contact})
+
+        return Response({
+            'id': user.id,
+            'name': user.name,
+            'contact': user.contact
+        })
