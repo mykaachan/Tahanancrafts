@@ -157,7 +157,7 @@ class ProductDetailView(APIView):
         try:
             product = Product.objects.get(id=id)
 
-            serializer = ProductReadSerializer(product)
+            serializer = ProductSerializer(product)
             return Response(serializer.data)
 
         except Product.DoesNotExist:
