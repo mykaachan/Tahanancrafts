@@ -289,14 +289,9 @@ function ProductDetail() {
               src={getImageUrl(product.artisan?.main_photo)}
               alt={product.artisan?.name}
               className="shop-avatar"
-              style={{
-                borderRadius: "50%",
-                width: "114px",
-                height: "114px",
-                objectFit: "cover",
-              }}
             />
           </div>
+
 
           <div className="shop-info">
             <h3 className="shop-name">

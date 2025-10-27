@@ -411,22 +411,31 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;         /* ensures the image stays circular */
   border: 3px solid #c59d5f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
-}
-.shop-avatar-wrapper {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 10px;
 }
 
 .shop-avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;        /* ensures image fills the circle */
+  transition: transform 0.3s ease;
+}
+
+.shop-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Optional: make it responsive */
+@media (max-width: 600px) {
+  .shop-image-horizontal {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 
