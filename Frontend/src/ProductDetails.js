@@ -286,8 +286,8 @@ function ProductDetail() {
         >
           <div className="shop-image-horizontal">
             <img
-              src={getImageUrl(artisan.main_photo)}
-              alt={artisan.name}
+              src={getImageUrl(product.artisan?.main_photo)}
+              alt={product.artisan?.name}
               className="shop-avatar"
               style={{
                 borderRadius: "50%",
