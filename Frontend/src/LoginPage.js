@@ -1,4 +1,3 @@
-// src/LoginPage.js
 import React, { useState } from "react";
 import logo from "./Logo.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,9 +15,9 @@ function LoginPage() {
   // Normal login (OTP request + admin shortcut)
   // -------------------------------
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
+    try {
       const userData = {
         contact: enteredEmailOrPhone,
         password: enteredPassword,
@@ -27,31 +26,29 @@ function LoginPage() {
       // ✅ use your api helper instead of fetch
       const data = await login(userData);
 
-    if (response.ok) {
       // ✅ If backend sent a redirect (admin detected)
       if (data.redirect === "/AdminDash") {
-        alert(data.message); // optional
+        alert(data.message || "Redirecting to admin dashboard...");
         window.location.href = "/AdminDash";
         return;
       }
 
       // ✅ Normal OTP-required flow
       if (data.otp_required) {
-        navigate("/verify", { state: { contact: enteredEmailOrPhone } }); // 👈 pass contact from login input
+        navigate("/verify", { state: { contact: enteredEmailOrPhone } });
+        return;
       }
-    } else {
-      alert(data.error || "Please check your credentials and try again.");
+
+      // ✅ If neither redirect nor OTP required
+      alert(data.message || "Login successful!");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || "Please check your credentials and try again.");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong. Please try again.");
-  }
-};
-
-
+  };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleLogin();
+    if (e.key === "Enter") handleLogin(e);
   };
 
   // -------------------------------
