@@ -219,18 +219,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # settings.py (Email Backend using Gmail)
-
+"""
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = 'apikey'  # literally 'apikey', not a Gmail account
-EMAIL_HOST_PASSWORD = config("SENDGRID_API_KEY")  # your SendGrid API key from environment variable
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 
 DEFAULT_FROM_EMAIL = 'noreply@www.tahanancrafts.shop'  # verified sender email under your domain
 
 #EMAIL_HOST_PASSWORD = 'xakqeqpetfuqsdws'          # use App Password (not your Gmail password)
+"""
+
+EMAIL_BACKEND = "resend.django.EmailBackend"  # Resend backend
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

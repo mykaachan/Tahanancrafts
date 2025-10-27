@@ -56,14 +56,15 @@ def normalize_phone_number(phone):
 
 # OTP funtion - will generate otp and save to model and send to contact.
 #send-email-OTP
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+
 def send_otp_email(email, code):
     subject = 'Your TahananCrafts Verification Code'
     from_email = f'TahananCrafts <{settings.DEFAULT_FROM_EMAIL}>'
     to_email = [email]
 
     print(f"📤 Preparing email to {email}")
-    print(f"📧 Using SMTP host: {settings.EMAIL_HOST}")
-    print(f"👤 SMTP user: {settings.EMAIL_HOST_USER}")
 
     text_content = f'Your verification code is {code}. It expires in 5 minutes.'
     html_content = f"""
@@ -75,16 +76,16 @@ def send_otp_email(email, code):
     </body></html>
     """
 
+    # Use Django's EmailMultiAlternatives which now works with Resend backend
     msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
     msg.attach_alternative(html_content, "text/html")
 
     try:
         result = msg.send(fail_silently=False)
-        print(f"✅ Email sent result: {result}")
+        print(f"✅ Email sent result: {result}")  # Resend returns 1 if successful
     except Exception as e:
         print(f"❌ Email send failed: {e}")
 
-    
 
 #send-contact-OTP
 def send_otp_sms(contact, otp):
