@@ -14,6 +14,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 import dj_database_url
+from decouple import config  # or use os.environ
 
 import os
 from dotenv import load_dotenv
@@ -218,7 +219,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # settings.py (Email Backend using Gmail)
-from decouple import config  # or use os.environ
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.sendgrid.net'

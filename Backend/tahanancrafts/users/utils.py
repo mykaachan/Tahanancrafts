@@ -61,32 +61,28 @@ def send_otp_email(email, code):
     from_email = f'TahananCrafts <{settings.DEFAULT_FROM_EMAIL}>'
     to_email = [email]
 
-    # Plain text version (fallback)
-    text_content = f'Your verification code is {code}. It expires in 5 minutes.'
+    print(f"📤 Preparing email to {email}")
+    print(f"📧 Using SMTP host: {settings.EMAIL_HOST}")
+    print(f"👤 SMTP user: {settings.EMAIL_HOST_USER}")
 
-    # HTML version
+    text_content = f'Your verification code is {code}. It expires in 5 minutes.'
     html_content = f"""
-    <html>
-        <body style="font-family: Arial, sans-serif; line-height:1.6;">
-            <h2 style="color:#4CAF50;">TahananCrafts Verification</h2>
-            <p>Hi,</p>
-            <p>Your verification code is:</p>
-            <h1 style="color:#333; text-align:center;">{code}</h1>
-            <p>This code will expire in <strong>5 minutes</strong>.</p>
-            <hr>
-            <p style="font-size:12px; color:gray;">
-                If you did not request this, please ignore this email.
-            </p>
-        </body>
-    </html>
+    <html><body>
+        <h2>TahananCrafts Verification</h2>
+        <p>Your verification code is:</p>
+        <h1>{code}</h1>
+        <p>Expires in 5 minutes.</p>
+    </body></html>
     """
 
-    # Create the email
     msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
     msg.attach_alternative(html_content, "text/html")
-    
-    # Send the email
-    msg.send(fail_silently=False)
+
+    try:
+        result = msg.send(fail_silently=False)
+        print(f"✅ Email sent result: {result}")
+    except Exception as e:
+        print(f"❌ Email send failed: {e}")
 
     
 
