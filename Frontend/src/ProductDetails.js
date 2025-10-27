@@ -32,6 +32,7 @@ function ProductDetail() {
     }
   };
 
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -273,33 +274,44 @@ function ProductDetail() {
      {/* ===== SHOP SECTION ===== */}
       <section className="shop-section">
         <hr className="shop-divider" />
-        <div className="shop-card-horizontal" onClick={() => {
-            if (product.artisan?.id) {
-              navigate(`/shop/${product.artisan.id}/products`);
-            } else {
-              console.warn("No artisan associated with this product");
-            }
-          }}
+
+        <div
+          className="shop-card-horizontal"
+          onClick={handleViewShop} // ✅ now using the function
           style={{ cursor: "pointer" }}
         >
           <div className="shop-image-horizontal">
             <img
-              src={product.artisan?.main_photo || "https://via.placeholder.com/150?text=Artisan"}
+              src={
+                product.artisan?.main_photo ||
+                "https://via.placeholder.com/150?text=Artisan"
+              }
               alt={product.artisan?.name || "Artisan"}
               className="shop-avatar"
-              style={{ borderRadius: "50%", width: "60px", height: "60px", objectFit: "cover" }}
+              style={{
+                borderRadius: "50%",
+                width: "60px",
+                height: "60px",
+                objectFit: "cover",
+              }}
             />
           </div>
+
           <div className="shop-info">
-            <h3 className="shop-name">{product.artisan?.name || "Artisan Shop"}</h3>
-            <button className="view-shop-btn">
+            <h3 className="shop-name">
+              {product.artisan?.name || "Artisan Shop"}
+            </h3>
+            <button className="view-shop-btn" onClick={(e) => {
+              e.stopPropagation(); // prevent triggering parent div click
+              handleViewShop();
+            }}>
               View Shop
             </button>
           </div>
         </div>
+
         <hr className="shop-divider" />
       </section>
-
 
 
       {/* ===== YOU MAY ALSO LIKE ===== */}
