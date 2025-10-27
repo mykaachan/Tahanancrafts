@@ -291,8 +291,8 @@ function ProductDetail() {
               className="shop-avatar"
               style={{
                 borderRadius: "50%",
-                width: "60px",
-                height: "60px",
+                width: "114px",
+                height: "114px",
                 objectFit: "cover",
               }}
             />
