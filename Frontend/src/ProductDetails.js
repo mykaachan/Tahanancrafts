@@ -25,12 +25,16 @@ function ProductDetail() {
   };
 
   const handleViewShop = () => {
+    console.log("Clicked View Shop");
+    console.log("Product:", product);
     if (product?.artisan?.id) {
+      console.log("Navigating to:", `/shop/${product.artisan.id}/products`);
       navigate(`/shop/${product.artisan.id}/products`);
     } else {
       console.warn("No artisan associated with this product");
     }
   };
+
 
 
   useEffect(() => {
