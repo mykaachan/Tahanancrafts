@@ -13,34 +13,24 @@ function SignupVerifyContact() {
   const [otp, setOtp] = useState("");
 
   const handleVerify = async () => {
-    if (!otp) {
-      alert("Please enter the verification code.");
-      return;
-    }
-
     try {
-      // ✅ Verify OTP via backend
       const res = await registerUserOtp({ contact, otp });
       console.log("Verification success:", res);
 
-      // ✅ Save user info to localStorage (same pattern as LoginPage)
-      if (res && res.user) {
-        localStorage.setItem("user_id", res.user.id);
-        localStorage.setItem("user_name", res.user.name);
-        localStorage.setItem("user_contact", res.user.contact);
-        localStorage.setItem("user_role", res.user.role || "customer");
-
-        // Optional: Save auth token if provided
-        if (res.token) {
-          localStorage.setItem("auth_token", res.token);
-        }
+      // ✅ Store user_id only after successful verification
+      const userId = res?.user?.id || res?.user_id || res?.id;
+      if (userId) {
+        localStorage.setItem("user_id", userId);
+        console.log("✅ Saved user_id:", userId);
+      } else {
+        console.warn("⚠️ No user ID found in response:", res);
       }
 
       alert("Account created successfully!");
       navigate("/homepage");
     } catch (err) {
       console.error("Verification failed:", err.response?.data || err.message);
-      alert(err.response?.data?.error || "Invalid OTP. Please try again.");
+      alert("Invalid OTP. Please try again.");
     }
   };
 
