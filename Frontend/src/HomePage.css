@@ -131,7 +131,7 @@ html, body {
   justify-content: center;
   color: #fff; /* text inside will be lighter */
   height: 80%;   /* makes it scale */
-  min-height: 535px; /* adjust this value to match your image height */
+  min-height: 655px; /* adjust this value to match your image height */
 }
 
 .featured-box h1 {
@@ -379,7 +379,7 @@ html, body {
   width: 300px;
   height: auto;
   position: absolute;
-  top: 168px;                     /* move up/down */
+  top: 120px;                     /* move up/down */
   left: 50%;                      /* horizontally center */
   transform: translateX(-50%);    /* adjust exact center */
   z-index: 2;
