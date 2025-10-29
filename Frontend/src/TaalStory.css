@@ -1,0 +1,203 @@
+.taal-story-page {
+  font-family: "Poppins", sans-serif;
+  background-color: #faf5ef;
+  color: #3b2f2f;
+}
+
+/* ===== HERO SECTION ===== */
+.taal-hero {
+  background: #e6d3b3;
+  padding: 80px 20px;
+}
+
+.taal-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.taal-hero-logo {
+  width: 320px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.taal-hero-text {
+  max-width: 600px;
+}
+
+.taal-hero-text h1 {
+  font-size: 2.4rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.taal-hero-text p {
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+/* ===== STORY SECTIONS ===== */
+.taal-story-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  padding: 80px 20px;
+  flex-wrap: wrap;
+  background-color: #fff;
+}
+
+.taal-story-section.reverse {
+  flex-direction: row-reverse;
+  background-color: #f6f1e7;
+}
+
+.story-left img {
+  width: 500px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.story-right {
+  max-width: 500px;
+}
+
+.story-right p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #4b3c3c;
+}
+
+/* ===== PRODUCTS ===== */
+.latest-products,
+.more-products {
+  text-align: center;
+  padding: 70px 20px;
+  background: #faf5ef;
+}
+
+.latest-products h2,
+.more-products h2 {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #3b2f2f;
+}
+
+.product-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  width: 280px;
+  padding: 15px;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-card p {
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* ===== HERITAGE SECTION ===== */
+/* container with tan background band like your screenshot */
+.heritage-wrapper {
+  background: #d7c6b2; /* tan band */
+  padding: 50px 20px;
+}
+
+.heritage-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 30px;
+  background: transparent;
+}
+
+.heritage-left {
+  flex: 1 1 380px;
+  max-width: 520px;
+  padding-right: 20px;
+}
+
+.heritage-left h2 {
+  font-size: 2rem;
+  margin-bottom: 18px;
+  color: #1f1a17;
+  line-height: 1.05;
+}
+
+.heritage-left p {
+  color: #3b2f2f;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+/* image on the right sized to match screenshot proportions */
+.heritage-right {
+  flex: 1 1 520px;
+  max-width: 620px;
+  display: flex;
+  justify-content: center;
+}
+
+.heritage-right img {
+  width: 100%;
+  max-width: 620px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .taal-hero-content,
+  .heritage-inner,
+  .taal-story-section,
+  .product-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .story-left img,
+  .taal-hero-logo,
+  .heritage-right img {
+    width: 90%;
+    max-width: 700px;
+  }
+
+  .story-right, .heritage-left {
+    max-width: 90%;
+    text-align: left;
+  }
+
+  .product-card {
+    width: 90%;
+  }
+}
