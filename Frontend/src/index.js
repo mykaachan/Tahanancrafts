@@ -48,6 +48,8 @@ import AdminNotification from './AdminNotification';
 import AdminOrders from './AdminOrders';
 import AdminForecast from './AdminForecast';
 import UnderDevelopment from './UnderDevelopment';
+import TaalStory from './TaalStory';
+
 
 
 
@@ -125,6 +127,8 @@ function MainApp() {
         <Route path="/adminnotification" element={<AdminNotification />} />
         <Route path="/adminorders" element={<AdminOrders />} /> // ✅ correct
         <Route path="/adminforecast" element={<AdminForecast />} />
+        <Route path="/taalstory" element={<TaalStory />} />
+
 
 
 
@@ -217,6 +221,7 @@ function MainApp() {
               </div>
             }/>
             
+dir Frontend\src\TaalStory.*
       </Routes>
     </BrowserRouter>
   );
