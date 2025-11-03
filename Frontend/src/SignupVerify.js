@@ -20,7 +20,17 @@ function SignupVerifyContact() {
       alert("Account created successfully!");
 
       // ✅ Save contact instead of user_id
-      localStorage.setItem("user_contact", contact);
+      if (res?.user?.id) {
+        localStorage.setItem("user_id", res.user.id);
+
+        // ✅ Save whichever contact type is valid
+        if (res.user.email && res.user.email !== "null") {
+          localStorage.setItem("email", res.user.email);
+        }
+        if (res.user.phone && res.user.phone !== "null") {
+          localStorage.setItem("phone", res.user.phone);
+        }
+      }
 
       navigate('/homepage');
     } catch (err) {

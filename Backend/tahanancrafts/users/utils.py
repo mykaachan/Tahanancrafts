@@ -89,14 +89,18 @@ def send_otp_email(email, code):
     except Exception as e:
         print(f"❌ Failed to send OTP email: {e}")
 
+import logging
 
 #send-contact-OTP
 def send_otp_sms(contact, otp):
     
     #Sends OTP via SMS.
-    
+    logger = logging.getLogger(__name__)
+
     # Simulate sending by printing
     print(f"OTP sent to {contact}: {otp}")
+    logger.info(f"🚀 OTP for {contact}: {otp}")
+
 
     # Sends OTP via TeleSign SMS API.
     """
