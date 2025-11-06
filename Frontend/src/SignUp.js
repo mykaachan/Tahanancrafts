@@ -2,24 +2,29 @@ import React, { useState } from 'react';
 import './SignUp.css';
 import { ReactComponent as Logo } from './Logo.svg';
 import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from './api'; //  Import signup API
+import { registerUser } from './api'; // Import signup API
+import PrivacyTerms from './PrivacyTerms'; // ✅ Import PrivacyTerms
 
 function SignUp() {
   const navigate = useNavigate();
 
-  //  Track form values
+  // Track form values
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
+  const [agreePrivacy, setAgreePrivacy] = useState(false); // ✅ Track checkbox
 
   const handleSignUp = async () => {
     console.log("🔹 Sign up button clicked");
     console.log("📤 Sending data:", { name, contact, password });
 
-    // Check if any fields are empty
     if (!name || !contact || !password) {
-      console.warn("⚠️ Missing fields");
       alert("Please fill in all fields before signing up.");
+      return;
+    }
+
+    if (!agreePrivacy) {
+      alert("Please agree to the Privacy Policy & Terms before signing up.");
       return;
     }
 
@@ -28,17 +33,12 @@ function SignUp() {
       const res = await registerUser({ name, contact, password });
       console.log("✅ Signup successful, response:", res);
 
-      // Navigate to next page
-      console.log("➡️ Navigating to /signup-verify with contact:", contact);
       navigate('/signup-verify', { state: { contact } });
-
     } catch (err) {
       console.error("❌ Signup failed:", err);
-      console.error("🧩 Error details:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Signup failed. Please try again.");
     }
   };
-
 
   return (
     <div className="App">
@@ -80,6 +80,9 @@ function SignUp() {
             <span>Already have an account? </span>
             <Link to="/login">LOG IN</Link>
           </div>
+
+          {/* ✅ Add Privacy Terms section below the login link */}
+          <PrivacyTerms onAgreeChange={(checked) => setAgreePrivacy(checked)} />
         </div>
       </div>
     </div>

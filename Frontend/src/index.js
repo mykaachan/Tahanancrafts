@@ -50,6 +50,8 @@ import AdminForecast from './AdminForecast';
 import UnderDevelopment from './UnderDevelopment';
 import TaalStory from './TaalStory';
 import PrivacyTerms from './PrivacyTerms';
+import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
+
 
 
 
@@ -130,6 +132,9 @@ function MainApp() {
         <Route path="/adminforecast" element={<AdminForecast />} />
         <Route path="/taalstory" element={<TaalStory />} />
         <Route path="/privacy-terms" element={<PrivacyTerms />} />
+        <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
+
+
 
 
 
