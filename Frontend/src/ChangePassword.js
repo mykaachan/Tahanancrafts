@@ -22,8 +22,8 @@ function ChangePassword() {
       {
         contact,   // from ForgotPass2
         otp,       // verification code
-        newpass1,
-        newpass2
+        newPass1,
+        newPass2
       }
     );
 
