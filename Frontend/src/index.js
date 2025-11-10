@@ -110,7 +110,7 @@ function MainApp() {
         <Route path="/order-list" element={<OrderList />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/:shop_id" element={<Shop />} />
         <Route path="/shop/:artisan_id/products" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />

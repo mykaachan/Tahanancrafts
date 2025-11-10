@@ -10,7 +10,8 @@ from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
+from django.db.models import Count
+from rest_framework.decorators import api_view
 
 class ProductListView(APIView):
     permission_classes = [AllowAny]
@@ -268,3 +269,60 @@ class LatestProductsView(APIView):
             for p in latest_products
         ]
         return Response(data, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+def top_selling_products(request, artisan_id=None):
+    """
+    Returns top 4 products for an artisan prioritized by:
+    1. Purchases
+    2. Likes (if no purchases)
+    3. Views (if no likes)
+    """
+    actions = UserActivity.objects.all()
+
+    if artisan_id:
+        actions = actions.filter(product__artisan_id=artisan_id)
+
+    # Try to get top by purchase
+    purchases = (
+        actions.filter(action='purchase')
+        .values('product')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:4]
+    )
+
+    product_ids = [p['product'] for p in purchases]
+
+    # If no purchases, fallback to likes
+    if not product_ids:
+        likes = (
+            actions.filter(action='like')
+            .values('product')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:4]
+        )
+        product_ids = [l['product'] for l in likes]
+
+    # If no likes either, fallback to views
+    if not product_ids:
+        views = (
+            actions.filter(action='view')
+            .values('product')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:4]
+        )
+        product_ids = [v['product'] for v in views]
+
+    # If still none, just show first few products from that artisan
+    if not product_ids:
+        if artisan_id:
+            products = Product.objects.filter(artisan_id=artisan_id)[:4]
+        else:
+            products = Product.objects.all()[:4]
+    else:
+        products = list(Product.objects.filter(id__in=product_ids))
+        # Preserve order (so the top-ranked products stay on top)
+        products.sort(key=lambda p: product_ids.index(p.id))
+
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)

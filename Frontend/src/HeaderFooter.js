@@ -102,7 +102,7 @@ function HeaderFooter({ children }) {
               </div>
               <div>
                 <h4>EMAIL</h4>
-                <p>tahanancrafts.shop@email.com</p>
+                <p>tahanancrafts.shop@gmail.com</p>
               </div>
             </div>
           </div>
