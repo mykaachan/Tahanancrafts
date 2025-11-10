@@ -17,7 +17,7 @@ function ChangePassword() {
 
   const handleSavePassword = async () => {
     try {
-      const res = await axios.post(fetch(`${process.env.REACT_APP_API_URL}/users/auth/change_password/`), {
+      const res = await axios.post(fetch(`${process.env.REACT_APP_API_URL}/api/users/auth/change_password/`), {
         contact: contact,   // ✅ comes from ForgotPass2
         otp: otp,           // ✅ verify code from ForgotPass2
         newpass1: newPass1,
