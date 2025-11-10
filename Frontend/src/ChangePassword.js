@@ -16,25 +16,33 @@ function ChangePassword() {
   const { contact, otp } = location.state || {};
 
   const handleSavePassword = async () => {
-  try {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/users/auth/change_password/`,
-      {
-        contact,   // from ForgotPass2
-        otp,       // verification code
-        newPass1,
-        newPass2
-      }
-    );
+    if (!newPass1 || !newPass2) {
+      setMessage("Please fill in both password fields.");
+      return;
+    }
 
-    setMessage(res.data.message || "Password reset successful.");
+    if (newPass1 !== newPass2) {
+      setMessage("Passwords do not match.");
+      return;
+    }
 
-    // Redirect to login after 2 seconds
-    setTimeout(() => navigate("/"), 2000);
-  } catch (err) {
-    setMessage(err.response?.data?.error || "Something went wrong.");
-  }
-};
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/auth/change_password/`,
+        {
+          contact,      // email or phone
+          newpass1: newPass1,
+          newpass2: newPass2
+        }
+      );
+
+      setMessage(res.data.message || "Password reset successful.");
+      setTimeout(() => navigate("/"), 2000);
+    } catch (err) {
+      setMessage(err.response?.data?.error || "Something went wrong.");
+    }
+  };
+
 
 
   return (
