@@ -77,20 +77,20 @@ function Shop() {
         {/* ===== Header Banner ===== */}
         <div className="shop-banner">
           <div className="shop-info">
-            <div className="shop-logo placeholder-img">
+           <div className="shop-logo placeholder-img">
               {artisan?.main_photo && (
-                <img
-                  src={getImageUrl(artisan.main_photo)}
-                  alt={artisan.name}
-                  className="shop-main-photo"
-                />
+                  <img
+                    src={getImageUrl(artisan.main_photo)}
+                    alt={artisan.name}
+                    className="shop-main-photo"
+                  />
               )}
             </div>
             <div>
               <h2>{artisan?.name || "Artisan Shop"}</h2>
-              <p>{artisan?.location || "Local Handcrafted Goods"}</p>
-              <button className="btn">Follow</button>
-              <button className="btn">Message</button>
+                <p>{artisan?.location || "Local Handcrafted Goods"}</p>
+                <button className="btn">Follow</button>
+                <button className="btn">Message</button>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ function Shop() {
         {/* ===== Nav Tabs ===== */}
         <div className="shop-tabs">
           <button className="active">Home</button>
-          <Link to={`/shopallproducts/${artisan_id}`}>
+          <Link to={`/shop/${artisan_id}/products`}>
             <button>All Products</button>
           </Link>
         </div>

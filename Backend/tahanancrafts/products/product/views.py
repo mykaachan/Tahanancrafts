@@ -11,7 +11,7 @@ from products.models import Product, Category, Material,ProductImage, UserActivi
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 class ProductListView(APIView):
     permission_classes = [AllowAny]
@@ -271,6 +271,7 @@ class LatestProductsView(APIView):
         return Response(data, status=status.HTTP_200_OK)
     
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def top_selling_products(request, artisan_id=None):
     """
     Returns top 4 products for an artisan prioritized by:
