@@ -33,6 +33,6 @@ urlpatterns = [
     path('shop/<int:artisan_id>/', ShopProductsView.as_view()),
     path('latest-products/', LatestProductsView.as_view(), name='latest-products'),
     path('featured-products/<int:user_id>/', FeaturedProductsView.as_view(), name='featured-products'),
-    path('top-selling/<int:artisan_id>/', top_selling_products.as_view(), name='artisan_top_selling'),
+    path('top-selling/<int:artisan_id>/', top_selling_products, name='artisan_top_selling'),
 
 ]
