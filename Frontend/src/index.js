@@ -51,6 +51,7 @@ import UnderDevelopment from './UnderDevelopment';
 import TaalStory from './TaalStory';
 import PrivacyTerms from './PrivacyTerms';
 import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
+import SellerRegister from "./SellerRegister"; // ✅ default export
 
 
 
@@ -73,7 +74,8 @@ function ConditionalChatPopup() {
     "/forgotpass2",
     "/verify",
     "/signup-verify",
-    "/change-password"
+    "/change-password",
+    "/sellerregister" 
   ];
 
   const shouldHide = hiddenPaths.includes(location.pathname);
@@ -133,6 +135,9 @@ function MainApp() {
         <Route path="/taalstory" element={<TaalStory />} />
         <Route path="/privacy-terms" element={<PrivacyTerms />} />
         <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
+        <Route path="/sellerregister" element={<SellerRegister />} />
+        <Route path="/sellerregister" element={<SellerRegister />} />
+
 
 
 
