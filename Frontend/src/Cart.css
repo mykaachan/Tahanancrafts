@@ -244,3 +244,164 @@
   transform: translateY(-5px);
   box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
 }
+
+
+
+/* =========================
+   CART PAGE RESPONSIVE
+========================= */
+
+/* Tablet / Medium screens */
+@media (max-width: 1024px) {
+  .cart-layout {
+    flex-direction: column; /* Stack cart items and summary */
+    gap: 25px;
+  }
+
+  .cart-items {
+    flex: 1;
+    gap: 15px;
+  }
+
+  .cart-summary {
+    width: 100%;
+  }
+
+  .cart-item img {
+    width: 100px;
+  }
+
+  .cart-title {
+    font-size: 2.5rem;
+  }
+
+  .related-section {
+    padding: 0 20px;
+  }
+
+  .related-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Mobile / Small screens */
+@media (max-width: 768px) {
+  .cart-page {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 60px;
+  }
+
+  .cart-title {
+    font-size: 2rem;
+  }
+
+  .cart-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-body {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .item-body img {
+    width: 100%;
+    height: auto;
+  }
+
+  .item-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .qty-buttons button {
+    padding: 4px 8px;
+  }
+
+  .checkout-btn {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .back-btn {
+    padding: 6px 12px;
+  }
+
+  .cart-summary {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .related-section {
+    padding: 0 15px;
+  }
+
+  .related-title {
+    font-size: 1.3rem;
+  }
+
+  .related-card img {
+    height: 150px;
+  }
+
+  .related-card h4 {
+    font-size: 0.95rem;
+  }
+
+  .related-card p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Very small / smartphones */
+@media (max-width: 480px) {
+  .cart-title {
+    font-size: 1.7rem;
+  }
+
+  .item-body img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .item-info {
+    font-size: 0.9rem;
+  }
+
+  .price {
+    font-size: 0.9rem;
+  }
+
+  .related-title {
+    font-size: 1.1rem;
+  }
+
+  .related-card img {
+    height: 130px;
+  }
+
+  .related-card h4 {
+    font-size: 0.9rem;
+  }
+
+  .related-card p {
+    font-size: 0.8rem;
+  }
+
+  .checkout-btn {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .back-btn {
+    padding: 5px 10px;
+  }
+}

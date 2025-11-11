@@ -467,3 +467,144 @@
   background-color: #a47c4b;
 }
 
+
+/* ===== Responsive adjustments for Iraya Page & Related Products ===== */
+@media (max-width: 1024px) {
+  .iraya-container {
+    flex-direction: column;
+    padding: 0 30px;
+    gap: 30px;
+  }
+
+  .iraya-container .iraya-images .main-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .iraya-container .iraya-images .thumbnails img {
+    width: 150px;
+    height: 120px;
+  }
+
+  .iraya-container .iraya-details {
+    gap: 10px;
+  }
+
+  .iraya-container .options {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .iraya-container .add-to-cart {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .reviews-section,
+  .related-section,
+  .shop-section {
+    padding: 0 20px;
+    max-width: 100%;
+  }
+
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    justify-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .iraya-container .iraya-images .thumbnails img {
+    width: 100px;
+    height: 80px;
+  }
+
+  .iraya-container .iraya-details h1 {
+    font-size: 1.4rem;
+  }
+
+  .iraya-container .iraya-details h2 {
+    font-size: 1rem;
+  }
+
+  .iraya-container .iraya-details .description {
+    font-size: 0.85rem;
+  }
+
+  .iraya-container .option .buttons button,
+  .iraya-container .quantity-controls button,
+  .iraya-container .add-to-cart button {
+    font-size: 0.85rem;
+    padding: 5px 12px;
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .shop-card-horizontal {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .shop-image-horizontal {
+    width: 80px;
+    height: 80px;
+  }
+
+  .shop-info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .iraya-container .iraya-details h1 {
+    font-size: 1.2rem;
+  }
+
+  .iraya-container .iraya-details h2,
+  .iraya-container .iraya-details .category {
+    font-size: 0.9rem;
+  }
+
+  .iraya-container .iraya-details .price {
+    font-size: 1rem;
+  }
+
+  .iraya-container .iraya-details .description {
+    font-size: 0.8rem;
+  }
+
+  .iraya-container .option .buttons button,
+  .iraya-container .quantity-controls button,
+  .iraya-container .add-to-cart button {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+
+  .related-grid {
+    gap: 15px;
+  }
+
+  .shop-image-horizontal {
+    width: 60px;
+    height: 60px;
+  }
+
+  .shop-name {
+    font-size: 1.2rem;
+  }
+
+  .view-shop-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}

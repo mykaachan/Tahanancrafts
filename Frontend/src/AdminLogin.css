@@ -124,3 +124,54 @@
     font-size: 0.9rem;
   }
 }
+
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  .admin-login-page {
+    padding: 20px;
+    background-size: cover;
+  }
+
+  .login-container {
+    width: 90%; /* full width with padding */
+    padding: 30px 20px;
+  }
+
+  .login-logo {
+    font-size: 3.5rem; /* slightly smaller logo */
+    letter-spacing: 7px;
+    margin-bottom: 20px;
+  }
+
+  .login-form input {
+    font-size: 0.9rem;
+    padding: 7px 10px;
+  }
+
+  .login-btn {
+    font-size: 0.9rem;
+    padding: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 25px 15px;
+  }
+
+  .login-logo {
+    font-size: 2.5rem; /* fits very small screens */
+    letter-spacing: 5px;
+  }
+
+  .login-form input {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+
+  .login-btn {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}

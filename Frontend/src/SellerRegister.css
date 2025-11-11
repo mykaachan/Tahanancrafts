@@ -94,3 +94,54 @@ textarea {
 .submit-btn:hover {
   background-color: #b18555;
 }
+
+
+
+/* ===== Seller Register Responsive ===== */
+@media (max-width: 1024px) {
+  .seller-register-container {
+    padding: 30px 20px;
+  }
+
+  .seller-register-box {
+    padding: 25px;
+    max-width: 500px;
+  }
+
+  input,
+  textarea {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .submit-btn {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-register-container {
+    padding: 20px 10px;
+  }
+
+  .seller-register-box {
+    padding: 20px;
+    width: 95%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .submit-btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
