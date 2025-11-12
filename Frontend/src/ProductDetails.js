@@ -16,6 +16,9 @@ function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate(); // for navigation after actions
+  const [reviews, setReviews] = useState([]);
+  const [sort, setSort] = useState("Latest");
+
 
   let productId = id; // Ensure productId is defined
 
@@ -23,6 +26,31 @@ function ProductDetail() {
     navigate(`/product/${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/ratings/?product=${id}`
+        );
+        const data = await res.json();
+        setReviews(data);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      }
+    };
+    fetchReviews();
+  }, [id]);
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+
+    if (sort === "Oldest") return dateA - dateB;
+    if (sort === "Highest Rated") return b.score - a.score;
+    if (sort === "Lowest Rated") return a.score - b.score;
+    return dateB - dateA; // Latest by default
+  });
 
   const handleViewShop = () => {
     console.log("Clicked View Shop");
@@ -216,62 +244,38 @@ function ProductDetail() {
       {/* ===== RATINGS & REVIEWS ===== */}
       <div className="reviews-section">
         <h2>RATINGS & REVIEWS</h2>
-
         <div className="reviews-header">
-          <p>All Reviews (6)</p>
+          <p>All Reviews ({reviews.length})</p>
           <div className="reviews-actions">
-            <select>
+            <select value={sort} onChange={(e) => setSort(e.target.value)}>
               <option>Latest</option>
               <option>Oldest</option>
               <option>Highest Rated</option>
               <option>Lowest Rated</option>
             </select>
-            <button className="review-btn">Write a Review</button>
           </div>
         </div>
 
         <div className="reviews-grid">
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐⭐</p>
-            <h4>Juan D.</h4>
-            <p>salamat po mabilis delivery at maganda nman Ang bilao thank you po ng marami.....😊😊😊😊😊😊😊</p>
-            <small>Posted on May 14, 2025</small>
-          </div>
-
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐⭐</p>
-            <h4>Mikaela M.</h4>
-            <p>SUPER LEGIT GUYS, WALANG LABIS, WALANG KULANG, SOBRANG LAKI NITO. WORTH IT NAMAN SIYA GUYSS!!💞💞</p>
-            <small>Posted on May 15, 2025</small>
-          </div>
-
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐½</p>
-            <h4>Missy R.</h4>
-            <p>satisfied buyer here, well packed and maganda yung bilao, sakto para sa mga paorder kong kakanin...</p>
-            <small>Posted on May 16, 2025</small>
-          </div>
-
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐</p>
-            <h4>Angela P.</h4>
-            <p>Double-stitched for extra strength, Support local small businesses, eco-friendly bamboo material...</p>
-            <small>Posted on May 17, 2025</small>
-          </div>
-
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐⭐</p>
-            <h4>Gabrielo K.</h4>
-            <p>salamat po ng marami dumating on time sakto sakto, salamat din Kay kuya rider na mabait...</p>
-            <small>Posted on May 18, 2025</small>
-          </div>
-
-          <div className="review-card">
-            <p className="stars">⭐⭐⭐⭐½</p>
-            <h4>Inday H.</h4>
-            <p>nice product 👍👍👍...will order again soon. thanks much po sa nag deliver... keepsafe always</p>
-            <small>Posted on May 19, 2025</small>
-          </div>
+          {sortedReviews.length > 0 ? (
+            sortedReviews.map((review) => (
+              <div className="review-card" key={review.id}>
+                <p className="stars">{"⭐".repeat(review.score)}</p>
+                <h4>{review.user_name || `User #${review.user}`}</h4>
+                <p>{review.review || "(No review text provided)"}</p>
+                <small>
+                  Posted on{" "}
+                  {new Date(review.created_at).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </small>
+              </div>
+            ))
+          ) : (
+            <p>No reviews yet for this product.</p>
+          )}
         </div>
       </div>
 

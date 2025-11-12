@@ -1,22 +1,40 @@
 from rest_framework import serializers  # For creating API serializers
-from products.models import Product  # Your product model
+# products/serializers.py
+from products.models import Rating, Product
+from users.models import CustomUser
 
-class TestReviewSerializer(serializers.Serializer):
-    product_id = serializers.IntegerField()
-    rating = serializers.IntegerField(min_value=1, max_value=5)
-    comment = serializers.CharField(max_length=500, required=False)
 
-    def validate_product_id(self, value):
-        if not Product.objects.filter(id=value).exists():
-            raise serializers.ValidationError("Product does not exist.")
-        return value
+class ProductRatingSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.username', read_only=True)
+    product_name = serializers.CharField(source='product.name', read_only=True)
 
-    def validate_rating(self, value):
-        if value < 1 or value > 5:
-            raise serializers.ValidationError("Rating must be between 1 and 5.")
-        return value
+    class Meta:
+        model = Rating
+        fields = [
+            'id',
+            'user',
+            'user_name',
+            'product',
+            'product_name',
+            'order',
+            'score',
+            'review',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at']
 
-    def validate_comment(self, value):
-        if len(value) > 500:
-            raise serializers.ValidationError("Comment cannot exceed 500 characters.")
-        return value
+    def create(self, validated_data):
+        """
+        Update rating if the user already reviewed this product,
+        otherwise create a new one.
+        """
+        user = validated_data['user']
+        product = validated_data['product']
+        existing = Rating.objects.filter(user=user, product=product).first()
+        if existing:
+            existing.score = validated_data.get('score', existing.score)
+            existing.review = validated_data.get('review', existing.review)
+            existing.save()
+            return existing
+        return super().create(validated_data)
