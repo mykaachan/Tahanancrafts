@@ -10,7 +10,7 @@ import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
 import HeaderFooter from "./HeaderFooter";
-import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact,API_URL } from "./api"; // Import the API function
+import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact } from "./api"; // Import the API function
 import { useNavigate } from "react-router-dom";
 
 // ✅ HomePage Component  with dynamic latest products
@@ -57,7 +57,7 @@ function HomePage() {
 
         // 🚫 If still no userId, skip
         if (!userId) {
-          console.warn("⚠️ No user_id found . Skipping featured fetch.");
+          console.warn("⚠️ No user_id found. Skipping featured fetch.");
           return;
         }
 
@@ -78,78 +78,99 @@ function HomePage() {
     <HeaderFooter>
       <div className="homepage-container">
 
-     {/* ✅ Featured Section (matches your CSS layout) */}
+     {/* ✅ Featured Section (matches static layout EXACTLY) */}
       <section className="featured-section">
-        {featured ? (
-          <>
-            {/* Left side image */}
-            <img
-              src={
-                featured.main_image?.startsWith("http")
-                  ? featured.main_image
-                  : `${process.env.REACT_APP_API_URL}${featured.main_image}`
-              }
-              alt={featured.name}
-              className="featured-photo"
-            />
+        {/* ✅ LEFT SIDE: Image gallery (thumbnails + main image) */}
+        <div className="featured-image-container">
+          {/* Small thumbnails row */}
+          <div className="thumbnail-row">
+            {featured?.images?.length > 0 ? (
+              featured.images.slice(0, 3).map((img, index) => (
+                <img
+                  key={index}
+                  src={`${process.env.REACT_APP_API_URL}${img.image}`}
+                  alt={`${featured.name} thumbnail ${index + 1}`}
+                  className="thumbnail-image"
+                />
+              ))
+            ) : (
+              <>
+                <img src={featuredphoto2} alt="thumb1" className="thumbnail-image" />
+                <img src={featuredphoto3} alt="thumb2" className="thumbnail-image" />
+              </>
+            )}
+          </div>
 
-            {/* Right-side brown box */}
-            <div className="featured-box">
-              <h1>{featured.name}</h1>
-              <h3>{featured.artisan?.name || featured.brandName}</h3>
+          {/* Main Image */}
+          <img
+            src={
+              featured?.main_image
+                ? `${process.env.REACT_APP_API_URL}${featured.main_image}`
+                : featuredphoto1
+            }
+            alt={featured?.name || "Featured Product"}
+            className="featured-photo"
+          />
+        </div>
 
-              {/* ⭐ Dynamic rating stars */}
-              <div className="stars">
-                {(() => {
-                  const rating = featured.average_rating || 0;
-                  const fullStars = Math.floor(rating);
-                  const halfStar = rating % 1 >= 0.5;
-                  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        {/* ✅ RIGHT SIDE: Info box (unchanged, still your brown box) */}
+        <div className="featured-box">
+          <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
+          <h3>{featured?.artisan?.name || featured?.brandName || "Colored Wooden Tray Basket"}</h3>
 
-                  return (
-                    <>
-                      {[...Array(fullStars)].map((_, i) => (
-                        <i key={`full-${i}`} className="fas fa-star"></i>
-                      ))}
-                      {halfStar && <i className="fas fa-star-half-alt"></i>}
-                      {[...Array(emptyStars)].map((_, i) => (
-                        <i key={`empty-${i}`} className="far fa-star"></i>
-                      ))}
-                      <span className="rating-value">
-                        ({rating ? rating.toFixed(1) : "No rating"})
-                      </span>
-                    </>
-                  );
-                })()}
-              </div>
+          <p className="stars">
+            {(() => {
+              const rating = featured?.average_rating || 5;
+              const full = Math.floor(rating);
+              const half = rating % 1 >= 0.5;
+              const empty = 5 - full - (half ? 1 : 0);
 
-              <p>{featured.description}</p>
+              return (
+                <>
+                  {[...Array(full)].map((_, i) => (
+                    <i key={`full-${i}`} className="fas fa-star"></i>
+                  ))}
+                  {half && <i className="fas fa-star-half-alt"></i>}
+                  {[...Array(empty)].map((_, i) => (
+                    <i key={`empty-${i}`} className="far fa-star"></i>
+                  ))}
+                  <span className="rating-value">
+                    ({rating.toFixed(1)})
+                  </span>
 
-              {/* 💰 Price Section */}
-              <div className="price-box">
-                <span className="price-sale">
-                  ₱{parseFloat(featured.sales_price).toFixed(2)}
+                </>
+              );
+            })()}
+          </p>
+
+          <p>
+            {featured?.description ||
+              "Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket Lipa adds vibrant color and natural texture to any space. Durable yet decorative, it’s perfect for stylish storage or display with a touch of cultural charm."}
+          </p>
+
+          <div className="price-box">
+            <span className="price-sale">
+              ₱
+              {featured?.sales_price
+                ? parseFloat(featured.sales_price).toFixed(2)
+                : "350.00"}
+            </span>
+            {featured?.regular_price &&
+              parseFloat(featured.sales_price) <
+                parseFloat(featured.regular_price) && (
+                <span className="price-regular">
+                  ₱{parseFloat(featured.regular_price).toFixed(2)}
                 </span>
-                {featured.regular_price &&
-                  parseFloat(featured.sales_price) <
-                    parseFloat(featured.regular_price) && (
-                    <span className="price-regular">
-                      ₱{parseFloat(featured.regular_price).toFixed(2)}
-                    </span>
-                  )}
-              </div>
+              )}
+          </div>
 
-              <button
-                className="shop-btn"
-                onClick={() => navigate(`/product/${featured.id}`)}
-              >
-                SHOP NOW!
-              </button>
-            </div>
-          </>
-        ) : (
-          <p>Loading featured product...</p>
-        )}
+          <button
+            className="shop-btn"
+            onClick={() => navigate(`/product/${featured?.id || 1}`)}
+          >
+            SHOP NOW!
+          </button>
+        </div>
       </section>
 
 
