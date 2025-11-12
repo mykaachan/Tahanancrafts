@@ -13,7 +13,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'user',
-            'user_name',
+            'name',
             'product',
             'product_name',
             'order',
@@ -21,6 +21,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
             'review',
             'created_at',
             'updated_at',
+            'anonymous',
         ]
         read_only_fields = ['created_at', 'updated_at']
 

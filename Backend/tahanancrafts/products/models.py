@@ -164,6 +164,7 @@ class Rating(models.Model):
     review = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    anonymous = models.BooleanField(blank=True, null=True)
 
     class Meta:
         unique_together = ('user', 'product')  # one rating per product per user

@@ -261,7 +261,25 @@ function ProductDetail() {
             sortedReviews.map((review) => (
               <div className="review-card" key={review.id}>
                 <p className="stars">{"⭐".repeat(review.score)}</p>
-                <h4>{review.user_name || `User #${review.user}`}</h4>
+                <h4>
+                  {review.anonymous === 1
+                    ? "Anonymous"
+                    : review.name
+                    ? (() => {
+                        const parts = review.name.split(" ");
+                        return parts
+                          .map((part) => {
+                            if (part.length <= 1) return part;
+                            return (
+                              part[0] +
+                              "*".repeat(Math.max(1, Math.min(part.length - 1, 4)))
+                            );
+                          })
+                          .join(" ");
+                      })()
+                    : `User #${review.user}`}
+                </h4>
+
                 <p>{review.review || "(No review text provided)"}</p>
                 <small>
                   Posted on{" "}
