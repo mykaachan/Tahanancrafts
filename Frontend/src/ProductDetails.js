@@ -31,7 +31,7 @@ function ProductDetail() {
     const fetchReviews = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/review/ratings/?product=${id}`
+          `${process.env.REACT_APP_API_URL}/api/products/review/ratings/?product=${id}`
         );
         const data = await res.json();
         setReviews(data);
