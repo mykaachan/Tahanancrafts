@@ -57,7 +57,7 @@ function HomePage() {
 
         // 🚫 If still no userId, skip
         if (!userId) {
-          console.warn("⚠️ No user_id found. Skipping featured fetch.");
+          console.warn("⚠️ No user_id found . Skipping featured fetch.");
           return;
         }
 
