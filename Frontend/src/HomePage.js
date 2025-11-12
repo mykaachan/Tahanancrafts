@@ -86,24 +86,57 @@ function HomePage() {
             className="featured-photo"
           />
 
-          <div className="featured-box">
-            <h1>Iraya Basket Lipa</h1>
-            <h3>Colored Wooden Tray Basket</h3>
+           <div className="featured-box">
+              
+            {/* ✅ Product Name */}
+            <h1>{featuredProducts[0]?.name || "Iraya Basket Lipa"}</h1>
+
+            {/* ✅ Brand / Artisan Name */}
+            <h3>
+              {featuredProducts[0]?.artisan?.name ||
+                featuredProducts[0]?.brandName
+              }
+            </h3>
+
+            {/* ✅ Dynamic Rating */}
             <p className="stars">
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
-              <i className="fas fa-star"></i>
+              {(() => {
+                const rating = featuredProducts[0]?.average_rating;
+                const full = Math.floor(rating);
+                const half = rating % 1 >= 0.5;
+                const empty = 5 - full - (half ? 1 : 0);
+
+                return (
+                  <>
+                    {[...Array(full)].map((_, i) => (
+                      <i key={`full-${i}`} className="fas fa-star"></i>
+                    ))}
+                    {half && <i className="fas fa-star-half-alt"></i>}
+                    {[...Array(empty)].map((_, i) => (
+                      <i key={`empty-${i}`} className="far fa-star"></i>
+                    ))}
+                    <span className="rating-value">
+                      ({rating.toFixed(1)})
+                    </span>
+                  </>
+                );
+              })()}
             </p>
 
+            {/* ✅ Product Description */}
             <p>
-              Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket
-              Lipa adds vibrant color and natural texture to any space. Durable yet
-              decorative, it’s perfect for stylish storage or display with a touch of
-              cultural charm.
+              {featuredProducts[0]?.description}
             </p>
-            <button className="shop-btn">SHOP NOW!</button>
+
+            {/* ✅ SHOP NOW Button - Navigate to product page */}
+            <button
+              className="shop-btn"
+              onClick={() =>
+                navigate(`/product/${featuredProducts[0]?.id}`)
+              }
+            >
+              SHOP NOW!
+            </button>
           </div>
         </section>
 
