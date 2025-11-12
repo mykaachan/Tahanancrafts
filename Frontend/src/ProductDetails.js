@@ -262,21 +262,22 @@ function ProductDetail() {
               <div className="review-card" key={review.id}>
                 <p className="stars">{"⭐".repeat(review.score)}</p>
                 <h4>
-                  {review.anonymous === 1
-                    ? "Anonymous"
-                    : review.name
-                    ? (() => {
-                        const parts = review.name.split(" ");
-                        return parts
-                          .map((part) => {
-                            if (part.length <= 1) return part;
-                            return (
-                              part[0] +
-                              "*".repeat(Math.max(1, Math.min(part.length - 1, 4)))
-                            );
-                          })
-                          .join(" ");
-                      })()
+                  {review.name
+                    ? review.anonymous === 1
+                      ? (() => {
+                          // Masked name
+                          const parts = review.name.split(" ");
+                          return parts
+                            .map((part) => {
+                              if (part.length <= 1) return part;
+                              return (
+                                part[0] +
+                                "*".repeat(Math.max(1, Math.min(part.length - 1, 4)))
+                              );
+                            })
+                            .join(" ");
+                        })()
+                      : review.name // Full name if anonymous = 0
                     : `User #${review.user}`}
                 </h4>
 
