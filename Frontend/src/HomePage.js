@@ -78,100 +78,34 @@ function HomePage() {
     <HeaderFooter>
       <div className="homepage-container">
 
-     {/* ✅ Featured Section (matches static layout EXACTLY) */}
-      <section className="featured-section">
-        {/* ✅ LEFT SIDE: Image gallery (thumbnails + main image) */}
-        <div className="featured-image-container">
-          {/* Small thumbnails row */}
-          <div className="thumbnail-row">
-            {featured?.images?.length > 0 ? (
-              featured.images.slice(0, 3).map((img, index) => (
-                <img
-                  key={index}
-                  src={`${process.env.REACT_APP_API_URL}${img.image}`}
-                  alt={`${featured.name} thumbnail ${index + 1}`}
-                  className="thumbnail-image"
-                />
-              ))
-            ) : (
-              <>
-                <img src={featuredphoto2} alt="thumb1" className="thumbnail-image" />
-                <img src={featuredphoto3} alt="thumb2" className="thumbnail-image" />
-              </>
-            )}
-          </div>
-
-          {/* Main Image */}
+         {/* Featured Section */}
+        <section className="featured-section">
           <img
-            src={
-              featured?.main_image
-                ? `${process.env.REACT_APP_API_URL}${featured.main_image}`
-                : featuredphoto1
-            }
-            alt={featured?.name || "Featured Product"}
+            src={featuredphoto1}
+            alt="Featured Product"
             className="featured-photo"
           />
-        </div>
 
-        {/* ✅ RIGHT SIDE: Info box (unchanged, still your brown box) */}
-        <div className="featured-box">
-          <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
-          <h3>{featured?.artisan?.name || featured?.brandName || "Colored Wooden Tray Basket"}</h3>
+          <div className="featured-box">
+            <h1>Iraya Basket Lipa</h1>
+            <h3>Colored Wooden Tray Basket</h3>
+            <p className="stars">
+              <i className="fas fa-star"></i>
+              <i className="fas fa-star"></i>
+              <i className="fas fa-star"></i>
+              <i className="fas fa-star"></i>
+              <i className="fas fa-star"></i>
+            </p>
 
-          <p className="stars">
-            {(() => {
-              const rating = featured?.average_rating || 5;
-              const full = Math.floor(rating);
-              const half = rating % 1 >= 0.5;
-              const empty = 5 - full - (half ? 1 : 0);
-
-              return (
-                <>
-                  {[...Array(full)].map((_, i) => (
-                    <i key={`full-${i}`} className="fas fa-star"></i>
-                  ))}
-                  {half && <i className="fas fa-star-half-alt"></i>}
-                  {[...Array(empty)].map((_, i) => (
-                    <i key={`empty-${i}`} className="far fa-star"></i>
-                  ))}
-                  <span className="rating-value">
-                    ({rating.toFixed(1)})
-                  </span>
-
-                </>
-              );
-            })()}
-          </p>
-
-          <p>
-            {featured?.description ||
-              "Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket Lipa adds vibrant color and natural texture to any space. Durable yet decorative, it’s perfect for stylish storage or display with a touch of cultural charm."}
-          </p>
-
-          <div className="price-box">
-            <span className="price-sale">
-              ₱
-              {featured?.sales_price
-                ? parseFloat(featured.sales_price).toFixed(2)
-                : "350.00"}
-            </span>
-            {featured?.regular_price &&
-              parseFloat(featured.sales_price) <
-                parseFloat(featured.regular_price) && (
-                <span className="price-regular">
-                  ₱{parseFloat(featured.regular_price).toFixed(2)}
-                </span>
-              )}
+            <p>
+              Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket
+              Lipa adds vibrant color and natural texture to any space. Durable yet
+              decorative, it’s perfect for stylish storage or display with a touch of
+              cultural charm.
+            </p>
+            <button className="shop-btn">SHOP NOW!</button>
           </div>
-
-          <button
-            className="shop-btn"
-            onClick={() => navigate(`/product/${featured?.id || 1}`)}
-          >
-            SHOP NOW!
-          </button>
-        </div>
-      </section>
+        </section>
 
 
 
