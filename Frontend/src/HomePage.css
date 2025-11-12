@@ -63,6 +63,42 @@ html, body {
   gap: 15px;
 }
 
+.price-box {
+  margin: 10px 0;
+}
+
+.price-sale {
+  color: #e63946;
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.price-regular {
+  color: #999;
+  text-decoration: line-through;
+  font-size: 1em;
+}
+
+.stars {
+  color: #f8b400;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.rating-value {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.no-rating {
+  color: #888;
+  font-size: 0.9em;
+}
+
+
 /* Search Box */
 .search-box {
   display: flex;

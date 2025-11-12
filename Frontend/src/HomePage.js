@@ -78,34 +78,69 @@ function HomePage() {
     <HeaderFooter>
       <div className="homepage-container">
 
-     {/* Featured Section */}
-      <section className="featured-section">
-        <img
-          src={featuredphoto1}
-          alt="Featured Product"
-          className="featured-photo"
-        />
+     {/* ✅ Dynamic Featured Section */}
+    <section className="featured-section">
+      {featured ? (
+        <>
+          <img
+            src={
+              featured.main_image?.startsWith("/media")
+                ? `${API_URL}${featured.main_image}`
+                : featured.main_image || "https://via.placeholder.com/400x300?text=No+Image"
+            }
+            alt={featured.name}
+            className="featured-photo"
+            onClick={() => navigate(`/product/${featured.id}`)}
+            style={{ cursor: "pointer" }}
+          />
 
-        <div className="featured-box">
-          <h1>Iraya Basket Lipa</h1>
-          <h3>Colored Wooden Tray Basket</h3>
-          <p className="stars">
-            <i className="fas fa-star"></i>
-            <i className="fas fa-star"></i>
-            <i className="fas fa-star"></i>
-            <i className="fas fa-star"></i>
-            <i className="fas fa-star"></i>
-          </p>
+          <div className="featured-box">
+            <h1>{featured.name}</h1>
+            <h3>{featured.artisan?.name || "Featured Artisan Product"}</h3>
 
-          <p>
-            Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket
-            Lipa adds vibrant color and natural texture to any space. Durable yet
-            decorative, it’s perfect for stylish storage or display with a touch of
-            cultural charm.
-          </p>
-          <button className="shop-btn">SHOP NOW!</button>
-        </div>
-      </section>
+            <p className="stars">
+              {featured.avg_rating > 0 ? (
+                <>
+                  {[...Array(Math.floor(featured.avg_rating))].map((_, i) => (
+                    <i key={i} className="fas fa-star"></i>
+                  ))}
+                  {featured.avg_rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
+                  <span className="rating-value">({featured.avg_rating.toFixed(1)})</span>
+                </>
+              ) : (
+                <span className="no-rating">No ratings yet</span>
+              )}
+            </p>
+
+
+            <p>
+              {featured.description || "A handcrafted masterpiece from local artisans."}
+            </p>
+
+            <div className="price-box">
+              {featured.sales_price ? (
+                <>
+                  <span className="price-sale">₱{featured.sales_price}</span>
+                  <span className="price-regular">₱{featured.regular_price}</span>
+                </>
+              ) : (
+                <span className="price">₱{featured.regular_price}</span>
+              )}
+            </div>
+
+            <button
+              className="shop-btn"
+              onClick={() => navigate(`/product/${featured.id}`)}
+            >
+              SHOP NOW!
+            </button>
+          </div>
+        </>
+      ) : (
+        <p className="text-center mt-8">Loading featured product...</p>
+      )}
+    </section>
+
 
       {/* ✅ Latest Products Section */}
       <section className="latest-products">

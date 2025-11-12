@@ -1,7 +1,8 @@
 from requests import request
 from rest_framework import serializers  # For creating API serializers
-from products.models import Product, Category, Material, ProductImage
+from products.models import Product, Category, Material, ProductImage, Rating
 from users.models import Artisan
+from django.db.models import Avg
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -91,6 +92,7 @@ class ProductReadSerializer(serializers.ModelSerializer):
     materials = serializers.StringRelatedField(many=True)
     images = ProductImageSerializer(many=True, read_only=True)
     artisan = ArtisanSerializer(read_only=True)
+    avg_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -98,9 +100,12 @@ class ProductReadSerializer(serializers.ModelSerializer):
             "id", "name", "description", "brandName",
             "stock_quantity", "regular_price", "sales_price",
             "main_image", "created_at", "categories",
-            "materials", "images", "artisan"
+            "materials", "images", "artisan","avg_rating"
         ]
 
+    def get_avg_rating(self, obj):
+        avg = Rating.objects.filter(product=obj).aggregate(Avg("score"))["score__avg"]
+        return round(avg, 1) if avg else 0.0
 
 
 class UpdateProductSerializer(serializers.ModelSerializer):

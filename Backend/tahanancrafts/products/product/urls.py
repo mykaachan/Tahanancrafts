@@ -32,7 +32,7 @@ urlpatterns = [
     path('personalized/<int:user_id>/', ProductPersonalizedView.as_view(), name='personalized'),
     path('shop/<int:artisan_id>/', ShopProductsView.as_view()),
     path('latest-products/', LatestProductsView.as_view(), name='latest-products'),
-    path('featured-products/<int:user_id>/', FeaturedProductsView.as_view(), name='featured-products'),
+    path('featured-products/', FeaturedProductsView.as_view(), name='featured-products'),
     path('top-selling/<int:artisan_id>/', top_selling_products, name='artisan_top_selling'),
 
 ]
