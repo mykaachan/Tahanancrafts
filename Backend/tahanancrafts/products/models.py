@@ -152,10 +152,13 @@ class Rating(models.Model):
     product = models.ForeignKey(
         Product, related_name="ratings", on_delete=models.CASCADE
     )
-    order = models.ForeignKey(
-        Order, related_name="ratings", on_delete=models.SET_NULL,
-        null=True, blank=True,
-        help_text="Optional: link to the order where this product was purchased"
+    order_item = models.ForeignKey(
+        'products.OrderItem',  # reference to specific item in an order
+        related_name="ratings",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Link to the specific product in the order"
     )
     score = models.PositiveSmallIntegerField(
         default=5,
@@ -167,8 +170,13 @@ class Rating(models.Model):
     anonymous = models.BooleanField(blank=True, null=True)
 
     class Meta:
-        unique_together = ('user', 'product')  # one rating per product per user
-        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "order_item"],
+                name="unique_user_orderitem_rating"
+            )
+        ]
+        ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.user.username} rated {self.product.name} - {self.score}⭐"
+        return f"{self.user.username} rated {self.product.name} ({self.score}⭐)"

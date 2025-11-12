@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'products',
+    'search',
     'rest_framework',  # Django REST Framework for API
     'django_extensions',
     'corsheaders',

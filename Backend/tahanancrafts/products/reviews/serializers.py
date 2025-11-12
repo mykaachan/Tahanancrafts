@@ -15,7 +15,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
             'name',            
             'product',
             'product_name',
-            'order',
+            'order_item',
             'score',
             'review',
             'anonymous',       
@@ -31,7 +31,11 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         """
         user = validated_data['user']
         product = validated_data['product']
-        existing = Rating.objects.filter(user=user, product=product).first()
+        existing = Rating.objects.filter(
+            user=user,
+            order_item=validated_data.get('order_item')
+        ).first()
+
         if existing:
             existing.score = validated_data.get('score', existing.score)
             existing.review = validated_data.get('review', existing.review)
