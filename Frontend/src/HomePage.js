@@ -101,8 +101,8 @@ function HomePage() {
               <p className="stars">
                 {(() => {
                   const rating =
-                    typeof featured?.average_rating === "number"
-                      ? featured.average_rating
+                    typeof featured?.avg_rating === "number"
+                      ? featured.avg_rating
                       : 5;
                   const full = Math.floor(rating);
                   const half = rating % 1 >= 0.5;
