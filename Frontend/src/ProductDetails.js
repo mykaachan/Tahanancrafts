@@ -263,9 +263,9 @@ function ProductDetail() {
                 <p className="stars">{"⭐".repeat(review.score)}</p>
                 <h4>
                   {review.name
-                    ? review.anonymous === 1
+                    ? Number(review.anonymous) === 1
                       ? (() => {
-                          // Masked name
+                          // Masked name (anonymous = 1)
                           const parts = review.name.split(" ");
                           return parts
                             .map((part) => {
@@ -277,9 +277,10 @@ function ProductDetail() {
                             })
                             .join(" ");
                         })()
-                      : review.name // Full name if anonymous = 0
+                      : review.name // Full name (anonymous = 0)
                     : `User #${review.user}`}
                 </h4>
+
 
                 <p>{review.review || "(No review text provided)"}</p>
                 <small>
