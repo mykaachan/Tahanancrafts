@@ -313,3 +313,45 @@ body, html, #root {
   }
 }
 
+/* Ensure the form never overflows the viewport */
+.form-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Login rectangle spacing for very small screens */
+@media (max-width: 400px) {
+  .login-rectangle {
+    padding: 1rem;
+    width: 98%;
+  }
+
+  .login-input {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .login-button {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+
+  .social-button {
+    font-size: 0.65rem;
+    padding: 0.4rem;
+  }
+
+  .forgot-password {
+    padding-right: 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .divider {
+    font-size: 0.7rem;
+  }
+
+  .signup-prompt {
+    font-size: 0.75rem;
+  }
+}

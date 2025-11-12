@@ -518,4 +518,92 @@ html, body {
 }
 
 
+/* ===== Responsive Adjustments for Mobile ===== */
+@media (max-width: 1024px) {
+  .featured-section,
+  .heritage-container,
+  .extra-products-grid,
+  .latest-products-grid {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+
+  .featured-box,
+  .heritage-content,
+  .extra-products .product-item,
+  .latest-products-grid img {
+    width: 90% !important;
+    max-width: 400px;
+  }
+
+  .featured-box h1 {
+    font-size: 2rem !important;
+    line-height: 1.2;
+  }
+
+  .featured-box h3,
+  .heritage-content h2,
+  .latest-products-title {
+    font-size: 1.2rem !important;
+  }
+
+  .extra-products .product-item img {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .tahanancrafts-logo {
+    width: 150px !important;
+  }
+
+  .description-box {
+    padding: 20px !important;
+    font-size: 0.95rem !important;
+    max-width: 95% !important;
+  }
+
+  .shop-btn,
+  .heritage-btn {
+    padding: 10px 20px !important;
+    font-size: 0.95rem !important;
+  }
+
+  .latest-products-grid,
+  .extra-products-grid {
+    gap: 15px !important;
+  }
+
+  .homepage-container {
+    padding: 10px !important;
+  }
+}
+
+/* ===== For very small mobile devices ===== */
+@media (max-width: 480px) {
+  .featured-box h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .featured-box h3,
+  .heritage-content h2,
+  .latest-products-title {
+    font-size: 1rem !important;
+  }
+
+  .shop-btn,
+  .heritage-btn {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .tahanancrafts-logo {
+    width: 120px !important;
+  }
+
+  .description-box {
+    padding: 15px !important;
+    font-size: 0.9rem !important;
+  }
+}
 

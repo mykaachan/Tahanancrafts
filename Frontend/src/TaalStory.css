@@ -201,3 +201,94 @@
     width: 90%;
   }
 }
+
+
+/* ===== MOBILE / SMALL SCREENS ===== */
+@media (max-width: 600px) {
+  /* Hero Section */
+  .taal-hero {
+    padding: 50px 15px;
+  }
+
+  .taal-hero-content {
+    gap: 20px;
+  }
+
+  .taal-hero-logo {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .taal-hero-text h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .taal-hero-text p {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  /* Story Sections */
+  .taal-story-section,
+  .taal-story-section.reverse {
+    padding: 40px 15px;
+    gap: 20px;
+  }
+
+  .story-left img {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .story-right {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .story-right p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* Products */
+  .latest-products,
+  .more-products {
+    padding: 40px 15px;
+  }
+
+  .product-card {
+    width: 100%;
+  }
+
+  /* Heritage Section */
+  .heritage-wrapper {
+    padding: 30px 15px;
+  }
+
+  .heritage-inner {
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .heritage-left,
+  .heritage-right {
+    max-width: 100%;
+    flex: 1 1 100%;
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .heritage-left h2 {
+    font-size: 1.6rem;
+  }
+
+  .heritage-left p {
+    font-size: 0.95rem;
+  }
+
+  .heritage-right img {
+    max-width: 100%;
+    height: auto;
+  }
+}

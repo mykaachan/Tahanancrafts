@@ -73,8 +73,11 @@ function HeaderFooter({ children }) {
           <p>
             This is a sample description and does not hold any valuable meaning.
           </p>
-          <button className="register-btn">Register</button>
-        </div>
+           {/* ✅ Updated Register button */}
+  <Link to="/sellerregister" style={{ textDecoration: "none" }}>
+    <button className="register-btn">Register</button>
+  </Link>
+</div>
 
         <div className="footer-right">
           <hr />

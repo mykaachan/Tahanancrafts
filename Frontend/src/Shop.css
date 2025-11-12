@@ -267,3 +267,132 @@
 .shop-page {
   margin-top: -30px; /* ✅ pulls banner up to meet header */
 }
+
+
+
+
+/* ===== MOBILE / SMALL SCREENS ===== */
+@media (max-width: 992px) {
+  /* Banner padding and layout */
+  .shop-banner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 15px;
+    height: auto;
+  }
+
+  .shop-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .shop-info h2 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .shop-info p {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  /* Follow / Message buttons */
+  .btn {
+    margin-bottom: 10px;
+    width: 45%;
+    text-align: center;
+  }
+
+  .shop-tabs {
+    justify-content: flex-start;
+    padding: 0 10px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-banner {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .shop-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .shop-info h2 {
+    font-size: 1.1rem;
+  }
+
+  .shop-info p {
+    font-size: 0.9rem;
+  }
+
+  .recommended {
+    margin: 20px 15px;
+  }
+
+  .about-shop {
+    margin: 20px 15px;
+    padding: 15px;
+    flex-direction: column;
+  }
+
+  .about-shop .banner,
+  .about-text {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-banner {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .shop-logo {
+    width: 70px;
+    height: 70px;
+  }
+
+  .shop-info h2 {
+    font-size: 1rem;
+  }
+
+  .shop-info p {
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .recommended {
+    margin: 15px 10px;
+  }
+
+  .recommended .product-card {
+    width: 100%;
+  }
+
+  .about-shop {
+    padding: 10px;
+    gap: 15px;
+  }
+
+  .about-shop .banner {
+    height: 150px;
+  }
+
+  .about-text h3 {
+    font-size: 1rem;
+  }
+
+  .about-text p {
+    font-size: 0.85rem;
+  }
+}

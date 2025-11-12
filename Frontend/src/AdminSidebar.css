@@ -75,3 +75,34 @@
   padding: 18px 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+
+/* Make sidebar adjust on smaller screens */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    width: 220px; /* slightly smaller on tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 200px; /* fits mobile */
+    position: relative; /* allow content to flow */
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .admin-sidebar-menu ul li {
+    font-size: 13px; /* slightly smaller text for mobile */
+    padding: 8px 10px;
+  }
+
+  .admin-sidebar-logo img {
+    width: 70px; /* smaller logo for mobile */
+  }
+
+  .admin-sidebar-footer {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+}
