@@ -10,7 +10,7 @@ import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
 import HeaderFooter from "./HeaderFooter";
-import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact } from "./api"; // Import the API function
+import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact,API_URL } from "./api"; // Import the API function
 import { useNavigate } from "react-router-dom";
 
 // ✅ HomePage Component  with dynamic latest products
