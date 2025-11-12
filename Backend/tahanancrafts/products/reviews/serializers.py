@@ -1,11 +1,10 @@
-from rest_framework import serializers  # For creating API serializers
-# products/serializers.py
-from products.models import Rating, Product
+from rest_framework import serializers
+from products.models import Rating
 from users.models import CustomUser
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(source='user.name', read_only=True)
+    name = serializers.CharField(source='user.name', read_only=True)
     product_name = serializers.CharField(source='product.name', read_only=True)
 
     class Meta:
@@ -13,15 +12,15 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'user',
-            'name',
+            'name',            
             'product',
             'product_name',
             'order',
             'score',
             'review',
+            'anonymous',       
             'created_at',
             'updated_at',
-            'anonymous',
         ]
         read_only_fields = ['created_at', 'updated_at']
 
