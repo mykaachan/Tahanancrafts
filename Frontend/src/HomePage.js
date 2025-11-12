@@ -78,68 +78,81 @@ function HomePage() {
     <HeaderFooter>
       <div className="homepage-container">
 
-     {/* ✅ Dynamic Featured Section */}
-    <section className="featured-section">
-      {featured ? (
-        <>
-          <img
-            src={
-              featured.main_image?.startsWith("/media")
-                ? `${API_URL}${featured.main_image}`
-                : featured.main_image || "https://via.placeholder.com/400x300?text=No+Image"
-            }
-            alt={featured.name}
-            className="featured-photo"
-            onClick={() => navigate(`/product/${featured.id}`)}
-            style={{ cursor: "pointer" }}
-          />
+     {/* ✅ Featured Section (matches your CSS layout) */}
+      <section className="featured-section">
+        {featured ? (
+          <>
+            {/* Left side image */}
+            <img
+              src={
+                featured.main_image?.startsWith("http")
+                  ? featured.main_image
+                  : `${process.env.REACT_APP_API_URL}${featured.main_image}`
+              }
+              alt={featured.name}
+              className="featured-photo"
+            />
 
-          <div className="featured-box">
-            <h1>{featured.name}</h1>
-            <h3>{featured.artisan?.name || "Featured Artisan Product"}</h3>
+            {/* Right-side brown box */}
+            <div className="featured-box">
+              <h1>{featured.name}</h1>
+              <h3>{featured.artisan?.name || featured.brandName}</h3>
 
-            <p className="stars">
-              {featured.avg_rating > 0 ? (
-                <>
-                  {[...Array(Math.floor(featured.avg_rating))].map((_, i) => (
-                    <i key={i} className="fas fa-star"></i>
-                  ))}
-                  {featured.avg_rating % 1 !== 0 && <i className="fas fa-star-half-alt"></i>}
-                  <span className="rating-value">({featured.avg_rating.toFixed(1)})</span>
-                </>
-              ) : (
-                <span className="no-rating">No ratings yet</span>
-              )}
-            </p>
+              {/* ⭐ Dynamic rating stars */}
+              <div className="stars">
+                {(() => {
+                  const rating = featured.average_rating || 0;
+                  const fullStars = Math.floor(rating);
+                  const halfStar = rating % 1 >= 0.5;
+                  const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
+                  return (
+                    <>
+                      {[...Array(fullStars)].map((_, i) => (
+                        <i key={`full-${i}`} className="fas fa-star"></i>
+                      ))}
+                      {halfStar && <i className="fas fa-star-half-alt"></i>}
+                      {[...Array(emptyStars)].map((_, i) => (
+                        <i key={`empty-${i}`} className="far fa-star"></i>
+                      ))}
+                      <span className="rating-value">
+                        ({rating ? rating.toFixed(1) : "No rating"})
+                      </span>
+                    </>
+                  );
+                })()}
+              </div>
 
-            <p>
-              {featured.description || "A handcrafted masterpiece from local artisans."}
-            </p>
+              <p>{featured.description}</p>
 
-            <div className="price-box">
-              {featured.sales_price ? (
-                <>
-                  <span className="price-sale">₱{featured.sales_price}</span>
-                  <span className="price-regular">₱{featured.regular_price}</span>
-                </>
-              ) : (
-                <span className="price">₱{featured.regular_price}</span>
-              )}
+              {/* 💰 Price Section */}
+              <div className="price-box">
+                <span className="price-sale">
+                  ₱{parseFloat(featured.sales_price).toFixed(2)}
+                </span>
+                {featured.regular_price &&
+                  parseFloat(featured.sales_price) <
+                    parseFloat(featured.regular_price) && (
+                    <span className="price-regular">
+                      ₱{parseFloat(featured.regular_price).toFixed(2)}
+                    </span>
+                  )}
+              </div>
+
+              <button
+                className="shop-btn"
+                onClick={() => navigate(`/product/${featured.id}`)}
+              >
+                SHOP NOW!
+              </button>
             </div>
+          </>
+        ) : (
+          <p>Loading featured product...</p>
+        )}
+      </section>
 
-            <button
-              className="shop-btn"
-              onClick={() => navigate(`/product/${featured.id}`)}
-            >
-              SHOP NOW!
-            </button>
-          </div>
-        </>
-      ) : (
-        <p className="text-center mt-8">Loading featured product...</p>
-      )}
-    </section>
+
 
 
       {/* ✅ Latest Products Section */}

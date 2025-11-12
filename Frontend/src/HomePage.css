@@ -64,33 +64,38 @@ html, body {
 }
 
 .price-box {
-  margin: 10px 0;
+  margin: 10px;
 }
 
 .price-sale {
   color: #e63946;
-  font-weight: bold;
-  margin-right: 8px;
-  font-size: 1.2em;
+  font-weight: 700;
+  font-size: 1.4rem;
 }
 
 .price-regular {
   color: #999;
   text-decoration: line-through;
-  font-size: 1em;
+  font-size: 1rem;
+  margin-left: 10px;
 }
 
-.stars {
+.featured-box .stars {
   color: #f8b400;
+  margin: 10px 0;
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 8px;
 }
 
-.rating-value {
-  font-size: 0.9em;
-  color: #555;
+.featured-box .stars i {
+  font-size: 1.1rem;
+}
+
+.featured-box .rating-value {
+  color: #000;
+  font-size: 0.95rem;
+  margin-left: 6px;
 }
 
 .no-rating {
