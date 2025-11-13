@@ -76,18 +76,30 @@ function Products() {
         const userId = localStorage.getItem("user_id");
         let url;
 
-        if (userId) {
+        const hasFilters =
+          selectedCategories.length > 0 || selectedMaterials.length > 0;
+
+        // 🔥 If filters are active → use the NORMAL products endpoint
+        if (hasFilters) {
+          url = new URL(
+            `${process.env.REACT_APP_API_URL}/api/products/product/products/`
+          );
+        } 
+        // 🔥 If no filters → use personalized for logged-in user
+        else if (userId) {
           url = new URL(
             `${process.env.REACT_APP_API_URL}/api/products/product/personalized/${userId}/`
           );
-        } else {
+        } 
+        // 🔥 No user, no filters → random products
+        else {
           url = new URL(
             `${process.env.REACT_APP_API_URL}/api/products/product/products/`
           );
           url.searchParams.append("random", true);
         }
 
-        // Filter by IDs
+        // Apply filters only when hasFilters = true
         if (selectedCategories.length > 0) {
           url.searchParams.append("category", selectedCategories.join(","));
         }
@@ -95,12 +107,12 @@ function Products() {
           url.searchParams.append("material", selectedMaterials.join(","));
         }
 
-        console.log("Fetching:", url.toString()); // Debug URL
+        console.log("Fetching:", url.toString());
 
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch products");
-        const data = await response.json();
 
+        const data = await response.json();
         setProducts(data);
       } catch (error) {
         console.error("Error loading products:", error);
@@ -109,6 +121,7 @@ function Products() {
 
     loadProducts();
   }, [selectedCategories, selectedMaterials]);
+
 
   // Toggle category by ID
   const toggleCategory = (categoryId) => {
