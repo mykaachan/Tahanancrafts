@@ -88,6 +88,13 @@ html, body {
   gap: 4px;
 }
 
+.fa-star-half-alt {
+  position: relative;
+  background-color: white; /* ✅ fills the missing half with white */
+  border-radius: 50%; /* smooth circular edge, optional */
+  overflow: hidden;
+}
+
 .featured-box .stars i {
   font-size: 1.1rem;
 }

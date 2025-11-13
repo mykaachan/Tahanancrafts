@@ -11,19 +11,23 @@ function FilterGroup({ title, items, selectedItems, onChange }) {
   return (
     <div className={`filter-group ${expanded ? "expanded" : ""}`}>
       <h4>{title}</h4>
+
       {items.map((item, index) => (
         <label
           key={index}
           style={{ display: !expanded && index >= 4 ? "none" : "block" }}
         >
-          <input
-            type="checkbox"
-            checked={selectedItems.includes(item)}
-            onChange={() => onChange(item)}
-          />{" "}
-          {item}
+          <div className="filter-item">
+            <input
+              type="checkbox"
+              checked={selectedItems.includes(item)}
+              onChange={() => onChange(item)}
+            />
+            <span>{item}</span>
+          </div>
         </label>
       ))}
+
       {items.length > 4 && (
         <button
           className="show-more-btn"
@@ -35,6 +39,7 @@ function FilterGroup({ title, items, selectedItems, onChange }) {
     </div>
   );
 }
+
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -188,12 +193,24 @@ function Products() {
         {/* LEFT FILTERS */}
         <aside className="products-filters">
           <h3>Filter</h3>
+
+          <button
+            className="clear-filters-btn"
+            onClick={() => {
+              setSelectedCategories([]);
+              setSelectedMaterials([]);
+            }}
+          >
+            Clear All Filters ✕
+          </button>
+
           <FilterGroup
             title="Category"
             items={categories.map((c) => c.name)}
             selectedItems={selectedCategories}
             onChange={toggleCategory}
           />
+
           <FilterGroup
             title="Material"
             items={materials.map((m) => m.name)}
@@ -202,9 +219,42 @@ function Products() {
           />
         </aside>
 
+
         {/* ===== RIGHT PRODUCTS GRID ===== */}
           <section className="products-content">
-            <div className="products-grid">
+          {/* ===== ACTIVE FILTER CHIPS ===== */}
+          {(selectedCategories.length > 0 || selectedMaterials.length > 0) && (
+            <div className="active-filters">
+              
+              {/* Category chips */}
+              {selectedCategories.map((cat) => (
+                <div key={cat} className="filter-chip" onClick={() => toggleCategory(cat)}>
+                  {cat} ✕
+                </div>
+              ))}
+
+              {/* Material chips */}
+              {selectedMaterials.map((mat) => (
+                <div key={mat} className="filter-chip" onClick={() => toggleMaterial(mat)}>
+                  {mat} ✕
+                </div>
+              ))}
+
+              {/* Clear all */}
+              <button
+                className="clear-chips-btn"
+                onClick={() => {
+                  setSelectedCategories([]);
+                  setSelectedMaterials([]);
+                }}
+              >
+                Clear All ✕
+              </button>
+            </div>
+          )}
+
+          <div className="products-grid">
+
               {filteredProducts.length === 0 ? (
                 <p>No products found.</p>
               ) : (
