@@ -5,22 +5,20 @@
   padding-top: 82px;  /* header height */
 }
 
-/* Filter group items */
-.products-page .filter-group label {
-  display: flex;           /* use flex to align checkbox + text */
-  align-items: center;     /* vertically center the checkbox */
-  gap: 8px;                /* space between checkbox and text */
-  font-size: 0.9rem;
-  margin: 4px 0;           /* reduce vertical spacing */
-  cursor: pointer;
+/* Layout for filters + products */
+.products-page .products-layout {
+  display: flex;
+  flex: 1; /* fill remaining space between header and footer */
+  gap: 30px;
+  margin: 40px;
+  overflow: hidden; /* prevents horizontal overflow */
 }
 
-.products-page .filter-group input[type="checkbox"] {
-  margin: 0;               /* remove default margin */
-  width: 16px;             /* uniform checkbox size */
-  height: 16px;
+/* Left Sidebar Filters */
+.products-page .products-filters {
+  width: 180px;
+  flex-shrink: 0;
 }
-
 
 .products-page .products-filters h3 {
   font-size: 1.4rem;
@@ -177,3 +175,39 @@
   }
 }
 
+/* ===== FIXED FILTER STYLING (safe addition) ===== */
+.products-page .products-filters {
+  background-color: #fffdf9; /* match site background */
+  padding-right: 10px;
+}
+
+.products-page .filter-group label {
+  display: flex;              /* align checkbox + text horizontally */
+  align-items: center;
+  gap: 8px;                   /* space between checkbox and text */
+  font-size: 0.95rem;
+  color: #111;
+  cursor: pointer;
+}
+
+.products-page .filter-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #998759;      /* match theme color */
+  flex-shrink: 0;
+}
+
+.products-page .show-more-btn {
+  color: #998759;
+  font-weight: 500;
+  margin-top: 5px;
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.products-page .show-more-btn:hover {
+  text-decoration: underline;
+}
