@@ -5,19 +5,20 @@
   padding-top: 82px;  /* header height */
 }
 
-/* Layout for filters + products */
+/* Layout for filters + products - compact version */
 .products-page .products-layout {
   display: flex;
-  flex: 1; /* fill remaining space between header and footer */
-  gap: 30px;
-  margin: 40px;
-  overflow: hidden; /* prevents horizontal overflow */
+  flex: 1;                  /* fill remaining space between header and footer */
+  gap: 20px;                /* reduce space between sidebar and products */
+  margin: 20px;             /* reduce overall margin */
+  overflow: hidden;         /* prevents horizontal overflow */
 }
 
 /* Left Sidebar Filters */
 .products-page .products-filters {
-  width: 180px;
+  width: 160px;             /* slightly narrower sidebar */
   flex-shrink: 0;
+  padding-right: 10px;      /* optional: small inner padding */
 }
 
 .products-page .products-filters h3 {
