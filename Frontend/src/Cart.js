@@ -9,6 +9,8 @@ import {
   removeCartItem,
 } from "./api"; // ✅ make sure path is correct
 
+import Footer from "./Footer"; // ✅ import the footer
+
 function Cart() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,42 +51,38 @@ function Cart() {
     fetchCart();
   }, []);
 
-  
-
   // ✅ Update quantity (sync backend)
   const updateQty = async (id, delta) => {
-  const item = items.find((i) => i.id === id);
-  if (!item) return;
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
 
-  const userId = localStorage.getItem("user_id");
-  const newQty = Math.max(1, item.qty + delta);
+    const userId = localStorage.getItem("user_id");
+    const newQty = Math.max(1, item.qty + delta);
 
-  try {
-    // Update on backend
-    await updateCartItem(id, newQty, userId);
+    try {
+      // Update on backend
+      await updateCartItem(id, newQty, userId);
 
-    // Compute per-unit price (since your item.price currently stores total price)
-    const unitPrice = item.price / item.qty;
+      // Compute per-unit price (since your item.price currently stores total price)
+      const unitPrice = item.price / item.qty;
 
-    // Recalculate new total for that item
-    const newTotalPrice = unitPrice * newQty;
+      // Recalculate new total for that item
+      const newTotalPrice = unitPrice * newQty;
 
-    // Update local state
-    setItems((prev) =>
-      prev.map((i) =>
-        i.id === id
-          ? { ...i, qty: newQty, price: newTotalPrice } // ✅ price now reflects total correctly
-          : i
-      )
-    );
-  } catch (err) {
-    console.error("Failed to update quantity:", err);
-    alert("Failed to update quantity.");
-  }
-};
+      // Update local state
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === id
+            ? { ...i, qty: newQty, price: newTotalPrice } // ✅ price now reflects total correctly
+            : i
+        )
+      );
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+      alert("Failed to update quantity.");
+    }
+  };
 
-
-  
   // ✅ Remove cart item (sync backend)
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
@@ -231,6 +229,9 @@ function Cart() {
           </div>
         </div>
       </main>
+
+      {/* ===== FOOTER ===== */}
+      <Footer /> {/* ✅ safely added footer */}
     </>
   );
 }

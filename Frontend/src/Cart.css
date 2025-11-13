@@ -1,13 +1,22 @@
-.cart-page {
-  padding-top: 80px;
-  background: #fffdf9;
-  min-height: 70vh;
+/* Make the entire page one background color */
+html, body {
+  background-color: #fffdf9; /* same as your cart-page background */
+  margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', sans-serif;
+}
 
-  /* 👇 force smaller side spacing */
+.cart-page {
+  padding-top: 120px; /* ensures content starts below header */
+  background: #fffdf9; /* page color matches body */
+  min-height: 70vh;
+
+  /* side spacing */
   padding-left: 20px;
   padding-right: 20px;
+  box-sizing: border-box;
 }
+
 
 .cart-container {
   max-width: 1000px;
