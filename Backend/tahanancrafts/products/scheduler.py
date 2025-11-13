@@ -1,60 +1,53 @@
+# backend/tahanancrafts/products/scheduler.py
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore, register_events
-from django_apscheduler.models import DjangoJobExecution
-from django.utils import timezone
 
 from users.models import CustomUser
-from products.models import UserRecommendations
+from .models import UserRecommendations
+from .recommender import compute_similarity_matrix, get_personalized_recommendation_ids
 
-from machineLearning.recommendations.recommendation import (
-    compute_similarity_matrix,
-    get_personalized_recommendations
-)
-
+logger = logging.getLogger(__name__)
 
 def generate_all_recommendations():
-    print("📌 Running scheduled recommendation job...")
-
-    # 1. Build TF-IDF vectors + cosine similarity matrix (expensive)
+    logger.info("🔁 Scheduler: generating similarity matrix and user recommendations...")
     products, product_ids, cosine_sim = compute_similarity_matrix()
+    if not products:
+        logger.info("No products found; skipping recommendation generation.")
+        return
 
-    # 2. Loop through all users
-    for user in CustomUser.objects.all():
-        # Generate personalized recommendations
-        recs = get_personalized_recommendations(
-            user.id,
-            products,
-            product_ids,
-            cosine_sim,
-            top_n=50
-        )
+    users = CustomUser.objects.all().only("id")
+    logger.info(f"Generating recommendations for {users.count()} users")
 
-        # Extract product IDs
-        rec_ids = [p.id for p in recs]
+    for user in users.iterator():
+        try:
+            rec_ids = get_personalized_recommendation_ids(user.id, products, product_ids, cosine_sim, top_n=50)
+            UserRecommendations.objects.update_or_create(user_id=user.id, defaults={"product_ids": rec_ids})
+        except Exception:
+            logger.exception("Error generating recs for user %s", user.id)
 
-        # Save or update the user's recommendations
-        UserRecommendations.objects.update_or_create(
-            user=user,
-            defaults={"product_ids": rec_ids}
-        )
-
-    print("✅ Recommendations successfully updated for all users.")
+    logger.info("✅ Completed generating recommendations for all users.")
 
 
-def start_scheduler():
+def start_scheduler(interval_minutes=60):
+    """
+    Start APScheduler background scheduler. Default: run every `interval_minutes`.
+    """
+    if getattr(start_scheduler, "_started", False):
+        return
+
     scheduler = BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    # Run every hour (can change to daily)
     scheduler.add_job(
         generate_all_recommendations,
         trigger="interval",
-        hours=1,
-        id="recommendation_job",
+        minutes=interval_minutes,
+        id="generate_user_recommendations",
         replace_existing=True,
     )
 
     register_events(scheduler)
     scheduler.start()
-
-    print("⏰ Scheduler started: Recommendation engine running hourly.")
+    start_scheduler._started = True
+    logger.info("⏰ APScheduler started: generate_all_recommendations every %s minutes", interval_minutes)

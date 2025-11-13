@@ -201,65 +201,68 @@ class LogProductView(APIView):
         )
         return Response({"message": "View logged successfully."}, status=201)
 
-class ProductDetailRecommendedView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, product_id):
-        recommended_products = reco.get_recommendations(product_id, top_n=8)
-        # Make sure it's always a list
-        recommended_products = recommended_products or []
-        serializer = ProductSerializer(recommended_products, many=True)
-        return Response(serializer.data)
-
 class ProductPersonalizedView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, user_id):
         try:
             rec = UserRecommendations.objects.get(user_id=user_id)
-            product_ids = rec.product_ids
-            products = Product.objects.filter(id__in=product_ids)
-            products_sorted = sorted(products, key=lambda p: product_ids.index(p.id))
+            product_ids = rec.product_ids or []
+            if not product_ids:
+                raise UserRecommendations.DoesNotExist
+
+            qs = Product.objects.filter(id__in=product_ids).prefetch_related("images", "categories", "materials")
+            # preserve order
+            products_sorted = sorted(qs, key=lambda p: product_ids.index(p.id))
             serializer = ProductReadSerializer(products_sorted, many=True)
             return Response(serializer.data)
         except UserRecommendations.DoesNotExist:
-            fallback = Product.objects.order_by('-created_at')[:10]
+            fallback = Product.objects.order_by("-created_at")[:10]
             serializer = ProductReadSerializer(fallback, many=True)
             return Response(serializer.data)
 
-    
+# --- FEATURED (top 1) ---
 class FeaturedProductsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
         user_id = request.query_params.get("user_id")
-
         if not user_id:
-            # fallback for anonymous users — return newest product
-            fallback = Product.objects.order_by('-created_at')[:1]
-            serializer = ProductReadSerializer(fallback, many=True)
-            return Response(serializer.data)
+            fallback = Product.objects.order_by("-created_at")[:1]
+            return Response(ProductReadSerializer(fallback, many=True).data)
 
         try:
             rec = UserRecommendations.objects.get(user_id=user_id)
-            product_ids = rec.product_ids
+            if not rec.product_ids:
+                fallback = Product.objects.order_by("-created_at")[:1]
+                return Response(ProductReadSerializer(fallback, many=True).data)
 
-            if not product_ids:
-                fallback = Product.objects.order_by('-created_at')[:1]
-                serializer = ProductReadSerializer(fallback, many=True)
-                return Response(serializer.data)
-
-            # return the top recommendation
-            top_id = product_ids[0]
-            top_product = Product.objects.filter(id=top_id)
-
-            serializer = ProductReadSerializer(top_product, many=True)
-            return Response(serializer.data)
-
+            top_id = rec.product_ids[0]
+            product = Product.objects.filter(id=top_id)
+            return Response(ProductReadSerializer(product, many=True).data)
         except UserRecommendations.DoesNotExist:
-            fallback = Product.objects.order_by('-created_at')[:1]
-            serializer = ProductReadSerializer(fallback, many=True)
+            fallback = Product.objects.order_by("-created_at")[:1]
+            return Response(ProductReadSerializer(fallback, many=True).data)
+
+# --- PRODUCT DETAIL: RECOMMEND (fast category-based fallback) ---
+class ProductDetailRecommendedView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, product_id):
+        # fast: use category overlap for similar products (no heavy ML)
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=404)
+
+        same_category = Product.objects.filter(categories__in=product.categories.all()).exclude(id=product_id).distinct().prefetch_related("images")[:8]
+        if same_category and same_category.count() >= 3:
+            serializer = ProductSerializer(same_category, many=True)
             return Response(serializer.data)
+
+        # fallback: newest products (random subset)
+        fallback = Product.objects.exclude(id=product_id).order_by("-created_at")[:8]
+        return Response(ProductSerializer(fallback, many=True).data)
 
     
 class ShopProductsView(APIView):
