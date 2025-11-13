@@ -5,21 +5,22 @@
   padding-top: 82px;  /* header height */
 }
 
-/* Layout for filters + products - compact version */
-.products-page .products-layout {
-  display: flex;
-  flex: 1;                  /* fill remaining space between header and footer */
-  gap: 20px;                /* reduce space between sidebar and products */
-  margin: 20px;             /* reduce overall margin */
-  overflow: hidden;         /* prevents horizontal overflow */
+/* Filter group items */
+.products-page .filter-group label {
+  display: flex;           /* use flex to align checkbox + text */
+  align-items: center;     /* vertically center the checkbox */
+  gap: 8px;                /* space between checkbox and text */
+  font-size: 0.9rem;
+  margin: 4px 0;           /* reduce vertical spacing */
+  cursor: pointer;
 }
 
-/* Left Sidebar Filters */
-.products-page .products-filters {
-  width: 160px;             /* slightly narrower sidebar */
-  flex-shrink: 0;
-  padding-right: 10px;      /* optional: small inner padding */
+.products-page .filter-group input[type="checkbox"] {
+  margin: 0;               /* remove default margin */
+  width: 16px;             /* uniform checkbox size */
+  height: 16px;
 }
+
 
 .products-page .products-filters h3 {
   font-size: 1.4rem;
