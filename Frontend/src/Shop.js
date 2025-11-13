@@ -39,7 +39,7 @@ function Shop() {
         // 2️⃣ Fetch personalized recommendations for the logged-in user
         const userId = localStorage.getItem("user_id");
         if (userId) {
-          const recRes = await fetch(`${API_URL}/api/products/personalized/${userId}/`);
+          const recRes = await fetch(`${API_URL}/api/products/product/personalized/${userId}/`);
           const recData = await recRes.json();
 
           // 3️⃣ Filter personalized results for this artisan only
