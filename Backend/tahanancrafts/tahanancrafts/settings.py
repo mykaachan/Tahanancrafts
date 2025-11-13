@@ -86,7 +86,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',  # Google provider for Allauth
     'allauth.socialaccount.providers.facebook',  # Facebook provider for Allauth
     'rest_framework.authtoken',
+    'django_apscheduler',
+
 ]
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # seconds
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

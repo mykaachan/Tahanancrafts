@@ -4,12 +4,16 @@ from products.models import Product, UserActivity
 from random import shuffle
 from collections import Counter
 
-def get_recommendations(product_id, top_n=8, show_scores=False):
-    products = Product.objects.all()
-    if not products.exists():
-        return []
 
-    # Build text data (combine name + description + materials + categories)
+def compute_similarity_matrix():
+    """
+    Build TF-IDF + cosine similarity matrix.
+    This ONLY runs when called (e.g. in scheduler).
+    """
+    products = list(Product.objects.all())
+    if not products:
+        return [], []
+
     data = []
     for p in products:
         materials = " ".join([m.name for m in p.materials.all()])
@@ -20,71 +24,66 @@ def get_recommendations(product_id, top_n=8, show_scores=False):
     tfidf_matrix = vectorizer.fit_transform(data)
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-    product_indices = list(products.values_list("id", flat=True))
-    if product_id not in product_indices:
+    product_ids = [p.id for p in products]
+    return products, product_ids, cosine_sim
+
+
+def get_recommendations(product_id, products, product_ids, cosine_sim, top_n=8):
+    """
+    FAST version: requires precomputed cosine_sim.
+    """
+    if product_id not in product_ids:
         return []
 
-    idx = product_indices.index(product_id)
+    idx = product_ids.index(product_id)
     sim_scores = list(enumerate(cosine_sim[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Skip the first (itself), take next top_n
     sim_scores = sim_scores[1 : top_n + 1]
+    recommended = [products[i] for i, _ in sim_scores]
 
-    recommendations = []
-    for i, score in sim_scores:
-        product = products[i]
-        recommendations.append((product, score))
+    return recommended
 
-    if show_scores:
-        for product, score in recommendations:
-            print(f"{product.name} → Similarity: {score:.4f}")
 
-    # Return only product objects (for normal use)
-    return [p for p, _ in recommendations]
+def get_personalized_recommendations(user_id, products, product_ids, cosine_sim, top_n=8):
+    """
+    Personalized recommendations using precomputed matrix.
+    """
 
-from random import shuffle
-from collections import Counter
+    interacted = list(
+        UserActivity.objects.filter(
+            user_id=user_id, action__in=["View", "Added to cart"]
+        ).values_list("product_id", flat=True)
+    )
 
-def get_personalized_recommendations(user_id, top_n=8):
-    # Get products user interacted with
-    interacted_products = list(UserActivity.objects.filter(
-        user_id=user_id, action__in=['View', 'Added to cart']
-    ).values_list('product_id', flat=True))
+    if not interacted:
+        shuffled = products[:]
+        shuffle(shuffled)
+        return shuffled[:top_n]
 
-    if not interacted_products:
-        # Fallback: most recent products
-        products_qs = Product.objects.all().order_by('-created_at')
-        products_list = list(products_qs)
-        shuffle(products_list)  # randomize order
-        return products_list[:top_n]
+    counter = Counter(interacted)
 
-    # Count interactions to weight recommendations
-    counter = Counter(interacted_products)
-
-    recommended = []
+    scored = []
     for pid, weight in counter.items():
-        recs = get_recommendations(pid, top_n=top_n)
+        recs = get_recommendations(pid, products, product_ids, cosine_sim, top_n)
         for r in recs:
-            recommended.append((r, weight))  # attach weight
+            scored.append((r, weight))
 
-    # Sort by weight (interaction frequency)
-    recommended.sort(key=lambda x: x[1], reverse=True)
+    # Sort by weight
+    scored.sort(key=lambda x: x[1], reverse=True)
 
-    # Remove duplicates while keeping highest weight first
+    # Remove duplicates
     seen = set()
-    personalized = []
-    for product, _ in recommended:
-        if product.id not in seen:
-            personalized.append(product)
-            seen.add(product.id)
+    final = []
+    for p, _ in scored:
+        if p.id not in seen:
+            final.append(p)
+            seen.add(p.id)
 
-    # If not enough recommendations, fill with random
-    if len(personalized) < top_n:
-        remaining = Product.objects.exclude(id__in=[p.id for p in personalized])
-        remaining_list = list(remaining)
-        shuffle(remaining_list)
-        personalized += remaining_list
+    # Fill with random if needed
+    if len(final) < top_n:
+        remaining = [p for p in products if p.id not in seen]
+        shuffle(remaining)
+        final.extend(remaining[: top_n - len(final)])
 
-    return personalized[:top_n]
-
+    return final[:top_n]

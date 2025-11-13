@@ -2,6 +2,7 @@ from django.db import models
 from users.models import CustomUser, Artisan
 from django.conf import settings
 from django.utils import timezone
+from django.db import models
 
 
 class Category(models.Model):
@@ -33,8 +34,7 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/products/others/')
 
-from django.db import models
-from products.models import Product  # adjust path if needed
+
 
 class Cart(models.Model):
     id = models.AutoField(primary_key=True)
@@ -180,3 +180,11 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.product.name} ({self.score}⭐)"
+
+class UserRecommendations(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product_ids = models.JSONField(default=list, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Recommendations for {self.user_id} (updated {self.updated_at})"

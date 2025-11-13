@@ -5,13 +5,14 @@ from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
-from machineLearning.recommendations.recommendation import get_recommendations, get_personalized_recommendations
+import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
-from products.models import Product, Category, Material,ProductImage, UserActivity
+from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
+
 
 class ProductListView(APIView):
     permission_classes = [AllowAny]
@@ -168,7 +169,7 @@ class ProductDetailView(APIView):
 class RecommendedProductsView(APIView):
     def get(self, request, product_id):
         try:
-            recommended_products = get_recommendations(product_id)
+            recommended_products = reco.get_recommendations(product_id)
             serializer = ProductSerializer(recommended_products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -204,7 +205,7 @@ class ProductDetailRecommendedView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, product_id):
-        recommended_products = get_recommendations(product_id, top_n=8)
+        recommended_products = reco.get_recommendations(product_id, top_n=8)
         # Make sure it's always a list
         recommended_products = recommended_products or []
         serializer = ProductSerializer(recommended_products, many=True)
@@ -214,19 +215,51 @@ class ProductPersonalizedView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, user_id):
-        recommended = get_personalized_recommendations(user_id, top_n=50)
-        serializer = ProductReadSerializer(recommended, many=True)
-        return Response(serializer.data)
+        try:
+            rec = UserRecommendations.objects.get(user_id=user_id)
+            product_ids = rec.product_ids
+            products = Product.objects.filter(id__in=product_ids)
+            products_sorted = sorted(products, key=lambda p: product_ids.index(p.id))
+            serializer = ProductReadSerializer(products_sorted, many=True)
+            return Response(serializer.data)
+        except UserRecommendations.DoesNotExist:
+            fallback = Product.objects.order_by('-created_at')[:10]
+            serializer = ProductReadSerializer(fallback, many=True)
+            return Response(serializer.data)
+
     
-# views.py
 class FeaturedProductsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        user_id = request.query_params.get("user_id")  # ✅ fetch from query params
-        featured_products = get_personalized_recommendations(user_id, top_n=1)
-        serializer = ProductReadSerializer(featured_products, many=True)
-        return Response(serializer.data)
+        user_id = request.query_params.get("user_id")
+
+        if not user_id:
+            # fallback for anonymous users — return newest product
+            fallback = Product.objects.order_by('-created_at')[:1]
+            serializer = ProductReadSerializer(fallback, many=True)
+            return Response(serializer.data)
+
+        try:
+            rec = UserRecommendations.objects.get(user_id=user_id)
+            product_ids = rec.product_ids
+
+            if not product_ids:
+                fallback = Product.objects.order_by('-created_at')[:1]
+                serializer = ProductReadSerializer(fallback, many=True)
+                return Response(serializer.data)
+
+            # return the top recommendation
+            top_id = product_ids[0]
+            top_product = Product.objects.filter(id=top_id)
+
+            serializer = ProductReadSerializer(top_product, many=True)
+            return Response(serializer.data)
+
+        except UserRecommendations.DoesNotExist:
+            fallback = Product.objects.order_by('-created_at')[:1]
+            serializer = ProductReadSerializer(fallback, many=True)
+            return Response(serializer.data)
 
     
 class ShopProductsView(APIView):
