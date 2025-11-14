@@ -78,30 +78,30 @@ function HomePage() {
         {/* ⭐⭐⭐ FEATURED SECTION ⭐⭐⭐ */}
         <section className="featured-section">
 
-          {/* ⭐ DYNAMIC FEATURED PHOTO + THUMBNAILS */}
-          <div className="featured-image-container">
-            
-            {/* Thumbnails — show only if there are images */}
-            <div className="thumbnail-row">
+          {/* ⭐ LEFT SIDE IMAGES: Thumbnails + Big Image */}
+          <div className="featured-left-wrapper">
+
+            {/* Vertical Thumbnails */}
+            <div className="featured-thumbnails">
               {(featured?.images || []).slice(0, 3).map((img, index) => (
                 <img
                   key={index}
                   src={img}
-                  className="thumbnail-image"
+                  className="featured-thumb"
                   onClick={() => setCurrentFeatured(img)}
                 />
               ))}
             </div>
 
-            {/* Big Featured Image */}
+            {/* Main Image */}
             <img
               src={
                 currentFeatured ||
                 featured?.main_image ||
-                "https://via.placeholder.com/500?text=No+Image"
+                "https://via.placeholder.com/500"
               }
-              alt="Featured Product"
-              className="featured-photo"
+              className="featured-main-photo"
+              alt="Featured"
             />
           </div>
 
