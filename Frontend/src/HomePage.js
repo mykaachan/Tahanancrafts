@@ -1,20 +1,35 @@
 import React from "react";
 import { ReactComponent as Logo } from "./Logo.svg";
+import featuredphoto1 from "./images/featuredphoto1.png"; // make sure extension is correct
 import featuredphoto2 from "./images/featuredphoto2.png";
 import featuredphoto3 from "./images/featuredphoto3.png";
+import balisong from "./images/balisong.png";
+import basket from "./images/basket.png";
+import barong from "./images/barong.png";
 import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
 import HeaderFooter from "./HeaderFooter";
-import { fetchLatestProducts, fetchFeaturedProducts, getUserByContact } from "./api"; 
+import { fetchLatestProducts,fetchFeaturedProducts, getUserByContact } from "./api"; // Import the API function
 import { useNavigate } from "react-router-dom";
+
+// ✅ HomePage Component  with dynamic latest products
 
 function HomePage() {
   const [latestProducts, setLatestProducts] = React.useState([]);
   const [featuredProducts, setFeaturedProducts] = React.useState([]);
   const navigate = useNavigate();
+    const buildUrl = (path) => {
+    if (!path) return featuredphoto1; // fallback to existing image
+    const cleaned = path.replace("/media/media", "/media");
 
-  React.useEffect(() => {
+    if (cleaned.startsWith("http")) return cleaned;
+
+    return `${process.env.REACT_APP_API_URL}${cleaned}`;
+  };
+
+    React.useEffect(() => {
+    // ✅ Fetch latest products
     async function getLatestProducts() {
       try {
         const products = await fetchLatestProducts();
@@ -26,13 +41,16 @@ function HomePage() {
 
     getLatestProducts();
 
+    // ✅ Fetch featured products (with fallback for contact)
     async function getFeaturedProducts() {
       try {
         let userId = localStorage.getItem("user_id");
 
+        // 🧩 If user_id missing, fetch via contact
         if (!userId) {
           const contact = localStorage.getItem("user_contact");
           if (contact) {
+            console.log("🔍 Fetching user_id using contact:", contact);
             try {
               const user = await getUserByContact(contact);
               if (user?.id) {
@@ -45,11 +63,13 @@ function HomePage() {
           }
         }
 
+        // 🚫 If still no userId, skip
         if (!userId) {
           console.warn("⚠️ No user_id found. Skipping featured fetch.");
           return;
         }
 
+        // ✅ Fetch featured products
         const products = await fetchFeaturedProducts(userId);
         setFeaturedProducts(products);
       } catch (error) {
@@ -62,124 +82,100 @@ function HomePage() {
 
   const featured = featuredProducts[0];
 
-  // ⭐ Featured Image Dynamic State
-  const [currentFeatured, setCurrentFeatured] = React.useState(null);
-
-  React.useEffect(() => {
-    if (featured?.main_image) {
-      setCurrentFeatured(featured.main_image);
-    }
-  }, [featured]);
-
   return (
     <HeaderFooter>
       <div className="homepage-container">
 
-        {/* ⭐⭐⭐ FEATURED SECTION ⭐⭐⭐ */}
+         {/* Featured Section */}
         <section className="featured-section">
+          <img
+            src={
+              featured?.main_image
+                ? buildUrl(featured.main_image)
+                : featuredphoto1
+            }
+            alt="Featured Product"
+            className="featured-photo"
+          />
 
-          {/* ⭐ LEFT SIDE IMAGES: Thumbnails + Big Image */}
-          <div className="featured-left-wrapper">
 
-            {/* Vertical Thumbnails */}
-            <div className="featured-thumbnails">
-              {(featured?.images || []).slice(0, 3).map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  className="featured-thumb"
-                  onClick={() => setCurrentFeatured(img)}
-                />
-              ))}
+           <div className="featured-box">
+              {/* ✅ Product Name */}
+              <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
+
+              {/* ✅ Brand / Artisan Name */}
+              <h3>
+                {featured?.artisan?.name ||
+                  featured?.brandName ||
+                  "Colored Wooden Tray Basket"}
+              </h3>
+
+              {/* ✅ Safe Dynamic Rating */}
+              <p className="stars">
+                {(() => {
+                  const rating =
+                    typeof featured?.avg_rating === "number"
+                      ? featured.avg_rating
+                      : 5;
+                  const full = Math.floor(rating);
+                  const half = rating % 1 >= 0.5;
+                  const empty = 5 - full - (half ? 1 : 0);
+
+                  return (
+                    <>
+                      {[...Array(full)].map((_, i) => (
+                        <i key={`full-${i}`} className="fas fa-star"></i>
+                      ))}
+                      {half && <i className="fas fa-star-half-alt"></i>}
+                      {[...Array(empty)].map((_, i) => (
+                        <i key={`empty-${i}`} className="far fa-star"></i>
+                      ))}
+                      <span className="rating-value">({rating.toFixed(1)})</span>
+                    </>
+                  );
+                })()}
+              </p>
+
+              {/* ✅ Product Description */}
+              <p>
+                {featured?.description ||
+                  "Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket Lipa adds vibrant color and natural texture to any space. Durable yet decorative, it’s perfect for stylish storage or display with a touch of cultural charm."}
+              </p>
+
+              {/* ✅ SHOP NOW */}
+              <button
+                className="shop-btn"
+                onClick={() => navigate(`/product/${featured?.id}`)}
+              >
+                SHOP NOW!
+              </button>
             </div>
+          </section>
 
-            {/* Main Image */}
-            <img
-              src={
-                currentFeatured ||
-                featured?.main_image ||
-                "https://via.placeholder.com/500"
-              }
-              className="featured-main-photo"
-              alt="Featured"
-            />
-          </div>
 
-          {/* ⭐ RIGHT SIDE INFO BOX */}
-          <div className="featured-box">
 
-            <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
 
-            <h3>
-              {featured?.artisan?.name ||
-                featured?.brandName ||
-                "Colored Wooden Tray Basket"}
-            </h3>
+      {/* ✅ Latest Products Section */}
+      <section className="latest-products">
+        <div className="latest-products-grid">
+          <img src={featuredphoto2} alt="Product 2" className="product-card" />
+          <img src={featuredphoto3} alt="Product 3" className="product-card" />
+        </div>
+        <h2 className="latest-products-title">Latest Products</h2>
+      </section>
 
-            {/* Stars */}
-            <p className="stars">
-              {(() => {
-                const rating =
-                  typeof featured?.avg_rating === "number"
-                    ? featured.avg_rating
-                    : 5;
-                const full = Math.floor(rating);
-                const half = rating % 1 >= 0.5;
-                const empty = 5 - full - (half ? 1 : 0);
-
-                return (
-                  <>
-                    {[...Array(full)].map((_, i) => (
-                      <i key={`full-${i}`} className="fas fa-star"></i>
-                    ))}
-                    {half && <i className="fas fa-star-half-alt"></i>}
-                    {[...Array(empty)].map((_, i) => (
-                      <i key={`empty-${i}`} className="far fa-star"></i>
-                    ))}
-                    <span className="rating-value">({rating.toFixed(1)})</span>
-                  </>
-                );
-              })()}
-            </p>
-
-            <p>
-              {featured?.description ||
-                "Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket Lipa adds vibrant color and texture to your space."}
-            </p>
-
-            <button
-              className="shop-btn"
-              onClick={() => navigate(`/product/${featured?.id}`)}
-            >
-              SHOP NOW!
-            </button>
-          </div>
-        </section>
-
-        {/* Latest Products */}
-        <section className="latest-products">
-          <div className="latest-products-grid">
-            <img src={featuredphoto2} alt="Product 2" className="product-card" />
-            <img src={featuredphoto3} alt="Product 3" className="product-card" />
-          </div>
-          <h2 className="latest-products-title">Latest Products</h2>
-        </section>
-
-        {/* Extra Products */}
+       {/* ✅ Extra Products Section (Dynamic) */}
         <section className="extra-products">
           <div className="extra-products-grid">
             {latestProducts.length > 0 ? (
               latestProducts.map((product) => (
                 <div className="product-item" key={product.id}>
                   <img
-                    src={
-                      product.main_image ||
-                      "https://via.placeholder.com/150?text=No+Image"
-                    }
+                    src={product.main_image || "https://via.placeholder.com/150?text=No+Image"}
                     alt={product.name}
                     className="product-card"
-                    onClick={() => navigate(`/product/${product.id}`)}
-                    style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      style={{ cursor: "pointer" }}
                   />
                   <p className="product-name">{product.name}</p>
                 </div>
@@ -190,36 +186,44 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Heritage Section */}
-        <section className="heritage-section">
-          <div className="heritage-container">
-            <div className="heritage-image">
-              <img src={Taal} alt="Taal Heritage" />
-            </div>
-
-            <div className="heritage-content">
-              <h2>The Heritage Heart of Batangas</h2>
-              <p>
-                Taal, Batangas is where heritage breathes.  
-                Through blades forged with pride and threads woven with grace,  
-                each craft a quiet poem of the Filipino soul.
-              </p>
-              <button className="heritage-btn">View More</button>
-            </div>
+      {/* Heritage Section */}
+      <section className="heritage-section">
+        <div className="heritage-container">
+          {/* Left: Image */}
+          <div className="heritage-image">
+            <img src={Taal} alt="Taal Heritage" />
           </div>
-        </section>
 
-        {/* TahananCrafts Section */}
-        <section className="tahanancrafts-section">
-          <Logo className="tahanancrafts-logo" />
-          <div className="description-box">
+          {/* Right: Content */}
+          <div className="heritage-content">
+            <h2>The Heritage Heart of Batangas</h2>
             <p>
-              TahananCrafts is an online marketplace where you can discover and
-              support Filipino artisans and their handmade creations.
+              Taal, Batangas is where heritage breathes. <br />
+              Through blades forged with pride and threads woven with grace, <br />
+              each craft a quiet poem of the Filipino soul.
             </p>
+            <button className="heritage-btn">View More</button>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* ✅ TahananCrafts Section */}
+      <section className="tahanancrafts-section">
+        <Logo className="tahanancrafts-logo" />
+        <div className="description-box">
+          <p>
+            TahananCrafts is an online marketplace where you can discover and
+            support Filipino artisans and their handmade creations. We bring
+            traditional craftsmanship to the digital world, giving local makers a
+            space to grow their businesses and share their culture with more
+            people. With the help of smart data tools, we make it easier for
+            artisans to understand what customers love and improve their products.
+            At TahananCrafts, you're not just shopping—you’re helping preserve
+            Filipino art, support communities, and celebrate local talent.
+          </p>
+        </div>
+      </section>
+    </div>
     </HeaderFooter>
   );
 }
