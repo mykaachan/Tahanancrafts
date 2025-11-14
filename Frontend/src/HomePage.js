@@ -3,9 +3,6 @@ import { ReactComponent as Logo } from "./Logo.svg";
 import featuredphoto1 from "./images/featuredphoto1.png"; // make sure extension is correct
 import featuredphoto2 from "./images/featuredphoto2.png";
 import featuredphoto3 from "./images/featuredphoto3.png";
-import balisong from "./images/balisong.png";
-import basket from "./images/basket.png";
-import barong from "./images/barong.png";
 import Taal from "./images/Taal.png";
 import "./HomePage.css";
 import { Link } from "react-router-dom"; 
@@ -91,66 +88,61 @@ function HomePage() {
           <img
             src={
               featured?.main_image
-                ? buildUrl(featured.main_image)
+                ? buildUrl(featured.main_image) // same logic as latest products, with URL fix
                 : featuredphoto1
             }
             alt="Featured Product"
             className="featured-photo"
           />
 
+          <div className="featured-box">
+            <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
 
-           <div className="featured-box">
-              {/* ✅ Product Name */}
-              <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
+            <h3>
+              {featured?.artisan?.name ||
+                featured?.brandName ||
+                "Colored Wooden Tray Basket"}
+            </h3>
 
-              {/* ✅ Brand / Artisan Name */}
-              <h3>
-                {featured?.artisan?.name ||
-                  featured?.brandName ||
-                  "Colored Wooden Tray Basket"}
-              </h3>
+            <p className="stars">
+              {(() => {
+                const rating =
+                  typeof featured?.avg_rating === "number"
+                    ? featured.avg_rating
+                    : 5;
+                const full = Math.floor(rating);
+                const half = rating % 1 >= 0.5;
+                const empty = 5 - full - (half ? 1 : 0);
 
-              {/* ✅ Safe Dynamic Rating */}
-              <p className="stars">
-                {(() => {
-                  const rating =
-                    typeof featured?.avg_rating === "number"
-                      ? featured.avg_rating
-                      : 5;
-                  const full = Math.floor(rating);
-                  const half = rating % 1 >= 0.5;
-                  const empty = 5 - full - (half ? 1 : 0);
+                return (
+                  <>
+                    {[...Array(full)].map((_, i) => (
+                      <i key={`full-${i}`} className="fas fa-star"></i>
+                    ))}
+                    {half && <i className="fas fa-star-half-alt"></i>}
+                    {[...Array(empty)].map((_, i) => (
+                      <i key={`empty-${i}`} className="far fa-star"></i>
+                    ))}
+                    <span className="rating-value">({rating.toFixed(1)})</span>
+                  </>
+                );
+              })()}
+            </p>
 
-                  return (
-                    <>
-                      {[...Array(full)].map((_, i) => (
-                        <i key={`full-${i}`} className="fas fa-star"></i>
-                      ))}
-                      {half && <i className="fas fa-star-half-alt"></i>}
-                      {[...Array(empty)].map((_, i) => (
-                        <i key={`empty-${i}`} className="far fa-star"></i>
-                      ))}
-                      <span className="rating-value">({rating.toFixed(1)})</span>
-                    </>
-                  );
-                })()}
-              </p>
+            <p>
+              {featured?.description ||
+                "Handwoven by Filipino artisans using sustainable abaca."}
+            </p>
 
-              {/* ✅ Product Description */}
-              <p>
-                {featured?.description ||
-                  "Handwoven by Filipino artisans using sustainable abaca, the Iraya Basket Lipa adds vibrant color and natural texture to any space. Durable yet decorative, it’s perfect for stylish storage or display with a touch of cultural charm."}
-              </p>
+            <button
+              className="shop-btn"
+              onClick={() => navigate(`/product/${featured?.id}`)}
+            >
+              SHOP NOW!
+            </button>
+          </div>
+        </section>
 
-              {/* ✅ SHOP NOW */}
-              <button
-                className="shop-btn"
-                onClick={() => navigate(`/product/${featured?.id}`)}
-              >
-                SHOP NOW!
-              </button>
-            </div>
-          </section>
 
 
 
