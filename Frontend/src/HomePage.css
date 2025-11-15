@@ -100,37 +100,42 @@ html, body {
 .featured-section {
   display: flex;
   width: 100%;
-  height: 700px;       /* adjust height if needed */
+  height: 700px;           /* adjust if needed */
+  margin: 0;
+  padding: 0;
 }
 
-/* Left Side */
+
+/* LEFT SIDE (IMAGE) */
 .featured-left {
-  flex: 1;             /* takes half width */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fdf3e6; /* same color as bg */
-  padding-left: 40px;
+  padding: 0;              /* remove padding */
+  margin: 0;               /* remove margin */
+  background: #fdf3e6;
 }
 
+/* IMAGE styling */
 .featured-photo {
-  width: 95%;
-  height: 90%;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;             /* make it fill the full left half */
+  height: 100%;            /* stretch to full height */
+  object-fit: cover;       /* keeps proper proportions */
+  border-radius: 0;        /* remove rounding (optional) */
+  margin: 0;               /* remove margin */
+  padding: 0;              /* remove padding */
+  box-shadow: none;        /* remove shadows touching right side */
 }
 
+/* RIGHT SIDE */
 .featured-box {
   flex: 1;
-  margin-right: 20px;
   background: #c8b39a;
-  padding: 60px 40px;
+  padding: 60px 50px;      /* keep your padding here */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #fff;
-  min-height: 655px;
 }
 
 .featured-box h1 {
