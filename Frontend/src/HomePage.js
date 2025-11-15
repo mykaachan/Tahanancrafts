@@ -135,18 +135,18 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Latest Products */}
-        <section className="latest-products">
-          <div className="latest-products-grid">
-            <img src={featuredphoto2} alt="Product 2" className="product-card" />
-            <img src={featuredphoto3} alt="Product 3" className="product-card" />
+        {/* SHOP CARDS (static images) */}
+        <section className="shop-cards">
+          <div className="shop-cards-grid">
+            <img src={featuredphoto2} alt="Shop Card 1" className="shop-card" />
+            <img src={featuredphoto3} alt="Shop Card 2" className="shop-card" />
           </div>
-          <h2 className="latest-products-title">Latest Products</h2>
         </section>
 
-        {/* Extra Products */}
-        <section className="extra-products">
-          <div className="extra-products-grid">
+        {/* REAL LATEST PRODUCTS */}
+        <section className="latest-products">
+          <h2 className="latest-products-title">Latest Products</h2>
+          <div className="latest-products-grid">
             {latestProducts.length > 0 ? (
               latestProducts.map((product) => (
                 <div className="product-item" key={product.id}>
@@ -165,6 +165,7 @@ function HomePage() {
             )}
           </div>
         </section>
+
 
         {/* Heritage Section */}
         <section className="heritage-section">
