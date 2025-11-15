@@ -128,7 +128,7 @@ function HomePage() {
 
             <button
               className="shop-btn"
-              onClick={() => navigate(`/product/${featured?.id}`)}
+              onClick={() => navigate(`/products/product/${featured?.id}`)}
             >
               SHOP NOW!
             </button>
@@ -154,7 +154,7 @@ function HomePage() {
                     src={product.main_image}
                     alt={product.name}
                     className="product-card"
-                    onClick={() => navigate(`/product/${product.id}`)}
+                    onClick={() => navigate(`/products/product/${product.id}`)}
                     style={{ cursor: "pointer" }}
                   />
                   <p className="product-name">{product.name}</p>
