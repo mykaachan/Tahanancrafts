@@ -103,6 +103,8 @@ html, body {
   height: 700px;           /* adjust if needed */
   margin: 0;
   padding: 0;
+  border: none;
+  margin-top: -80px;   /* pulls section up */
 }
 
 
@@ -594,4 +596,14 @@ html, body {
     padding: 15px !important;
     font-size: 0.9rem !important;
   }
+}
+
+section {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.homepage-container {
+  margin: 0 !important;
+  padding: 0 !important;
 }
