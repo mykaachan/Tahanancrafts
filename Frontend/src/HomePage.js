@@ -5,7 +5,6 @@ import featuredphoto2 from "./images/featuredphoto2.png";
 import featuredphoto3 from "./images/featuredphoto3.png";
 import Taal from "./images/Taal.png";
 import "./HomePage.css";
-import { Link } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import { fetchLatestProducts, fetchFeaturedProducts, getUserByContact } from "./api";
 import { useNavigate } from "react-router-dom";

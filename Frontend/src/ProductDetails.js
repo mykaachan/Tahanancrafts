@@ -22,11 +22,6 @@ function ProductDetail() {
 
   let productId = id; // Ensure productId is defined
 
-  const handleProductClick = (id) => {
-    navigate(`/product/${id}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   useEffect(() => {
     const fetchReviews = async () => {
       try {
