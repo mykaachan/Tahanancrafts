@@ -598,12 +598,51 @@ html, body {
   }
 }
 
+/* REMOVE ALL DEFAULT SECTION GAPS */
 section {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* REMOVE GAP ABOVE FEATURED SECTION */
+.featured-section {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* REMOVE ANY EXTRA WHITE SPACE CAUSED BY HEADER WRAPPER */
+.homepage-container {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-.homepage-container {
+/* FIX: featured image and text should be side by side with no gap */
+.featured-section {
+  display: flex;
+  align-items: stretch;
+  gap: 0 !important;
+}
+
+/* REMOVE BLACK LINE UNDER FEATURED SECTION (it comes from latest-products::before) */
+.latest-products::before {
+  display: none !important;
+}
+
+/* REMOVE GAP ABOVE LATEST PRODUCTS */
+.latest-products {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* REMOVE GAP BELOW TAHANAN CRAFTS SECTION */
+.tahanancrafts-section {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* REMOVE ANY GLOBAL BODY PADDING OR MARGIN */
+body, html {
   margin: 0 !important;
   padding: 0 !important;
 }
