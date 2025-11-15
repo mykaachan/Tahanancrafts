@@ -69,17 +69,23 @@ function HomePage() {
 
         {/* Featured Section */}
         <section className="featured-section">
-          <img
-            src={
-              featured?.main_image
-                ? `${process.env.REACT_APP_API_URL}${featured.main_image}`
-                : featuredphoto1
-            }
-            alt="Featured Product"
-            className="featured-photo"
-          />
 
+          {/* LEFT SIDE IMAGE */}
+          <div className="featured-left">
+            <img
+              src={
+                featured?.main_image
+                  ? `${process.env.REACT_APP_API_URL}${featured.main_image}`
+                  : featuredphoto1
+              }
+              alt="Featured Product"
+              className="featured-photo"
+            />
+          </div>
+
+          {/* RIGHT SIDE INFO */}
           <div className="featured-box">
+
             <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
 
             <h3>
