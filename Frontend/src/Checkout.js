@@ -299,6 +299,27 @@ function Checkout() {
       alert("Failed to set default address");
     }
   };
+  // ======================== SUMMARY CALCULATED HERE ========================
+  const hasPreorder = selectedItems.some((item) => item.is_preorder === true);
+
+  const downpaymentAmount = hasPreorder
+    ? itemsSubtotal * 0.5
+    : 0;
+
+  const totalPayNow = shippingFee + downpaymentAmount;
+
+  const codAmount = itemsSubtotal - downpaymentAmount;
+
+  // Summary object (used in UI)
+  const summary = {
+    total_items_amount: itemsSubtotal,
+    shipping_fee: shippingFee,
+    downpayment_required: hasPreorder,
+    downpayment_amount: downpaymentAmount,
+    total_pay_now: totalPayNow,
+    cod_amount: codAmount,
+    qr_code: selectedItems[0]?.artisan_qr || null, 
+  };
 
   return (
     <HeaderFooter>
