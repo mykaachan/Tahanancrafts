@@ -34,7 +34,8 @@ function Cart() {
           product_id: cartItem.product.id,  // IMPORTANT
           name: cartItem.product.name,
           desc: cartItem.product.description || "No description available",
-          price: cartItem.product.price * cartItem.quantity,
+          price: cartItem.product.price, 
+          total: cartItem.product.price * cartItem.quantity,
           qty: cartItem.quantity,
           img: cartItem.product.main_image
             ? cartItem.product.main_image

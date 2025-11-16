@@ -167,6 +167,10 @@ class ShippingAddress(models.Model):
     barangay = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     province = models.CharField(max_length=255)
+    region = models.CharField(max_length=100, blank=True, null=True)
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
+    landmark = models.CharField(max_length=255, blank=True, null=True)
+
 
     lat = models.FloatField(null=True, blank=True)
     lng = models.FloatField(null=True, blank=True)

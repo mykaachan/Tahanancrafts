@@ -1,0 +1,48 @@
+.address-selection-page {
+  padding: 20px;
+}
+
+.address-card {
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.address-card.selected {
+  border-color: #5a3e2b;
+  background: #fff9f4;
+}
+
+.address-card .badge {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: #5a3e2b;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.add-new-btn,
+.continue-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 16px;
+  border-radius: 12px;
+  border: none;
+  background: #5a3e2b;
+  color: white;
+  font-size: 16px;
+}
+
+.add-new-btn {
+  background: #a68e7a;
+}
+
+.continue-btn:disabled {
+  opacity: 0.5;
+}

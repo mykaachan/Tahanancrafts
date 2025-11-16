@@ -1,76 +1,109 @@
 import React from "react";
 import HeaderFooter from "./HeaderFooter";
-import "./Checkout.css"; // ✅ separate CSS file
+import "./Checkout.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const selectedItems = (location.state?.items || []).filter(i => i.selected);
 
-  if (selectedItems.length === 0) {
-    return <p>No items selected. Go back to cart.</p>;
-  }
+  const selectedItems = location.state?.items || [];
 
-  const convertToCheckoutFormat = () => {
-    return selectedItems.map(item => ({
-      product_id: item.product_id || item.id,   // adjust based on your API
-      quantity: item.qty,
-    }));
-  };
+  // ----------------------------
+  // Address State
+  // ----------------------------
+  const [addresses, setAddresses] = React.useState([]);
+  const [selectedAddress, setSelectedAddress] = React.useState(null);
+  const [showAddressModal, setShowAddressModal] = React.useState(false);
 
-  const placeOrder = async () => {
+  // ----------------------------
+  // Load addresses
+  // ----------------------------
+  React.useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (!userId) return navigate("/login");
 
-    const itemsForBackend = selectedItems.map(i => ({
-      product_id: i.product_id,
-      quantity: i.qty,
-    }));
+    fetch(`https://tahanancrafts.onrender.com/api/users/shipping-address/${userId}/`)
+      .then(res => res.json())
+      .then(data => {
+        setAddresses(data);
+        const def = data.find(a => a.is_default) || data[0];
+        setSelectedAddress(def);
+      })
+      .catch(err => console.error(err));
+  }, []);
 
-    const shipping_address_id = 1; // later dynamic
+  if (selectedItems.length === 0) {
+    return <p>No selected items. Go back to cart.</p>;
+  }
 
-    const res = await fetch("https://tahanancrafts.onrender.com/api/products/product/checkout/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        shipping_address_id,
-        cart_items: itemsForBackend,
-      }),
-    });
+  // ----------------------------
+  // PLACE ORDER
+  // ----------------------------
+  const placeOrder = async () => {
+    const userId = localStorage.getItem("user_id");
+
+    if (!selectedAddress) {
+      alert("Select a shipping address first.");
+      return;
+    }
+
+    const cart_item_ids = selectedItems.map((i) => i.id);
+
+    const res = await fetch(
+      "https://tahanancrafts.onrender.com/api/products/product/checkout/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          user_id: Number(userId),
+          cart_item_ids,
+          shipping_address_id: selectedAddress.id
+        }),
+      }
+    );
 
     const data = await res.json();
-    console.log("Checkout response:", data);
-
     navigate("/order-success", { state: data });
   };
-
 
   return (
     <HeaderFooter>
       <div className="checkout-page">
         <h1 className="checkout-title">Checkout</h1>
 
-        {/* ===== ADDRESS SECTION ===== */}
+        {/* Address */}
         <div className="address-bar">
           <div className="address-info">
             <span className="address-icon">📍</span>
             <div>
-              <p className="address-title">Laurel, Taysan, Batangas</p>
-              <p className="address-details">
-                Kathryn Bernardo &nbsp; +63 961 073 5785 &nbsp; 081 Laurel,
-                Taysan, Batangas
-              </p>
+              {selectedAddress ? (
+                <>
+                  <p className="address-title">
+                    {selectedAddress.barangay}, {selectedAddress.city},{" "}
+                    {selectedAddress.province}
+                  </p>
+                  <p className="address-details">
+                    {selectedAddress.full_name} ({selectedAddress.phone}) <br />
+                    {selectedAddress.address}
+                  </p>
+                </>
+              ) : (
+                <p>No address found. Add one.</p>
+              )}
             </div>
           </div>
-          <button className="change-btn">Change</button>
+
+          <button className="change-btn" onClick={() => setShowAddressModal(true)}>
+            Change
+          </button>
         </div>
 
         <div className="checkout-container">
-          {/* ===== LEFT SIDE ===== */}
+          {/* Items */}
           <div className="checkout-details">
             <h2>Products Ordered</h2>
 
@@ -80,61 +113,62 @@ function Checkout() {
               <span>Item Subtotal</span>
             </div>
 
-            {/* Products */}
-            {selectedItems.map(item => (
+            {selectedItems.map((item) => (
               <div className="product-item" key={item.id}>
                 <img src={item.img} alt={item.name} className="product-img" />
                 <div className="product-details">
                   <p className="product-name">{item.name}</p>
                 </div>
-                <span className="unit-price">₱{item.price / item.qty}</span>
+                <span className="unit-price">₱{item.unit_price}</span>
                 <span className="quantity">{item.qty}</span>
-                <span className="subtotal">₱{item.price}</span>
+                <span className="subtotal">₱{item.unit_price * item.qty}</span>
               </div>
             ))}
 
-            {/* Message + Shipping */}
-            <div className="checkout-footer">
-              <div className="message-box">
-                <label>Message for Artisan:</label>
-                <input type="text" placeholder="Please leave a message..." />
-              </div>
-              <div className="shipping-info">
-                <p>Shipping Option: Standard Local</p>
-                <p className="guarantee">🚚 Guaranteed to get by 11 - 13 May</p>
-                <p className="shipping-fee">₱58</p>
-              </div>
-            </div>
-
-            <div className="order-total">
-              <p>Order Total (2 Items): ₱556</p>
-            </div>
           </div>
 
-          {/* ===== RIGHT SIDE ===== */}
+          {/* Summary */}
           <div className="checkout-summary">
             <h2>Payment Method</h2>
             <p className="payment-method">Cash on Delivery</p>
 
-            <div className="summary-details">
-              <p>
-                Merchandise Subtotal <span>₱498</span>
-              </p>
-              <p>
-                Shipping Payment <span>₱58</span>
-              </p>
-              <p className="total">
-                Total Payment: <span>₱556</span>
-              </p>
-            </div>
-
             <button className="btn-place-order" onClick={placeOrder}>
               Place Order
             </button>
-
           </div>
         </div>
       </div>
+
+      {/* Address Modal */}
+      {showAddressModal && (
+        <div className="modal-backdrop">
+          <div className="modal-box">
+            <h2>Select Shipping Address</h2>
+
+            {addresses.map((addr) => (
+              <div key={addr.id} className="address-option">
+                <input
+                  type="radio"
+                  checked={selectedAddress?.id === addr.id}
+                  onChange={() => setSelectedAddress(addr)}
+                />
+                <div>
+                  <strong>{addr.full_name}</strong> <br />
+                  {addr.address}, {addr.barangay}, {addr.city}, {addr.province}
+                </div>
+              </div>
+            ))}
+
+            <button onClick={() => { setShowAddressModal(false); navigate("/add-address"); }}>
+              + Add New Address
+            </button>
+
+            <button className="modal-save" onClick={() => setShowAddressModal(false)}>
+              Save
+            </button>
+          </div>
+        </div>
+      )}
     </HeaderFooter>
   );
 }
