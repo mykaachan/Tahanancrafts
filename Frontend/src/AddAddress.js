@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
-import AddressDropdownPH from "./components/AddressDropdownPH";
+import AddressDropdownPH from "./AddressDropdownPH";
 import "./ShippingAddress.css";
 
 export default function AddAddress() {
@@ -40,11 +40,14 @@ export default function AddAddress() {
   }
 
   async function save() {
-    const res = await fetch(`${process.env.REACT_APP_API_BASE || "https://tahanancrafts.onrender.com"}/api/users/shipping-address/create/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId, ...form }),
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_API_BASE || "https://tahanancrafts.onrender.com"}/api/users/shipping-address/create/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, ...form }),
+      }
+    );
     if (res.ok) navigate("/select-address");
     else alert("Failed to save");
   }
@@ -64,8 +67,16 @@ export default function AddAddress() {
 
             <label>Region / City / District</label>
             <div className="picker-row">
-              <input name="region_display" value={`${form.province ? form.province + ", " : ""}${form.city ? form.city + ", " : ""}${form.barangay ? form.barangay : ""}`} readOnly />
-              <button className="btn-mini" onClick={() => setModalOpen(true)}>Pick</button>
+              <input
+                name="region_display"
+                value={`${form.province ? form.province + ", " : ""}${
+                  form.city ? form.city + ", " : ""
+                }${form.barangay ? form.barangay : ""}`}
+                readOnly
+              />
+              <button className="btn-mini" onClick={() => setModalOpen(true)}>
+                Pick
+              </button>
             </div>
 
             <label>Street / House No.</label>
@@ -80,15 +91,24 @@ export default function AddAddress() {
             <label>Default Shipping Address</label>
             <div className="toggle-row">
               <label className="switch">
-                <input type="checkbox" name="is_default" checked={form.is_default} onChange={change} />
+                <input
+                  type="checkbox"
+                  name="is_default"
+                  checked={form.is_default}
+                  onChange={change}
+                />
                 <span className="slider" />
               </label>
             </div>
           </div>
 
           <div className="form-actions">
-            <button className="btn-ghost" onClick={() => navigate(-1)}>Cancel</button>
-            <button className="btn-primary" onClick={save}>Save</button>
+            <button className="btn-ghost" onClick={() => navigate(-1)}>
+              Cancel
+            </button>
+            <button className="btn-primary" onClick={save}>
+              Save
+            </button>
           </div>
         </div>
 
@@ -98,8 +118,12 @@ export default function AddAddress() {
               <h3>Select region / city / barangay</h3>
               <AddressDropdownPH onChange={onPHChange} />
               <div className="modal-actions">
-                <button className="btn-ghost" onClick={() => setModalOpen(false)}>Close</button>
-                <button className="btn-primary" onClick={() => setModalOpen(false)}>Apply</button>
+                <button className="btn-ghost" onClick={() => setModalOpen(false)}>
+                  Close
+                </button>
+                <button className="btn-primary" onClick={() => setModalOpen(false)}>
+                  Apply
+                </button>
               </div>
             </div>
           </div>

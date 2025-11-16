@@ -214,24 +214,52 @@ function MainApp() {
             }
           />
         </Route>
+{/* ✅ My Purchases */}
+<Route
+  path="purchase"
+  element={
+    <div className="purchase-page">
+      <h2>My Purchases</h2>
 
-         {/* ✅ My Purchases */}
-            <Route path="purchase" element={
-              <div className="purchase-page">
-                <h2>My Purchases</h2>
-                <div className="purchase-tabs">
-                  <button className="active">All</button>
-                  <button>To Pay</button>
-                  <button>To Ship</button>
-                  <button>To Receive</button>
-                  <button>Completed</button>
-                </div>
-                <div className="purchase-empty">
-                  <img src="/images/empty-box.png" alt="No orders" />
-                  <p>No orders yet</p>
-                </div>
-              </div>
-            }/>
+      <div className="purchase-tabs">
+        <button className="active">All</button>
+        <button>To Pay</button>
+        <button>To Ship</button>
+        <button>To Receive</button>
+        <button>To Review</button> {/* ✅ New tab */}
+        <button>Completed</button>
+      </div>
+
+      {/* Example content for "To Review" tab */}
+      <div className="to-review-list">
+        {[1, 2, 3].map((item) => (
+          <div key={item} className="purchase-item" style={{ display: "flex", alignItems: "center", marginBottom: "15px", gap: "15px" }}>
+            <img
+              src="/images/placeholder-product.png" // ✅ placeholder image
+              alt={`Product ${item}`}
+              style={{ width: "100px", height: "100px", objectFit: "cover", border: "1px solid #ccc", borderRadius: "8px" }}
+            />
+            <div style={{ flex: 1 }}>
+              <p><strong>Product Name:</strong> Sample Product {item}</p>
+              <p><strong>Quantity:</strong> 1</p>
+              <p><strong>Price:</strong> $19.99</p>
+            </div>
+            <button style={{ padding: "8px 16px", background: "#007bff", color: "#fff", border: "none", borderRadius: "5px" }}>
+              Write Review
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Fallback if no orders */}
+      <div className="purchase-empty">
+        <img src="/images/empty-box.png" alt="No orders" />
+        <p>No orders yet</p>
+      </div>
+    </div>
+  }
+/>
+
             
 dir Frontend\src\TaalStory.*
       </Routes>
