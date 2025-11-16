@@ -410,7 +410,6 @@ function Checkout() {
               <button
                 className="modal-close"
                 onClick={() => setShowAddressModal(false)}
-                
               >
                 ✕
               </button>
