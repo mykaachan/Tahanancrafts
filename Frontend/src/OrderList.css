@@ -374,3 +374,126 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+
+.order-refund-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.order-refund-card .order-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.order-refund-card .field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.order-refund-card label {
+  width: 120px;
+  font-weight: 600;
+}
+
+.order-refund-card select,
+.order-refund-card input[type="file"] {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.order-refund-card .order-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+.order-refund-card .approve-btn {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.order-refund-card .decline-btn {
+  background-color: #F44336;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.order-refund-card .approve-btn:hover {
+  background-color: #45a049;
+}
+
+.order-refund-card .decline-btn:hover {
+  background-color: #e53935;
+}
+
+
+/* Apply card style to all order types */
+.order-toship-card,
+.order-delivered-card,
+.order-request-card,
+.order-preorder-card,
+.order-shipping-paid-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.order-toship-card .order-actions,
+.order-delivered-card .order-actions,
+.order-request-card .order-actions,
+.order-preorder-card .order-actions,
+.order-shipping-paid-card .order-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.order-toship-card .approve-btn,
+.order-delivered-card .approve-btn,
+.order-request-card .approve-btn,
+.order-preorder-card .approve-btn,
+.order-shipping-paid-card .approve-btn,
+.order-refund-card .approve-btn {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.order-toship-card .decline-btn,
+.order-delivered-card .decline-btn,
+.order-request-card .decline-btn,
+.order-preorder-card .decline-btn,
+.order-shipping-paid-card .decline-btn,
+.order-refund-card .decline-btn {
+  background-color: #F44336;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
