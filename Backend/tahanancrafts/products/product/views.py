@@ -12,6 +12,8 @@ from .serializers import ProductSerializer, UpdateProductSerializer, ProductRead
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
+from checkout.services.checkout_service import create_orders_from_cart
+
 
 
 class ProductListView(APIView):
@@ -363,3 +365,49 @@ def top_selling_products(request, artisan_id=None):
 
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
+
+class CheckoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        cart_items = request.data.get("cart_items", [])
+        shipping_address_id = request.data.get("shipping_address_id")
+
+        if not cart_items:
+            return Response({"error": "Cart is empty"}, status=400)
+
+        if not shipping_address_id:
+            return Response({"error": "shipping_address_id required"}, status=400)
+
+        try:
+            orders = create_orders_from_cart(
+                user=request.user,
+                shipping_address_id=shipping_address_id,
+                cart_items=cart_items
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+
+        # Build response for ALL orders
+        result = []
+
+        for order in orders:
+            if order.downpayment_required:
+                first_item = order.items.first()
+                artisan = first_item.product.artisan
+                qr = artisan.gcash_qr.url if artisan.gcash_qr else None
+            else:
+                qr = None
+
+            result.append({
+                "order_id": order.id,
+                "payment_method": order.payment_method,
+                "downpayment_required": order.downpayment_required,
+                "downpayment_amount": str(order.downpayment_amount),
+                "grand_total": str(order.grand_total),
+                "total_items_amount": str(order.total_items_amount),
+                "shipping_fee": str(order.shipping_fee),
+                "gcash_qr": qr,
+            })
+
+        return Response(result, status=201)

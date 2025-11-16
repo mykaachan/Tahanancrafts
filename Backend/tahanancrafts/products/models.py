@@ -3,6 +3,8 @@ from users.models import CustomUser, Artisan
 from django.conf import settings
 from django.utils import timezone
 from django.db import models
+from decimal import Decimal
+
 
 
 class Category(models.Model):
@@ -21,6 +23,7 @@ class Product(models.Model):
     main_image = models.ImageField(upload_to='media/products/main/')
     categories = models.ManyToManyField(Category, related_name='products')
     materials = models.ManyToManyField(Material, related_name='products')
+    is_preorder = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     artisan = models.ForeignKey(
@@ -29,6 +32,16 @@ class Product(models.Model):
         related_name='products'
     )
     
+    @property
+    def effective_price(self):
+        return self.regular_price
+
+    def requires_preorder(self, qty=1):
+        # Pre-order if: manually marked OR stock insufficient
+        return self.is_preorder or self.stock_quantity < qty
+
+    def __str__(self):
+        return self.name
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
@@ -63,7 +76,7 @@ class Cart(models.Model):
     @property
     def total_price(self):
         """Optional helper for serializers/templates"""
-        return self.product.price * self.quantity
+        return self.product.effective_price * self.quantity
 
 
 class UserActivity(models.Model):
@@ -85,46 +98,69 @@ class UserActivity(models.Model):
 
 
 class Order(models.Model):
+    STATUS_PENDING = "pending"
+    STATUS_AWAITING_DOWNPAYMENT = "awaiting_downpayment"
+    STATUS_AWAITING_SELLER_VERIFICATION = "awaiting_seller_verification"
+    STATUS_PROCESSING = "processing"
+    STATUS_READY_TO_SHIP = "ready_to_ship"
+    STATUS_SHIPPED = "shipped"
+    STATUS_DELIVERED = "delivered"
+    STATUS_CANCELLED = "cancelled"
+
     STATUS_CHOICES = [
-        ("pending", "Pending"),
-        ("processing", "Processing"),
-        ("shipped", "Shipped"),
-        ("delivered", "Delivered"),
-        ("cancelled", "Cancelled"),
+        (STATUS_PENDING, "Pending"),
+        (STATUS_AWAITING_DOWNPAYMENT, "Awaiting Downpayment"),
+        (STATUS_AWAITING_SELLER_VERIFICATION, "Awaiting Seller Verification"),
+        (STATUS_PROCESSING, "Processing"),
+        (STATUS_READY_TO_SHIP, "Ready to Ship"),
+        (STATUS_SHIPPED, "Shipped"),
+        (STATUS_DELIVERED, "Delivered"),
+        (STATUS_CANCELLED, "Cancelled"),
     ]
 
-    PAYMENT_STATUS_CHOICES = [
-        ("unpaid", "Unpaid"),
-        ("paid", "Paid"),
-        ("refunded", "Refunded"),
-    ]
-
-    user = models.ForeignKey(
-        CustomUser, related_name="orders", on_delete=models.CASCADE
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
+    shipping_address = models.ForeignKey(
+        "users.ShippingAddress",    # <-- include the app name!
+        on_delete=models.PROTECT,
+        related_name="orders"
     )
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="pending"
+
+    status = models.CharField(max_length=40, choices=STATUS_CHOICES, default=STATUS_PENDING)
+
+    # Payment
+    payment_method = models.CharField(
+        max_length=20,
+        choices=[("cod", "Cash on Delivery"), ("gcash_down", "GCash Downpayment")],
+        default="cod"
     )
-    payment_status = models.CharField(
-        max_length=20, choices=PAYMENT_STATUS_CHOICES, default="unpaid"
-    )
-    shipping_address = models.TextField(blank=True, null=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
-    # optional tracking fields
-    tracking_number = models.CharField(max_length=100, blank=True, null=True)
+    # Downpayment always 50% for any preorder
+    downpayment_required = models.BooleanField(default=False)
+    downpayment_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    def __str__(self):
-        return f"Order #{self.id} by {self.user.username}"
+    gcash_proof = models.ImageField(upload_to="payment_proofs/", null=True, blank=True)
+    payment_verified = models.BooleanField(default=False)
 
-    def calculate_total(self):
-        """Recalculate total based on all OrderItems."""
-        total = sum(item.subtotal for item in self.items.all())
-        self.total_amount = total
+    # totals
+    total_items_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def calculate_totals(self):
+        items_total = sum((item.subtotal for item in self.items.all()))
+        self.total_items_amount = items_total
+        self.grand_total = items_total + self.shipping_fee
+
+        # Always 50% if preorder
+        if self.downpayment_required:
+            self.downpayment_amount = (self.grand_total * Decimal("0.50"))
+        else:
+            self.downpayment_amount = Decimal("0.00")
+
         self.save()
-        return total
+
 
 
 class OrderItem(models.Model):
@@ -188,3 +224,17 @@ class UserRecommendations(models.Model):
 
     def __str__(self):
         return f"Recommendations for {self.user_id} (updated {self.updated_at})"
+    
+class Delivery(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="delivery")
+
+    quotation_id = models.CharField(max_length=255, null=True, blank=True)
+    lalamove_order_id = models.CharField(max_length=255, null=True, blank=True)
+    distance_km = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    valid_until = models.DateTimeField(null=True, blank=True)
+
+    status = models.CharField(max_length=50, default="pending")
+    pod_image_url = models.URLField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)

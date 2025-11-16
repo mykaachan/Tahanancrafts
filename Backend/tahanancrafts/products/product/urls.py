@@ -15,6 +15,7 @@ from .views import (
     LogProductView,
     LatestProductsView,
     FeaturedProductsView,
+    CheckoutView,
     top_selling_products
 )
 
@@ -34,5 +35,6 @@ urlpatterns = [
     path('latest-products/', LatestProductsView.as_view(), name='latest-products'),
     path('featured-products/', FeaturedProductsView.as_view(), name='featured-products'),
     path('top-selling/<int:artisan_id>/', top_selling_products, name='artisan_top_selling'),
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
 
 ]

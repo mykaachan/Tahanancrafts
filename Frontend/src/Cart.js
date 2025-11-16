@@ -27,12 +27,12 @@ function Cart() {
       }
 
       try {
-        const data = await getCartItems(userId);
         const formatted = data.map((cartItem) => ({
-          id: cartItem.id,
+          id: cartItem.id,  // cart id
+          product_id: cartItem.product.id,  // <-- ADD THIS
           name: cartItem.product.name,
           desc: cartItem.product.description || "No description available",
-          price: cartItem.product.price * cartItem.quantity, // Total price for the quantity
+          price: cartItem.product.price * cartItem.quantity,
           qty: cartItem.quantity,
           img: cartItem.product.main_image
             ? cartItem.product.main_image
@@ -222,7 +222,11 @@ function Cart() {
               </div>
               <hr />
               <h3 className="total">Total: ₱{total}</h3>
-              <button className="checkout-btn" disabled={subtotal === 0}>
+              <button
+                className="checkout-btn"
+                disabled={subtotal === 0}
+                onClick={() => navigate("/checkout", { state: { items } })}
+              >
                 Checkout
               </button>
             </div>

@@ -126,12 +126,29 @@ class Artisan(models.Model):
 
     # Optional: a main photo reference (not required but useful)
     main_photo = models.ImageField(upload_to="artisan_photos/", blank=True, null=True)
+    gcash_qr = models.ImageField(
+    upload_to="artisan_qr_codes/",
+    blank=True,
+    null=True,
+    help_text="Upload the GCash QR code for preorder downpayment"
+)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Store full address + coordinates
+    pickup_address = models.CharField(max_length=255, blank=True)
+    pickup_lat = models.FloatField(null=True, blank=True)
+    pickup_lng = models.FloatField(null=True, blank=True)
+
 
     def __str__(self):
         return self.name
+    
+    
+    
+
     
 class ArtisanPhoto(models.Model):
     artisan = models.ForeignKey(Artisan, on_delete=models.CASCADE, related_name="photos")
@@ -140,3 +157,18 @@ class ArtisanPhoto(models.Model):
 
     def __str__(self):
         return f"Photo for {self.artisan.name}"
+
+class ShippingAddress(models.Model):
+    user = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE, related_name="addresses")
+    full_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+
+    address = models.CharField(max_length=255)
+    barangay = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    province = models.CharField(max_length=255)
+
+    lat = models.FloatField(null=True, blank=True)
+    lng = models.FloatField(null=True, blank=True)
+
+    is_default = models.BooleanField(default=False)

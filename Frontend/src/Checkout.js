@@ -1,8 +1,54 @@
 import React from "react";
 import HeaderFooter from "./HeaderFooter";
 import "./Checkout.css"; // ✅ separate CSS file
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Checkout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const selectedItems = (location.state?.items || []).filter(i => i.selected);
+
+  if (selectedItems.length === 0) {
+    return <p>No items selected. Go back to cart.</p>;
+  }
+
+  const convertToCheckoutFormat = () => {
+    return selectedItems.map(item => ({
+      product_id: item.product_id || item.id,   // adjust based on your API
+      quantity: item.qty,
+    }));
+  };
+
+  const placeOrder = async () => {
+    const userId = localStorage.getItem("user_id");
+    if (!userId) return navigate("/login");
+
+    const itemsForBackend = selectedItems.map(i => ({
+      product_id: i.product_id,
+      quantity: i.qty,
+    }));
+
+    const shipping_address_id = 1; // later dynamic
+
+    const res = await fetch("https://tahanancrafts.onrender.com/api/checkout/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        shipping_address_id,
+        cart_items: itemsForBackend,
+      }),
+    });
+
+    const data = await res.json();
+    console.log("Checkout response:", data);
+
+    navigate("/order-success", { state: data });
+  };
+
+
   return (
     <HeaderFooter>
       <div className="checkout-page">
@@ -34,35 +80,18 @@ function Checkout() {
               <span>Item Subtotal</span>
             </div>
 
-            {/* Product 1 */}
-            <div className="product-item">
-              <img
-                src="https://via.placeholder.com/100"
-                alt="Product"
-                className="product-img"
-              />
-              <div className="product-details">
-                <p className="product-name">Iraya Basket Lipa</p>
+            {/* Products */}
+            {selectedItems.map(item => (
+              <div className="product-item" key={item.id}>
+                <img src={item.img} alt={item.name} className="product-img" />
+                <div className="product-details">
+                  <p className="product-name">{item.name}</p>
+                </div>
+                <span className="unit-price">₱{item.price / item.qty}</span>
+                <span className="quantity">{item.qty}</span>
+                <span className="subtotal">₱{item.price}</span>
               </div>
-              <span className="unit-price">₱349</span>
-              <span className="quantity">1</span>
-              <span className="subtotal">₱349</span>
-            </div>
-
-            {/* Product 2 */}
-            <div className="product-item">
-              <img
-                src="https://via.placeholder.com/100"
-                alt="Product"
-                className="product-img"
-              />
-              <div className="product-details">
-                <p className="product-name">Burdang Taal Lace Medallions</p>
-              </div>
-              <span className="unit-price">₱149</span>
-              <span className="quantity">1</span>
-              <span className="subtotal">₱149</span>
-            </div>
+            ))}
 
             {/* Message + Shipping */}
             <div className="checkout-footer">
@@ -99,7 +128,10 @@ function Checkout() {
               </p>
             </div>
 
-            <button className="btn-place-order">Place Order</button>
+            <button className="btn-place-order" onClick={placeOrder}>
+              Place Order
+            </button>
+
           </div>
         </div>
       </div>
