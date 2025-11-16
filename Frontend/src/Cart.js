@@ -27,9 +27,11 @@ function Cart() {
       }
 
       try {
+        const data = await getCartItems(userId);
+
         const formatted = data.map((cartItem) => ({
-          id: cartItem.id,  // cart id
-          product_id: cartItem.product.id,  // <-- ADD THIS
+          id: cartItem.id,              // cart item ID
+          product_id: cartItem.product.id,  // IMPORTANT
           name: cartItem.product.name,
           desc: cartItem.product.description || "No description available",
           price: cartItem.product.price * cartItem.quantity,
@@ -39,7 +41,9 @@ function Cart() {
             : "https://via.placeholder.com/150?text=No+Image",
           selected: false,
         }));
+
         setItems(formatted);
+
       } catch (err) {
         console.error("Failed to fetch cart:", err);
         alert("Failed to load cart items.");
@@ -50,6 +54,7 @@ function Cart() {
 
     fetchCart();
   }, []);
+
 
   // ✅ Update quantity (sync backend)
   const updateQty = async (id, delta) => {
@@ -112,8 +117,7 @@ function Cart() {
   const subtotal = items
     .filter((item) => item.selected)
     .reduce((sum, item) => sum + item.price, 0);
-  const shipping = subtotal > 0 ? 58 : 0;
-  const total = subtotal + shipping;
+  const total = subtotal
 
   if (loading) return <p>Loading cart...</p>;
 
@@ -215,10 +219,6 @@ function Cart() {
               <div className="summary-row">
                 <span>Subtotal ({items.filter((i) => i.selected).length} items)</span>
                 <span>₱{subtotal}</span>
-              </div>
-              <div className="summary-row">
-                <span>Shipping Fee</span>
-                <span>₱{shipping}</span>
               </div>
               <hr />
               <h3 className="total">Total: ₱{total}</h3>
