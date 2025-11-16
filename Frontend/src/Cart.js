@@ -214,7 +214,6 @@ function Cart() {
 
             {/* RIGHT SIDE - SUMMARY */}
             <div className="cart-summary">
-              <p className="location">📍 Laurel, Taysan, Batangas</p>
               <hr />
               <h2>Order Summary</h2>
               <div className="summary-row">
