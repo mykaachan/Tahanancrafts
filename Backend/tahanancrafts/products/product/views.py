@@ -12,7 +12,7 @@ from .serializers import ProductSerializer, UpdateProductSerializer, ProductRead
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
-from checkout.services.checkout_service import create_orders_from_cart
+from products.checkout.services.checkout_service import create_orders_from_cart
 
 
 
