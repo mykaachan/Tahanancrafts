@@ -590,3 +590,66 @@
 .btn-review:hover {
   background: #5a4028;
 }
+
+
+.review-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+}
+
+.review-modal {
+  background: white;
+  padding: 25px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.review-modal h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #5a4028;
+}
+
+/* Stars */
+.stars {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.star {
+  color: #ccc;
+  padding: 3px;
+}
+
+.star.active {
+  color: #e6a84f; /* gold */
+}
+
+/* Textarea */
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: none;
+  margin-bottom: 15px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

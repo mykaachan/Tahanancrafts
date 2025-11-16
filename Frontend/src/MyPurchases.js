@@ -5,6 +5,7 @@ import "./Profile.css";
 
 function MyPurchases() {
   const [activeTab, setActiveTab] = useState("all");
+  const [showReview, setShowReview] = useState(false); // ✅ added state
 
   return (
     <HeaderFooter>
@@ -42,7 +43,6 @@ function MyPurchases() {
             {/* ===== ALL ===== */}
             {activeTab === "all" && (
               <div className="orders-list">
-
                 {/* ===== Order 1 ===== */}
                 <div className="order-card">
                   <div className="order-header">
@@ -129,7 +129,6 @@ function MyPurchases() {
             {/* ===== ⭐ TO REVIEW (NEW TAB) ===== */}
             {activeTab === "to-review" && (
               <div className="orders-list">
-
                 <div className="order-card">
                   <div className="order-body">
                     <img
@@ -137,23 +136,69 @@ function MyPurchases() {
                       alt="Product Placeholder"
                       className="order-img"
                     />
-
                     <div className="order-info">
                       <h4>Product Name Placeholder</h4>
                       <p>Quantity: 1</p>
                       <p>Price: ₱149</p>
                     </div>
 
-                    <button className="btn-review">Write a Review</button>
+                    <button
+                      className="btn-review"
+                      onClick={() => setShowReview(true)}
+                    >
+                      Write a Review
+                    </button>
                   </div>
                 </div>
-
               </div>
             )}
 
             {/* ===== COMPLETED ===== */}
             {activeTab === "completed" && <p>No completed orders yet.</p>}
           </div>
+
+          {/* ===== Review Modal ===== */}
+          {showReview && (
+            <div className="review-modal-overlay">
+              <div className="review-modal">
+                <h2>Write a Review</h2>
+
+                {/* ⭐ Stars */}
+                <div className="stars">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <span key={n} className="star">
+                      ★
+                    </span>
+                  ))}
+                </div>
+
+                {/* 📝 Thoughts */}
+                <textarea
+                  className="review-textarea"
+                  placeholder="Share your thoughts..."
+                ></textarea>
+
+                {/* 📸 Upload */}
+                <div className="image-upload-container">
+                  <label className="image-upload-label">
+                    Upload Photo
+                    <input type="file" />
+                  </label>
+                </div>
+
+                {/* Buttons */}
+                <div className="modal-buttons">
+                  <button
+                    className="btn-cancel"
+                    onClick={() => setShowReview(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button className="btn-submit">Submit Review</button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </HeaderFooter>
