@@ -52,12 +52,9 @@ import TaalStory from './TaalStory';
 import PrivacyTerms from './PrivacyTerms';
 import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
 import SellerRegister from "./SellerRegister"; // ✅ default export
-
-
-
-
-
-
+import AddAddress from './AddAddress';
+import ShippingAddressSelect from './ShippingAddressSelect';
+import EditAddress from './EditAddress';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -137,6 +134,9 @@ function MainApp() {
         <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
         <Route path="/sellerregister" element={<SellerRegister />} />
         <Route path="/sellerregister" element={<SellerRegister />} />
+        <Route path="/select-address" element={<ShippingAddressSelect />} />
+        <Route path="/add-address" element={<AddAddress />} />
+        <Route path="/edit-address/:id" element={<EditAddress />} />
 
 
 
