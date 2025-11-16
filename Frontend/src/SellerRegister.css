@@ -145,3 +145,95 @@ textarea {
     font-size: 0.9rem;
   }
 }
+
+/* Terms Checkbox - horizontal placement */
+.terms-checkbox {
+  display: flex;
+  align-items: center;       /* vertically center checkbox and text */
+  gap: 8px;                  /* space between checkbox and text */
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;            /* prevents checkbox from shrinking */
+}
+
+/* Make the label inline-flex so text stays beside checkbox */
+.terms-checkbox label {
+  display: inline-flex;
+  align-items: center;       /* vertical alignment */
+  cursor: pointer;
+}
+
+/* Link styling for Terms text */
+.terms-checkbox .terms-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+/* Terms Modal Overlay */
+.terms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* dim background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* above all content */
+}
+
+/* Modal box */
+.terms-modal {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.terms-modal h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.terms-modal ol {
+  padding-left: 20px;
+}
+
+.terms-modal p {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* Close button */
+.terms-modal .close-btn {
+  margin-top: 15px;
+  background-color: #c49a6c;
+  color: #fff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.terms-modal .close-btn:hover {
+  background-color: #b18555;
+}

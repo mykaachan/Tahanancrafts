@@ -11,6 +11,9 @@ const SellerRegister = () => {
     contact: "",
   });
 
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
@@ -22,6 +25,10 @@ const SellerRegister = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!agreedToTerms) {
+      alert("You must agree to the Terms and Conditions before registering.");
+      return;
+    }
     alert("Seller Registration Submitted!");
     console.log(formData);
   };
@@ -100,15 +107,58 @@ const SellerRegister = () => {
             />
           </div>
 
+          {/* Terms Checkbox with clickable link */}
+          <div className="form-group terms-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+              />
+              I agree to the{" "}
+              <span
+                className="terms-link"
+                onClick={() => setShowTermsModal(true)}
+              >
+                Terms and Conditions
+              </span>
+            </label>
+          </div>
+
           <button type="submit" className="submit-btn">
             Submit Registration
           </button>
         </form>
       </div>
+
+      {/* Modal for Terms */}
+      {showTermsModal && (
+        <div
+          className="terms-modal-overlay"
+          onClick={() => setShowTermsModal(false)}
+        >
+          <div
+            className="terms-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>Terms and Conditions for Sellers</h3>
+            <ol>
+              <li><strong>Shipping Fees</strong></li>
+              <p>Some orders require prepaid shipping fee for the seller’s protection.</p>
+              <p>If the seller accepts the order, the shipping fee becomes non-refundable.</p>
+              <p>If the seller cancels the order after shipping fee collection, the seller must fully refund the shipping fee to the buyer.</p>
+            </ol>
+            <button
+              onClick={() => setShowTermsModal(false)}
+              className="close-btn"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// SellerRegister.js
-export default SellerRegister; // ✅ default export
-
+export default SellerRegister;
