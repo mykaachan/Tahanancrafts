@@ -19,25 +19,30 @@ function MyPurchases() {
 
           {/* ===== Tabs ===== */}
           <div className="purchases-tabs">
-            {["all", "to-pay", "to-ship", "to-receive", "completed"].map((tab) => (
-              <button
-                key={tab}
-                className={activeTab === tab ? "active" : ""}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab === "all"
-                  ? "All"
-                  : tab
-                      .replace("-", " ")
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
-              </button>
-            ))}
+            {["all", "to-pay", "to-ship", "to-receive", "to-review", "completed"].map(
+              (tab) => (
+                <button
+                  key={tab}
+                  className={activeTab === tab ? "active" : ""}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab === "all"
+                    ? "All"
+                    : tab
+                        .replace("-", " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}
+                </button>
+              )
+            )}
           </div>
 
           {/* ===== Purchases Box ===== */}
           <div className="purchase-box">
+
+            {/* ===== ALL ===== */}
             {activeTab === "all" && (
               <div className="orders-list">
+
                 {/* ===== Order 1 ===== */}
                 <div className="order-card">
                   <div className="order-header">
@@ -112,9 +117,41 @@ function MyPurchases() {
               </div>
             )}
 
+            {/* ===== TO PAY ===== */}
             {activeTab === "to-pay" && <p>No items to pay.</p>}
+
+            {/* ===== TO SHIP ===== */}
             {activeTab === "to-ship" && <p>No items to ship.</p>}
+
+            {/* ===== TO RECEIVE ===== */}
             {activeTab === "to-receive" && <p>No items to receive.</p>}
+
+            {/* ===== ⭐ TO REVIEW (NEW TAB) ===== */}
+            {activeTab === "to-review" && (
+              <div className="orders-list">
+
+                <div className="order-card">
+                  <div className="order-body">
+                    <img
+                      src="https://via.placeholder.com/120"
+                      alt="Product Placeholder"
+                      className="order-img"
+                    />
+
+                    <div className="order-info">
+                      <h4>Product Name Placeholder</h4>
+                      <p>Quantity: 1</p>
+                      <p>Price: ₱149</p>
+                    </div>
+
+                    <button className="btn-review">Write Review</button>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* ===== COMPLETED ===== */}
             {activeTab === "completed" && <p>No completed orders yet.</p>}
           </div>
         </main>
