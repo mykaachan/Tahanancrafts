@@ -141,34 +141,43 @@ function Checkout() {
 
       {/* Address Modal */}
       {showAddressModal && (
-        <div className="modal-backdrop">
-          <div className="modal-box">
+        <div className="address-modal-backdrop">
+          <div className="address-modal">
+
             <h2>Select Shipping Address</h2>
 
             {addresses.map((addr) => (
-              <div key={addr.id} className="address-option">
+              <div
+                key={addr.id}
+                className={`address-option ${selectedAddress?.id === addr.id ? "selected" : ""}`}
+                onClick={() => setSelectedAddress(addr)}
+              >
                 <input
                   type="radio"
                   checked={selectedAddress?.id === addr.id}
                   onChange={() => setSelectedAddress(addr)}
                 />
                 <div>
-                  <strong>{addr.full_name}</strong> <br />
+                  <strong>{addr.full_name}</strong>  
+                  <br />
                   {addr.address}, {addr.barangay}, {addr.city}, {addr.province}
+                  <br />
+                  <span style={{ fontSize: "0.9rem", color: "#666" }}>{addr.phone}</span>
                 </div>
               </div>
             ))}
 
-            <button onClick={() => { setShowAddressModal(false); navigate("/add-address"); }}>
+            <button className="add-address-btn" onClick={() => navigate("/add-address")}>
               + Add New Address
             </button>
 
-            <button className="modal-save" onClick={() => setShowAddressModal(false)}>
+            <button className="modal-save-btn" onClick={() => setShowAddressModal(false)}>
               Save
             </button>
           </div>
         </div>
       )}
+
     </HeaderFooter>
   );
 }

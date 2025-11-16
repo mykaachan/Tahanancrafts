@@ -241,6 +241,107 @@
   background: #c4a784;
 }
 
+/* Modal Backdrop */
+.address-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Modal Box */
+.address-modal {
+  background: #fff;
+  width: 500px;
+  max-width: 90%;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.address-modal h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: #6b4f3b;
+}
+
+/* Address Option */
+.address-option {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.address-option:hover {
+  border-color: #d2b48c;
+  background: #fff;
+}
+
+.address-option.selected {
+  border: 2px solid #c49a6c;
+  background: #fff7ed;
+}
+
+.address-option strong {
+  font-size: 1.1rem;
+  color: #6b4f3b;
+}
+
+/* Buttons */
+.add-address-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px dashed #c49a6c;
+  background: #fff;
+  color: #c49a6c;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-address-btn:hover {
+  background: #fff7ed;
+}
+
+.modal-save-btn {
+  background: #c49a6c;
+  color: white;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.modal-save-btn:hover {
+  opacity: 0.9;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
 
 
 /* =========================
