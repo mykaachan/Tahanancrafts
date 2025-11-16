@@ -144,7 +144,7 @@ function MyPurchases() {
                       <p>Price: ₱149</p>
                     </div>
 
-                    <button className="btn-review">Write Review</button>
+                    <button className="btn-review">Write a Review</button>
                   </div>
                 </div>
 

@@ -575,3 +575,18 @@
     width: 100%;
   }
 }
+
+.btn-review {
+  background: #7a5a36;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-review:hover {
+  background: #5a4028;
+}
