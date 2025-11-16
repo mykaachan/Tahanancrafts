@@ -1,8 +1,10 @@
+/* =========================================================
+   CHECKOUT PAGE — LAYOUT
+========================================================= */
 
-/* ===== GENERAL ===== */
 .checkout-page {
-  padding: 2.5px 5px;  /* ⬅️ already reduced top padding */
-  background: #fafafa; /* same as cart */
+  padding: 2.5px 5px;
+  background: #fafafa;
   font-family: 'Segoe UI', sans-serif;
   max-width: 1200px;
   margin: 0 auto;
@@ -11,17 +13,19 @@
 .checkout-title {
   font-size: 3rem;
   font-weight: bold;
-  margin-top: 5px;     /* ⬅️ changed from default (big) margin */
-  margin-bottom: 25px; /* keep bottom spacing */
+  margin-top: 5px;
+  margin-bottom: 25px;
 }
 
+/* =========================================================
+   ADDRESS BAR
+========================================================= */
 
-/* ===== ADDRESS BAR ===== */
 .address-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #d9c2a5; /* beige like cart section header */
+  background: #d9c2a5;
   padding: 12px 18px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -32,12 +36,12 @@
 .address-info {
   display: flex;
   gap: 10px;
-  align-items: flex-start; /* ✅ aligns text nicely with the icon */
+  align-items: flex-start;
 }
 
 .address-icon {
   font-size: 18px;
-  margin-top: 2px; /* ✅ centers icon with text */
+  margin-top: 2px;
 }
 
 .address-title {
@@ -51,7 +55,7 @@
   font-size: 13px;
   color: #555;
   margin-top: 2px;
-  line-height: 1.4;  /* ✅ improves readability */
+  line-height: 1.4;
 }
 
 .change-btn {
@@ -69,15 +73,20 @@
   background: #f2e7da;
 }
 
+/* =========================================================
+   MAIN CONTAINER — LEFT + RIGHT SIDES
+========================================================= */
 
-/* ===== CONTAINER ===== */
 .checkout-container {
   display: flex;
   gap: 30px;
   align-items: flex-start;
 }
 
-/* ===== LEFT SIDE ===== */
+/* =========================================================
+   LEFT SIDE — PRODUCT DETAILS
+========================================================= */
+
 .checkout-details {
   flex: 2;
   background: #fff;
@@ -93,29 +102,27 @@
   padding-bottom: 8px;
 }
 
-
-/* Product Table Header */
+/* Table Header */
 .product-header {
   display: grid;
-  grid-template-columns: 100px 2fr 1fr 1fr 1fr; /* match product-item */
+  grid-template-columns: 100px 2fr 1fr 1fr 1fr;
   align-items: center;
   font-weight: bold;
   margin: 10px 0;
   font-size: 15px;
   text-align: center;
-  padding-left: 0; /* remove forced left padding */
 }
 
 .product-header span:first-child {
-  grid-column: 3;  /* Move "Unit Price" above the unit-price values */
+  grid-column: 3;
 }
 
 .product-header span:nth-child(2) {
-  grid-column: 4;  /* Quantity */
+  grid-column: 4;
 }
 
 .product-header span:nth-child(3) {
-  grid-column: 5;  /* Item Subtotal */
+  grid-column: 5;
 }
 
 /* Product Item */
@@ -138,58 +145,10 @@
   font-size: 15px;
 }
 
+/* =========================================================
+   RIGHT SIDE — CHECKOUT SUMMARY
+========================================================= */
 
-/* Footer Section (Message + Shipping) */
-.checkout-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* ✅ align top instead of overlapping */
-  gap: 20px; /* ✅ space between sections */
-  margin-top: 20px;
-  padding: 15px;
-  background: #f8f4ef;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-.message-box {
-  flex: 2; /* ✅ give more space to input */
-  min-width: 250px; /* ✅ prevents shrinking too small */
-}
-
-.message-box input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-top: 5px;
-  box-sizing: border-box; /* ✅ keeps it inside its box */
-}
-
-.shipping-info {
-  flex: 1; /* ✅ takes only the needed space */
-  text-align: right;
-  min-width: 220px;
-}
-
-
-.shipping-info .shipping-fee {
-  font-weight: bold;
-}
-
-.guarantee {
-  font-size: 13px;
-  color: #333;
-}
-
-.order-total {
-  text-align: right;
-  margin-top: 12px;
-  font-weight: bold;
-  font-size: 15px;
-}
-
-/* ===== RIGHT SIDE ===== */
 .checkout-summary {
   flex: 1;
   background: #fff;
@@ -210,20 +169,10 @@
   margin-bottom: 15px;
 }
 
-.summary-details p {
-  display: flex;
-  justify-content: space-between;
-  margin: 8px 0;
-  font-size: 15px;
-}
+/* =========================================================
+   PLACE ORDER BUTTON
+========================================================= */
 
-.summary-details .total {
-  font-weight: bold;
-  font-size: 17px;
-  margin-top: 10px;
-}
-
-/* ===== BUTTON ===== */
 .btn-place-order {
   margin-top: 20px;
   width: 100%;
@@ -241,7 +190,10 @@
   background: #c4a784;
 }
 
-/* Backdrop */
+/* =========================================================
+   MODAL — BACKDROP
+========================================================= */
+
 .address-modal-backdrop {
   position: fixed;
   top: 0;
@@ -255,7 +207,10 @@
   z-index: 999;
 }
 
-/* Modal box */
+/* =========================================================
+   MODAL — CONTAINER/BOX
+========================================================= */
+
 .address-modal-box {
   background: #fffaf3;
   width: 500px;
@@ -265,7 +220,7 @@
   animation: fadeIn 0.2s ease-in-out;
 }
 
-/* Header */
+/* Modal Header */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -280,7 +235,10 @@
   cursor: pointer;
 }
 
-/* Address list */
+/* =========================================================
+   ADDRESS LIST INSIDE SELECT MODAL
+========================================================= */
+
 .address-list {
   max-height: 300px;
   overflow-y: auto;
@@ -344,7 +302,7 @@
   font-size: 12px;
 }
 
-/* Edit button */
+/* Small edit button */
 .edit-btn {
   background: transparent;
   border: none;
@@ -353,7 +311,7 @@
   font-size: 14px;
 }
 
-/* Add button */
+/* Add Button */
 .modal-add-btn {
   width: 100%;
   background: transparent;
@@ -366,7 +324,7 @@
   margin-bottom: 12px;
 }
 
-/* Save button */
+/* Save Button */
 .modal-save-btn {
   width: 100%;
   background: #b8834a;
@@ -384,17 +342,145 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+/* =========================================================
+   ADD + EDIT ADDRESS FORM
+========================================================= */
 
+.address-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
 
+.address-form-grid input {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid #d9c9b3;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fffdf8;
+  box-sizing: border-box;
+}
 
-/* =========================
-   CHECKOUT PAGE RESPONSIVE
-========================= */
+.address-form-grid input:focus {
+  border-color: #b8834a;
+  outline: none;
+  box-shadow: 0 0 4px rgba(184, 131, 74, 0.4);
+}
 
-/* Tablet / Medium screens */
+/* Full-width rows */
+.address-form-grid input[name="address"],
+.address-form-grid input[name="street"],
+.address-form-grid input[name="landmark"] {
+  grid-column: span 2;
+}
+
+/* =========================================================
+   EDIT ADDRESS — BUTTONS
+========================================================= */
+
+.btn-danger,
+.btn-secondary,
+.modal-cancel-btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  border: none;
+}
+
+.btn-danger {
+  background: #c94f4f;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b13f3f;
+}
+
+.btn-secondary {
+  background: #b8834a;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #a47039;
+}
+
+.modal-cancel-btn {
+  background: #ddd3c5;
+  color: #4b3a2b;
+}
+
+.modal-cancel-btn:hover {
+  background: #c8b9a7;
+}
+
+/* =========================================================
+   TOGGLE SWITCH (SET AS DEFAULT)
+========================================================= */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #ccc;
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background: #b8834a;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* =========================================================
+   MODAL BUTTON GROUP
+========================================================= */
+
+.address-modal-box > div:last-child {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
 @media (max-width: 1024px) {
   .checkout-container {
-    flex-direction: column; /* stack left and right side */
+    flex-direction: column;
     gap: 20px;
   }
 
@@ -403,36 +489,13 @@
     width: 100%;
   }
 
-  .checkout-title {
-    font-size: 2.5rem;
-  }
-
   .product-header,
   .product-item {
     grid-template-columns: 80px 1.5fr 1fr 1fr 1fr;
     font-size: 14px;
   }
-
-  .checkout-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .message-box input {
-    font-size: 14px;
-  }
-
-  .summary-details p {
-    font-size: 14px;
-  }
-
-  .order-total {
-    font-size: 16px;
-  }
 }
 
-/* Mobile / Small screens */
 @media (max-width: 768px) {
   .checkout-page {
     padding: 10px 5px;
@@ -448,69 +511,28 @@
     font-size: 13px;
     gap: 10px;
   }
-
-  .checkout-footer {
-    padding: 10px;
-  }
-
-  .message-box input {
-    font-size: 13px;
-  }
-
-  .shipping-info {
-    text-align: left;
-    min-width: auto;
-  }
-
-  .order-total {
-    font-size: 15px;
-  }
-
-  .btn-place-order {
-    padding: 10px;
-    font-size: 0.95rem;
-  }
 }
 
-/* Very small / smartphones */
-@media (max-width: 480px) {
-  .checkout-title {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
+@media (max-width: 500px) {
+  .address-modal-box {
+    width: 90%;
+    padding: 18px;
   }
 
-  .product-header,
-  .product-item {
-    grid-template-columns: 50px 1fr 1fr 1fr 1fr;
-    font-size: 12px;
-    gap: 8px;
+  .address-form-grid {
+    grid-template-columns: 1fr;
   }
 
-  .checkout-footer {
-    flex-direction: column;
-    gap: 10px;
-    padding: 8px;
+  .address-form-grid input[name="address"],
+  .address-form-grid input[name="street"],
+  .address-form-grid input[name="landmark"] {
+    grid-column: span 1;
   }
 
-  .message-box input {
-    font-size: 12px;
-  }
-
-  .shipping-info {
-    text-align: left;
-    font-size: 12px;
-  }
-
-  .summary-details p {
-    font-size: 13px;
-  }
-
-  .order-total {
+  .btn-danger,
+  .btn-secondary,
+  .modal-cancel-btn {
+    padding: 10px;
     font-size: 14px;
-  }
-
-  .btn-place-order {
-    padding: 8px;
-    font-size: 0.9rem;
   }
 }
