@@ -5,7 +5,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-import App from './App';
 import LoginPage from './LoginPage';
 import ForgotPass from './ForgotPass';
 import ForgotPass2 from './ForgotPass2';
