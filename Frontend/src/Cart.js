@@ -225,7 +225,12 @@ function Cart() {
               <button
                 className="checkout-btn"
                 disabled={subtotal === 0}
-                onClick={() => navigate("/checkout", { state: { items } })}
+                onClick={() =>
+                  navigate("/checkout", {
+                    state: { items: items.filter((i) => i.selected) }
+                  })
+                }
+
               >
                 Checkout
               </button>

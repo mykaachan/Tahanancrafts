@@ -141,34 +141,70 @@ function Checkout() {
 
       {/* Address Modal */}
       {showAddressModal && (
-        <div className="modal-backdrop">
-          <div className="modal-box">
-            <h2>Select Shipping Address</h2>
+        <div className="address-modal-backdrop">
+          <div className="address-modal-box">
 
-            {addresses.map((addr) => (
-              <div key={addr.id} className="address-option">
-                <input
-                  type="radio"
-                  checked={selectedAddress?.id === addr.id}
-                  onChange={() => setSelectedAddress(addr)}
-                />
-                <div>
-                  <strong>{addr.full_name}</strong> <br />
-                  {addr.address}, {addr.barangay}, {addr.city}, {addr.province}
+            <div className="modal-header">
+              <h2>Select Shipping Address</h2>
+              <button className="modal-close" onClick={() => setShowAddressModal(false)}>✕</button>
+            </div>
+
+            <div className="address-list">
+              {addresses.map((addr) => (
+                <div
+                  key={addr.id}
+                  className={`address-card ${selectedAddress?.id === addr.id ? "selected" : ""}`}
+                  onClick={() => setSelectedAddress(addr)}
+                >
+                  <div className="radio-col">
+                    <input
+                      type="radio"
+                      checked={selectedAddress?.id === addr.id}
+                      onChange={() => setSelectedAddress(addr)}
+                    />
+                  </div>
+
+                  <div className="address-col">
+                    <strong className="name">{addr.full_name}</strong>
+                    <span className="phone">{addr.phone}</span>
+
+                    <div className="full-address">
+                      {addr.address && <>{addr.address}, </>}
+                      {addr.barangay}, {addr.city}, {addr.province}
+                    </div>
+
+                    {addr.is_default && <span className="default-tag">Default</span>}
+                  </div>
+
+                  <button
+                    className="edit-btn"
+                    onClick={() => navigate(`/edit-address/${addr.id}`)}
+                  >
+                    Edit
+                  </button>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
-            <button onClick={() => { setShowAddressModal(false); navigate("/add-address"); }}>
+            <button
+              className="modal-add-btn"
+              onClick={() => navigate("/add-address")}
+            >
               + Add New Address
             </button>
 
-            <button className="modal-save" onClick={() => setShowAddressModal(false)}>
-              Save
+            <button
+              className="modal-save-btn"
+              onClick={() => setShowAddressModal(false)}
+            >
+              Save Selection
             </button>
+
           </div>
         </div>
       )}
+
+
     </HeaderFooter>
   );
 }

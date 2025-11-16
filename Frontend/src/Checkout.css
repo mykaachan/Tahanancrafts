@@ -241,6 +241,150 @@
   background: #c4a784;
 }
 
+/* Backdrop */
+.address-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal box */
+.address-modal-box {
+  background: #fffaf3;
+  width: 500px;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Address list */
+.address-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.address-card {
+  display: flex;
+  padding: 15px;
+  border: 2px solid #eee0cc;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.address-card:hover {
+  border-color: #caa57a;
+}
+
+.address-card.selected {
+  border-color: #b8834a;
+  background: #fff3e2;
+}
+
+.radio-col {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.address-col {
+  flex: 1;
+}
+
+.address-col .name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b3a2b;
+}
+
+.address-col .phone {
+  font-size: 14px;
+  color: #555;
+  margin-left: 5px;
+}
+
+.full-address {
+  font-size: 14px;
+  color: #6e6e6e;
+  margin-top: 4px;
+}
+
+.default-tag {
+  margin-top: 6px;
+  display: inline-block;
+  background: #b8834a;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* Edit button */
+.edit-btn {
+  background: transparent;
+  border: none;
+  color: #b8834a;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Add button */
+.modal-add-btn {
+  width: 100%;
+  background: transparent;
+  color: #b8834a;
+  border: 2px dashed #b8834a;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+/* Save button */
+.modal-save-btn {
+  width: 100%;
+  background: #b8834a;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
 
 
 /* =========================

@@ -1,134 +1,144 @@
-// src/AddAddress.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HeaderFooter from "./HeaderFooter";
-import AddressDropdownPH from "./AddressDropdownPH";
 import "./ShippingAddress.css";
 
 export default function AddAddress() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("user_id");
+  const user_id = localStorage.getItem("user_id");
 
   const [form, setForm] = useState({
     full_name: "",
     phone: "",
-    address: "",
-    barangay: "",
-    city: "",
-    province: "",
     region: "",
+    province: "",
+    city: "",
+    barangay: "",
     postal_code: "",
+    street: "",
     landmark: "",
-    is_default: false,
   });
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  function onPHChange(loc) {
-    setForm({
-      ...form,
-      region: loc.region || "",
-      province: loc.province || "",
-      city: loc.city || "",
-      barangay: loc.barangay || "",
-    });
-  }
+  const saveAddress = async () => {
+    if (!form.full_name || !form.phone || !form.region || !form.province || !form.city || !form.barangay || !form.postal_code) {
+      alert("Please fill all required fields.");
+      return;
+    }
 
-  function change(e) {
-    const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
-  }
+    const payload = {
+      user_id,
+      full_name: form.full_name,
+      phone: form.phone,
+      region: form.region,
+      province: form.province,
+      city: form.city,
+      barangay: form.barangay,
+      postal_code: form.postal_code,
+      address: form.street,
+      landmark: form.landmark,
+    };
 
-  async function save() {
     const res = await fetch(
-      `${process.env.REACT_APP_API_BASE || "https://tahanancrafts.onrender.com"}/api/users/shipping-address/create/`,
+      "https://tahanancrafts.onrender.com/api/users/shipping-address/create/",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, ...form }),
+        body: JSON.stringify(payload),
       }
     );
-    if (res.ok) navigate("/select-address");
-    else alert("Failed to save");
-  }
+
+    if (res.ok) {
+      navigate("/select-address");
+    } else {
+      alert("Failed to save address");
+    }
+  };
 
   return (
-    <HeaderFooter>
-      <div className="address-page-wrap">
-        <div className="address-page-inner small">
-          <h1>Add Shipping Address</h1>
+    <div className="address-form-page">
+      <div className="address-card">
+        <h2>Add New Address</h2>
 
-          <div className="form-grid">
-            <label>Recipient's Name</label>
-            <input name="full_name" value={form.full_name} onChange={change} />
+        <div className="form-grid">
 
-            <label>Phone Number</label>
-            <input name="phone" value={form.phone} onChange={change} />
+          {/* Recipient */}
+          <input
+            name="full_name"
+            placeholder="Full Name *"
+            value={form.full_name}
+            onChange={handleChange}
+          />
 
-            <label>Region / City / District</label>
-            <div className="picker-row">
-              <input
-                name="region_display"
-                value={`${form.province ? form.province + ", " : ""}${
-                  form.city ? form.city + ", " : ""
-                }${form.barangay ? form.barangay : ""}`}
-                readOnly
-              />
-              <button className="btn-mini" onClick={() => setModalOpen(true)}>
-                Pick
-              </button>
-            </div>
+          <input
+            name="phone"
+            placeholder="Phone Number *"
+            value={form.phone}
+            onChange={handleChange}
+          />
 
-            <label>Street / House No.</label>
-            <input name="address" value={form.address} onChange={change} />
+          {/* Location */}
+          <input
+            name="region"
+            placeholder="Region *"
+            value={form.region}
+            onChange={handleChange}
+          />
 
-            <label>Postal Code</label>
-            <input name="postal_code" value={form.postal_code} onChange={change} />
+          <input
+            name="province"
+            placeholder="Province *"
+            value={form.province}
+            onChange={handleChange}
+          />
 
-            <label>Landmark (optional)</label>
-            <input name="landmark" value={form.landmark} onChange={change} />
+          <input
+            name="city"
+            placeholder="City / Municipality *"
+            value={form.city}
+            onChange={handleChange}
+          />
 
-            <label>Default Shipping Address</label>
-            <div className="toggle-row">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  name="is_default"
-                  checked={form.is_default}
-                  onChange={change}
-                />
-                <span className="slider" />
-              </label>
-            </div>
-          </div>
+          <input
+            name="barangay"
+            placeholder="Barangay *"
+            value={form.barangay}
+            onChange={handleChange}
+          />
 
-          <div className="form-actions">
-            <button className="btn-ghost" onClick={() => navigate(-1)}>
-              Cancel
-            </button>
-            <button className="btn-primary" onClick={save}>
-              Save
-            </button>
-          </div>
+          <input
+            name="postal_code"
+            placeholder="Postal Code *"
+            value={form.postal_code}
+            onChange={handleChange}
+          />
+
+          <input
+            name="street"
+            placeholder="Street / House No (optional)"
+            value={form.street}
+            onChange={handleChange}
+          />
+
+          <input
+            name="landmark"
+            placeholder="Landmark (optional)"
+            value={form.landmark}
+            onChange={handleChange}
+          />
         </div>
 
-        {modalOpen && (
-          <div className="modal-backdrop" onClick={() => setModalOpen(false)}>
-            <div className="modal" onClick={(e) => e.stopPropagation()}>
-              <h3>Select region / city / barangay</h3>
-              <AddressDropdownPH onChange={onPHChange} />
-              <div className="modal-actions">
-                <button className="btn-ghost" onClick={() => setModalOpen(false)}>
-                  Close
-                </button>
-                <button className="btn-primary" onClick={() => setModalOpen(false)}>
-                  Apply
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="address-buttons">
+          <button className="save-btn" onClick={saveAddress}>
+            Save Address
+          </button>
+          <button className="cancel-btn" onClick={() => navigate(-1)}>
+            Cancel
+          </button>
+        </div>
       </div>
-    </HeaderFooter>
+    </div>
   );
 }
