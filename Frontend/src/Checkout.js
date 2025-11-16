@@ -30,7 +30,7 @@ function Checkout() {
 
     const shipping_address_id = 1; // later dynamic
 
-    const res = await fetch("https://tahanancrafts.onrender.com/api/checkout/", {
+    const res = await fetch("https://tahanancrafts.onrender.com/api/products/product/checkout/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
