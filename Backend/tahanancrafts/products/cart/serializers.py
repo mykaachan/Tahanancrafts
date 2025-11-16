@@ -12,7 +12,7 @@ class CartSerializer(serializers.ModelSerializer):
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(), source='product', write_only=True
     )
-
+    
     class Meta:
         model = Cart
         fields = ['id', 'user', 'product', 'product_id', 'quantity', 'created_at', 'total_price']
