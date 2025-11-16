@@ -42,7 +42,7 @@ export default function AddAddress() {
     };
 
     const res = await fetch(
-      "https://tahanancrafts.onrender.com/api/users/address/create/",
+      "https://tahanancrafts.onrender.com/api/users/shipping-address/create/",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
