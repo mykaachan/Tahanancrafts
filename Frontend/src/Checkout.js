@@ -339,9 +339,7 @@ function Checkout() {
                 </div>
                 <span className="unit-price">₱{item.unit_price}</span>
                 <span className="quantity">{item.qty}</span>
-                <span className="subtotal">
-                  ₱{Number(item.unit_price) * Number(item.qty)}
-                </span>
+                <span className="subtotal">₱{Number(item.unit_price) * Number(item.qty)}</span>
               </div>
             ))}
           </div>
