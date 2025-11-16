@@ -592,55 +592,62 @@
 }
 
 
-/* ===== Review Modal ===== */
+/* ===== Review Modal Overlay ===== */
 .review-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);   /* ✅ blur background */
+  background: rgba(0, 0, 0, 0.3); /* semi-transparent dark overlay */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
+/* ===== Review Modal ===== */
 .review-modal {
   background: #fffdf9;
   padding: 30px;
   border-radius: 12px;
   width: 400px;
   max-width: 90%;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   gap: 15px;
+  animation: scaleIn 0.2s ease-in-out;
 }
 
-.review-modal h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #5a422b;
-}
-
+/* Stars in review */
 .stars {
-  font-size: 24px;
-  color: #d9c5aa; /* same as btn-buy */
+  font-size: 26px;
+  color: #d9c5aa;
   display: flex;
   gap: 5px;
   cursor: pointer;
 }
 
+.stars span:hover,
+.stars span.selected {
+  color: #f7b500; /* gold for selected */
+}
+
+/* Textarea */
 .review-textarea {
   width: 100%;
-  min-height: 80px;
-  padding: 10px;
+  min-height: 100px;
+  padding: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: 14px;
   resize: vertical;
 }
 
+/* Upload photo */
 .image-upload-container {
   display: flex;
   justify-content: flex-start;
@@ -659,10 +666,24 @@
   display: none;
 }
 
+/* Modal buttons */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.btn-cancel {
+  background: #ccc;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover {
+  background: #aaa;
 }
 
 .btn-submit {
@@ -676,4 +697,15 @@
 
 .btn-submit:hover {
   background: #5a4028;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes scaleIn {
+  from {transform: scale(0.95); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
 }
