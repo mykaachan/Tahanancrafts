@@ -89,6 +89,21 @@ function Checkout() {
     return <p>No selected items. Go back to cart.</p>;
   }
 
+  const SHIPPING_PLACEHOLDER = 58; // default placeholder fee
+
+  // Compute items subtotal
+  const itemsSubtotal = selectedItems.reduce(
+    (sum, item) => sum + Number(item.unit_price) * Number(item.qty),
+    0
+  );
+
+  // If backend ever sends shipping fee, use it, else fallback to 58
+  const shippingFee = selectedAddress?.shipping_fee
+    ? Number(selectedAddress.shipping_fee)
+    : SHIPPING_PLACEHOLDER;
+
+  // Total
+  const orderTotal = itemsSubtotal + shippingFee;
   // ----------------------------
   // PLACE ORDER
   // ----------------------------
@@ -346,13 +361,40 @@ function Checkout() {
 
           {/* Summary */}
           <div className="checkout-summary">
-            <h2>Payment Method</h2>
+            <h2>Order Summary</h2>
+
+            <div className="summary-details">
+              <p>
+                <span>Items Subtotal:</span>
+                <span>₱{itemsSubtotal}</span>
+              </p>
+
+              <p>
+                <span>Shipping Fee:</span>
+                <span>
+                  ₱{shippingFee}{" "}
+                  {!selectedAddress?.shipping_fee && (
+                    <span style={{ color: "#a67c52", fontSize: "13px" }}>
+                      (placeholder)
+                    </span>
+                  )}
+                </span>
+              </p>
+
+              <p className="total">
+                <span>Total:</span>
+                <span>₱{orderTotal}</span>
+              </p>
+            </div>
+
+            <h2 style={{ marginTop: "20px" }}>Payment Method</h2>
             <p className="payment-method">Cash on Delivery</p>
 
             <button className="btn-place-order" onClick={placeOrder}>
               Place Order
             </button>
           </div>
+
         </div>
       </div>
 
