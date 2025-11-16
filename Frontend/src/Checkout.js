@@ -135,7 +135,7 @@ function Checkout() {
       );
 
       const data = await res.json();
-      navigate("/order-success", { state: data });
+      navigate("/my-purchases?tab=to-pay");
     } catch (err) {
       console.error(err);
       alert("Failed to place order.");
@@ -366,34 +366,120 @@ function Checkout() {
             <div className="summary-details">
               <p>
                 <span>Items Subtotal:</span>
-                <span>₱{itemsSubtotal}</span>
+                <span>₱{summary?.total_items_amount}</span>
               </p>
 
               <p>
                 <span>Shipping Fee:</span>
-                <span>
-                  ₱{shippingFee}{" "}
-                  {!selectedAddress?.shipping_fee && (
-                    <span style={{ color: "#a67c52", fontSize: "13px" }}>
-                      (placeholder)
-                    </span>
-                  )}
+                <span>₱{summary?.shipping_fee}</span>
+              </p>
+
+              {summary?.downpayment_required && (
+                <p>
+                  <span>Downpayment (50%):</span>
+                  <span>₱{summary?.downpayment_amount}</span>
+                </p>
+              )}
+
+              <p className="total">
+                <span>Total to Pay Now:</span>
+                <span style={{ fontWeight: "bold", color: "#a67c52" }}>
+                  ₱{summary?.total_pay_now}
                 </span>
               </p>
 
-              <p className="total">
-                <span>Total:</span>
-                <span>₱{orderTotal}</span>
+              <p className="cod-amount" style={{ marginTop: "10px" }}>
+                <span>COD Remaining Balance:</span>
+                <span>₱{summary?.cod_amount}</span>
               </p>
             </div>
 
+            {/* PAYMENT QR */}
+            <div style={{ marginTop: "25px", textAlign: "center" }}>
+              <h3>Pay Shipping Fee {summary?.downpayment_required && " + Downpayment"}</h3>
+
+              {summary?.qr_code ? (
+                <img
+                  src={summary.qr_code}
+                  alt="Payment QR"
+                  style={{
+                    width: "200px",
+                    borderRadius: "12px",
+                    marginTop: "10px",
+                  }}
+                />
+              ) : (
+                <p style={{ fontSize: "13px", color: "#999" }}>No QR uploaded by seller</p>
+              )}
+
+              <p style={{ marginTop: "8px", fontSize: "13px", color: "#555" }}>
+                Scan the QR to pay. After payment, upload proof in your Orders page.
+              </p>
+            </div>
+
+            {/* ===== PAYMENT METHOD SECTION ===== */}
             <h2 style={{ marginTop: "20px" }}>Payment Method</h2>
-            <p className="payment-method">Cash on Delivery</p>
+
+            <div className="payment-method-box">
+
+              {/* QR PAYMENT */}
+              <h3 className="pm-title">QR Payment</h3>
+              <p className="pm-desc">
+                Pay the required amount now:
+              </p>
+
+              <p className="pm-line">
+                <span>Shipping Fee:</span>
+                <span>₱{summary?.shipping_fee}</span>
+              </p>
+
+              {summary?.downpayment_required && (
+                <p className="pm-line">
+                  <span>Downpayment (50%):</span>
+                  <span>₱{summary?.downpayment_amount}</span>
+                </p>
+              )}
+
+              <p className="pm-total-now">
+                <span>Total to Pay Now:</span>
+                <span className="highlight">₱{summary?.total_pay_now}</span>
+              </p>
+
+              {/* QR IMAGE (Already from previous code) */}
+              <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                {summary?.qr_code ? (
+                  <img
+                    src={summary.qr_code}
+                    alt="Payment QR"
+                    style={{
+                      width: "200px",
+                      borderRadius: "12px",
+                      marginTop: "10px",
+                    }}
+                  />
+                ) : (
+                  <p style={{ fontSize: "13px", color: "#999" }}>
+                    No QR uploaded by seller
+                  </p>
+                )}
+              </div>
+
+              {/* COD SECTION */}
+              <h3 className="pm-title">Cash on Delivery (COD)</h3>
+              <p className="pm-desc">Amount to pay upon receiving the item:</p>
+
+              <p className="pm-cod">
+                <span>Remaining Balance:</span>
+                <span className="highlight">₱{summary?.cod_amount}</span>
+              </p>
+            </div>
 
             <button className="btn-place-order" onClick={placeOrder}>
               Place Order
             </button>
+
           </div>
+
 
         </div>
       </div>

@@ -487,6 +487,54 @@ input:checked + .slider:before {
   gap: 10px;
   margin-top: 10px;
 }
+.payment-method-box {
+  background: #fff7f0;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.pm-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #67442e;
+  margin-bottom: 4px;
+}
+
+.pm-desc {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.pm-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+.pm-total-now {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #a67c52;
+}
+
+.pm-cod {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.highlight {
+  color: #a67c52;
+  font-weight: bold;
+}
+
 
 /* =========================================================
    RESPONSIVE

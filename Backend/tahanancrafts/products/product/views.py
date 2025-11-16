@@ -388,26 +388,41 @@ class CheckoutView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
-        # Build response for ALL orders
         result = []
 
         for order in orders:
-            if order.downpayment_required:
-                first_item = order.items.first()
-                artisan = first_item.product.artisan
-                qr = artisan.gcash_qr.url if artisan.gcash_qr else None
-            else:
-                qr = None
+            first_item = order.items.first()
+            artisan = first_item.product.artisan
+
+            qr_url = artisan.gcash_qr.url if artisan.gcash_qr else None
+
+            items_total = order.total_items_amount
+            shipping_fee = order.shipping_fee
+
+            # Preorder downpayment if needed
+            downpayment = order.downpayment_amount if order.downpayment_required else 0
+
+            # Buyer pays shipping fee + DP now
+            pay_now = shipping_fee + downpayment
+
+            # COD = remaining
+            cod_amount = items_total - downpayment
 
             result.append({
                 "order_id": order.id,
-                "payment_method": order.payment_method,
+
+                # SECTION: PAYMENTS
+                "qr_code": qr_url,                 # Only one QR needed
+                "shipping_fee": str(shipping_fee),
                 "downpayment_required": order.downpayment_required,
-                "downpayment_amount": str(order.downpayment_amount),
+                "downpayment_amount": str(downpayment),
+                "total_pay_now": str(pay_now),
+                "cod_amount": str(cod_amount),
+
+                # META
+                "total_items_amount": str(items_total),
                 "grand_total": str(order.grand_total),
-                "total_items_amount": str(order.total_items_amount),
-                "shipping_fee": str(order.shipping_fee),
-                "gcash_qr": qr,
+                "payment_method": order.payment_method,
             })
 
         return Response(result, status=201)
