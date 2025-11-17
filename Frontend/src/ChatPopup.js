@@ -19,7 +19,7 @@ function ChatPopup() {
   const navigate = useNavigate();
   const userId = localStorage.getItem("user_id");
 
-  // 🔥 When clicking chat button, check login
+  // Click chat button → check login
   const handleOpenChat = () => {
     if (!userId) {
       navigate("/login");
@@ -45,12 +45,14 @@ function ChatPopup() {
       .catch(console.error);
   }, [open]);
 
-  // Mark messages seen
+  // Mark as seen
   const markAsSeen = (conversationId) => {
-    axios.post(`${API}/api/chat/messages/${conversationId}/mark-seen/`);
+    axios.post(`${API}/api/chat/messages/${conversationId}/mark-seen/`, {
+      user_id: userId,
+    });
   };
 
-  // Switch chat window
+  // Switch conversation
   const openChatWindow = (convo) => {
     setActiveConversation(convo);
     markAsSeen(convo.id);
@@ -58,7 +60,7 @@ function ChatPopup() {
 
   // Send message in existing conversation
   const sendMessage = () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !activeConversation) return;
 
     const receiver =
       activeConversation.user1 === parseInt(userId)
@@ -81,7 +83,7 @@ function ChatPopup() {
       });
   };
 
-  // Search users for new message modal
+  // Search users (new message modal)
   const searchUsers = (q) => {
     setSearchQuery(q);
     if (q.length < 1) {
@@ -94,7 +96,7 @@ function ChatPopup() {
       .then((res) => setSearchResults(res.data));
   };
 
-  // Send first message (new conversation)
+  // Send first message to a selected user
   const sendNewMessage = () => {
     if (!selectedReceiver || !newMessage.trim()) return;
 
@@ -142,7 +144,7 @@ function ChatPopup() {
         💬
       </button>
 
-      {/* Chat Popup Window */}
+      {/* Chat Window */}
       {open && userId && (
         <div
           style={{
@@ -169,7 +171,6 @@ function ChatPopup() {
               flexDirection: "column",
             }}
           >
-            {/* Title */}
             <div
               style={{
                 padding: "16px",
@@ -182,7 +183,7 @@ function ChatPopup() {
               Chats
             </div>
 
-            {/* ➕ New Message Button */}
+            {/* NEW MESSAGE BUTTON */}
             <button
               onClick={() => setNewMsgMode(true)}
               style={{
@@ -273,53 +274,73 @@ function ChatPopup() {
                 overflowY: "auto",
               }}
             >
-              {activeConversation?.messages?.map((msg) => (
-                <div
-                  key={msg.id}
-                  style={{
-                    display: "flex",
-                    justifyContent:
-                      msg.sender === parseInt(userId)
-                        ? "flex-end"
-                        : "flex-start",
-                    marginBottom: "12px",
-                  }}
-                >
+              {activeConversation?.messages?.map((msg) => {
+                const isUser = msg.sender === parseInt(userId);
+                const senderName = isUser ? "You" : activeConversation.other_user_name;
+
+                return (
                   <div
+                    key={msg.id}
                     style={{
-                      background:
-                        msg.sender === parseInt(userId)
-                          ? "#fff"
-                          : "#f2e6db",
-                      color: "#4b3a2f",
-                      padding: "10px 14px",
-                      borderRadius: "14px",
-                      maxWidth: "70%",
+                      marginBottom: "12px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: isUser ? "flex-end" : "flex-start",
                     }}
                   >
-                    {msg.text}
-                    {msg.sender === parseInt(userId) && (
-                      <div
-                        style={{
-                          fontSize: "0.7rem",
-                          marginTop: "3px",
-                          color: msg.seen ? "green" : "gray",
-                        }}
-                      >
-                        {msg.seen ? "Seen" : "Sent"}
-                      </div>
-                    )}
+                    {/* Sender name */}
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#6d5a4b",
+                        marginBottom: "2px",
+                        marginLeft: isUser ? "0" : "6px",
+                        marginRight: isUser ? "6px" : "0",
+                      }}
+                    >
+                      {senderName}
+                    </div>
+
+                    {/* Bubble */}
+                    <div
+                      style={{
+                        background: isUser ? "#fff" : "#f2e6db",
+                        color: "#4b3a2f",
+                        padding: "10px 14px",
+                        borderRadius: "14px",
+                        maxWidth: "70%",
+                      }}
+                    >
+                      {msg.text}
+
+                      {/* Seen status */}
+                      {isUser && (
+                        <div
+                          style={{
+                            fontSize: "0.7rem",
+                            marginTop: "3px",
+                            color: msg.seen ? "green" : "gray",
+                            textAlign: "right",
+                          }}
+                        >
+                          {msg.seen ? "Seen" : "Sent"}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Input */}
+            {/* Input + SEND BUTTON */}
             <div
               style={{
                 padding: "12px",
                 borderTop: "1px solid #d1c3b3",
                 background: "#fff",
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
               }}
             >
               <input
@@ -329,12 +350,27 @@ function ChatPopup() {
                 type="text"
                 placeholder="Type a message here"
                 style={{
-                  width: "100%",
+                  flex: 1,
                   padding: "10px",
                   borderRadius: "10px",
                   border: "1px solid #d1c3b3",
                 }}
               />
+
+              <button
+                onClick={sendMessage}
+                style={{
+                  padding: "10px 16px",
+                  background: "#c3a98d",
+                  borderRadius: "10px",
+                  border: "none",
+                  color: "white",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
@@ -366,7 +402,6 @@ function ChatPopup() {
           >
             <h3 style={{ marginTop: 0 }}>New Message</h3>
 
-            {/* To: */}
             <label style={{ fontWeight: "bold" }}>To:</label>
             <input
               value={searchQuery}
@@ -381,7 +416,6 @@ function ChatPopup() {
               }}
             />
 
-            {/* Search results list */}
             {searchResults.map((u) => (
               <div
                 key={u.id}
@@ -402,7 +436,6 @@ function ChatPopup() {
               </div>
             ))}
 
-            {/* Message */}
             <label style={{ fontWeight: "bold" }}>Message:</label>
             <input
               value={newMessage}
@@ -417,7 +450,6 @@ function ChatPopup() {
               }}
             />
 
-            {/* Buttons */}
             <div style={{ textAlign: "right" }}>
               <button
                 onClick={() => setNewMsgMode(false)}
@@ -432,6 +464,7 @@ function ChatPopup() {
               >
                 Cancel
               </button>
+
               <button
                 onClick={sendNewMessage}
                 style={{

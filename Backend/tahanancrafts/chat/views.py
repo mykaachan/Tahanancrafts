@@ -39,6 +39,26 @@ def search_users(request):
 
     return Response(results)
 
+@api_view(["POST"])
+@permission_classes([AllowAny])
+
+def mark_seen(request, conversation_id):
+    try:
+        conversation = Conversation.objects.get(id=conversation_id)
+    except Conversation.DoesNotExist:
+        return Response({"error": "Conversation not found"}, status=404)
+
+    # Mark all messages NOT sent by the current user as seen
+    user_id = request.data.get("user_id")
+
+    Message.objects.filter(
+        conversation=conversation,
+        sender_id__ne=user_id,  # NOT the current user
+        seen=False
+    ).update(seen=True)
+
+    return Response({"status": "seen updated"})
+
 
 class CreateMessageView(generics.CreateAPIView):
     permission_classes = [AllowAny]
