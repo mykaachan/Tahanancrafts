@@ -726,14 +726,13 @@
   to {transform: scale(1); opacity: 1;}
 }
 
-.anonymous-option {
-  margin: 10px 0;
-  font-size: 14px;
+.anonymous-option label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; /* space between checkbox and text */
+  cursor: pointer;
 }
 
-.anonymous-option input {
-  transform: scale(1.1);
+.anonymous-option input[type="checkbox"] {
+  margin: 0; /* remove default margin if needed */
 }
