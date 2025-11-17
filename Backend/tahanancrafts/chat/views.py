@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
 from users.models import CustomUser
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 class UserConversationsView(generics.ListAPIView):
     serializer_class = ConversationSerializer
@@ -22,6 +22,7 @@ class UserConversationsView(generics.ListAPIView):
         )
     
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def search_users(request):
     query = request.GET.get("q", "")
 
