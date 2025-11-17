@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { getCartItems, updateCartItem, removeCartItem } from "./api";
@@ -26,34 +25,28 @@ function Cart() {
       try {
         const data = await getCartItems(userId);
 
-        // MATCH NEW API SHAPE
-        const formatted = data.map((c) => {
-          const unitPrice = Number(c.price);
-          const qty = Number(c.quantity);
+        // NORMALIZE CART SHAPE CORRECTLY
+        const formatted = data.map((cartItem) => {
+          const unitPrice = Number(cartItem.product.price);
+          const qty = Number(cartItem.quantity);
 
           return {
-            id: c.id,
-            product_id: c.product_id,
+            id: cartItem.id,                         // cart row ID
+            product_id: cartItem.product.id,
+            name: cartItem.product.name,
+            desc: cartItem.product.description || "No description available",
 
-            name: c.product_name,
-            desc: c.description || "No description available",
+            unit_price: unitPrice,                   // per-item price
+            qty: qty,
+            total: unitPrice * qty,                  // computed total
 
-            unit_price: unitPrice,
-            qty,
-            total: unitPrice * qty,
-
-            img: c.main_image
-              ? c.main_image
+            img: cartItem.product.main_image
+              ? cartItem.product.main_image
               : "https://via.placeholder.com/150?text=No+Image",
-
-            // add artisan info (safe for checkout)
-            artisan_name: c.artisan_name,
-            artisan_qr: c.artisan_qr,
 
             selected: false,
           };
         });
-
 
         setItems(formatted);
       } catch (err) {
@@ -78,10 +71,13 @@ function Cart() {
     const newQty = Math.max(1, item.qty + delta);
 
     try {
+      // Send update to backend
       await updateCartItem(id, newQty, userId);
 
+      // Compute new total (unit price stays constant)
       const newTotal = item.unit_price * newQty;
 
+      // Update frontend immediately
       setItems((prev) =>
         prev.map((i) =>
           i.id === id ? { ...i, qty: newQty, total: newTotal } : i
@@ -94,10 +90,11 @@ function Cart() {
   };
 
   // ==========================================================
-  // REMOVE
+  // REMOVE ITEM
   // ==========================================================
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
+
     try {
       await removeCartItem(id, userId);
       setItems((prev) => prev.filter((item) => item.id !== id));
@@ -108,7 +105,7 @@ function Cart() {
   };
 
   // ==========================================================
-  // SELECT ITEMS
+  // SELECT ITEMS FOR CHECKOUT
   // ==========================================================
   const toggleSelect = (id) => {
     setItems((prev) =>
@@ -118,8 +115,12 @@ function Cart() {
     );
   };
 
-  const selectedItems = items.filter((i) => i.selected);
-  const subtotal = selectedItems.reduce((sum, i) => sum + i.total, 0);
+  // ==========================================================
+  // TOTALS
+  // ==========================================================
+  const selectedItems = items.filter((item) => item.selected);
+
+  const subtotal = selectedItems.reduce((sum, item) => sum + item.total, 0);
 
   if (loading) return <p>Loading cart...</p>;
 
@@ -175,12 +176,6 @@ function Cart() {
                         <div className="item-info">
                           <h3>{item.name}</h3>
                           <p>{item.desc}</p>
-
-                          {/* NEW: Seller Name */}
-                          <p className="seller-label">
-                            Seller: <strong>{item.artisan_name}</strong>
-                          </p>
-
                           <p className="unit-price">Unit Price: ₱{item.unit_price}</p>
                           <p className="total-price">Subtotal: ₱{item.total}</p>
                         </div>
@@ -214,7 +209,9 @@ function Cart() {
               <h2>Order Summary</h2>
 
               <div className="summary-row">
-                <span>Subtotal ({selectedItems.length} items)</span>
+                <span>
+                  Subtotal ({selectedItems.length} items)
+                </span>
                 <span>₱{subtotal}</span>
               </div>
 
