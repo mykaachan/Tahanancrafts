@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'users',
     'products',
     'search',
+    'chat',
     'rest_framework',  # Django REST Framework for API
     'django_extensions',
     'corsheaders',

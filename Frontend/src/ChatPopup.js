@@ -1,39 +1,80 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ChatPopup() {
   const [open, setOpen] = useState(false);
-  const [activeChat, setActiveChat] = useState("Habing Ibaan");
+  const [conversations, setConversations] = useState([]);
+  const [activeConversation, setActiveConversation] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
 
-  const chats = [
-    {
-      name: "Habing Ibaan",
-      date: "05/08/25",
-      preview: "Hello po ma’am/sir, yes po! m...",
-      messages: [
-        { sender: "user", text: "Hello po, may available po ba na ibang color?" },
-        {
-          sender: "shop",
-          text: `Hi there! 😊
-Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures made by local artisans. Feel free to browse, and let us know if you need help! 🌿🧵`,
-        },
-        { sender: "shop", text: "Hello po ma’am/sir, yes po! may available po na ibang kulay. Thank you!" },
-      ],
-    },
-    {
-      name: "Iraya Lipa",
-      date: "02/12/25",
-      preview: "Welcome to Iraya! where tr...",
-      messages: [],
-    },
-  ];
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("user_id");
 
-  const currentChat = chats.find((c) => c.name === activeChat);
+  // 🔥 When clicking chat button, check login
+  const handleOpenChat = () => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
+    setOpen(!open);
+  };
+
+  // Fetch conversations only when chat is open
+  useEffect(() => {
+    if (!open || !userId) return;
+
+    axios
+      .get(`/api/chat/conversations/${userId}/`)
+      .then((res) => {
+        setConversations(res.data);
+
+        if (!activeConversation && res.data.length > 0) {
+          setActiveConversation(res.data[0]);
+          markAsSeen(res.data[0].id);
+        }
+      })
+      .catch(console.error);
+  }, [open]);
+
+  const markAsSeen = (conversationId) => {
+    axios.post(`/api/chat/messages/${conversationId}/mark-seen/`);
+  };
+
+  const openChatWindow = (convo) => {
+    setActiveConversation(convo);
+    markAsSeen(convo.id);
+  };
+
+  const sendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    const receiver =
+      activeConversation.user1 === parseInt(userId)
+        ? activeConversation.user2
+        : activeConversation.user1;
+
+    axios
+      .post(`/api/chat/messages/send/`, {
+        sender: userId,
+        receiver: receiver,
+        text: newMessage,
+      })
+      .then((res) => {
+        setActiveConversation(res.data.conversation);
+        setNewMessage("");
+
+        axios
+          .get(`/api/chat/conversations/${userId}/`)
+          .then((res) => setConversations(res.data));
+      });
+  };
 
   return (
     <>
-      {/* Floating Chat Button */}
+      {/* Floating Button */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={handleOpenChat} // ← updated click handler
         style={{
           position: "fixed",
           bottom: "25px",
@@ -47,14 +88,14 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
           fontSize: "24px",
           cursor: "pointer",
           boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-          zIndex: 999999, // ensures the button stays on top
+          zIndex: 999999,
         }}
       >
         💬
       </button>
 
       {/* Popup Window */}
-      {open && (
+      {open && userId && (
         <div
           style={{
             position: "fixed",
@@ -65,12 +106,9 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
             background: "#f5f1ec",
             border: "1px solid #d1c3b3",
             borderRadius: "14px",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
             display: "flex",
             overflow: "hidden",
-            zIndex: 999999, // 👈 updated to always stay on top
-            fontFamily: "'Segoe UI', sans-serif",
-            animation: "fadeIn 0.25s ease-in-out",
+            zIndex: 999999,
           }}
         >
           {/* Sidebar */}
@@ -92,36 +130,24 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
                 borderBottom: "1px solid #d8ccc0",
               }}
             >
-              Chat (1)
+              Chats
             </div>
 
-            <input
-              type="text"
-              placeholder="Search name"
-              style={{
-                margin: "10px 14px",
-                padding: "8px",
-                borderRadius: "8px",
-                border: "1px solid #e0d5ca",
-                outline: "none",
-                fontSize: "0.9rem",
-                background: "#fff",
-              }}
-            />
-
+            {/* Conversation List */}
             <div style={{ flex: 1, overflowY: "auto" }}>
-              {chats.map((chat) => (
+              {conversations.map((convo) => (
                 <div
-                  key={chat.name}
-                  onClick={() => setActiveChat(chat.name)}
+                  key={convo.id}
+                  onClick={() => openChatWindow(convo)}
                   style={{
                     padding: "10px 12px",
                     cursor: "pointer",
+                    background:
+                      activeConversation?.id === convo.id
+                        ? "#e9dfd5"
+                        : "transparent",
                     display: "flex",
                     alignItems: "center",
-                    background:
-                      activeChat === chat.name ? "#e9dfd5" : "transparent",
-                    transition: "0.2s",
                   }}
                 >
                   <div
@@ -138,35 +164,26 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
                       marginRight: "10px",
                     }}
                   >
-                    {chat.name.charAt(0)}
+                    {convo.other_user_initial}
                   </div>
 
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: "600", color: "#4b3a2f" }}>
-                      {chat.name}
+                  <div>
+                    <div style={{ fontWeight: "600" }}>
+                      {convo.other_user_name}
                     </div>
+
                     <div
                       style={{
                         fontSize: "0.8rem",
-                        color: "#6b5a4a",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        color: "#625d57",
                         whiteSpace: "nowrap",
                         width: "140px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
-                      {chat.preview}
+                      {convo.last_message}
                     </div>
-                  </div>
-
-                  <div
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "#7b6a59",
-                      marginLeft: "5px",
-                    }}
-                  >
-                    {chat.date}
                   </div>
                 </div>
               ))}
@@ -190,29 +207,42 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
                 overflowY: "auto",
               }}
             >
-              {currentChat.messages.map((msg, index) => (
+              {activeConversation?.messages?.map((msg) => (
                 <div
-                  key={index}
+                  key={msg.id}
                   style={{
                     display: "flex",
                     justifyContent:
-                      msg.sender === "user" ? "flex-end" : "flex-start",
+                      msg.sender === parseInt(userId)
+                        ? "flex-end"
+                        : "flex-start",
                     marginBottom: "12px",
                   }}
                 >
                   <div
                     style={{
                       background:
-                        msg.sender === "user" ? "#fff" : "#f2e6db",
+                        msg.sender === parseInt(userId)
+                          ? "#fff"
+                          : "#f2e6db",
                       color: "#4b3a2f",
                       padding: "10px 14px",
                       borderRadius: "14px",
                       maxWidth: "70%",
-                      fontSize: "0.9rem",
-                      whiteSpace: "pre-line",
                     }}
                   >
                     {msg.text}
+                    {msg.sender === parseInt(userId) && (
+                      <div
+                        style={{
+                          fontSize: "0.7rem",
+                          marginTop: "3px",
+                          color: msg.seen ? "green" : "gray",
+                        }}
+                      >
+                        {msg.seen ? "Seen" : "Sent"}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -227,6 +257,9 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
               }}
             >
               <input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 type="text"
                 placeholder="Type a message here"
                 style={{
@@ -234,9 +267,6 @@ Welcome to Habing Ibaan Shop — your place for proudly handcrafted treasures ma
                   padding: "10px",
                   borderRadius: "10px",
                   border: "1px solid #d1c3b3",
-                  outline: "none",
-                  fontSize: "0.9rem",
-                  background: "#fff",
                 }}
               />
             </div>

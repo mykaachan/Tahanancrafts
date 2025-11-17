@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),  # Combined routes for auth, profile, etc.
     path('api/products/', include('products.urls')),  # Combined routes for products and reviews
     path('api/search/', include('search.urls')),  # Search routes
+    path('api/chat/', include('chat.urls')),
     path('admin/', admin.site.urls),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),  # signup
     path('auth/', include('allauth.socialaccount.urls')),      # social auth
