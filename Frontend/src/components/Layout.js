@@ -31,11 +31,13 @@ const Layout = ({ children }) => {
               onClick={toggleNotifications}
               style={{ cursor: 'pointer' }}
             />
-            {/* User Info */}
-            <div className="user-info">
-              <div className="user-avatar">👤</div>
-              <span className="username">habingibaan</span>
-            </div>
+            <a href="/sellerprofile" style={{ textDecoration: "none", color: "inherit" }}>
+  <div className="user-info">
+    <div className="user-avatar">👤</div>
+    <span className="username">Profile</span>
+  </div>
+</a>
+
           </div>
         </div>
 
