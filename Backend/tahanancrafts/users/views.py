@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from users.models import ShippingAddress
@@ -154,6 +154,7 @@ class DeleteAddress(APIView):
         return Response({"message": "Address deleted"}, status=200)
     
 @api_view(['GET'])
+@permission_classes([AllowAny])   #  <-- MAKE PUBLIC
 def artisan_qr_view(request, artisan_id):
     from users.models import Artisan
     artisan = Artisan.objects.get(id=artisan_id)
