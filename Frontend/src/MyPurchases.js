@@ -182,13 +182,6 @@ function MyPurchases() {
                   placeholder="Share your thoughts..."
                 ></textarea>
 
-                {/* 📸 Upload */}
-                <div className="image-upload-container">
-                  <label className="image-upload-label">
-                    Upload Photo
-                    <input type="file" />
-                  </label>
-                </div>
 
                 {/* Buttons */}
                 <div className="modal-buttons">
