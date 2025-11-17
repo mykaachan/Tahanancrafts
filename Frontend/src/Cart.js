@@ -195,17 +195,19 @@ function Cart() {
 
               <button
                 className="checkout-btn"
-                disabled={subtotal === 0}
+                disabled={selectedItems.length === 0}
                 onClick={() =>
                   navigate("/checkout", {
                     state: {
-                      cart_item_ids: selectedItems.map((i) => i.id),
+                      cart_item_ids: selectedItems.map((i) => i.id),   // ✔ correct variable
+                      items_frontend: selectedItems,                   // ✔ send full info
                     },
                   })
                 }
               >
                 Checkout
               </button>
+
             </div>
           </div>
         </div>

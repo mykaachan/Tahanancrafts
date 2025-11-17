@@ -9,6 +9,7 @@ function Checkout() {
 
   // Received from Cart.js: array of selected cart row IDs
   const cart_item_ids = location.state?.cart_item_ids || [];
+  const items_frontend = location.state?.items_frontend || []; // contains images
 
   // items loaded from backend based on cart_item_ids
   const [selectedItems, setSelectedItems] = useState([]);
@@ -41,7 +42,7 @@ function Checkout() {
   });
 
   // ----------------------------
-  // Load selected cart items from backend
+  // Load selected backend items
   // ----------------------------
   useEffect(() => {
     const loadSelectedItems = async () => {
@@ -54,25 +55,31 @@ function Checkout() {
         );
         const allItems = await res.json();
 
-        // keep only those items whose cart row id is in cart_item_ids
-        const filtered = Array.isArray(allItems)
-          ? allItems.filter((it) => cart_item_ids.includes(it.id))
-          : [];
+        const backendFiltered = allItems.filter((i) =>
+          cart_item_ids.includes(i.id)
+        );
 
-        setSelectedItems(filtered);
+        // Merge frontend + backend
+        const merged = backendFiltered.map((bItem) => {
+          const match = items_frontend.find((f) => f.id === bItem.id);
+
+          return {
+            ...bItem,
+            img: match?.img || null, // use frontend image
+            frontend_name: match?.name,
+            frontend_unit_price: match?.unit_price,
+          };
+        });
+
+        setSelectedItems(merged);
       } catch (err) {
-        console.error("Failed to fetch selected items:", err);
+        console.error("Error fetching selected items:", err);
       }
     };
 
-    // Only attempt to load when we actually have ids
-    if (cart_item_ids && cart_item_ids.length > 0) {
-      loadSelectedItems();
-    } else {
-      // no ids -> nothing selected
-      setSelectedItems([]);
-    }
-  }, [cart_item_ids]);
+    if (cart_item_ids.length > 0) loadSelectedItems();
+  }, [cart_item_ids, items_frontend]);
+
 
   // ----------------------------
   // Load addresses on mount (keeps your address UI)
