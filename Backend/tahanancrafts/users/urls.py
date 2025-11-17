@@ -6,7 +6,8 @@ from .views import (
     CreateAddress,
     SetDefaultAddress,
     UpdateAddress,
-    DeleteAddress
+    DeleteAddress,
+    artisan_qr_view
 )
 
 
@@ -16,6 +17,9 @@ urlpatterns = [
     path("shipping-address/set-default/<int:address_id>/", SetDefaultAddress.as_view()),
     path("shipping-address/update/<int:address_id>/", UpdateAddress.as_view()),
     path("shipping-address/delete/<int:address_id>/", DeleteAddress.as_view()),
+
+    path("artisan/<int:artisan_id>/qr/", artisan_qr_view),
+
 
 
 
