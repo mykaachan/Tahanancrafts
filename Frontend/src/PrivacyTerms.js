@@ -27,7 +27,7 @@ function PrivacyTerms({ onAgreeChange }) {
             className="link-button"
             onClick={() => setShowModal(true)}
           >
-            Privacy Policy & Terms
+            Terms & Conditions
           </button>
           .
         </span>
@@ -39,7 +39,7 @@ function PrivacyTerms({ onAgreeChange }) {
             className="modal-content"
             onClick={(e) => e.stopPropagation()} // Prevent background click from closing
           >
-            <h2>Privacy Policy & Terms of Service</h2>
+            <h2>Terms & Conditions</h2>
             <div className="modal-body">
               <p><strong>Last Updated:</strong> October 2025</p>
 
