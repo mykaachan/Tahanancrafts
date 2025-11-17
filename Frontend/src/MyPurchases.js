@@ -6,6 +6,8 @@ import "./Profile.css";
 function MyPurchases() {
   const [activeTab, setActiveTab] = useState("all");
   const [showReview, setShowReview] = useState(false);
+  const [showToPayModal, setShowToPayModal] = useState(false);
+
 
   return (
     <HeaderFooter>
@@ -121,8 +123,75 @@ function MyPurchases() {
               </div>
             )}
 
+
             {/* ===== TO PAY ===== */}
-            {activeTab === "to-pay" && <p>No items to pay.</p>}
+{activeTab === "to-pay" && (
+  <div className="orders-list">
+    <div className="order-card">
+      <div className="order-body">
+        <img
+          src="https://via.placeholder.com/120"
+          alt="Product Placeholder"
+          className="order-img"
+        />
+        <div className="order-info">
+          <h4>Product Name Placeholder</h4>
+          <p>Quantity: 1</p>
+          <p>Price: ₱149</p>
+          <p>Shipping Fee: ₱50</p>
+        </div>
+
+        <button
+          className="btn-upload"
+          onClick={() => setShowToPayModal(true)}
+        >
+          Upload Payment Proof
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* ===== To Pay Modal ===== */}
+{showToPayModal && (
+  <div className="to-pay-modal-overlay">
+    <div className="to-pay-modal">
+      <h2>Payment Details</h2>
+
+      <div className="to-pay-grid">
+        <div className="to-pay-col">
+          <p><strong>Order Number:</strong> #12345</p>
+          <p><strong>Product:</strong> Product Name Placeholder</p>
+          <p><strong>Quantity:</strong> 1</p>
+          <p><strong>Price:</strong> ₱149</p>
+          <p><strong>Shipping Fee:</strong> ₱50</p>
+          <p><strong>Preorder:</strong> Yes</p>
+        </div>
+
+        <div className="to-pay-col">
+          <p><strong>Downpayment:</strong> ₱100</p>
+          <p><strong>Total to Pay Now:</strong> ₱99</p>
+          <p><strong>COD Balance:</strong> ₱50</p>
+          <p><strong>Created At:</strong> 2025-11-17</p>
+          <p><strong>Shipment Date:</strong> 2025-11-20</p>
+          <p><strong>Scan to Pay:</strong> [QR Code Placeholder]</p>
+          <p><strong>Uploaded Screenshot:</strong> [Image Placeholder]</p>
+        </div>
+      </div>
+
+      <div className="to-pay-buttons">
+        <button
+          className="btn-cancel"
+          onClick={() => setShowToPayModal(false)}
+        >
+          Cancel
+        </button>
+        <button className="btn-submit">Submit Proof</button>
+      </div>
+    </div>
+  </div>
+)}
+
 
             {/* ===== TO SHIP ===== */}
             {activeTab === "to-ship" && <p>No items to ship.</p>}
@@ -182,12 +251,13 @@ function MyPurchases() {
         placeholder="Share your thoughts..."
       ></textarea>
 
-      {/* 🆕 Anonymous Checkbox */}
-      <div className="anonymous-option">
-        <label>
-          <input type="checkbox" /> Post review anonymously
-        </label>
-      </div>
+   {/* 🆕 Anonymous Checkbox */}
+<div className="anonymous-option">
+  <label className="checkbox-label">
+    <input type="checkbox" /> Post review anonymously
+  </label>
+</div>
+
 
       {/* Buttons */}
       <div className="modal-buttons">
