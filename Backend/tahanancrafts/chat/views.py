@@ -8,7 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
-
+from users.models import CustomUser
+from rest_framework.decorators import api_view
 
 class UserConversationsView(generics.ListAPIView):
     serializer_class = ConversationSerializer
@@ -19,6 +20,23 @@ class UserConversationsView(generics.ListAPIView):
         return Conversation.objects.filter(
             models.Q(user1_id=user_id) | models.Q(user2_id=user_id)
         )
+    
+@api_view(["GET"])
+def search_users(request):
+    query = request.GET.get("q", "")
+
+    users = CustomUser.objects.filter(name__icontains=query)[:10]
+
+    results = [
+        {
+            "id": u.id,
+            "name": u.name,
+            "email": u.email,
+        }
+        for u in users
+    ]
+
+    return Response(results)
 
 
 class CreateMessageView(generics.CreateAPIView):
