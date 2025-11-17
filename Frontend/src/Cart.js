@@ -32,24 +32,28 @@ function Cart() {
           const qty = Number(c.quantity);
 
           return {
-            id: c.id, // cart id
+            id: c.id,
             product_id: c.product_id,
+
             name: c.product_name,
-            desc: c.product_description || "No description available",
+            desc: c.description || "No description available",
 
             unit_price: unitPrice,
-            qty: qty,
+            qty,
             total: unitPrice * qty,
 
-            img: c.main_image || "https://via.placeholder.com/150?text=No+Image",
+            img: c.main_image
+              ? c.main_image
+              : "https://via.placeholder.com/150?text=No+Image",
 
-            // NEW FIELDS
+            // add artisan info (safe for checkout)
             artisan_name: c.artisan_name,
             artisan_qr: c.artisan_qr,
 
             selected: false,
           };
         });
+
 
         setItems(formatted);
       } catch (err) {
