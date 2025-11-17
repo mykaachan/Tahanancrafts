@@ -725,3 +725,20 @@
   from {transform: scale(0.95); opacity: 0;}
   to {transform: scale(1); opacity: 1;}
 }
+
+.anonymous-option {
+  margin-top: 10px;           /* spacing from textarea above */
+}
+
+.checkbox-label {
+  display: flex;              /* make children horizontal */
+  flex-direction: row;        /* ensure checkbox and text are in a row */
+  align-items: center;        /* vertically center text with checkbox */
+  gap: 8px;                   /* space between checkbox and text */
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;                  /* remove default margin */
+  flex-shrink: 0;             /* prevent wrapping on small screens */
+}

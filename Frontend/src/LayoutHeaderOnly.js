@@ -22,11 +22,7 @@ function LayoutHeaderOnly({ children }) {
               alt="Notifications"
               className="notification-icon"
             />
-            <img
-              src="/images/inbox.png"
-              alt="Messages"
-              className="message-icon"
-            />
+          
             <div className="user-info">
               <div className="user-avatar">👤</div>
               <span className="username">habingibaan</span>
