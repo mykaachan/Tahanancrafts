@@ -5,7 +5,7 @@ import "./Profile.css";
 
 function MyPurchases() {
   const [activeTab, setActiveTab] = useState("all");
-  const [showReview, setShowReview] = useState(false); // ✅ added state
+  const [showReview, setShowReview] = useState(false);
 
   return (
     <HeaderFooter>
@@ -20,26 +20,30 @@ function MyPurchases() {
 
           {/* ===== Tabs ===== */}
           <div className="purchases-tabs">
-            {["all", "to-pay", "to-ship", "to-receive", "to-review", "completed"].map(
-              (tab) => (
-                <button
-                  key={tab}
-                  className={activeTab === tab ? "active" : ""}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab === "all"
-                    ? "All"
-                    : tab
-                        .replace("-", " ")
-                        .replace(/\b\w/g, (c) => c.toUpperCase())}
-                </button>
-              )
-            )}
+            {[
+              "all",
+              "to-pay",
+              "to-ship",
+              "to-receive",
+              "to-review",
+              "completed",
+            ].map((tab) => (
+              <button
+                key={tab}
+                className={activeTab === tab ? "active" : ""}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab === "all"
+                  ? "All"
+                  : tab
+                      .replace("-", " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())}
+              </button>
+            ))}
           </div>
 
           {/* ===== Purchases Box ===== */}
           <div className="purchase-box">
-
             {/* ===== ALL ===== */}
             {activeTab === "all" && (
               <div className="orders-list">
@@ -126,7 +130,7 @@ function MyPurchases() {
             {/* ===== TO RECEIVE ===== */}
             {activeTab === "to-receive" && <p>No items to receive.</p>}
 
-            {/* ===== ⭐ TO REVIEW (NEW TAB) ===== */}
+            {/* ===== TO REVIEW ===== */}
             {activeTab === "to-review" && (
               <div className="orders-list">
                 <div className="order-card">
@@ -178,6 +182,13 @@ function MyPurchases() {
                   placeholder="Share your thoughts..."
                 ></textarea>
 
+                {/* 📸 Upload */}
+                <div className="image-upload-container">
+                  <label className="image-upload-label">
+                    Upload Photo
+                    <input type="file" />
+                  </label>
+                </div>
 
                 {/* Buttons */}
                 <div className="modal-buttons">
