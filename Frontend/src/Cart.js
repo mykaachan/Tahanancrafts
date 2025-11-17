@@ -10,9 +10,6 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ==========================================================
-  // LOAD CART ITEMS
-  // ==========================================================
   useEffect(() => {
     const fetchCart = async () => {
       const userId = localStorage.getItem("user_id");
@@ -25,25 +22,21 @@ function Cart() {
       try {
         const data = await getCartItems(userId);
 
-        // NORMALIZE CART SHAPE CORRECTLY
         const formatted = data.map((cartItem) => {
           const unitPrice = Number(cartItem.product.price);
           const qty = Number(cartItem.quantity);
 
           return {
-            id: cartItem.id,                         // cart row ID
+            id: cartItem.id,
             product_id: cartItem.product.id,
             name: cartItem.product.name,
-            desc: cartItem.product.description || "No description available",
-
-            unit_price: unitPrice,                   // per-item price
+            desc: cartItem.product.description || "No description",
+            unit_price: unitPrice,
             qty: qty,
-            total: unitPrice * qty,                  // computed total
-
+            total: unitPrice * qty,
             img: cartItem.product.main_image
               ? cartItem.product.main_image
               : "https://via.placeholder.com/150?text=No+Image",
-
             selected: false,
           };
         });
@@ -60,9 +53,6 @@ function Cart() {
     fetchCart();
   }, [navigate]);
 
-  // ==========================================================
-  // UPDATE QUANTITY
-  // ==========================================================
   const updateQty = async (id, delta) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
@@ -71,13 +61,9 @@ function Cart() {
     const newQty = Math.max(1, item.qty + delta);
 
     try {
-      // Send update to backend
       await updateCartItem(id, newQty, userId);
-
-      // Compute new total (unit price stays constant)
       const newTotal = item.unit_price * newQty;
 
-      // Update frontend immediately
       setItems((prev) =>
         prev.map((i) =>
           i.id === id ? { ...i, qty: newQty, total: newTotal } : i
@@ -89,9 +75,6 @@ function Cart() {
     }
   };
 
-  // ==========================================================
-  // REMOVE ITEM
-  // ==========================================================
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
 
@@ -104,9 +87,6 @@ function Cart() {
     }
   };
 
-  // ==========================================================
-  // SELECT ITEMS FOR CHECKOUT
-  // ==========================================================
   const toggleSelect = (id) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -115,11 +95,7 @@ function Cart() {
     );
   };
 
-  // ==========================================================
-  // TOTALS
-  // ==========================================================
   const selectedItems = items.filter((item) => item.selected);
-
   const subtotal = selectedItems.reduce((sum, item) => sum + item.total, 0);
 
   if (loading) return <p>Loading cart...</p>;
@@ -155,7 +131,7 @@ function Cart() {
           <h1 className="cart-title">My Shopping Cart</h1>
 
           <div className="cart-layout">
-            {/* LEFT SIDE */}
+            {/* CART ITEMS */}
             <div className="cart-items">
               {items.length > 0 ? (
                 items.map((item) => (
@@ -203,15 +179,13 @@ function Cart() {
               </Link>
             </div>
 
-            {/* RIGHT SIDE SUMMARY */}
+            {/* SUMMARY */}
             <div className="cart-summary">
               <hr />
               <h2>Order Summary</h2>
 
               <div className="summary-row">
-                <span>
-                  Subtotal ({selectedItems.length} items)
-                </span>
+                <span>Subtotal ({selectedItems.length} items)</span>
                 <span>₱{subtotal}</span>
               </div>
 
@@ -224,7 +198,9 @@ function Cart() {
                 disabled={subtotal === 0}
                 onClick={() =>
                   navigate("/checkout", {
-                    state: { items: selectedItems },
+                    state: {
+                      cart_item_ids: selectedItems.map((i) => i.id),
+                    },
                   })
                 }
               >
