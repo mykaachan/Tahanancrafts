@@ -725,3 +725,15 @@
   from {transform: scale(0.95); opacity: 0;}
   to {transform: scale(1); opacity: 1;}
 }
+
+.anonymous-option {
+  margin: 10px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.anonymous-option input {
+  transform: scale(1.1);
+}
