@@ -1,11 +1,24 @@
-/* === Privacy & Terms Checkbox Section === */
-.privacy-terms {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #5c4632;
+/* === Global Font Reset === */
+.privacy-terms,
+.checkbox-label,
+.link-button,
+.modal-content,
+.modal-body h3,
+.modal-body h4,
+.modal-body p,
+.modal-body ul,
+.close-modal-btn {
+  font-size: 12px;
   font-family: "Poppins", sans-serif;
 }
 
+/* === Privacy Terms === */
+.privacy-terms {
+  margin-top: -10px;
+  color: #5c4632;
+}
+
+/* === Checkbox Label === */
 .checkbox-label {
   display: flex;
   align-items: flex-start;
@@ -15,11 +28,12 @@
 
 .checkbox-label input[type="checkbox"] {
   accent-color: #a47c55;
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   margin-top: 3px;
 }
 
+/* === Link Button === */
 .link-button {
   background: none;
   border: none;
@@ -27,7 +41,6 @@
   text-decoration: underline;
   cursor: pointer;
   padding: 0;
-  font-size: 14px;
   font-weight: 500;
 }
 
@@ -64,23 +77,23 @@
 /* === Modal Typography === */
 .modal-content h2 {
   margin-top: 0;
-  font-size: 20px;
+  margin-bottom: 10px;
   color: #a47c55;
+  font-size: 18px; /* popup title size */
+  font-weight: 600;
   border-bottom: 1px solid #d9c7b3;
   padding-bottom: 10px;
 }
 
-.modal-body h3 {
-  margin-top: 15px;
-  font-size: 16px;
-  color: #8b6c4a;
-  margin-bottom: 5px;
-}
-
-.modal-body p {
+.modal-body h3,
+.modal-body h4,
+.modal-body p,
+.modal-body ul {
+  margin-top: 0;
   margin-bottom: 10px;
-  text-align: justify;
-  font-size: 14px;
+  color: #4d3b2a;
+  font-size: 12px; /* unified smaller font for content */
+  line-height: 1.6;
 }
 
 /* === Close Button === */
@@ -94,6 +107,7 @@
   cursor: pointer;
   float: right;
   transition: background 0.2s ease;
+  font-size: 12px;
 }
 
 .close-modal-btn:hover {
@@ -112,97 +126,22 @@
   }
 }
 
-
-/* ===== Responsive Adjustments for Privacy & Terms and Modals ===== */
+/* === Responsive Adjustments === */
 @media (max-width: 768px) {
-  .privacy-terms {
-    font-size: 13px;
-    margin-top: 12px;
-  }
-
-  .checkbox-label {
-    gap: 6px;
-    line-height: 1.4;
-  }
-
-  .checkbox-label input[type="checkbox"] {
-    width: 14px;
-    height: 14px;
-    margin-top: 2px;
-  }
-
-  .link-button {
-    font-size: 13px;
-  }
-
-  .modal-content {
-    padding: 20px;
-    width: 95%;
-    max-width: 450px;
-    max-height: 85vh;
-  }
-
   .modal-content h2 {
-    font-size: 18px;
-    padding-bottom: 8px;
-  }
-
-  .modal-body h3 {
-    font-size: 15px;
-  }
-
-  .modal-body p {
-    font-size: 13px;
-  }
-
-  .close-modal-btn {
-    padding: 6px 14px;
-    font-size: 0.9rem;
+    font-size: 16px; /* slightly smaller on tablets */
   }
 }
 
 @media (max-width: 480px) {
-  .privacy-terms {
-    font-size: 12px;
-  }
-
-  .checkbox-label {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .checkbox-label input[type="checkbox"] {
-    width: 12px;
-    height: 12px;
-    margin-top: 0;
-  }
-
-  .link-button {
-    font-size: 12px;
-  }
-
-  .modal-content {
-    width: 95%;
-    max-width: 380px;
-    padding: 15px;
-  }
-
   .modal-content h2 {
-    font-size: 17px;
-    padding-bottom: 6px;
+    font-size: 14px; /* smaller on mobile */
   }
+}
 
-  .modal-body h3 {
-    font-size: 14px;
-  }
-
-  .modal-body p {
-    font-size: 12px;
-  }
-
-  .close-modal-btn {
-    padding: 5px 12px;
-    font-size: 0.85rem;
-  }
+/* Make list numbers in Privacy Policy bigger */
+.modal-body ol, 
+.modal-body ul {
+  font-size: 12px;
+  line-height: 1.6;
 }

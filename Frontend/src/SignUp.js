@@ -4,6 +4,7 @@ import { ReactComponent as Logo } from './Logo.svg';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from './api'; // Import signup API
 import PrivacyTerms from './PrivacyTerms'; // ✅ Import PrivacyTerms
+import PrivacyPolicy from './PrivacyPolicy'; // ✅ Import PrivacyPolicy
 
 function SignUp() {
   const navigate = useNavigate();
@@ -81,8 +82,9 @@ function SignUp() {
             <Link to="/login">LOG IN</Link>
           </div>
 
-          {/* ✅ Add Privacy Terms section below the login link */}
+          {/* ✅ Add Privacy Terms and Privacy Policy below the login link */}
           <PrivacyTerms onAgreeChange={(checked) => setAgreePrivacy(checked)} />
+          <PrivacyPolicy onAgreeChange={(checked) => setAgreePrivacy(checked)} />
         </div>
       </div>
     </div>
