@@ -252,6 +252,12 @@ REST_FRAMEWORK = {
     ),
 }
 
+LALAMOVE_BASE_URL = "https://rest.sandbox.lalamove.com/v3"
+LALAMOVE_API_KEY = os.environ.get("LALAMOVE_API_KEY", default="")
+LALAMOVE_SECRET = os.environ.get("LALAMOVE_SECRET", default="")
+
+
+
 
 
 SOCIALACCOUNT_PROVIDERS = {

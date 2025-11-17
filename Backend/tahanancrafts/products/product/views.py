@@ -370,11 +370,11 @@ class CheckoutView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        cart_items = request.data.get("cart_items", [])
+        cart_item_ids = request.data.get("cart_item_ids", [])
         shipping_address_id = request.data.get("shipping_address_id")
 
-        if not cart_items:
-            return Response({"error": "Cart is empty"}, status=400)
+        if not cart_item_ids:
+            return Response({"error": "No cart items provided"}, status=400)
 
         if not shipping_address_id:
             return Response({"error": "shipping_address_id required"}, status=400)
@@ -383,31 +383,48 @@ class CheckoutView(APIView):
             orders = create_orders_from_cart(
                 user=request.user,
                 shipping_address_id=shipping_address_id,
-                cart_items=cart_items
+                cart_item_ids=cart_item_ids
             )
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
-        # Build response for ALL orders
         result = []
 
         for order in orders:
-            if order.downpayment_required:
-                first_item = order.items.first()
-                artisan = first_item.product.artisan
-                qr = artisan.gcash_qr.url if artisan.gcash_qr else None
-            else:
-                qr = None
 
+            # get first product → seller → QR
+            first_item = order.items.first()
+            artisan = first_item.product.artisan
+            qr_url = artisan.gcash_qr.url if artisan.gcash_qr else None
+
+            items_total = order.total_items_amount
+            shipping_fee = order.shipping_fee
+
+            # Compute downpayment
+            downpayment = order.downpayment_amount if order.downpayment_required else 0
+
+            # Money to pay via QR now
+            total_pay_now = shipping_fee + downpayment
+
+            # Remaining COD
+            cod_remaining = items_total - downpayment
+
+            # === FINAL RESPONSE FOR THIS ORDER ===
             result.append({
                 "order_id": order.id,
-                "payment_method": order.payment_method,
+
+                # PAYMENT SUMMARY
+                "qr_code": qr_url,
+                "shipping_fee": str(shipping_fee),
                 "downpayment_required": order.downpayment_required,
-                "downpayment_amount": str(order.downpayment_amount),
+                "downpayment_amount": str(downpayment),
+                "total_pay_now": str(total_pay_now),
+                "cod_amount": str(cod_remaining),
+
+                # ORDER META
+                "total_items_amount": str(items_total),
                 "grand_total": str(order.grand_total),
-                "total_items_amount": str(order.total_items_amount),
-                "shipping_fee": str(order.shipping_fee),
-                "gcash_qr": qr,
+                "payment_method": order.payment_method,
             })
 
         return Response(result, status=201)
