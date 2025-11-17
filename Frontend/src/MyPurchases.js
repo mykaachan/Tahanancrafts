@@ -173,7 +173,19 @@ function MyPurchases() {
           <p><strong>COD Balance:</strong> ₱50</p>
           <p><strong>Created At:</strong> 2025-11-17</p>
           <p><strong>Shipment Date:</strong> 2025-11-20</p>
-          <p><strong>Scan to Pay:</strong> [QR Code Placeholder]</p>
+         <p><strong>Scan to Pay:</strong></p>
+<img
+  src="https://via.placeholder.com/150?text=QR+Code"
+  alt="QR Code"
+  style={{
+    width: "150px",
+    height: "150px",
+    borderRadius: "10px",
+    marginTop: "5px",
+    border: "1px solid #ccc"
+  }}
+/>
+
 
           {/* Upload screenshot */}
           <div className="image-upload-container">
