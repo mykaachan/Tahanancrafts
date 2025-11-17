@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API = "https://tahanancrafts.onrender.com";
+
 function ChatPopup() {
   const [open, setOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [activeConversation, setActiveConversation] = useState(null);
   const [newMessage, setNewMessage] = useState("");
+
+  // New message modal states
+  const [newMsgMode, setNewMsgMode] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedReceiver, setSelectedReceiver] = useState(null);
 
   const navigate = useNavigate();
   const userId = localStorage.getItem("user_id");
@@ -20,12 +28,12 @@ function ChatPopup() {
     setOpen(!open);
   };
 
-  // Fetch conversations only when chat is open
+  // Fetch conversations
   useEffect(() => {
     if (!open || !userId) return;
 
     axios
-      .get(`https://tahanancrafts.onrender.com/api/chat/conversations/${userId}/`)
+      .get(`${API}/api/chat/conversations/${userId}/`)
       .then((res) => {
         setConversations(res.data);
 
@@ -37,15 +45,18 @@ function ChatPopup() {
       .catch(console.error);
   }, [open]);
 
+  // Mark messages seen
   const markAsSeen = (conversationId) => {
-    axios.post(`https://tahanancrafts.onrender.com/api/chat/messages/${conversationId}/mark-seen/`);
+    axios.post(`${API}/api/chat/messages/${conversationId}/mark-seen/`);
   };
 
+  // Switch chat window
   const openChatWindow = (convo) => {
     setActiveConversation(convo);
     markAsSeen(convo.id);
   };
 
+  // Send message in existing conversation
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -55,7 +66,7 @@ function ChatPopup() {
         : activeConversation.user1;
 
     axios
-      .post(`https://tahanancrafts.onrender.com/api/chat/messages/send/`, {
+      .post(`${API}/api/chat/messages/send/`, {
         sender: userId,
         receiver: receiver,
         text: newMessage,
@@ -65,16 +76,53 @@ function ChatPopup() {
         setNewMessage("");
 
         axios
-          .get(`https://tahanancrafts.onrender.com/api/chat/conversations/${userId}/`)
+          .get(`${API}/api/chat/conversations/${userId}/`)
+          .then((res) => setConversations(res.data));
+      });
+  };
+
+  // Search users for new message modal
+  const searchUsers = (q) => {
+    setSearchQuery(q);
+    if (q.length < 1) {
+      setSearchResults([]);
+      return;
+    }
+
+    axios
+      .get(`${API}/api/chat/users/search/?q=${q}`)
+      .then((res) => setSearchResults(res.data));
+  };
+
+  // Send first message (new conversation)
+  const sendNewMessage = () => {
+    if (!selectedReceiver || !newMessage.trim()) return;
+
+    axios
+      .post(`${API}/api/chat/messages/send/`, {
+        sender: userId,
+        receiver: selectedReceiver.id,
+        text: newMessage,
+      })
+      .then(() => {
+        setNewMsgMode(false);
+        setSelectedReceiver(null);
+        setSearchQuery("");
+        setSearchResults([]);
+        setNewMessage("");
+
+        axios
+          .get(`${API}/api/chat/conversations/${userId}/`)
           .then((res) => setConversations(res.data));
       });
   };
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Chat Button */}
       <button
-        onClick={handleOpenChat} // ← updated click handler
+        type="button"
+        onClick={handleOpenChat}
         style={{
           position: "fixed",
           bottom: "25px",
@@ -94,7 +142,7 @@ function ChatPopup() {
         💬
       </button>
 
-      {/* Popup Window */}
+      {/* Chat Popup Window */}
       {open && userId && (
         <div
           style={{
@@ -121,6 +169,7 @@ function ChatPopup() {
               flexDirection: "column",
             }}
           >
+            {/* Title */}
             <div
               style={{
                 padding: "16px",
@@ -132,6 +181,23 @@ function ChatPopup() {
             >
               Chats
             </div>
+
+            {/* ➕ New Message Button */}
+            <button
+              onClick={() => setNewMsgMode(true)}
+              style={{
+                margin: "10px",
+                padding: "10px",
+                background: "#c3a98d",
+                border: "none",
+                borderRadius: "8px",
+                color: "white",
+                cursor: "pointer",
+                fontSize: "0.9rem",
+              }}
+            >
+              ➕ New Message
+            </button>
 
             {/* Conversation List */}
             <div style={{ flex: 1, overflowY: "auto" }}>
@@ -269,6 +335,116 @@ function ChatPopup() {
                   border: "1px solid #d1c3b3",
                 }}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Message Modal */}
+      {newMsgMode && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 99999999,
+          }}
+        >
+          <div
+            style={{
+              width: "400px",
+              background: "#fff",
+              borderRadius: "12px",
+              padding: "20px",
+            }}
+          >
+            <h3 style={{ marginTop: 0 }}>New Message</h3>
+
+            {/* To: */}
+            <label style={{ fontWeight: "bold" }}>To:</label>
+            <input
+              value={searchQuery}
+              onChange={(e) => searchUsers(e.target.value)}
+              placeholder="Search user name"
+              style={{
+                width: "100%",
+                padding: "10px",
+                marginBottom: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+              }}
+            />
+
+            {/* Search results list */}
+            {searchResults.map((u) => (
+              <div
+                key={u.id}
+                onClick={() => {
+                  setSelectedReceiver(u);
+                  setSearchResults([]);
+                  setSearchQuery(u.name);
+                }}
+                style={{
+                  padding: "8px",
+                  background: "#f2f2f2",
+                  borderRadius: "6px",
+                  marginBottom: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                {u.name}
+              </div>
+            ))}
+
+            {/* Message */}
+            <label style={{ fontWeight: "bold" }}>Message:</label>
+            <input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message"
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                marginBottom: "10px",
+              }}
+            />
+
+            {/* Buttons */}
+            <div style={{ textAlign: "right" }}>
+              <button
+                onClick={() => setNewMsgMode(false)}
+                style={{
+                  marginRight: "10px",
+                  padding: "6px 12px",
+                  background: "#ccc",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={sendNewMessage}
+                style={{
+                  padding: "6px 12px",
+                  background: "#c3a98d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
