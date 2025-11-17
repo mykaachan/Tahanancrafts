@@ -25,7 +25,7 @@ function ChatPopup() {
     if (!open || !userId) return;
 
     axios
-      .get(`/api/chat/conversations/${userId}/`)
+      .get(`https://tahanancrafts.onrender.com/api/chat/conversations/${userId}/`)
       .then((res) => {
         setConversations(res.data);
 
@@ -38,7 +38,7 @@ function ChatPopup() {
   }, [open]);
 
   const markAsSeen = (conversationId) => {
-    axios.post(`/api/chat/messages/${conversationId}/mark-seen/`);
+    axios.post(`https://tahanancrafts.onrender.com/api/chat/messages/${conversationId}/mark-seen/`);
   };
 
   const openChatWindow = (convo) => {
@@ -55,7 +55,7 @@ function ChatPopup() {
         : activeConversation.user1;
 
     axios
-      .post(`/api/chat/messages/send/`, {
+      .post(`https://tahanancrafts.onrender.com/api/chat/messages/send/`, {
         sender: userId,
         receiver: receiver,
         text: newMessage,
@@ -65,7 +65,7 @@ function ChatPopup() {
         setNewMessage("");
 
         axios
-          .get(`/api/chat/conversations/${userId}/`)
+          .get(`https://tahanancrafts.onrender.com/api/chat/conversations/${userId}/`)
           .then((res) => setConversations(res.data));
       });
   };
