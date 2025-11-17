@@ -12,7 +12,9 @@ const SellerRegister = () => {
   });
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -25,8 +27,8 @@ const SellerRegister = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!agreedToTerms) {
-      alert("You must agree to the Terms and Conditions before registering.");
+    if (!agreedToTerms || !agreedToPrivacy) {
+      alert("You must agree to the Terms and Conditions and Privacy Policy before registering.");
       return;
     }
     alert("Seller Registration Submitted!");
@@ -107,7 +109,7 @@ const SellerRegister = () => {
             />
           </div>
 
-          {/* Terms Checkbox with clickable link */}
+          {/* Terms Checkbox */}
           <div className="form-group terms-checkbox">
             <label>
               <input
@@ -125,6 +127,24 @@ const SellerRegister = () => {
             </label>
           </div>
 
+          {/* Privacy Policy Checkbox */}
+          <div className="form-group terms-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                checked={agreedToPrivacy}
+                onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+              />
+              I agree to the{" "}
+              <span
+                className="terms-link"
+                onClick={() => setShowPrivacyModal(true)}
+              >
+                Privacy Policy
+              </span>
+            </label>
+          </div>
+
           <button type="submit" className="submit-btn">
             Submit Registration
           </button>
@@ -137,10 +157,7 @@ const SellerRegister = () => {
           className="terms-modal-overlay"
           onClick={() => setShowTermsModal(false)}
         >
-          <div
-            className="terms-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="terms-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Terms and Conditions for Sellers</h3>
             <ol>
               <li><strong>Shipping Fees</strong></li>
@@ -150,6 +167,28 @@ const SellerRegister = () => {
             </ol>
             <button
               onClick={() => setShowTermsModal(false)}
+              className="close-btn"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Privacy Policy */}
+      {showPrivacyModal && (
+        <div
+          className="terms-modal-overlay"
+          onClick={() => setShowPrivacyModal(false)}
+        >
+          <div className="terms-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Privacy Policy</h3>
+            <p>We value your privacy and are committed to protecting your
+                    personal data while using TahananCrafts. By continuing to
+                    use our services, you agree to our Terms and Policies.</p>
+            
+            <button
+              onClick={() => setShowPrivacyModal(false)}
               className="close-btn"
             >
               Close
