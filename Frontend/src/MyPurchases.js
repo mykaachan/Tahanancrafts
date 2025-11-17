@@ -151,15 +151,14 @@ function MyPurchases() {
     </div>
   </div>
 )}
-
 {/* ===== To Pay Modal ===== */}
 {showToPayModal && (
-  <div className="to-pay-modal-overlay">
-    <div className="to-pay-modal">
+  <div className="review-modal-overlay">
+    <div className="review-modal" style={{ width: "500px", maxWidth: "95%" }}>
       <h2>Payment Details</h2>
 
-      <div className="to-pay-grid">
-        <div className="to-pay-col">
+      <div className="to-pay-grid" style={{ display: "flex", gap: "20px" }}>
+        <div className="to-pay-col" style={{ flex: 1 }}>
           <p><strong>Order Number:</strong> #12345</p>
           <p><strong>Product:</strong> Product Name Placeholder</p>
           <p><strong>Quantity:</strong> 1</p>
@@ -168,18 +167,33 @@ function MyPurchases() {
           <p><strong>Preorder:</strong> Yes</p>
         </div>
 
-        <div className="to-pay-col">
+        <div className="to-pay-col" style={{ flex: 1 }}>
           <p><strong>Downpayment:</strong> ₱100</p>
           <p><strong>Total to Pay Now:</strong> ₱99</p>
           <p><strong>COD Balance:</strong> ₱50</p>
           <p><strong>Created At:</strong> 2025-11-17</p>
           <p><strong>Shipment Date:</strong> 2025-11-20</p>
           <p><strong>Scan to Pay:</strong> [QR Code Placeholder]</p>
-          <p><strong>Uploaded Screenshot:</strong> [Image Placeholder]</p>
+
+          {/* Upload screenshot */}
+          <div className="image-upload-container">
+            <label className="image-upload-label">
+              Upload Screenshot
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    console.log("Uploaded file:", e.target.files[0]);
+                  }
+                }}
+              />
+            </label>
+          </div>
         </div>
       </div>
 
-      <div className="to-pay-buttons">
+      <div className="modal-buttons">
         <button
           className="btn-cancel"
           onClick={() => setShowToPayModal(false)}
