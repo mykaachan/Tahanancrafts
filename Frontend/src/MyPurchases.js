@@ -161,41 +161,48 @@ function MyPurchases() {
             {activeTab === "completed" && <p>No completed orders yet.</p>}
           </div>
 
-          {/* ===== Review Modal ===== */}
-          {showReview && (
-            <div className="review-modal-overlay">
-              <div className="review-modal">
-                <h2>Write a Review</h2>
+{/* ===== Review Modal ===== */}
+{showReview && (
+  <div className="review-modal-overlay">
+    <div className="review-modal">
+      <h2>Write a Review</h2>
 
-                {/* ⭐ Stars */}
-                <div className="stars">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <span key={n} className="star">
-                      ★
-                    </span>
-                  ))}
-                </div>
+      {/* ⭐ Stars */}
+      <div className="stars">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <span key={n} className="star">
+            ★
+          </span>
+        ))}
+      </div>
 
-                {/* 📝 Thoughts */}
-                <textarea
-                  className="review-textarea"
-                  placeholder="Share your thoughts..."
-                ></textarea>
+      {/* 📝 Thoughts */}
+      <textarea
+        className="review-textarea"
+        placeholder="Share your thoughts..."
+      ></textarea>
 
+      {/* 🆕 Anonymous Checkbox */}
+      <div className="anonymous-option">
+        <label>
+          <input type="checkbox" /> Post review anonymously
+        </label>
+      </div>
 
-                {/* Buttons */}
-                <div className="modal-buttons">
-                  <button
-                    className="btn-cancel"
-                    onClick={() => setShowReview(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button className="btn-submit">Submit Review</button>
-                </div>
-              </div>
-            </div>
-          )}
+      {/* Buttons */}
+      <div className="modal-buttons">
+        <button
+          className="btn-cancel"
+          onClick={() => setShowReview(false)}
+        >
+          Cancel
+        </button>
+        <button className="btn-submit">Submit Review</button>
+      </div>
+    </div>
+  </div>
+)}
+
         </main>
       </div>
     </HeaderFooter>
