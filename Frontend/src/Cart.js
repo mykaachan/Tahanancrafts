@@ -224,7 +224,7 @@ function Cart() {
                 disabled={subtotal === 0}
                 onClick={() =>
                   navigate("/checkout", {
-                    state: { items: selectedItems },
+                    state: { items },
                   })
                 }
               >

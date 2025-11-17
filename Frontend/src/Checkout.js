@@ -8,6 +8,8 @@ function Checkout() {
   const navigate = useNavigate();
 
   const selectedItems = location.state?.items || [];
+  console.log("Selected Items:", selectedItems);
+
 
   // ----------------------------
   // Address State
@@ -270,9 +272,9 @@ function Checkout() {
                 {summary.downpayment_required && " + Downpayment"}
               </h3>
 
-              {summary.qr_code ? (
+              {selectedItems[0]?.artisan_qr ? (
                 <img
-                  src={summary.qr_code}
+                  src={selectedItems[0]?.artisan_qr}
                   alt="GCash QR"
                   style={{
                     width: "200px",
