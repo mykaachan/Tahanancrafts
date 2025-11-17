@@ -25,24 +25,24 @@ function Cart() {
       try {
         const data = await getCartItems(userId);
 
-        // NORMALIZE CART SHAPE CORRECTLY
+        console.log("RAW CART API:", data); // DEBUG
+
+        // NORMALIZE CART SHAPE (INCLUDING ARTISAN QR)
         const formatted = data.map((cartItem) => {
-          const unitPrice = Number(cartItem.product.price);
+          const unitPrice = Number(cartItem.price);
           const qty = Number(cartItem.quantity);
 
           return {
-            id: cartItem.id,                         // cart row ID
-            product_id: cartItem.product.id,
-            name: cartItem.product.name,
-            desc: cartItem.product.description || "No description available",
-
-            unit_price: unitPrice,                   // per-item price
+            id: cartItem.id,
+            product_id: cartItem.product_id,
+            name: cartItem.product_name,
+            unit_price: unitPrice,
             qty: qty,
-            total: unitPrice * qty,                  // computed total
+            total: unitPrice * qty,
 
-            img: cartItem.product.main_image
-              ? cartItem.product.main_image
-              : "https://via.placeholder.com/150?text=No+Image",
+            // artisan fields from backend
+            artisan_name: cartItem.artisan_name || null,
+            artisan_qr: cartItem.artisan_qr || null,
 
             selected: false,
           };
@@ -71,13 +71,9 @@ function Cart() {
     const newQty = Math.max(1, item.qty + delta);
 
     try {
-      // Send update to backend
       await updateCartItem(id, newQty, userId);
-
-      // Compute new total (unit price stays constant)
       const newTotal = item.unit_price * newQty;
 
-      // Update frontend immediately
       setItems((prev) =>
         prev.map((i) =>
           i.id === id ? { ...i, qty: newQty, total: newTotal } : i
@@ -85,7 +81,6 @@ function Cart() {
       );
     } catch (err) {
       console.error("Failed to update quantity:", err);
-      alert("Failed to update quantity.");
     }
   };
 
@@ -94,13 +89,11 @@ function Cart() {
   // ==========================================================
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
-
     try {
       await removeCartItem(id, userId);
       setItems((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error("Failed to remove item:", err);
-      alert("Failed to remove item.");
     }
   };
 
@@ -115,18 +108,14 @@ function Cart() {
     );
   };
 
-  // ==========================================================
-  // TOTALS
-  // ==========================================================
-  const selectedItems = items.filter((item) => item.selected);
-
+  // total
+  const selectedItems = items.filter((i) => i.selected);
   const subtotal = selectedItems.reduce((sum, item) => sum + item.total, 0);
 
   if (loading) return <p>Loading cart...</p>;
 
   return (
     <>
-      {/* HEADER */}
       <header className="homepage-header">
         <Logo className="logo-svg homepage-logo" />
         <nav className="nav-links">
@@ -149,7 +138,6 @@ function Cart() {
         </div>
       </header>
 
-      {/* CART CONTENT */}
       <main className="cart-page">
         <div className="cart-container">
           <h1 className="cart-title">My Shopping Cart</h1>
@@ -171,13 +159,16 @@ function Cart() {
                           onChange={() => toggleSelect(item.id)}
                         />
 
-                        <img src={item.img} alt={item.desc} className="item-img" />
-
                         <div className="item-info">
                           <h3>{item.name}</h3>
-                          <p>{item.desc}</p>
                           <p className="unit-price">Unit Price: ₱{item.unit_price}</p>
                           <p className="total-price">Subtotal: ₱{item.total}</p>
+
+                          {item.artisan_name && (
+                            <p className="artisan-info">
+                              Seller: <strong>{item.artisan_name}</strong>
+                            </p>
+                          )}
                         </div>
 
                         <div className="item-actions">
@@ -203,7 +194,7 @@ function Cart() {
               </Link>
             </div>
 
-            {/* RIGHT SIDE SUMMARY */}
+            {/* RIGHT SIDE */}
             <div className="cart-summary">
               <hr />
               <h2>Order Summary</h2>
@@ -224,7 +215,7 @@ function Cart() {
                 disabled={subtotal === 0}
                 onClick={() =>
                   navigate("/checkout", {
-                    state: { items },
+                    state: { items: selectedItems }, // <-- SEND SELECTED WITH QR
                   })
                 }
               >
