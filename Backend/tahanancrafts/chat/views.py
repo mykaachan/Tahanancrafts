@@ -11,6 +11,7 @@ from django.db.models import Q
 from users.models import CustomUser
 from rest_framework.decorators import api_view, permission_classes
 
+
 class UserConversationsView(generics.ListAPIView):
     serializer_class = ConversationSerializer
     permission_classes = [AllowAny]

@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import CustomUser, Profile
+from products.models import Artisan   # ADD THIS IMPORT AT THE TOP
 from users.utils import normalize_phone_number, send_otp_email, send_otp_sms, validate_and_return_new_password
 from .serializers import (
     RequestOTPSerializer, VerifyOTPSerializer,
@@ -274,7 +275,7 @@ class LoginVerifyOTPView(APIView):
             contact = serializer.validated_data['contact']
             otp = serializer.validated_data['otp']
 
-            # Normalize contact
+            # Normalize
             if '@' in contact:
                 normalized_contact = contact
             else:
@@ -289,14 +290,20 @@ class LoginVerifyOTPView(APIView):
             except CustomUser.DoesNotExist:
                 return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-            # Clear the OTP from cache
             cache.delete(f"login_{normalized_contact}")
 
-            # Return user info along with message
+            # ⭐ GET ARTISAN ID FOR SELLERS
+            artisan = None
+            if user.role == "seller":
+                artisan_obj = Artisan.objects.filter(user=user).first()
+                artisan = artisan_obj.id if artisan_obj else None
+
+            # ⭐ STRUCTURED USER DATA SENT TO FRONTEND
             user_data = {
                 "id": user.id,
                 "role": user.role,
                 "username": user.name,
+                "artisan_id": artisan
             }
 
             return Response({

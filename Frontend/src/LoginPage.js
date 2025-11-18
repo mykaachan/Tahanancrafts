@@ -23,29 +23,36 @@ function LoginPage() {
         password: enteredPassword,
       };
 
-      // ✅ use your api helper instead of fetch
       const data = await login(userData);
 
-      // ✅ If backend sent a redirect (admin detected)
+      // ⭐⭐⭐ SAVE USER INFORMATION (ONLY THESE 3 LINES)
+      if (data.user?.id) localStorage.setItem("user_id", data.user.id);
+      if (data.user?.role) localStorage.setItem("user_role", data.user.role);
+      if (data.user?.artisan_id) localStorage.setItem("artisan_id", data.user.artisan_id);
+      // ⭐⭐⭐ END OF ADDED LINES
+
+      // ============================
+      // DO NOT CHANGE ANYTHING BELOW
+      // ============================
+
       if (data.redirect === "/AdminDash") {
         alert(data.message || "Redirecting to admin dashboard...");
         window.location.href = "/AdminDash";
         return;
       }
 
-      // ✅ Normal OTP-required flow
       if (data.otp_required) {
         navigate("/verify", { state: { contact: enteredEmailOrPhone } });
         return;
       }
 
-      // ✅ If neither redirect nor OTP required
       alert(data.message || "Login successful!");
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.error || "Please check your credentials and try again.");
     }
   };
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleLogin(e);
