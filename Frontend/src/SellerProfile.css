@@ -220,3 +220,156 @@
     height: 90px;
   }
 }
+
+
+/* Blur background when popup is open */
+.blur-bg {
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+/* Popup overlay */
+.edit-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Popup box */
+.edit-modal {
+  background: #fff;
+  padding: 25px;
+  width: 380px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  animation: popIn 0.2s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.edit-modal h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.edit-modal label {
+  font-weight: 600;
+  margin-top: 10px;
+  display: block;
+}
+
+.edit-modal input,
+.edit-modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.edit-modal textarea {
+  height: 70px;
+  resize: none;
+}
+
+/* Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.save-btn {
+  background: #F0D9BB;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #ddd;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover { background: #e4c7a3; }
+.cancel-btn:hover { background: #c5c5c5; }
+
+.edit-profile-btn {
+  width: 70%;              /* smaller width */
+  padding: 8px 0;          /* smaller height */
+  background: #F0D9BB;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;         /* slightly smaller text */
+  cursor: pointer;
+  margin: 15px auto 0;     /* center it inside sidebar */
+  display: block;          /* ensures centering works */
+  transition: 0.2s ease;
+}
+
+.edit-profile-btn:hover {
+  background: #e4c7a3;
+}
+
+/* Container for main section buttons */
+.main-buttons-right {
+  display: flex;
+  justify-content: flex-end; /* keep them on the right */
+  gap: 5px;                  /* small gap between buttons */
+  margin-top: 10px;
+}
+
+.main-buttons-right .small-btn {
+  padding: 6px 12px;        /* button padding */
+  font-size: 0.9rem;
+  width: auto;              /* auto width to not stretch too much */
+  margin: 0;                /* remove extra margin */
+}
+/* QR Code Upload Section */
+.form-section-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;   /* makes EVERYTHING inside stick to the left */
+  width: 200px;              /* match QR box width */
+}
+
+/* QR Box */
+.qr-upload-box {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #b8a48a;
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+/* Save QR Button */
+.save-qr-btn {
+  margin-top: 10px;
+  width: 200px;        /* same width as QR box */
+  display: block;
+  text-align: center;
+}
