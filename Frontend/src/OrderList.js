@@ -9,7 +9,7 @@ const STATUS_TABS = [
   { key: 'delivered', label: 'Delivered' },
   { key: 'refund', label: 'Refund/Cancel' },
   { key: 'requests', label: 'Order Requests' },
-  { key: 'preorders', label: 'Preorder Orders' },
+  { key: 'preorders', label: 'Pre-Orders' },
   { key: 'shipping-paid', label: 'Shipping Fee Paid Orders' },
 ];
 
