@@ -373,3 +373,50 @@
   display: block;
   text-align: center;
 }
+
+
+.sidebar-menu {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.sidebar-menu-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sidebar-submenu {
+  list-style: none;
+  padding-left: 15px;
+  margin-top: 5px;
+}
+
+.sidebar-submenu li {
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+}
+
+.sidebar-submenu li:hover {
+  text-decoration: underline;
+}
+/* Remove background color for My Account button in sidebar */
+.sidebar-menu-btn {
+  background-color: transparent; /* no color */
+  border: none; /* remove any border */
+  color: #000; /* keep text black */
+  cursor: pointer; /* pointer cursor */
+  padding: 8px 12px; /* maintain spacing */
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Optional: hover effect */
+.sidebar-menu-btn:hover {
+  background-color: #f0f0f0; /* subtle hover background */
+}
