@@ -491,12 +491,12 @@ html, body {
     font-size: 0.9rem !important;
   }
 }
-/* REMOVE ALL DEFAULT SECTION GAPS */
 section {
-  margin: 1 !important;
-  padding: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   border: none !important;
 }
+
 /* REMOVE GAP ABOVE FEATURED SECTION */
 .featured-section {
   margin-top: 0 !important;
@@ -531,4 +531,73 @@ section {
 body, html {
   margin: 0 !important;
   padding: 0 !important;
+}
+
+
+* {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+html {
+  font-size: 100%;
+}
+
+/* Images auto-scale */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  html {
+    font-size: 90%;
+  }
+}
+
+/* Small Tablets / Large Phones */
+@media (max-width: 768px) {
+  html {
+    font-size: 80%;
+  }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+  html {
+    font-size: 70%;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+html {
+  font-size: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 70%;
+  }
 }
