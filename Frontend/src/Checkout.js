@@ -9,6 +9,7 @@ function Checkout() {
 
   const cart_item_ids = location.state?.cart_item_ids || [];
   const items_frontend = location.state?.items_frontend || [];
+  const artisan_id = location.state?.artisan_id;
 
   const [selectedItems, setSelectedItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -22,78 +23,19 @@ function Checkout() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editAddressData, setEditAddressData] = useState(null);
 
-  const [paymentOption, setPaymentOption] = useState("sf_only"); // sf_only, partial, full
+  const [paymentOption, setPaymentOption] = useState("sf_only");
   const [partialAmount, setPartialAmount] = useState("");
 
   const [tempDeliveryId, setTempDeliveryId] = useState(null);
 
-  const [formAdd, setFormAdd] = useState({
-    full_name: "",
-    phone: "",
-    region: "",
-    province: "",
-    city: "",
-    barangay: "",
-    postal_code: "",
-    street: "",
-    landmark: "",
-  });
-
   // -------------------------------------------------------------
-  // LOAD SELECTED CART ITEMS
+  // LOAD SELECTED ITEMS (NO MORE BACKEND FETCH)
   // -------------------------------------------------------------
   useEffect(() => {
-    const loadSelectedItems = async () => {
-      const userId = localStorage.getItem("user_id");
-      if (!userId) return;
-      try {
-        const res = await fetch(
-          `https://tahanancrafts.onrender.com/api/products/cart/carts/${userId}/`
-        );
-        const allItems = await res.json();
-
-        // allItems = [{ artisan_id, artisan_name, items:[...] }, {...}]
-        let flat = [];
-
-        allItems.forEach((group) => {
-          group.items.forEach((item) => {
-            flat.push({
-              ...item,
-              artisan_id: group.artisan_id,
-              artisan_name: group.artisan_name,
-              artisan_qr: group.artisan_qr,
-            });
-          });
-        });
-
-        // Now filter using cart_item_ids
-        const backendFiltered = flat.filter((i) =>
-          cart_item_ids.includes(i.id)
-        );
-
-
-        const merged = [];
-
-        backendFiltered.forEach((group) => {
-          group.items.forEach((item) => {
-            merged.push({
-              ...item,
-              artisan_id: group.artisan_id,
-              artisan_name: group.artisan_name,
-              artisan_qr: group.artisan_qr,
-            });
-          });
-        });
-
-
-        setSelectedItems(merged);
-      } catch (err) {
-        console.error("Error loading items:", err);
-      }
-    };
-
-    if (cart_item_ids.length > 0) loadSelectedItems();
-  }, [cart_item_ids, items_frontend]);
+    if (items_frontend && items_frontend.length > 0) {
+      setSelectedItems(items_frontend);
+    }
+  }, [items_frontend]);
 
   // -------------------------------------------------------------
   // LOAD ADDRESSES
@@ -120,15 +62,12 @@ function Checkout() {
   }, []);
 
   // -------------------------------------------------------------
-  // CALL LALAMOVE QUOTATION
+  // FETCH SHIPPING FEE (QUOTATION)
   // -------------------------------------------------------------
   const fetchShippingFee = async () => {
     if (!selectedAddress || selectedItems.length === 0) return;
 
     setLoadingFee(true);
-
-    const artisanId = selectedItems[0].artisan_id; // ✔ your backend provides this
-    const userId = localStorage.getItem("user_id");
 
     try {
       const res = await fetch(
@@ -138,8 +77,8 @@ function Checkout() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             shipping_address_id: selectedAddress.id,
-            artisan_id: artisanId,
-            user_id: userId,
+            artisan_id: artisan_id,
+            user_id: localStorage.getItem("user_id"),
           }),
         }
       );
@@ -171,53 +110,29 @@ function Checkout() {
   // PAYMENT COMPUTATION
   // -------------------------------------------------------------
   const itemsSubtotal = selectedItems.reduce(
-    (sum, item) =>
-      sum + Number(item.total_price || item.price * item.quantity || 0),
+    (sum, item) => sum + Number(item.total_price),
     0
   );
-
-  const hasPreorder = selectedItems.some((i) => i.is_preorder === true);
-  const preorderDownpayment = hasPreorder ? itemsSubtotal * 0.5 : 0;
 
   let payNow = 0;
   let codAmount = 0;
 
   if (paymentOption === "sf_only") {
-    payNow = (shippingFee || 0);
+    payNow = shippingFee || 0;
     codAmount = itemsSubtotal;
   }
 
   if (paymentOption === "partial") {
     let partial = Number(partialAmount || 0);
+    if (partial > itemsSubtotal) partial = itemsSubtotal;
+
     payNow = partial + (shippingFee || 0);
-
-    if (partial > itemsSubtotal) {
-      partial = itemsSubtotal;
-    }
-
     codAmount = itemsSubtotal - partial;
   }
 
   if (paymentOption === "full") {
     payNow = itemsSubtotal + (shippingFee || 0);
     codAmount = 0;
-  }
-
-  if (hasPreorder) {
-    if (paymentOption === "sf_only") {
-      payNow = preorderDownpayment + (shippingFee || 0);
-      codAmount = itemsSubtotal - preorderDownpayment;
-    }
-
-    if (paymentOption === "partial") {
-      payNow = preorderDownpayment + (shippingFee || 0);
-      codAmount = itemsSubtotal - preorderDownpayment;
-    }
-
-    if (paymentOption === "full") {
-      payNow = itemsSubtotal + (shippingFee || 0);
-      codAmount = 0;
-    }
   }
 
   // -------------------------------------------------------------
@@ -259,12 +174,11 @@ function Checkout() {
   };
 
   // -------------------------------------------------------------
-  // UI STARTS HERE
+  // UI
   // -------------------------------------------------------------
   return (
     <HeaderFooter>
       <div className="checkout-page">
-
         <h1 className="checkout-title">Checkout</h1>
 
         {/* ADDRESS BAR */}
@@ -296,7 +210,6 @@ function Checkout() {
         </div>
 
         <div className="checkout-container">
-
           {/* PRODUCT LIST */}
           <div className="checkout-details">
             <h2>Products Ordered</h2>
@@ -309,11 +222,7 @@ function Checkout() {
             {selectedItems.map((item) => (
               <div className="product-item" key={item.id}>
                 <img
-                  src={
-                    item.img ||
-                    item.product_main_image ||
-                    "https://via.placeholder.com/150"
-                  }
+                  src={item.main_image || item.img}
                   alt={item.product_name}
                   className="product-img"
                 />
@@ -323,7 +232,7 @@ function Checkout() {
                   <p className="artisan-name">By: {item.artisan_name}</p>
                 </div>
 
-                <span className="unit-price">₱{item.price}</span>
+                <span className="unit-price">₱{item.unit_price}</span>
                 <span className="quantity">{item.quantity}</span>
                 <span className="subtotal">₱{item.total_price}</span>
               </div>
@@ -341,91 +250,53 @@ function Checkout() {
 
               <p>
                 <span>Shipping Fee:</span>
-                <span>
-                  {loadingFee ? "Calculating..." : `₱${shippingFee}`}
-                </span>
+                <span>{loadingFee ? "Calculating..." : `₱${shippingFee}`}</span>
               </p>
-
-              {hasPreorder && (
-                <p>
-                  <span>Required Downpayment (50%):</span>
-                  <span>₱{preorderDownpayment}</span>
-                </p>
-              )}
 
               {/* PAYMENT OPTIONS */}
               <div className="payment-options" style={{ marginTop: "20px" }}>
                 <h3>Payment Options</h3>
 
-                {!hasPreorder && (
-                  <>
-                    <label>
-                      <input
-                        type="radio"
-                        value="sf_only"
-                        checked={paymentOption === "sf_only"}
-                        onChange={() => setPaymentOption("sf_only")}
-                      />
-                      Pay Shipping Fee Only
-                    </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="sf_only"
+                    checked={paymentOption === "sf_only"}
+                    onChange={() => setPaymentOption("sf_only")}
+                  />
+                  Pay Shipping Fee Only
+                </label>
 
-                    <label>
-                      <input
-                        type="radio"
-                        value="partial"
-                        checked={paymentOption === "partial"}
-                        onChange={() => setPaymentOption("partial")}
-                      />
-                      Partial Payment
-                    </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="partial"
+                    checked={paymentOption === "partial"}
+                    onChange={() => setPaymentOption("partial")}
+                  />
+                  Partial Payment
+                </label>
 
-                    {paymentOption === "partial" && (
-                      <input
-                        type="number"
-                        className="partial-input"
-                        placeholder="Enter partial amount"
-                        value={partialAmount}
-                        onChange={(e) => setPartialAmount(e.target.value)}
-                        min="1"
-                      />
-                    )}
-
-                    <label>
-                      <input
-                        type="radio"
-                        value="full"
-                        checked={paymentOption === "full"}
-                        onChange={() => setPaymentOption("full")}
-                      />
-                      Pay Full Amount
-                    </label>
-                  </>
+                {paymentOption === "partial" && (
+                  <input
+                    type="number"
+                    className="partial-input"
+                    placeholder="Enter partial amount"
+                    value={partialAmount}
+                    onChange={(e) => setPartialAmount(e.target.value)}
+                    min="1"
+                  />
                 )}
 
-                {/* PREORDER FORCED RULE */}
-                {hasPreorder && (
-                  <>
-                    <label>
-                      <input
-                        type="radio"
-                        value="downpayment"
-                        checked={paymentOption === "sf_only"}
-                        onChange={() => setPaymentOption("sf_only")}
-                      />
-                      Pay 50% + Shipping Fee
-                    </label>
-
-                    <label>
-                      <input
-                        type="radio"
-                        value="full"
-                        checked={paymentOption === "full"}
-                        onChange={() => setPaymentOption("full")}
-                      />
-                      Pay Full Amount
-                    </label>
-                  </>
-                )}
+                <label>
+                  <input
+                    type="radio"
+                    value="full"
+                    checked={paymentOption === "full"}
+                    onChange={() => setPaymentOption("full")}
+                  />
+                  Pay Full Amount
+                </label>
               </div>
 
               <p className="total">
@@ -462,7 +333,8 @@ function Checkout() {
             </button>
           </div>
         </div>
-        {/* ========== Address Modal (Select) ========== */}
+
+        {/* ADDRESS MODAL */}
         {showAddressModal && (
           <div
             className="address-modal-backdrop"
@@ -545,7 +417,6 @@ function Checkout() {
             </div>
           </div>
         )}
-
       </div>
     </HeaderFooter>
   );
