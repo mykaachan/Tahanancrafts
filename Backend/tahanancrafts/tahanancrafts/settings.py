@@ -256,7 +256,7 @@ REST_FRAMEWORK = {
 LALAMOVE_BASE_URL = "https://rest.sandbox.lalamove.com/v3"
 LALAMOVE_API_KEY = os.environ.get("LALAMOVE_API_KEY", default="")
 LALAMOVE_SECRET = os.environ.get("LALAMOVE_SECRET", default="")
-GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_GEOCODING_API_KEY", default="")
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", default="")
 
 
 
