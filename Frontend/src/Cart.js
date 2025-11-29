@@ -293,13 +293,30 @@ function Cart() {
                     .filter((i) => i.selected)
                     .map((i) => i.id);
 
+                  const selectedItems = selectedGroup.items
+                    .filter((i) => i.selected)
+                    .map((i) => ({
+                      id: i.id,
+                      product_id: i.product_id,
+                      product_name: i.name,
+                      product_desc: i.desc,
+                      quantity: i.qty,
+                      unit_price: i.unit_price,
+                      total_price: i.total,
+                      main_image: i.img,
+                      artisan_id: selectedGroup.artisan_id,
+                      artisan_name: selectedGroup.artisan_name,
+                      artisan_qr: selectedGroup.artisan_qr,
+                    }));
+
                   navigate("/checkout", {
                     state: {
                       cart_item_ids,
-                      items_frontend: selectedGroup.items.filter((i) => i.selected),
+                      items_frontend: selectedItems,
                       artisan_id: selectedGroup.artisan_id,
                     },
                   });
+
                 }}
               >
                 Checkout
