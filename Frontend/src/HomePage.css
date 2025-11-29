@@ -534,46 +534,6 @@ body, html {
 }
 
 
-* {
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
-html {
-  font-size: 100%;
-}
-
-/* Images auto-scale */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Tablet */
-@media (max-width: 1024px) {
-  html {
-    font-size: 90%;
-  }
-}
-
-/* Small Tablets / Large Phones */
-@media (max-width: 768px) {
-  html {
-    font-size: 80%;
-  }
-}
-
-/* Phones */
-@media (max-width: 480px) {
-  html {
-    font-size: 70%;
-  }
-}
-
-* {
-  box-sizing: border-box;
-  max-width: 100%;
-}
 
 html {
   font-size: 100%;

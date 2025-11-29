@@ -33,3 +33,4 @@ class ArtisanTestView(ListAPIView):
         return Response({"message": "POST request received"}, status=status.HTTP_200_OK)
     def get(self, request):
         return Response({"message": "GET request received"}, status=status.HTTP_200_OK)
+

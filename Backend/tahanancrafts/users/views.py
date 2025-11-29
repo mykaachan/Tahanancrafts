@@ -164,3 +164,35 @@ def artisan_qr_view(request, artisan_id):
     qr_url = artisan.gcash_qr.url if artisan.gcash_qr else None
     return Response({"gcash_qr": qr_url})
 
+class UpdateArtisanPickup(APIView):
+    permission_classes = [AllowAny]  # change later if needed
+
+    def post(self, request, artisan_id):
+        from users.models import Artisan
+
+        try:
+            artisan = Artisan.objects.get(id=artisan_id)
+        except Artisan.DoesNotExist:
+            return Response({"error": "Artisan not found"}, status=404)
+
+        pickup_address = request.data.get("pickup_address")
+
+        if not pickup_address:
+            return Response({"error": "pickup_address is required"}, status=400)
+        lat, lng = geocode_address(pickup_address)
+        if not lat or not lng:
+            return Response(
+                {"error": "Unable to find coordinates for this pickup address"},
+                status=400
+            )
+        artisan.pickup_address = pickup_address
+        artisan.pickup_lat = lat
+        artisan.pickup_lng = lng
+        artisan.save()
+        return Response({
+            "message": "Pickup location updated",
+            "artisan_id": artisan.id,
+            "pickup_address": artisan.pickup_address,
+            "pickup_lat": artisan.pickup_lat,
+            "pickup_lng": artisan.pickup_lng
+        }, status=200)
