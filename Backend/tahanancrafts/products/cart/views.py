@@ -49,12 +49,29 @@ class CartView(APIView):
     def get(self, request):
         user_id = request.query_params.get("user_id")
         if not user_id:
-            return Response({"error": "Missing user_id"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing user_id"}, status=400)
 
-        cart_items = Cart.objects.filter(user_id=user_id).select_related("product", "product__artisan")
+        cart_items = Cart.objects.filter(user_id=user_id).select_related(
+            "product", "product__artisan"
+        )
 
-        data = [
-            {
+        grouped = {}
+
+        for item in cart_items:
+            artisan = item.product.artisan
+            artisan_id = artisan.id
+            artisan_name = artisan.name
+            artisan_qr = request.build_absolute_uri(artisan.gcash_qr.url) if artisan.gcash_qr else None
+
+            if artisan_id not in grouped:
+                grouped[artisan_id] = {
+                    "artisan_id": artisan_id,
+                    "artisan_name": artisan_name,
+                    "artisan_qr": artisan_qr,
+                    "items": []
+                }
+
+            grouped[artisan_id]["items"].append({
                 "id": item.id,
                 "product": {
                     "id": item.product.id,
@@ -69,22 +86,12 @@ class CartView(APIView):
                 },
                 "quantity": item.quantity,
                 "total_price": float(
-                    (item.product.sales_price or item.product.regular_price)
-                    * item.quantity
+                    (item.product.sales_price or item.product.regular_price) * item.quantity
                 ),
+            })
 
-                # ⭐ NEW FIELDS ⭐
-                "artisan_name": item.product.artisan.name,
-                "artisan_qr": (
-                    request.build_absolute_uri(item.product.artisan.gcash_qr.url)
-                    if item.product.artisan.gcash_qr
-                    else None
-                ),
-            }
-            for item in cart_items
-        ]
-        
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(list(grouped.values()), status=200)
+
 
 
 

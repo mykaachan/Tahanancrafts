@@ -7,7 +7,8 @@ from .views import (
     SetDefaultAddress,
     UpdateAddress,
     DeleteAddress,
-    artisan_qr_view
+    artisan_qr_view,
+    UpdateArtisanPickup
 )
 
 
@@ -19,6 +20,7 @@ urlpatterns = [
     path("shipping-address/delete/<int:address_id>/", DeleteAddress.as_view()),
 
     path("artisan/<int:artisan_id>/qr/", artisan_qr_view),
+    path("artisan/<int:artisan_id>/pickup/update/", UpdateArtisanPickup.as_view()),
 
 
 
