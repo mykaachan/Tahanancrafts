@@ -78,33 +78,68 @@ class MaterialListView(ListAPIView):
 
 
 # CREATE product
+# CREATE Product (UPDATED + FIXED)
 class AddProductView(APIView):
     permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
+
     def post(self, request, *args, **kwargs):
+        # ----------------------------------------
+        # 1. GET ARTISAN ID FROM FRONTEND
+        # ----------------------------------------
+        artisan_id = request.data.get("artisan_id")
+
+        if not artisan_id:
+            return Response(
+                {"error": "artisan_id is required. Include it in the form-data."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            artisan = Artisan.objects.get(id=artisan_id)
+        except Artisan.DoesNotExist:
+            return Response({"error": "Invalid artisan_id"}, status=404)
+
+        # ----------------------------------------
+        # 2. SERIALIZER VALIDATION
+        # ----------------------------------------
         serializer = ProductSerializer(data=request.data)
 
-        if serializer.is_valid():
-            product = serializer.save()
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
 
-            # Handle categories (expecting list of IDs)
-            category_ids = request.data.getlist("categories")
-            if category_ids:
-                product.categories.set(Category.objects.filter(id__in=category_ids))
+        # ----------------------------------------
+        # 3. CREATE PRODUCT
+        # ----------------------------------------
+        product = serializer.save(artisan=artisan)
 
-            # Handle materials (expecting list of IDs)
-            material_ids = request.data.getlist("materials")
-            if material_ids:
-                product.materials.set(Material.objects.filter(id__in=material_ids))
+        # ----------------------------------------
+        # 4. HANDLE CATEGORIES (IDs)
+        # ----------------------------------------
+        category_ids = request.data.getlist("categories")
+        if category_ids:
+            product.categories.set(Category.objects.filter(id__in=category_ids))
 
-            # Handle images (expecting multiple uploaded files)
-            images = request.FILES.getlist("images")
-            for img in images:
-                ProductImage.objects.create(product=product, image=img)
+        # ----------------------------------------
+        # 5. HANDLE MATERIALS (IDs)
+        # ----------------------------------------
+        material_ids = request.data.getlist("materials")
+        if material_ids:
+            product.materials.set(Material.objects.filter(id__in=material_ids))
 
-            return Response(ProductSerializer(product).data, status=status.HTTP_201_CREATED)
+        # ----------------------------------------
+        # 6. HANDLE IMAGES (FILES)
+        # ----------------------------------------
+        images = request.FILES.getlist("images")
+        for img in images:
+            ProductImage.objects.create(product=product, image=img)
 
-        # if invalid
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # ----------------------------------------
+        # 7. RETURN FULL PRODUCT INFO
+        # ----------------------------------------
+        read_output = ProductReadSerializer(product)
+        return Response(read_output.data, status=201)
+
 
 # Small test view
 class ProductTestView(APIView):

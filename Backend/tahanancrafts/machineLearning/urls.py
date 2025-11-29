@@ -4,4 +4,7 @@ urlpatterns = [
     path('recommendations/', include('machineLearning.recommendations.urls')),
     path('predictions/', include('machineLearning.arima.urls')),
     path('clustering/', include('machineLearning.segmentation.urls')),
+    path("api/segmentation/", include("machineLearning.segmentation.urls")),
+    path("api/arima/", include("machineLearning.arima.urls")),
+
 ]

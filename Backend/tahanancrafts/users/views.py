@@ -13,18 +13,28 @@ from rest_framework.permissions import AllowAny
 
 
 # 🔥 Optional auto-geocode function (free Nominatim)
-def geocode_address(full):
+def geocode_address(full_address):
+    api_key = settings.GOOGLE_MAPS_API_KEY
+
+    url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {
+        "address": full_address,
+        "key": api_key
+    }
+
     try:
-        response = requests.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": full, "format": "json"}
-        )
+        response = requests.get(url, params=params)
         data = response.json()
-        if data:
-            return float(data[0]["lat"]), float(data[0]["lon"])
-    except:
-        pass
-    return None, None
+
+        if data["status"] != "OK":
+            return None, None
+
+        location = data["results"][0]["geometry"]["location"]
+        return float(location["lat"]), float(location["lng"])
+
+    except Exception:
+        return None, None
+
 
 
 # ---------------------------------------------------------
@@ -44,7 +54,7 @@ class UserAddressList(APIView):
 # 📌 CREATE NEW ADDRESS
 # ---------------------------------------------------------
 class CreateAddress(APIView):
-    permission_classes = [AllowAny]  # TEMPORARY, change later
+    permission_classes = [AllowAny]  # TEMPORARY
 
     def post(self, request):
         user_id = request.data.get("user_id")
@@ -55,20 +65,25 @@ class CreateAddress(APIView):
         if serializer.is_valid():
             address_obj = serializer.save(user_id=user_id)
 
-            # Auto-geocode
-            full = (
+            # Create full string for geocoding
+            full_address = (
                 f"{address_obj.address}, "
                 f"{address_obj.barangay}, "
                 f"{address_obj.city}, "
-                f"{address_obj.province}, "
-                f"{address_obj.region}"
+                f"{address_obj.province}"
             )
 
-            lat, lng = geocode_address(full)
+            lat, lng = geocode_address(full_address)
+
             if lat and lng:
                 address_obj.lat = lat
                 address_obj.lng = lng
                 address_obj.save()
+            else:
+                return Response(
+                    {"error": "Unable to find coordinates for this address"},
+                    status=400
+                )
 
             return Response(ShippingAddressSerializer(address_obj).data, status=201)
 
@@ -95,47 +110,35 @@ class SetDefaultAddress(APIView):
 # 📌 UPDATE ADDRESS
 # ---------------------------------------------------------
 class UpdateAddress(APIView):
-    permission_classes = [AllowAny]  # TEMPORARY
+    permission_classes = [AllowAny]
 
     def put(self, request, address_id):
         address = get_object_or_404(ShippingAddress, id=address_id)
-
-        old_data = {
-            "address": address.address,
-            "barangay": address.barangay,
-            "city": address.city,
-            "province": address.province,
-            "region": address.region,
-        }
 
         serializer = ShippingAddressSerializer(address, data=request.data, partial=True)
 
         if serializer.is_valid():
             updated = serializer.save()
 
-            # If address-related fields changed → re-geocode
-            new_data = {
-                "address": updated.address,
-                "barangay": updated.barangay,
-                "city": updated.city,
-                "province": updated.province,
-                "region": updated.region,
-            }
+            # Build new address for geocoding
+            full_address = (
+                f"{updated.address}, "
+                f"{updated.barangay}, "
+                f"{updated.city}, "
+                f"{updated.province}"
+            )
 
-            if new_data != old_data:
-                full = (
-                    f"{updated.address}, "
-                    f"{updated.barangay}, "
-                    f"{updated.city}, "
-                    f"{updated.province}, "
-                    f"{updated.region}"
+            lat, lng = geocode_address(full_address)
+
+            if lat and lng:
+                updated.lat = lat
+                updated.lng = lng
+                updated.save()
+            else:
+                return Response(
+                    {"error": "Updated address is invalid (no coordinates found)."},
+                    status=400
                 )
-
-                lat, lng = geocode_address(full)
-                if lat and lng:
-                    updated.lat = lat
-                    updated.lng = lng
-                    updated.save()
 
             return Response(ShippingAddressSerializer(updated).data, status=200)
 

@@ -238,3 +238,27 @@ class Delivery(models.Model):
     pod_image_url = models.URLField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+class Delivery(models.Model):
+    order = models.OneToOneField("products.Order", on_delete=models.CASCADE, related_name="delivery")
+
+    quotation_id = models.CharField(max_length=255, null=True, blank=True)
+    pickup_stop_id = models.CharField(max_length=255, null=True, blank=True)
+    dropoff_stop_id = models.CharField(max_length=255, null=True, blank=True)
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    distance_m = models.IntegerField(null=True, blank=True)
+    quotation_expires_at = models.DateTimeField(null=True, blank=True)
+
+    lalamove_order_id = models.CharField(max_length=255, null=True, blank=True)
+    tracking_link = models.URLField(null=True, blank=True)
+    status = models.CharField(max_length=50, default="pending")
+
+    driver_id = models.CharField(max_length=255, null=True, blank=True)
+    driver_name = models.CharField(max_length=255, null=True, blank=True)
+    driver_phone = models.CharField(max_length=50, null=True, blank=True)
+    driver_plate_number = models.CharField(max_length=50, null=True, blank=True)
+
+    pod_image_url = models.URLField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
