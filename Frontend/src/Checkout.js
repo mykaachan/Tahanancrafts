@@ -52,9 +52,25 @@ function Checkout() {
         );
         const allItems = await res.json();
 
-        const backendFiltered = allItems.filter((i) =>
+        // allItems = [{ artisan_id, artisan_name, items:[...] }, {...}]
+        let flat = [];
+
+        allItems.forEach((group) => {
+          group.items.forEach((item) => {
+            flat.push({
+              ...item,
+              artisan_id: group.artisan_id,
+              artisan_name: group.artisan_name,
+              artisan_qr: group.artisan_qr,
+            });
+          });
+        });
+
+        // Now filter using cart_item_ids
+        const backendFiltered = flat.filter((i) =>
           cart_item_ids.includes(i.id)
         );
+
 
         const merged = [];
 
