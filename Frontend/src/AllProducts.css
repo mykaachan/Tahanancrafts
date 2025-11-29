@@ -113,56 +113,44 @@
 .btn-primary:hover {
   background: #b85f00;
 }
-
-
 /* Tablet / Medium screens */
 @media (max-width: 1024px) {
   .all-products-page-container {
     padding: 24px 16px;
   }
-
   .products-section {
     padding: 24px;
   }
-
   .products-table th, .products-table td {
     padding: 10px 8px;
   }
-
   .product-image {
     width: 40px;
     height: 40px;
     margin-right: 12px;
   }
-
   .product-name {
     font-size: 0.95rem;
   }
-
   .product-category {
     font-size: 0.85rem;
   }
-
   .product-date {
     font-size: 0.8rem;
   }
-
   .btn-primary {
     padding: 8px 20px;
     font-size: 0.95rem;
   }
 }
-
 /* Mobile / Small screens */
 @media (max-width: 768px) {
   .all-products-page-container {
     padding: 20px 12px;
   }
-
   .products-section {
     padding: 20px;
   }
-
   /* Make table scrollable instead of shrinking too much */
   .products-table {
     display: block;
@@ -170,63 +158,51 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-
   .products-table th, .products-table td {
     white-space: nowrap;
     font-size: 0.85rem;
     padding: 8px 6px;
   }
-
   .product-image {
     width: 36px;
     height: 36px;
     margin-right: 10px;
   }
-
   .add-product-btn-container {
     text-align: center;
     margin-bottom: 12px;
   }
-
   .btn-primary {
     padding: 7px 18px;
     font-size: 0.9rem;
   }
 }
-
 /* Very small screens / smartphones */
 @media (max-width: 480px) {
   .all-products-page-container {
     padding: 16px 8px;
   }
-
   .products-section {
     padding: 16px;
   }
-
   .products-table th, .products-table td {
     font-size: 0.8rem;
     padding: 6px 4px;
   }
-
   .product-image {
     width: 32px;
     height: 32px;
     margin-right: 8px;
   }
-
   .product-name {
     font-size: 0.85rem;
   }
-
   .product-category {
     font-size: 0.75rem;
   }
-
   .product-date {
     font-size: 0.7rem;
   }
-
   .btn-primary {
     padding: 6px 14px;
     font-size: 0.85rem;

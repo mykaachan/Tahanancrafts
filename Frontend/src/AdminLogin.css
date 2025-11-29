@@ -10,7 +10,6 @@
   font-family: "Segoe UI", sans-serif;
   overflow: hidden;
 }
-
 /* Dark overlay for better contrast */
 .admin-login-page::before {
   content: "";
@@ -20,7 +19,6 @@
   backdrop-filter: blur(3px);
   z-index: 1;
 }
-
 /* ===== Glass Login Box ===== */
 .login-container {
   position: relative;
@@ -37,7 +35,6 @@
   align-items: center;
   justify-content: center;
 }
-
 /* ===== Centered TC Logo (Roman Style) ===== */
 .login-logo {
   font-family: "Times New Roman", Times, serif;
@@ -52,8 +49,6 @@
   justify-content: center;
   width: 100%;
 }
-
-
 /* ===== Login Form ===== */
 .login-form {
   display: flex;
@@ -61,14 +56,12 @@
   gap: 12px;
   width: 100%;
 }
-
 .login-form label {
   text-align: left;
   font-weight: 600;
   color: #4d3b2f;
   font-size: 0.9rem;
 }
-
 .login-form input {
   padding: 8px 10px;
   border: 1px solid #b0a597;
@@ -79,12 +72,10 @@
   color: #3a2c22;
   transition: border 0.2s ease, box-shadow 0.2s ease;
 }
-
 .login-form input:focus {
   border-color: #7b6856;
   box-shadow: 0 0 4px rgba(123, 104, 86, 0.4);
 }
-
 /* ===== Login Button ===== */
 .login-btn {
   background: #4d3b2f;
@@ -98,28 +89,23 @@
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
-
 .login-btn:hover {
   background: #9d816a;
   transform: translateY(-1px);
 }
-
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
   .login-container {
     width: 90%;
     padding: 30px 25px;
   }
-
   .login-logo {
     font-size: 2.8rem;
     letter-spacing: 5px;
   }
-
   .login-form input {
     font-size: 0.9rem;
   }
-
   .login-btn {
     font-size: 0.9rem;
   }
@@ -130,44 +116,36 @@
     padding: 20px;
     background-size: cover;
   }
-
   .login-container {
     width: 90%; 
     padding: 30px 20px;
   }
-
   .login-logo {
     font-size: 3.5rem; 
     letter-spacing: 7px;
     margin-bottom: 20px;
   }
-
   .login-form input {
     font-size: 0.9rem;
     padding: 7px 10px;
   }
-
   .login-btn {
     font-size: 0.9rem;
     padding: 9px;
   }
 }
-
 @media (max-width: 480px) {
   .login-container {
     padding: 25px 15px;
   }
-
   .login-logo {
     font-size: 2.5rem;
     letter-spacing: 5px;
   }
-
   .login-form input {
     font-size: 0.85rem;
     padding: 6px 8px;
   }
-
   .login-btn {
     font-size: 0.85rem;
     padding: 8px;

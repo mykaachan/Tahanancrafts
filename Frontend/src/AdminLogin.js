@@ -1,6 +1,5 @@
 import React from "react";
 import "./AdminLogin.css";
-
 function AdminLogin() {
   return (
     <div className="admin-login-page">
@@ -19,5 +18,4 @@ function AdminLogin() {
     </div>
   );
 }
-
 export default AdminLogin;

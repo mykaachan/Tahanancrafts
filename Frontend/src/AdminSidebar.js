@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./AdminSidebar.css";
 import Logo2 from "./Logo2.png";
-
 function AdminSidebar() {
   return (
     <div className="admin-sidebar">
@@ -55,5 +54,4 @@ function AdminSidebar() {
     </div>
   );
 }
-
 export default AdminSidebar;

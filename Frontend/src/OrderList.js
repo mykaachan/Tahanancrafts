@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Layout from './components/Layout';
 import './OrderList.css';
-
 const STATUS_TABS = [
   { key: 'all', label: 'All' },
   { key: 'to-ship', label: 'To Ship' },
@@ -12,7 +11,6 @@ const STATUS_TABS = [
   { key: 'preorders', label: 'Pre-Orders' },
   { key: 'shipping-paid', label: 'Shipping Fee Paid Orders' },
 ];
-
 const placeholderOrders = [
   {
     id: '123445',
@@ -45,7 +43,6 @@ const placeholderOrders = [
     shippingFeePaid: 150,
   },
 ];
-
 const statusFilterMap = {
   all: () => true,
   'to-ship': order => order.status === 'To Ship',
@@ -56,48 +53,37 @@ const statusFilterMap = {
   preorders: order => order.isPreorder === true,
   'shipping-paid': order => order.shippingFeePaid > 0,
 };
-
 const STATUS_TRANSITIONS = {
   Pending: ['To Ship', 'Cancelled'],
   'To Ship': ['Shipping', 'Cancelled'],
   Shipping: ['Delivered'],
   Delivered: ['Refunded'],
 };
-
 const OrderList = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [orderIdFilter, setOrderIdFilter] = useState('');
   const [orders, setOrders] = useState(placeholderOrders);
   const [editingStatusId, setEditingStatusId] = useState(null);
-
   const [preorderFields, setPreorderFields] = useState({});
   const [shippingFields, setShippingFields] = useState({});
-
   const filteredOrders = orders.filter(order => {
     const statusFilter = statusFilterMap[activeTab];
     return statusFilter(order) && (orderIdFilter === '' || order.id.includes(orderIdFilter));
   });
-
   const handleStatusClick = (orderId) => setEditingStatusId(orderId);
-
   const handleStatusChange = (orderId, newStatus) => {
     setOrders(prev => prev.map(order => order.id === orderId ? { ...order, status: newStatus } : order));
     setEditingStatusId(null);
   };
-
   const handlePreorderFieldChange = (orderId, field, value) => {
     setPreorderFields(prev => ({ ...prev, [orderId]: { ...prev[orderId], [field]: value } }));
   };
-
   const confirmPreorder = (order) => alert(`Preorder ${order.id} confirmed!`);
   const rejectPreorder = (order) => alert(`Preorder ${order.id} rejected!`);
-
   const handleShippingFieldChange = (orderId, field, value) => {
     setShippingFields(prev => ({ ...prev, [orderId]: { ...prev[orderId], [field]: value } }));
   };
-
   const acceptShippingOrder = (order) => alert(`Order ${order.id} accepted!`);
-
   const refundBuyer = (order) => {
     const reason = shippingFields[order.id]?.refundReason;
     if (!reason) {
@@ -106,14 +92,12 @@ const OrderList = () => {
     }
     alert(`Order ${order.id} refunded. Reason: ${reason}`);
   };
-
   return (
     <Layout>
       <div className="order-list-page-container">
         <h1 className="page-title">Product Details</h1>
         <div className="orders-section">
           <h2>Orders List</h2>
-
           {/* Tabs */}
           <div className="orders-tabs">
             {STATUS_TABS.map(tab => (
@@ -126,7 +110,6 @@ const OrderList = () => {
               </button>
             ))}
           </div>
-
           {/* Controls */}
           <div className="orders-controls">
             <input
@@ -139,10 +122,8 @@ const OrderList = () => {
             <button className="export-btn">Export</button>
             <button className="export-btn">Export History</button>
           </div>
-
           {/* Orders List */}
           <div className="orders-list-container">
-
             {/* NORMAL TABS (ALSO ADD "TO SHIP" HERE) */}
             {activeTab !== 'requests' && 
  activeTab !== 'preorders' && 
@@ -198,9 +179,6 @@ const OrderList = () => {
                 </div>
               </>
             )}
-
-            
-
             {/* ✅ TO SHIP TAB (FULL UI) */}
             {activeTab === 'to-ship' && (
               <div className="orders-list">
@@ -208,7 +186,6 @@ const OrderList = () => {
                   <div className="no-orders">No orders to ship.</div>
                 ) : filteredOrders.map(order => {
                   const fields = shippingFields[order.id] || {};
-
                   return (
                     <div className="order-toship-card" key={order.id}>
                       <div className="order-summary">
@@ -221,13 +198,11 @@ const OrderList = () => {
                           <div><strong>Date:</strong> {order.date}</div>
                         </div>
                       </div>
-
                       <div className="order-actions">
                         <button className="approve-btn">Book Lalamove / Enter Tracking #</button>
                         <button className="approve-btn">Mark as Shipped</button>
                         <button className="decline-btn">Cancel Order & Refund Buyer</button>
                       </div>
-
                       <div className="shipment-fields">
                         <div className="field-row">
                           <label>Tracking Number:</label>
@@ -237,7 +212,6 @@ const OrderList = () => {
                             onChange={e => handleShippingFieldChange(order.id, 'trackingNumber', e.target.value)}
                           />
                         </div>
-
                         <div className="field-row">
                           <label>Courier:</label>
                           <input
@@ -246,7 +220,6 @@ const OrderList = () => {
                             onChange={e => handleShippingFieldChange(order.id, 'courier', e.target.value)}
                           />
                         </div>
-
                         <div className="field-row">
                           <label>Upload Proof of Shipment:</label>
                           <input
@@ -283,12 +256,10 @@ const OrderList = () => {
             <div><strong>Delivery Date:</strong> {order.date}</div>
           </div>
         </div>
-
         <div className="order-actions">
           <button className="approve-btn">Mark as Delivered</button>
           <button className="decline-btn">Report Buyer Issue</button>
         </div>
-
         {shippingFields[order.id]?.shipmentProof && (
           <div className="field-row">
             <label>Shipment Proof:</label>
@@ -351,7 +322,6 @@ const OrderList = () => {
                 <option value="Auto-cancel Unpaid Shipping/Downpayment">Auto-cancel Unpaid Shipping/Downpayment</option>
               </select>
             </div>
-
             <div className="field-row">
               <label>Status:</label>
               <select
@@ -363,7 +333,6 @@ const OrderList = () => {
                 <option value="Processed">Processed</option>
               </select>
             </div>
-
             <div className="field-row">
               <label>Proof of Refund:</label>
               <input
@@ -383,7 +352,6 @@ const OrderList = () => {
               )}
             </div>
           </div>
-
           <div className="order-actions">
             <button className="approve-btn" onClick={() => alert(`Refund processed for order ${order.id}`)}>
               Process Refund
@@ -397,9 +365,6 @@ const OrderList = () => {
     })}
   </div>
 )}
-
-
-
             {/* Order Requests */}
             {activeTab === 'requests' && (
               <div className="orders-list">
@@ -427,7 +392,6 @@ const OrderList = () => {
                 ))}
               </div>
             )}
-
             {/* Preorder Orders */}
             {activeTab === 'preorders' && (
               <div className="orders-list">
@@ -446,25 +410,21 @@ const OrderList = () => {
                           <div><strong>Buyer Name:</strong> John Doe</div>
                           <div><strong>Shipping Address:</strong> 123 Main St, City, Country</div>
                           <div><strong>Payment Method:</strong> COD / Prepaid</div>
-
                           <label>Estimated Completion Date:</label>
                           <input
                             type="date"
                             value={fields.estimatedDate || ''}
                             onChange={e => handlePreorderFieldChange(order.id, 'estimatedDate', e.target.value)}
                           />
-
                           <label>Notes to Buyer:</label>
                           <textarea
                             value={fields.notes || ''}
                             onChange={e => handlePreorderFieldChange(order.id, 'notes', e.target.value)}
                           />
-
                           <label>Downpayment (50%):</label>
                           <input type="number" value={downpayment} readOnly />
                         </div>
                       </div>
-
                       <div className="order-actions">
                         <button onClick={() => confirmPreorder(order)} className="approve-btn">Confirm Preorder Request</button>
                         <button onClick={() => rejectPreorder(order)} className="decline-btn">Reject Preorder</button>
@@ -474,7 +434,6 @@ const OrderList = () => {
                 })}
               </div>
             )}
-
             {/* Shipping Fee Paid Orders */}
             {activeTab === 'shipping-paid' && (
               <div className="orders-list">
@@ -493,10 +452,8 @@ const OrderList = () => {
                           <div><strong>Shipping Fee Paid:</strong> ₱{order.shippingFeePaid}</div>
                         </div>
                       </div>
-
                       <div className="order-actions">
                         <button onClick={() => acceptShippingOrder(order)} className="approve-btn">Accept Order</button>
-
                         <select
                           value={fields.refundReason || ''}
                           onChange={e => handleShippingFieldChange(order.id, 'refundReason', e.target.value)}
@@ -507,10 +464,8 @@ const OrderList = () => {
                           <option value="Incorrect product listing">Incorrect product listing</option>
                           <option value="Other reasons">Other reasons</option>
                         </select>
-
                         <button onClick={() => refundBuyer(order)} className="decline-btn">Refund Buyer</button>
                       </div>
-
                       <div className="field-row">
                         <label>Upload Proof of Refund:</label>
                         <input
@@ -524,9 +479,7 @@ const OrderList = () => {
                 })}
               </div>
             )}
-
           </div>
-
           <div className="orders-pagination">
             <button className="pagination-btn active">1</button>
             <button className="pagination-btn">2</button>
@@ -538,5 +491,4 @@ const OrderList = () => {
     </Layout>
   );
 };
-
 export default OrderList;

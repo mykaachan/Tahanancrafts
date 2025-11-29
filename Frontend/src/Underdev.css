@@ -14,7 +14,6 @@
   align-items: center;
   font-family: "Poppins", sans-serif;
 }
-
 /* Card container */
 .underdev-card {
   background-color: #ffffff;
@@ -25,7 +24,6 @@
   text-align: center;
   border: 2px solid #e2d7ca;
 }
-
 /* Title */
 .underdev-title {
   font-size: 1.9rem;
@@ -33,7 +31,6 @@
   color: #3e2b20;
   margin-bottom: 1rem;
 }
-
 /* Description */
 .underdev-text {
   font-size: 1rem;
@@ -41,14 +38,12 @@
   margin-bottom: 2rem;
   line-height: 1.6;
 }
-
 .underdev-disclaimer {
   font-size: 0.90rem;
   color: #da0f0f;
   margin-top: 1.5rem;
   font-weight: bold;
 }
-
 /* Button */
 .underdev-btn {
   background-color: #6b4f2f;
@@ -60,26 +55,21 @@
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
 }
-
 .underdev-btn:hover {
   background-color: #846141;
   transform: translateY(-2px);
 }
-
 /* Responsive tweaks */
 @media (max-width: 480px) {
   .underdev-card {
     padding: 2rem 1.5rem;
   }
-
   .underdev-title {
     font-size: 1.5rem;
   }
-
   .underdev-text {
     font-size: 0.95rem;
   }
-
   .underdev-btn {
     padding: 10px 20px;
     font-size: 0.95rem;

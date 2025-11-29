@@ -5,10 +5,8 @@ import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { addToCart, getProduct, getImageUrl } from "./api"; // API call to add items to cart
 import RecommendedProducts from "./YouMayLike";
-
 // fallback image if no product image
 import defaultImg from "./images/basket1.png";
-
 function ProductDetail() {
   const { id } = useParams(); // get product ID from the URL (e.g. /products/5)
   const [product, setProduct] = useState(null);
@@ -18,10 +16,7 @@ function ProductDetail() {
   const navigate = useNavigate(); // for navigation after actions
   const [reviews, setReviews] = useState([]);
   const [sort, setSort] = useState("Latest");
-
-
   let productId = id; // Ensure productId is defined
-
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -36,17 +31,14 @@ function ProductDetail() {
     };
     fetchReviews();
   }, [id]);
-
   const sortedReviews = [...reviews].sort((a, b) => {
     const dateA = new Date(a.created_at);
     const dateB = new Date(b.created_at);
-
     if (sort === "Oldest") return dateA - dateB;
     if (sort === "Highest Rated") return b.score - a.score;
     if (sort === "Lowest Rated") return a.score - b.score;
     return dateB - dateA; // Latest by default
   });
-
   const handleViewShop = () => {
     console.log("Clicked View Shop");
     console.log("Product:", product);
@@ -57,15 +49,11 @@ function ProductDetail() {
       console.warn("No artisan associated with this product");
     }
   };
-
-
-
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const data = await getProduct(id); // use the helper
         setProduct(data);
-
         if (data.images && data.images.length > 0) {
           setSelectedImg(`${process.env.REACT_APP_API_URL}${data.images[0].image}`);
         } else if (data.main_image) {
@@ -79,13 +67,10 @@ function ProductDetail() {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
-
   if (loading) return <p className="loading">Loading product...</p>;
   if (!product) return <p className="error">Product not found</p>;
-
   return (
     <>
      {/* ===== HEADER ===== */}
@@ -126,7 +111,6 @@ function ProductDetail() {
          </Link>
        </div>
            </header>
-
       {/* ===== MAIN CONTENT ===== */}
       <div className="iraya-page">
         <div className="iraya-container">
@@ -152,7 +136,6 @@ function ProductDetail() {
                       className={selectedImg === `${process.env.REACT_APP_API_URL}${product.main_image}` ? "active" : ""}
                     />
                   )}
-
                   {/* ✅ Show additional images */}
                   {product.images && product.images.map((img, i) => (
                     <img
@@ -172,24 +155,19 @@ function ProductDetail() {
               )}
             </div>
           </div>
-
           {/* RIGHT: Details */}
           <div className="iraya-details">
             <h1>{product.name}</h1>
             <h2>{product.brandName || "—"}</h2>
-
             {/* Show description instead of categories */}
             <p className="description">
               {product.description || "No description available."}
             </p>
-
             <h3 className="price">
               ₱{Number(product.regular_price).toLocaleString()}
             </h3>
-
             {/* You can remove this one if you don’t want description repeated */}
             {/* <p className="description">{product.description}</p> */}
-
             {/* Quantity controls */}
             <div className="quantity">
               <label>Quantity</label>
@@ -211,13 +189,10 @@ function ProductDetail() {
                       navigate("/login");
                       return;
                     }
-
                     // Ensure quantity is always at least 1
                     const qty = quantity && quantity > 0 ? quantity : 1;
-
                     // Call your API function
                     await addToCart(userId, product.id, qty);
-
                     alert("✅ Item added to cart!");
                   } catch (err) {
                     console.error("Add to cart failed:", err);
@@ -228,14 +203,12 @@ function ProductDetail() {
                 Add to Cart
               </button>
             </div>
-
               <p className="total">
                 ₱{(product.regular_price * quantity).toLocaleString()}
               </p>
             </div>
           </div>
         </div>
-      
       {/* ===== RATINGS & REVIEWS ===== */}
       <div className="reviews-section">
         <h2>RATINGS & REVIEWS</h2>
@@ -250,7 +223,6 @@ function ProductDetail() {
             </select>
           </div>
         </div>
-
         <div className="reviews-grid">
           {sortedReviews.length > 0 ? (
             sortedReviews.map((review) => (
@@ -275,8 +247,6 @@ function ProductDetail() {
                       : review.name // Full name (anonymous = 0)
                     : `User #${review.user}`}
                 </h4>
-
-
                 <p>{review.review || "(No review text provided)"}</p>
                 <small>
                   Posted on{" "}
@@ -293,11 +263,9 @@ function ProductDetail() {
           )}
         </div>
       </div>
-
-     {/* ===== SHOP SECTION ===== */}
+     {/* ===== SHOP SECTIN ===== */}
       <section className="shop-section">
         <hr className="shop-divider" />
-
         <div
           className="shop-card-horizontal"
           onClick={handleViewShop} // ✅ now using the function
@@ -310,8 +278,6 @@ function ProductDetail() {
               className="shop-avatar"
             />
           </div>
-
-
           <div className="shop-info">
             <h3 className="shop-name">
               {product.artisan?.name || "Artisan Shop"}
@@ -324,14 +290,10 @@ function ProductDetail() {
             </button>
           </div>
         </div>
-
         <hr className="shop-divider" />
       </section>
-
-
       {/* ===== YOU MAY ALSO LIKE ===== */}
       <RecommendedProducts productId={productId} />
-
       {/* ===== FOOTER ===== */}
       <footer className="footer">
         <div className="footer-left">
@@ -343,7 +305,6 @@ function ProductDetail() {
           </p>
           <button className="register-btn">Register</button>
         </div>
-
         <div className="footer-right">
           <hr />
           <div className="footer-content">
@@ -375,5 +336,4 @@ function ProductDetail() {
     </>
   );
 }
-
 export default ProductDetail;

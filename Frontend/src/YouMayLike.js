@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "./api"; 
 import "./ProductDetails.css";
-
 function RecommendedProducts({ productId }) {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const navigate = useNavigate();
@@ -23,13 +22,10 @@ function RecommendedProducts({ productId }) {
     }
     fetchRecommendations();
   }, [productId]);
-
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
   };
-
   if (recommendedProducts.length === 0) return null;
-
   return (
     <section className="related-section">
       <h2 className="related-title">You may also like</h2>
@@ -39,7 +35,6 @@ function RecommendedProducts({ productId }) {
             className="related-card"
             key={product.id}
             onClick={() => handleProductClick(product.id)}
-            
           >
             <img src={getImageUrl(product.main_image)} alt={product.name} />
             <h4>{product.name}</h4>
@@ -51,5 +46,4 @@ function RecommendedProducts({ productId }) {
     </section>
   );
 }
-
 export default RecommendedProducts;

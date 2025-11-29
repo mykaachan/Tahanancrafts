@@ -5,9 +5,6 @@ import VerifyCode from "./VerifyCode";
 import AllProducts from "./AllProducts";
 import AddProduct from "./AddProduct";
 import HomePage from "./HomePage";
-
-
-
 function App() {
   return (
     <Routes>
@@ -15,5 +12,4 @@ function App() {
     </Routes>
   );
 }
-
 export default App;

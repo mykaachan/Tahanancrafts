@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-
 const AdminNotification = () => {
-  const [showNotifications, setShowNotifications] = useState(false);
+const [showNotifications, setShowNotifications] = useState(false);
 const notifications = [
   {
     id: 1,
@@ -68,19 +67,15 @@ const notifications = [
     photos: [1, 2, 3],
   },
 ];
-
   const [selectedNotif, setSelectedNotif] = useState(notifications[0]);
-
   const simpleNotifications = [
     "🧺 New artisan shop registered",
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ];
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
-
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -96,7 +91,6 @@ const notifications = [
             >
               <FaBell size={20} color="#fffdf9" />
               {simpleNotifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -108,17 +102,14 @@ const notifications = [
                 </div>
               )}
             </div>
-
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Notifications</h2>
         </div>
-
         {/* ===== NOTIFICATIONS CONTENT ===== */}
         <div className="notification-wrapper">
           {/* ===== LEFT: Notification List ===== */}
@@ -143,7 +134,6 @@ const notifications = [
               </div>
             ))}
           </div>
-
           {/* ===== MIDDLE: Notification Details ===== */}
           <div className="notification-details">
             <h3>Seller Registration Approval</h3>
@@ -164,7 +154,6 @@ const notifications = [
               ))}
             </div>
           </div>
-
           {/* ===== RIGHT: Shop Info Card ===== */}
           <div className="shop-info-card">
             <div className="shop-img-placeholder"></div>
@@ -186,5 +175,4 @@ const notifications = [
     </div>
   );
 };
-
 export default AdminNotification;

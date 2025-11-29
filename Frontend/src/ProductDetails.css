@@ -1,23 +1,21 @@
 .iraya-page .related-section .related-grid {
-  gap: 35px; /* Adjust spacing between items */
+  gap: 35px; 
 }
 /* Main content wrapper */
 .iraya-page {
-  padding-top: 105px;   /* below header */
+  padding-top: 105px;   
   background: #fffdf9;
   font-family: 'Segoe UI', sans-serif;
 }
-
 /*  product container ONLY */
 .iraya-container {
   display: flex;
   gap: 40px;
   max-width: 1200px;
-  margin: 0 auto;       /* centers the whole block */
-  padding: 0 60px;      /* ⬅️ equal left & right spacing */
+  margin: 0 auto;       
+  padding: 0 60px;     
   align-items: flex-start;
 }
-
 /* LEFT SIDE (Images + Thumbnails) */
 .iraya-container .iraya-images {
   flex: 1;
@@ -25,98 +23,82 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  /* remove this ⬇️ */
-  margin-left: 0;       /* reset left margin so it's balanced */
+  margin-left: 0;      
 }
-
 .iraya-container .iraya-images .main-image {
   width: 750px;
   height: 450px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  /* remove this ⬇️ */
-  margin-left: 0;       /* reset so it doesn’t push only left */
-}
 
+  margin-left: 0;       
+}
 .iraya-container .iraya-images .thumbnails {
   display: flex;
   gap: 20px;
-  justify-content: center;   /* center under main image */
+  justify-content: center; 
 }
-
 .iraya-container .iraya-images .thumbnails img {
-  width: 235px;   /* ⬆️ bigger thumbnail */
-  height: 190px;  /* keep square */
+  width: 235px;   
+  height: 190px;  
   object-fit: cover;
   border-radius: 10px;
   cursor: pointer;
   border: 2px solid transparent;
   transition: 0.2s;
 }
-
 .iraya-container .iraya-images .thumbnails img:hover {
   border-color: #c89b6d;
 }
-
-
-/* RIGHT SIDE (Details) */
 /* RIGHT SIDE (Details) */
 .iraya-container .iraya-details {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;   /* ⬅️ reduced from 12px */
+  gap: 6px;  
 }
-
 .iraya-container .iraya-details h1 {
   font-size: 1.8rem;
   font-weight: 700;
-  margin: 0 0 2px 0;   /* tighter bottom spacing */
+  margin: 0 0 2px 0;  
 }
-
 .iraya-container .iraya-details h2 {
   font-size: 1.1rem;
   color: #555;
   margin: 0 0 2px 0;
   font-weight: 500;
 }
-
 .iraya-container .iraya-details .category {
   font-size: 0.95rem;
   color: #666;
-  margin: 2px 0;   /* was 5px */
+  margin: 2px 0;   
 }
-
 .iraya-container .iraya-details .rating {
   display: flex;
   align-items: center;
-  gap: 4px;    /* was 6px */
+  gap: 4px;    
   font-size: 0.9rem;
   color: #333;
 }
-
 .iraya-container .iraya-details .price {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-top: 4px;   /* was 5px */
+  margin-top: 4px;   
   color: #222;
 }
-
 .iraya-container .iraya-details .description {
-  line-height: 1.4;   /* was 1.6 */
+  line-height: 1.4;   
   color: #444;
   font-size: 0.9rem;
-  margin-top: 6px;   /* was 10px */
+  margin-top: 6px;   
 }
-
 /* Options (Size & Color) */
 .iraya-container .options {
   margin-top: 20px;
   display: flex;
   gap: 40px;
 }
-
 .iraya-container .option label {
   display: block;
   font-size: 0.95rem;
@@ -124,12 +106,10 @@
   font-weight: 600;
   color: #333;
 }
-
 .iraya-container .option .buttons {
   display: flex;
   gap: 10px;
 }
-
 .iraya-container .option .buttons button {
   padding: 6px 14px;
   border: 1px solid #aaa;
@@ -139,12 +119,9 @@
   font-size: 0.9rem;
   transition: all 0.2s;
 }
-
 .iraya-container .option .buttons button:hover {
   background: #f2f2f2;
 }
-
-/* Quantity */
 /* Quantity alignment fix */
 .iraya-container .quantity {
   margin-top: 20px;
@@ -153,7 +130,6 @@
   align-items: flex-start; /* align left with other labels */
   width: fit-content; /* keeps it consistent in width */
 }
-
 .iraya-container .quantity label {
   font-size: 0.95rem;
   font-weight: 600;
@@ -161,14 +137,11 @@
   display: block;
   color: #333;
 }
-
-
 .iraya-container .quantity-controls {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .iraya-container .quantity-controls button {
   padding: 4px 12px;
   font-size: 1rem;
@@ -177,12 +150,10 @@
   cursor: pointer;
   border-radius: 4px;
 }
-
 .iraya-container .quantity-controls span {
   font-size: 1rem;
   font-weight: 600;
 }
-
 /* Add to Cart */
 .iraya-container .add-to-cart {
   margin-top: 25px;
@@ -190,7 +161,6 @@
   align-items: center;
   gap: 25px;
 }
-
 .iraya-container .add-to-cart button {
   padding: 12px 28px;
   background: #c2a68d;
@@ -202,18 +172,14 @@
   cursor: pointer;
   transition: 0.3s;
 }
-
 .iraya-container .add-to-cart button:hover {
   background: #a88c73;
 }
-
 .iraya-container .add-to-cart .total {
   font-size: 1.1rem;
   font-weight: bold;
   color: #222;
 }
-
-
 /* Reviews Section */
 .reviews-section {
   margin: 60px auto;
@@ -221,39 +187,33 @@
   padding: 0 60px;
   font-family: 'Segoe UI', sans-serif;
 }
-
 .reviews-section h2 {
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 20px;
   color: #4a3f35;
 }
-
 .reviews-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
 }
-
 .reviews-header p {
   font-size: 1rem;
   font-weight: 600;
 }
-
 .reviews-actions {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .reviews-actions select {
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 0.9rem;
 }
-
 .review-btn {
   padding: 8px 16px;
   background: #4a3f35;
@@ -264,59 +224,46 @@
   font-size: 0.9rem;
   font-weight: 600;
 }
-
 .review-btn:hover {
   background: #6a5545;
 }
-
 .reviews-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-
 .review-card {
   background: #f9f6f2;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-
 .review-card .stars {
   color: #f2b01e;
   font-size: 1rem;
   margin-bottom: 8px;
 }
-
 .review-card h4 {
   margin: 0 0 8px 0;
   font-weight: 600;
   color: #333;
 }
-
 .review-card p {
   font-size: 0.9rem;
   line-height: 1.4;
   color: #444;
   margin-bottom: 12px;
 }
-
 .review-card small {
   font-size: 0.8rem;
   color: #777;
-
-  
 }
-
-
-
 .related-section {
   margin: 60px auto;
   max-width: 1200px;
   padding: 0 40px;
   font-family: 'Segoe UI', sans-serif;
 }
-
 /* Section Title */
 .related-title {
   font-size: 1.4rem;   /* match products-page h3 */
@@ -324,14 +271,12 @@
   margin-bottom: 20px;
   color: #4a3f35;
 }
-
 /* Grid layout (4 items per row) */
 .related-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* exactly 4 items per row */
   gap: 60px;
 }
-
 /* Individual cards styling */
 .related-card {
   background: #fff;
@@ -339,19 +284,14 @@
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: left;
-
   width: 220px;   /* same as product-card */
   height: auto;
-
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* smooth hover */
 }
-
 .related-card:hover {
   transform: translateY(-5px) scale(1.03); /* slightly lifts and enlarges */
   box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* stronger shadow */
 }
-
-
 .related-card img {
   width: 100%;
   height: 180px;   /* same as product-card */
@@ -359,19 +299,16 @@
   border-radius: 6px;
   margin-bottom: 10px;
 }
-
 .related-card h4 {
   font-size: 1rem;   /* same as product-card h2 */
   font-weight: bold;
   margin: 0;
 }
-
 .related-card p {
   font-size: 0.85rem;
   color: #444;
   margin: 5px 0;
 }
-
 .related-card .price {
   display: block;
   font-size: 0.9rem;
@@ -379,18 +316,12 @@
   margin-top: 5px;
   color: #000;
 }
-
-
-
-
 .shop-section {
   max-width: 1200px;
   padding: 0 60px;
   margin: 60px auto; /* centers the section horizontally */
   font-family: 'Segoe UI', sans-serif;
 }
-
-
 .shop-divider {
   width: 1200px;             /* length of the line */
   height: 2px;
@@ -399,13 +330,11 @@
   border-radius: 2px;
   margin: 20px 0;           /* vertical spacing */
 }
-
 .shop-card-horizontal {
   display: flex;
   align-items: center;
   gap: 30px;
 }
-
 .shop-image-horizontal {
   width: 120px;
   height: 120px;
@@ -417,18 +346,15 @@
   align-items: center;
   flex-shrink: 0;
 }
-
 .shop-avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;        /* ensures image fills the circle */
   transition: transform 0.3s ease;
 }
-
 .shop-avatar:hover {
   transform: scale(1.05);
 }
-
 /* Optional: make it responsive */
 @media (max-width: 600px) {
   .shop-image-horizontal {
@@ -436,21 +362,17 @@
     height: 80px;
   }
 }
-
-
 .shop-info {
   display: flex;
   flex-direction: column;
   gap: 10px;
   text-align: left;
 }
-
 .shop-name {
   font-size: 1.5rem;
   font-weight: 600;
   color: #2e2e2e;
 }
-
 .view-shop-btn {
   padding: 10px 20px;
   background-color: #c59d5f;
@@ -461,12 +383,9 @@
   font-weight: 600;
   transition: background-color 0.3s;
 }
-
 .view-shop-btn:hover {
   background-color: #a47c4b;
 }
-
-
 /* ===== Responsive adjustments for Iraya Page & Related Products ===== */
 @media (max-width: 1024px) {
   .iraya-container {
@@ -474,134 +393,108 @@
     padding: 0 30px;
     gap: 30px;
   }
-
   .iraya-container .iraya-images .main-image {
     width: 100%;
     height: auto;
   }
-
   .iraya-container .iraya-images .thumbnails img {
     width: 150px;
     height: 120px;
   }
-
   .iraya-container .iraya-details {
     gap: 10px;
   }
-
   .iraya-container .options {
     flex-direction: column;
     gap: 20px;
   }
-
   .iraya-container .add-to-cart {
     flex-direction: column;
     gap: 15px;
   }
-
   .reviews-section,
   .related-section,
   .shop-section {
     padding: 0 20px;
     max-width: 100%;
   }
-
   .related-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
     justify-items: center;
   }
 }
-
 @media (max-width: 768px) {
   .iraya-container .iraya-images .thumbnails img {
     width: 100px;
     height: 80px;
   }
-
   .iraya-container .iraya-details h1 {
     font-size: 1.4rem;
   }
-
   .iraya-container .iraya-details h2 {
     font-size: 1rem;
   }
-
   .iraya-container .iraya-details .description {
     font-size: 0.85rem;
   }
-
   .iraya-container .option .buttons button,
   .iraya-container .quantity-controls button,
   .iraya-container .add-to-cart button {
     font-size: 0.85rem;
     padding: 5px 12px;
   }
-
   .reviews-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-
   .related-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-
   .shop-card-horizontal {
     flex-direction: column;
     align-items: center;
     gap: 15px;
   }
-
   .shop-image-horizontal {
     width: 80px;
     height: 80px;
   }
-
   .shop-info {
     text-align: center;
   }
 }
-
 @media (max-width: 480px) {
   .iraya-container .iraya-details h1 {
     font-size: 1.2rem;
   }
-
   .iraya-container .iraya-details h2,
   .iraya-container .iraya-details .category {
     font-size: 0.9rem;
   }
-
   .iraya-container .iraya-details .price {
     font-size: 1rem;
   }
-
   .iraya-container .iraya-details .description {
     font-size: 0.8rem;
   }
-
   .iraya-container .option .buttons button,
   .iraya-container .quantity-controls button,
   .iraya-container .add-to-cart button {
     font-size: 0.8rem;
     padding: 4px 10px;
   }
-
   .related-grid {
     gap: 15px;
   }
-
   .shop-image-horizontal {
     width: 60px;
     height: 60px;
   }
-
   .shop-name {
     font-size: 1.2rem;
   }
-
   .view-shop-btn {
     padding: 8px 16px;
     font-size: 0.85rem;

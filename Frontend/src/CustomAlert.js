@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "./CustomAlert.css";
-
 function CustomAlert({ show, title = "Notice", message, onClose, type = "info" }) {
   useEffect(() => {
     if (show) {
@@ -8,9 +7,7 @@ function CustomAlert({ show, title = "Notice", message, onClose, type = "info" }
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);
-
   if (!show) return null; 
-
   return (
     <div className="custom-alert-overlay">
       <div className={`custom-alert-box ${type}`}>
@@ -23,5 +20,4 @@ function CustomAlert({ show, title = "Notice", message, onClose, type = "info" }
     </div>
   );
 }
-
 export default CustomAlert;

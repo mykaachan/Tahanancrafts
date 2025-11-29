@@ -1,6 +1,5 @@
 import React from "react";
 import "./components/Layout.css";
-
 function LayoutHeaderOnly({ children }) {
   return (
     <div className="layout">
@@ -15,14 +14,12 @@ function LayoutHeaderOnly({ children }) {
               className="logo-image"
             />
           </div>
-
           <div className="header-actions">
             <img
               src="/images/notifications.png"
               alt="Notifications"
               className="notification-icon"
             />
-          
             <div className="user-info">
               <div className="user-avatar">👤</div>
               <span className="username">habingibaan</span>
@@ -30,11 +27,9 @@ function LayoutHeaderOnly({ children }) {
           </div>
         </div>
       </header>
-
       {/* ===== Page Content (below header) ===== */}
       <main>{children}</main>
     </div>
   );
 }
-
 export default LayoutHeaderOnly;

@@ -8,7 +8,6 @@ import {
   FaCartShopping,
   FaPesoSign,
 } from "react-icons/fa6";
-
 import {
   BarChart,
   Bar,
@@ -18,7 +17,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
 // ✅ Static data
 const data = [
   { name: "Jan", revenue: 20000 },
@@ -34,7 +32,6 @@ const data = [
   { name: "Nov", revenue: 24000 },
   { name: "Dec", revenue: 26000 },
 ];
-
 export default function AdminDash() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -42,11 +39,9 @@ export default function AdminDash() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
-
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -74,17 +69,14 @@ export default function AdminDash() {
                 </div>
               )}
             </div>
-
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== WELCOME SECTION ===== */}
         <div className="admindash-welcome">
           <h2>Welcome Back, Admin!</h2>
         </div>
-
         {/* ===== STATS CARDS ===== */}
         <div className="admindash-cards">
           <div className="admindash-card beige">
@@ -94,7 +86,6 @@ export default function AdminDash() {
               <p>50</p>
             </div>
           </div>
-
           <div className="admindash-card taupe">
             <FaStore className="admindash-icon" />
             <div>
@@ -102,7 +93,6 @@ export default function AdminDash() {
               <p>10</p>
             </div>
           </div>
-
           <div className="admindash-card lightgray">
             <FaCartShopping className="admindash-icon" />
             <div>
@@ -119,7 +109,6 @@ export default function AdminDash() {
             </div>
           </div>
         </div>
-
         {/* ===== MAIN CONTENT ===== */}
         <div className="admindash-maincontent">
           <div className="admindash-chart">
@@ -131,7 +120,6 @@ export default function AdminDash() {
                 <option>This Month</option>
               </select>
             </div>
-
             <div style={{ width: "100%", height: 250 }}>
               <ResponsiveContainer>
                 <BarChart data={data}>
@@ -144,7 +132,6 @@ export default function AdminDash() {
               </ResponsiveContainer>
             </div>
           </div>
-
           <div className="admindash-side">
             <div className="top-products">
               <h3>Top Selling Products</h3>
@@ -156,7 +143,6 @@ export default function AdminDash() {
                   <span className="status low">Low Stock</span>
                 </div>
               </div>
-
               <div className="product-item">
                 <img src="https://via.placeholder.com/40" alt="product" />
                 <div className="product-info">
@@ -166,7 +152,6 @@ export default function AdminDash() {
                 </div>
               </div>
             </div>
-
             <div className="recent-orders">
               <h3>Recent Orders</h3>
               <div className="order-item">
@@ -177,7 +162,6 @@ export default function AdminDash() {
                   <span className="status delivered">Delivered</span>
                 </div>
               </div>
-
               <div className="order-item">
                 <img src="https://via.placeholder.com/40" alt="order" />
                 <div className="order-info">

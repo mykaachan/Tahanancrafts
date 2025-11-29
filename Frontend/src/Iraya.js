@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./ProductDetails.css";
 import { ReactComponent as Logo } from "./Logo.svg";
-
 // Images
 import mainImg from "./images/basket1.png";  // default product image
 import thumb1 from "./images/basketg.png";   // green basket
@@ -16,11 +15,9 @@ import barong from "./images/barong1.png";
 import bag1 from "./images/bag1.png";
 import apron from "./images/apron.png";
 import hat from "./images/hat.png";
-
 function Iraya() {
   const [selectedImg, setSelectedImg] = useState(mainImg);
   const [quantity, setQuantity] = useState(1);
-
   return (
     <>
       {/* ===== HEADER ===== */}
@@ -61,7 +58,6 @@ function Iraya() {
     </Link>
   </div>
       </header>
-
       {/* ===== MAIN CONTENT ===== */}
       <div className="iraya-page">
         <div className="iraya-container">
@@ -74,7 +70,6 @@ function Iraya() {
               <img src={thumb3} alt="Yellow Basket" onClick={() => setSelectedImg(thumb3)} />
             </div>
           </div>
-
           {/* RIGHT: Details */}
           <div className="iraya-details">
             <h1>Iraya Basket Lipa</h1>
@@ -87,7 +82,6 @@ function Iraya() {
               and function, meticulously made by skilled Filipino artisans using sustainably
               harvested natural fibers.
             </p>
-
             <div className="options">
               <div className="option">
                 <label>Size</label>
@@ -106,7 +100,6 @@ function Iraya() {
                 </div>
               </div>
             </div>
-
             <div className="quantity">
               <label>Quantity</label>
               <div className="quantity-controls">
@@ -115,7 +108,6 @@ function Iraya() {
                 <button onClick={() => setQuantity(quantity + 1)}>+</button>
               </div>
             </div>
-
             <div className="add-to-cart">
   <Link to="/cart">
     <button>Add to Cart</button>
@@ -128,7 +120,6 @@ function Iraya() {
       {/* ===== RATINGS & REVIEWS ===== */}
 <div className="reviews-section">
   <h2>RATINGS & REVIEWS</h2>
-
   <div className="reviews-header">
     <p>All Reviews (6)</p>
     <div className="reviews-actions">
@@ -141,7 +132,6 @@ function Iraya() {
       <button className="review-btn">Write a Review</button>
     </div>
   </div>
-
   <div className="reviews-grid">
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐⭐</p>
@@ -149,35 +139,30 @@ function Iraya() {
       <p>salamat po mabilis delivery at maganda nman Ang bilao thank you po ng marami.....😊😊😊😊😊😊😊</p>
       <small>Posted on May 14, 2025</small>
     </div>
-
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐⭐</p>
       <h4>Mikaela M.</h4>
       <p>SUPER LEGIT GUYS, WALANG LABIS, WALANG KULANG, SOBRANG LAKI NITO. WORTH IT NAMAN SIYA GUYSS!!💞💞</p>
       <small>Posted on May 15, 2025</small>
     </div>
-
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐½</p>
       <h4>Missy R.</h4>
       <p>satisfied buyer here, well packed and maganda yung bilao, sakto para sa mga paorder kong kakanin...</p>
       <small>Posted on May 16, 2025</small>
     </div>
-
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐</p>
       <h4>Angela P.</h4>
       <p>Double-stitched for extra strength, Support local small businesses, eco-friendly bamboo material...</p>
       <small>Posted on May 17, 2025</small>
     </div>
-
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐⭐</p>
       <h4>Gabrielo K.</h4>
       <p>salamat po ng marami dumating on time sakto sakto, salamat din Kay kuya rider na mabait...</p>
       <small>Posted on May 18, 2025</small>
     </div>
-
     <div className="review-card">
       <p className="stars">⭐⭐⭐⭐½</p>
       <h4>Inday H.</h4>
@@ -186,7 +171,6 @@ function Iraya() {
     </div>
   </div>
 </div>
-
 {/* ===== SHOP SECTION ===== */}
 <section className="shop-section">
   <hr className="shop-divider" />
@@ -201,10 +185,6 @@ function Iraya() {
   </div>
   <hr className="shop-divider" />
 </section>
-
-
-
-
  {/* ===== YOU MAY ALSO LIKE ===== */}
       <section className="related-section">
         <h2 className="related-title">You may also like</h2>
@@ -215,49 +195,42 @@ function Iraya() {
             <p>Butterfly knife (Balisong)</p>
             <span className="price">₱349</span>
           </div>
-
           <div className="related-card">
             <img src={bag} alt="Weaved Bag" />
             <h4>Habing Ibaan</h4>
             <p>Weaved Bag</p>
             <span className="price">₱1,200</span>
           </div>
-
           <div className="related-card">
             <img src={basket} alt="Basket" />
             <h4>Iraya Basket Lipa</h4>
             <p>Colored Wooven Tray Basket</p>
             <span className="price">₱500</span>
           </div>
-
           <div className="related-card">
             <img src={mat} alt="Mat" />
             <h4>Burdang Taal Lace Medallions</h4>
             <p>Table Runner</p>
             <span className="price">₱149</span>
           </div>
-
           <div className="related-card">
             <img src={barong} alt="Barong Tagalog" />
             <h4>Piña Ginoo</h4>
             <p>Barong Tagalog</p>
             <span className="price">₱1,199</span>
           </div>
-
           <div className="related-card">
             <img src={bag1} alt="Sling Bag" />
             <h4>Habing Ibaan</h4>
             <p>Weaved Sling Bag</p>
             <span className="price">₱250</span>
           </div>
-
           <div className="related-card">
             <img src={apron} alt="Apron" />
             <h4>Habing Ibaan</h4>
             <p>Weaved Apron</p>
             <span className="price">₱350</span>
           </div>
-
           <div className="related-card">
             <img src={hat} alt="Hat" />
             <h4>Habing Ibaan</h4>
@@ -266,10 +239,6 @@ function Iraya() {
           </div>
         </div>
       </section>
-      
-      
-
-
       {/* ===== FOOTER ===== */}
       <footer className="footer">
         <div className="footer-left">
@@ -312,5 +281,4 @@ function Iraya() {
     </>
   );
 }
-
 export default Iraya;

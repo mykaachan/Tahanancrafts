@@ -4,15 +4,10 @@ import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { getCartItems, updateCartItem, removeCartItem } from "./api";
 import Footer from "./Footer";
-
 function Cart() {
   const [groups, setGroups] = useState([]); // 🟡 groups by artisan
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  // ---------------------------------------------------------
-  // LOAD CART (ALREADY GROUPED FROM BACKEND)
-  // ---------------------------------------------------------
   useEffect(() => {
     const fetchCart = async () => {
       const userId = localStorage.getItem("user_id");
@@ -21,7 +16,6 @@ function Cart() {
         navigate("/login");
         return;
       }
-
       try {
         const data = await getCartItems(userId);
 
@@ -53,7 +47,6 @@ function Cart() {
         setLoading(false);
       }
     };
-
     fetchCart();
   }, [navigate]);
 
@@ -86,7 +79,6 @@ function Cart() {
   // ---------------------------------------------------------
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
-
     try {
       await removeCartItem(id, userId);
       setGroups((prev) =>
@@ -167,7 +159,6 @@ function Cart() {
   }, 0);
 
   if (loading) return <p>Loading cart...</p>;
-
   return (
     <>
       {/* HEADER */}
@@ -181,7 +172,6 @@ function Cart() {
             <li><Link to="/profile">Profile</Link></li>
           </ul>
         </nav>
-
         <div className="header-actions">
           <div className="search-box">
             <input type="text" placeholder="Search" />
@@ -192,12 +182,10 @@ function Cart() {
           </Link>
         </div>
       </header>
-
       {/* CART CONTENT */}
       <main className="cart-page">
         <div className="cart-container">
           <h1 className="cart-title">My Shopping Cart</h1>
-
           <div className="cart-layout">
             {/* CART ITEMS */}
             <div className="cart-items">
@@ -276,7 +264,6 @@ function Cart() {
                 <button className="back-btn">Back to Shop</button>
               </Link>
             </div>
-
             {/* SUMMARY */}
             <div className="cart-summary">
               <hr />
@@ -321,10 +308,8 @@ function Cart() {
           </div>
         </div>
       </main>
-
       <Footer />
     </>
   );
 }
-
 export default Cart;

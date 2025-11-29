@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import './AddProduct.css';
 import { fetchCategories, fetchMaterials, addProduct } from './api';
-
 const AddProduct = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,7 +17,6 @@ const AddProduct = () => {
   const [materialOptions, setMaterialOptions] = useState([]);
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
-
   useEffect(() => {
     async function fetchOptions() {
       try {
@@ -332,5 +330,4 @@ const AddProduct = () => {
     </div>
   );
 };
-
 export default AddProduct;

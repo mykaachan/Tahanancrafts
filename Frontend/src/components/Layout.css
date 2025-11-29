@@ -2,29 +2,24 @@
   min-height: 100vh;
   background-color: #f8f6f0;
 }
-
 .header {
   background-color: #F0D9BB;
   border-bottom: 1px solid #e0e0e0;
 }
-
 .header-top {
   height: 4px;
   background-color: #87CEEB;
 }
-
 .header-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 30px;
 }
-
 .logo {
   display: flex;
   align-items: center;
 }
-
 .logo-image {
   height: 70px;
   width: auto;
@@ -35,7 +30,6 @@
   align-items: center;
   gap: 20px;
 }
-
 .notification-icon,
 .message-icon {
   width: 24px;
@@ -43,18 +37,15 @@
   cursor: pointer;
   transition: opacity 0.2s;
 }
-
 .notification-icon:hover,
 .message-icon:hover {
   opacity: 0.7;
 }
-
 .user-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .user-avatar {
   width: 35px;
   height: 35px;
@@ -124,26 +115,21 @@
     width: 200px;
     padding: 20px 0;
   }
-
   .nav-item {
     padding: 12px 20px;
     gap: 10px;
   }
-
   .main-content {
     padding: 20px;
   }
-
   .header-main {
     padding: 15px 20px;
   }
 }
-
 @media (max-width: 768px) {
   .main-container {
     flex-direction: column;
   }
-
   .dashboard-sidebar {
     width: 100%;
     border-right: none;
@@ -153,56 +139,45 @@
     justify-content: space-around;
     padding: 10px 0;
   }
-
   .nav-item {
     padding: 10px;
     flex-direction: column;
     align-items: center;
   }
-
   .main-content {
     padding: 15px;
   }
-
   .header-main {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px 15px;
   }
-
   .header-actions {
     gap: 10px;
     margin-top: 10px;
   }
-
   .logo-image {
     height: 50px;
   }
-
   .username {
     font-size: 12px;
   }
 }
-
 @media (max-width: 480px) {
   .dashboard-sidebar {
     flex-direction: column;
     padding: 10px 0;
   }
-
   .nav-item {
     padding: 8px;
     font-size: 12px;
   }
-
   .main-content {
     padding: 10px;
   }
-
   .header-main {
     padding: 8px 10px;
   }
-
   .logo-image {
     height: 40px;
   }

@@ -3,13 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getProfile } from "../api";
 import "../Profile.css";
-
 const ProfileSidebar = () => {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const toggleAccountMenu = () => setIsAccountOpen(!isAccountOpen);
   const userId = localStorage.getItem("user_id");
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -21,9 +19,7 @@ const ProfileSidebar = () => {
     };
     fetchProfile();
   }, [userId]);
-
   if (!profileData) return null;
-
   const initials = profileData.initials
     ? profileData.initials
     : profileData.name
@@ -33,11 +29,9 @@ const ProfileSidebar = () => {
         .join("")
         .toUpperCase()
     : "U";
-
   const avatarSrc =
     profileData.avatar_url ||
     `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff`;
-
   return (
     <aside className="sidebar">
       <div className="profile-info">
@@ -46,7 +40,6 @@ const ProfileSidebar = () => {
           {profileData.username || profileData.name || "User"}
         </h3>
       </div>
-
       <nav className="profile-nav">
         <ul>
           <li className="parent-item">
@@ -68,5 +61,4 @@ const ProfileSidebar = () => {
     </aside>
   );
 };
-
 export default ProfileSidebar;

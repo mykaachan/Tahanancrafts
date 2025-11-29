@@ -4,12 +4,10 @@ import "./StoryPage.css";
 import Footer from "./Footer";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchArtisanStories } from "./api";
-
 function StoryPage() {
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const BASE_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
-
   useEffect(() => {
     async function loadStories() {
       try {
@@ -22,10 +20,8 @@ function StoryPage() {
         setLoading(false);
       }
     }
-
     loadStories();
   }, []);
-
   return (
     <div className="story-page">
       {/* ===== HEADER ===== */}
@@ -67,23 +63,19 @@ function StoryPage() {
             </li>
           </ul>
         </nav>
-
         <div className="header-actions">
           <div className="search-box">
             <input type="text" placeholder="Search" />
             <button className="search-btn">🔍</button>
           </div>
-
           <Link to="/cart" style={{ textDecoration: "none" }}>
             <button className="cart-btn">CART 🛒</button>
           </Link>
         </div>
       </header>
-
       {/* ===== STORY CONTENT ===== */}
       <section className="story-content">
         <h1 className="story-title">Stories</h1>
-
         {loading ? (
           <p className="loading-text">Loading artisan stories...</p>
         ) : stories.length === 0 ? (
@@ -102,7 +94,6 @@ function StoryPage() {
                 alt={story.name}
                 className="story-image"
               />
-
               <div className="story-text">
                 <h2 className="story-heading">{story.name}</h2>
                 <p className="story-paragraph">{story.location}</p>
@@ -116,5 +107,4 @@ function StoryPage() {
     </div>
   );
 }
-
 export default StoryPage;

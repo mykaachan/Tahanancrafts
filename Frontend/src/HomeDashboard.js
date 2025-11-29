@@ -1,14 +1,8 @@
-// =======================
-// HomeDashboard.js
-// Restored full layout + working API logic
-// =======================
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import "./HomeDashboard.css";
 import { getImageUrl } from "./api";
-
 // Keep placeholder/sample transactions (you had these)
 const allTransactions = [
   {
@@ -32,83 +26,53 @@ const allTransactions = [
     date: "1 May 2025",
   },
 ];
-
 const API_URL = process.env.REACT_APP_API_URL;
-
 const HomeDashboard = () => {
   const navigate = useNavigate();
-
   // Breadcrumb / view state
   const [showHistory, setShowHistory] = useState(false);
-
   // Seller identification (saved at login)
   const artisanIdFromStorage = localStorage.getItem("artisan_id");
   const userIdFromStorage = localStorage.getItem("user_id");
-
-  // ================================
-  // Products (seller)
-  // ================================
   const [sellerProducts, setSellerProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-
-  // ================================
   // Top selling (seller)
-  // ================================
   const [topSellerProducts, setTopSellerProducts] = useState([]);
   const [loadingTopSellers, setLoadingTopSellers] = useState(true);
-
-  // ================================
   // Shop performance
-  // ================================
   const [shopPerformance, setShopPerformance] = useState("—");
   const [shopAverageRating, setShopAverageRating] = useState(null);
-
-  // ================================
   // Business insights (placeholders)
-  // ================================
   const [insights, setInsights] = useState({
     sales: 0,
     orders: 0,
   });
-
-  // ================================
   // Transaction History UI state
-  // ================================
   const [transactions, setTransactions] = useState(allTransactions);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // ================================
   // Helper: compute shop performance from avg_rating in products
-  // ================================
   const computeShopPerformance = (products) => {
     if (!products || products.length === 0) {
       setShopPerformance("NO RATING");
       setShopAverageRating(null);
       return;
     }
-
     const ratings = products
       .map((p) => p.avg_rating)
       .filter((r) => typeof r === "number");
-
     if (ratings.length === 0) {
       setShopPerformance("NO RATING");
       setShopAverageRating(null);
       return;
     }
-
     const avg = ratings.reduce((sum, r) => sum + r, 0) / ratings.length;
     setShopAverageRating(Number(avg.toFixed(2)));
-
     if (avg <= 2.5) setShopPerformance("POOR");
     else if (avg <= 3.8) setShopPerformance("AVERAGE");
     else setShopPerformance("EXCELLENT");
   };
-
-  // ================================
   // Fetch seller products (main)
-  // ================================
   useEffect(() => {
     const fetchSellerProducts = async () => {
       try {
@@ -117,7 +81,6 @@ const HomeDashboard = () => {
           setSellerProducts([]);
           return;
         }
-
         setLoadingProducts(true);
         const res = await fetch(`${API_URL}/api/products/product/shop/${artisanIdFromStorage}/`);
         if (!res.ok) {
@@ -144,14 +107,11 @@ const HomeDashboard = () => {
           // keep any other fields you might use
           artisan: p.artisan || data.artisan || null,
         }));
-
         setSellerProducts(normalized);
-
         // compute insights placeholders (simple sums — replace by real API if available)
         const totalSales = 0; // placeholder (requires orders endpoint)
         const totalOrders = 0;
         setInsights({ sales: totalSales, orders: totalOrders });
-
         // compute shop performance from avg_rating values
         computeShopPerformance(normalized);
       } catch (err) {
@@ -160,14 +120,10 @@ const HomeDashboard = () => {
         setLoadingProducts(false);
       }
     };
-
     fetchSellerProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [artisanIdFromStorage]);
-
-  // ================================
   // Fetch top selling for seller
-  // ================================
   useEffect(() => {
     const fetchTopSelling = async () => {
       try {
@@ -175,7 +131,6 @@ const HomeDashboard = () => {
           setTopSellerProducts([]);
           return;
         }
-
         setLoadingTopSellers(true);
         const res = await fetch(`${API_URL}/api/products/product/top-selling/${artisanIdFromStorage}/`);
         if (!res.ok) {
@@ -193,10 +148,8 @@ const HomeDashboard = () => {
         setLoadingTopSellers(false);
       }
     };
-
     fetchTopSelling();
   }, [artisanIdFromStorage]);
-
   // ================================
   // Optional: fetch transactions (placeholder)
   // You can replace with real orders endpoint when available
@@ -218,10 +171,8 @@ const HomeDashboard = () => {
 
     fetchTransactions();
   }, []);
-
-  // ================================
   // Utility: handle product click (navigate to product page and log view)
-  // ================================
+
   const handleProductClick = (productId) => {
     const userId = userIdFromStorage;
     if (userId) {
@@ -233,10 +184,7 @@ const HomeDashboard = () => {
     }
     navigate(`/product/${productId}`);
   };
-
-  // ================================
   // Render helpers
-  // ================================
   const formatPrice = (p) => {
     if (!p) return "—";
     try {
@@ -247,10 +195,7 @@ const HomeDashboard = () => {
       return p;
     }
   };
-
-  // ================================
   // Main return
-  // ================================
   return (
     <Layout>
       <div className="dashboard-page-container">
@@ -260,7 +205,6 @@ const HomeDashboard = () => {
             Home{showHistory ? " > Transaction History" : ""}
           </span>
         </div>
-
         {!showHistory ? (
           <div className="dashboard-main">
             <div className="dashboard-left">
@@ -274,29 +218,24 @@ const HomeDashboard = () => {
                     <span className="todo-count">0</span>
                     <span className="todo-label">Pending Orders</span>
                   </div>
-
                   <div className="todo-item" onClick={() => navigate("/order-list?tab=to-ship")}>
                     <span className="todo-count">0</span>
                     <span className="todo-label">To-Process Shipment</span>
                   </div>
-
                   <div className="todo-item" onClick={() => navigate("/order-list?tab=shipped")}>
                     <span className="todo-count">{insights.orders || 10}</span>
                     <span className="todo-label">Processed Shipment</span>
                   </div>
-
                   <div className="todo-item" onClick={() => navigate("/order-list?tab=delivered")}>
                     <span className="todo-count">0</span>
                     <span className="todo-label">Delivered</span>
                   </div>
-
                   <div className="todo-item" onClick={() => navigate("/order-list?tab=refund-cancel")}>
                     <span className="todo-count">0</span>
                     <span className="todo-label">Return/Refund/Cancel</span>
                   </div>
                 </div>
               </div>
-
               {/* =======================
                   BUSINESS INSIGHTS
               ======================== */}
@@ -314,13 +253,11 @@ const HomeDashboard = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="dashboard-card graph-card" style={{ flex: 1, minWidth: '280px', boxSizing: 'border-box', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {/* TODO: Integrate backend sales trend graph here */}
                   <div style={{ textAlign: 'center', padding: '12px' }}>[Sales trend graph placeholder]</div>
                 </div>
               </div>
-
               {/* ===========================
                  TRANSACTION HISTORY
               ============================ */}
@@ -341,7 +278,6 @@ const HomeDashboard = () => {
                     </div>
                   ))}
                 </div>
-
                 <button
                   className="export-report-btn"
                   style={{ marginTop: '16px' }}
@@ -350,7 +286,6 @@ const HomeDashboard = () => {
                   View All Transactions
                 </button>
               </div>
-
               {/* ===========================
                  PRODUCTS CARD (Restored layout)
               ============================ */}
@@ -366,7 +301,6 @@ const HomeDashboard = () => {
                         const stock = product.stock_quantity ?? 0;
                         const stockStatus = stock <= 10 ? "Low Stock" : "In Stock";
                         const statusClass = stock <= 10 ? "status-lowstock" : "status-good";
-
                         return (
                           <div key={product.id} className="product-row" style={{ display: 'grid', gridTemplateColumns: '1.5fr 0.5fr 0.7fr 1fr 1fr', alignItems: 'center', gap: 0, padding: '12px 0', borderBottom: '1px solid #eee', cursor: 'pointer' }} onClick={() => handleProductClick(product.id)}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -376,13 +310,9 @@ const HomeDashboard = () => {
                                 <span className="product-category" style={{ color: '#7c6a58', fontSize: '0.95rem' }}>{product.category}</span>
                               </div>
                             </div>
-
                             <span className="product-stock" style={{ color: '#222', fontSize: '1rem', textAlign: 'center' }}>{stock}</span>
-
                             <span className="product-price" style={{ color: '#222', fontSize: '1rem', textAlign: 'center' }}>₱{formatPrice(product.sales_price || product.regular_price)}</span>
-
                             <span className={`product-status ${statusClass}`} style={{ background: stock <= 10 ? '#ffe5d0' : '#e6f7e6', color: stock <= 10 ? '#d97a00' : '#2e7d32', fontWeight: 500, borderRadius: '12px', padding: '4px 16px', fontSize: '1rem', textAlign: 'center', display: 'inline-block' }}>{stockStatus}</span>
-
                             <span className="product-date" style={{ color: '#b8a48a', fontSize: '1rem', textAlign: 'center' }}>{product.created_at ? product.created_at.slice(0,10) : ''}</span>
                           </div>
                         );
@@ -394,7 +324,6 @@ const HomeDashboard = () => {
                 </div>
               </div>
             </div>
-
             {/* ===========================
                 RIGHT SIDE CARDS (Restored)
             ============================ */}
@@ -411,7 +340,6 @@ const HomeDashboard = () => {
                   </div>
                 </div>
               </div>
-
               {/* TOP SELLER PRODUCTS */}
               <div className="dashboard-card">
                 <h4>Top Seller Products</h4>
@@ -431,7 +359,6 @@ const HomeDashboard = () => {
                               <span style={{ color: '#b8a48a' }}>₱{formatPrice(prod.sales_price || prod.regular_price)}</span>
                             </div>
                           </div>
-
                           <span style={{ fontWeight: 600, color: '#222', fontSize: '1rem' }}>{prod.total_sold || prod.sales || 0} Sales</span>
                         </div>
                       );
@@ -441,7 +368,6 @@ const HomeDashboard = () => {
                   )}
                 </div>
               </div>
-
               {/* FORECAST & TRENDS */}
               <div className="dashboard-card forecast-card" style={{ marginTop: '16px' }}>
                 <h4>Forecast & Trends</h4>
@@ -464,12 +390,10 @@ const HomeDashboard = () => {
           <div className="dashboard-main">
             <div className="dashboard-card" style={{ width: '100%' }}>
               <h3>Transaction History</h3>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span></span>
                 <input type="text" placeholder="Search" style={{ borderRadius: '20px', padding: '4px 16px', border: '1px solid #ccc', width: '220px' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
               </div>
-
               <div className="transaction-history-list" style={{ marginTop: '12px' }}>
                 <div className="transaction-history-list-header" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr', gap: '12px', padding: '8px 0', borderBottom: '1px solid #eee' }}>
                   <span>Order ID</span>
@@ -478,7 +402,6 @@ const HomeDashboard = () => {
                   <span>Status</span>
                   <span>Date</span>
                 </div>
-
                 {(transactions || []).filter(tx => {
                   if (!searchQuery) return true;
                   const q = searchQuery.toLowerCase();
@@ -499,7 +422,6 @@ const HomeDashboard = () => {
                   </div>
                 ))}
               </div>
-
               <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
                 <button className="export-report-btn" onClick={() => setShowHistory(false)}>Back to Dashboard</button>
                 <button className="export-report-btn">Export as CSV</button>
@@ -511,5 +433,4 @@ const HomeDashboard = () => {
     </Layout>
   );
 };
-
 export default HomeDashboard;

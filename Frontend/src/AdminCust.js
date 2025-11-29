@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell, FaTrash } from "react-icons/fa"; 
-
 const AdminCust = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -63,12 +62,10 @@ const AdminCust = () => {
       image: "https://via.placeholder.com/40",
     },
   ];
-
   return (
     <div className="admindash-container">
       {/* ===== SIDEBAR ===== */}
       <AdminSidebar />
-
       {/* ===== MAIN SECTION ===== */}
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
@@ -86,7 +83,6 @@ const AdminCust = () => {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -98,17 +94,14 @@ const AdminCust = () => {
                 </div>
               )}
             </div>
-
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Customers</h2>
         </div>
-
         {/* ===== CUSTOMER TABLE ===== */}
         <div className="admincust-table">
           <table>
@@ -160,7 +153,6 @@ const AdminCust = () => {
               ))}
             </tbody>
           </table>
-
           {/* ===== TABLE FOOTER ===== */}
           <div className="table-footer">
             <p>Showing 1 - 5 from 100</p>
@@ -180,5 +172,4 @@ const AdminCust = () => {
     </div>
   );
 };
-
 export default AdminCust;

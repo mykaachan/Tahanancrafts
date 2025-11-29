@@ -8,12 +8,10 @@ import "./HomePage.css";
 import HeaderFooter from "./HeaderFooter";
 import { fetchLatestProducts, fetchFeaturedProducts, getUserByContact } from "./api";
 import { useNavigate } from "react-router-dom";
-
 function HomePage() {
   const [latestProducts, setLatestProducts] = React.useState([]);
   const [featuredProducts, setFeaturedProducts] = React.useState([]);
   const navigate = useNavigate();
-
   React.useEffect(() => {
     async function getLatestProducts() {
       try {
@@ -23,13 +21,10 @@ function HomePage() {
         console.error("Error fetching latest products:", error);
       }
     }
-
     getLatestProducts();
-
     async function getFeaturedProducts() {
       try {
         let userId = localStorage.getItem("user_id");
-
         if (!userId) {
           const contact = localStorage.getItem("user_contact");
           if (contact) {
@@ -44,31 +39,24 @@ function HomePage() {
             }
           }
         }
-
         if (!userId) {
           console.warn("⚠️ No user_id found. Skipping featured fetch.");
           return;
         }
-
         const products = await fetchFeaturedProducts(userId);
         setFeaturedProducts(products);
       } catch (error) {
         console.error("Error fetching featured products:", error);
       }
     }
-
     getFeaturedProducts();
   }, []);
-
   const featured = featuredProducts[0];
-
   return (
     <HeaderFooter>
       <div className="homepage-container">
-
         {/* Featured Section */}
         <section className="featured-section">
-
           {/* LEFT SIDE IMAGE */}
           <div className="featured-left">
             <img
@@ -81,18 +69,14 @@ function HomePage() {
               className="featured-photo"
             />
           </div>
-
           {/* RIGHT SIDE INFO */}
           <div className="featured-box">
-
             <h1>{featured?.name || "Iraya Basket Lipa"}</h1>
-
             <h3>
               {featured?.artisan?.name ||
                 featured?.brandName ||
                 "Colored Wooden Tray Basket"}
             </h3>
-
             <p className="stars">
               {(() => {
                 const rating =
@@ -102,7 +86,6 @@ function HomePage() {
                 const full = Math.floor(rating);
                 const half = rating % 1 >= 0.5;
                 const empty = 5 - full - (half ? 1 : 0);
-
                 return (
                   <>
                     {[...Array(full)].map((_, i) => (
@@ -119,12 +102,10 @@ function HomePage() {
                 );
               })()}
             </p>
-
             <p>
               {featured?.description ||
                 "Handwoven by Filipino artisans using sustainable abaca."}
             </p>
-
             <button
               className="shop-btn"
               onClick={() => navigate(`/product/${featured?.id}`)}
@@ -133,7 +114,6 @@ function HomePage() {
             </button>
           </div>
         </section>
-
         {/* SHOP CARDS (static images) */}
         <section className="shop-cards">
           <div className="shop-cards-grid">
@@ -141,7 +121,6 @@ function HomePage() {
             <img src={featuredphoto3} alt="Shop Card 2" className="shop-card" />
           </div>
         </section>
-
         {/* REAL LATEST PRODUCTS */}
         <section className="latest-products">
           <h2 className="latest-products-title">Latest Products</h2>
@@ -164,8 +143,6 @@ function HomePage() {
             )}
           </div>
         </section>
-
-
         {/* Heritage Section */}
         <section className="heritage-section">
           <div className="heritage-container">
@@ -184,7 +161,6 @@ function HomePage() {
             </div>
           </div>
         </section>
-
         {/* TahananCrafts Section */}
         <section className="tahanancrafts-section">
           <Logo className="tahanancrafts-logo" />
@@ -195,10 +171,8 @@ function HomePage() {
             </p>
           </div>
         </section>
-
       </div>
     </HeaderFooter>
   );
 }
-
 export default HomePage;

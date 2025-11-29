@@ -1,6 +1,3 @@
-/* =========================================================
-   CHECKOUT PAGE — LAYOUT
-========================================================= */
 
 .checkout-page {
   padding: 2.5px 5px;
@@ -9,18 +6,12 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .checkout-title {
   font-size: 3rem;
   font-weight: bold;
   margin-top: 5px;
   margin-bottom: 25px;
 }
-
-/* =========================================================
-   ADDRESS BAR
-========================================================= */
-
 .address-bar {
   display: flex;
   justify-content: space-between;
@@ -32,32 +23,27 @@
   margin-bottom: 25px;
   font-size: 14px;
 }
-
 .address-info {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
-
 .address-icon {
   font-size: 18px;
   margin-top: 2px;
 }
-
 .address-title {
   font-weight: 600;
   margin: 0;
   font-size: 15px;
   color: #222;
 }
-
 .address-details {
   font-size: 13px;
   color: #555;
   margin-top: 2px;
   line-height: 1.4;
 }
-
 .change-btn {
   background: #fff;
   border: 1px solid #bbb;
@@ -68,25 +54,14 @@
   font-weight: 500;
   transition: 0.2s ease;
 }
-
 .change-btn:hover {
   background: #f2e7da;
 }
-
-/* =========================================================
-   MAIN CONTAINER — LEFT + RIGHT SIDES
-========================================================= */
-
 .checkout-container {
   display: flex;
   gap: 30px;
   align-items: flex-start;
 }
-
-/* =========================================================
-   LEFT SIDE — PRODUCT DETAILS
-========================================================= */
-
 .checkout-details {
   flex: 2;
   background: #fff;
@@ -94,14 +69,12 @@
   border: 1px solid #ccc;
   border-radius: 8px;
 }
-
 .checkout-details h2 {
   margin-bottom: 15px;
   font-size: 1.3rem;
   border-bottom: 2px solid #e0d2c0;
   padding-bottom: 8px;
 }
-
 /* Table Header */
 /* HEADER ROW (Unit Price, Quantity, Subtotal) */
 .product-header {
@@ -113,12 +86,10 @@
   font-size: 15px;
   text-align: center;
 }
-
 /* Match header cells to the same columns as item grid */
 .product-header span:nth-child(1) { grid-column: 3; } 
 .product-header span:nth-child(2) { grid-column: 4; } 
 .product-header span:nth-child(3) { grid-column: 5; } 
-
 /* PRODUCT ITEM ROWS */
 .product-item {
   display: grid;
@@ -131,18 +102,11 @@
   border-radius: 6px;
   background: #fff;
 }
-
 .unit-price,
 .quantity,
 .subtotal {
   text-align: center;
 }
-
-
-/* =========================================================
-   RIGHT SIDE — CHECKOUT SUMMARY
-========================================================= */
-
 .checkout-summary {
   flex: 1;
   background: #fff;
@@ -150,30 +114,25 @@
   border: 1px solid #ccc;
   border-radius: 8px;
 }
-
 .checkout-summary h2 {
   margin-bottom: 10px;
   font-size: 1.3rem;
   border-bottom: 2px solid #e0d2c0;
   padding-bottom: 8px;
 }
-
 .payment-method {
   font-weight: bold;
   margin-bottom: 15px;
 }
-
 .summary-details {
   margin-top: 10px;
 }
-
 .summary-details p {
   display: flex;
   justify-content: space-between;
   margin: 6px 0;
   font-size: 15px;
 }
-
 .summary-details .total {
   font-weight: bold;
   font-size: 17px;
@@ -181,12 +140,6 @@
   border-top: 1px solid #e0d2c0;
   padding-top: 10px;
 }
-
-
-/* =========================================================
-   PLACE ORDER BUTTON
-========================================================= */
-
 .btn-place-order {
   margin-top: 20px;
   width: 100%;
@@ -199,15 +152,9 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-place-order:hover {
   background: #c4a784;
 }
-
-/* =========================================================
-   MODAL — BACKDROP
-========================================================= */
-
 .address-modal-backdrop {
   position: fixed;
   top: 0;
@@ -220,11 +167,6 @@
   align-items: center;
   z-index: 999;
 }
-
-/* =========================================================
-   MODAL — CONTAINER/BOX
-========================================================= */
-
 .address-modal-box {
   background: #fffaf3;
   width: 500px;
@@ -234,31 +176,23 @@
   animation: fadeIn 0.2s ease-in-out;
 }
 
-/* Modal Header */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
 }
-
 .modal-close {
   background: none;
   border: none;
   font-size: 22px;
   cursor: pointer;
 }
-
-/* =========================================================
-   ADDRESS LIST INSIDE SELECT MODAL
-========================================================= */
-
 .address-list {
   max-height: 300px;
   overflow-y: auto;
   margin-bottom: 20px;
 }
-
 .address-card {
   display: flex;
   padding: 15px;
@@ -268,44 +202,36 @@
   cursor: pointer;
   transition: 0.2s;
 }
-
 .address-card:hover {
   border-color: #caa57a;
 }
-
 .address-card.selected {
   border-color: #b8834a;
   background: #fff3e2;
 }
-
 .radio-col {
   margin-right: 15px;
   display: flex;
   align-items: center;
 }
-
 .address-col {
   flex: 1;
 }
-
 .address-col .name {
   font-size: 16px;
   font-weight: 600;
   color: #4b3a2b;
 }
-
 .address-col .phone {
   font-size: 14px;
   color: #555;
   margin-left: 5px;
 }
-
 .full-address {
   font-size: 14px;
   color: #6e6e6e;
   margin-top: 4px;
 }
-
 .default-tag {
   margin-top: 6px;
   display: inline-block;
@@ -315,7 +241,6 @@
   border-radius: 5px;
   font-size: 12px;
 }
-
 /* Small edit button */
 .edit-btn {
   background: transparent;
@@ -324,7 +249,6 @@
   cursor: pointer;
   font-size: 14px;
 }
-
 /* Add Button */
 .modal-add-btn {
   width: 100%;
@@ -337,7 +261,6 @@
   cursor: pointer;
   margin-bottom: 12px;
 }
-
 /* Save Button */
 .modal-save-btn {
   width: 100%;
@@ -349,20 +272,17 @@
   font-size: 17px;
   cursor: pointer;
 }
-
 /* Animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
 .address-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 20px;
 }
-
 .address-form-grid input {
   width: 100%;
   padding: 10px;
@@ -372,24 +292,16 @@
   background: #fffdf8;
   box-sizing: border-box;
 }
-
 .address-form-grid input:focus {
   border-color: #b8834a;
   outline: none;
   box-shadow: 0 0 4px rgba(184, 131, 74, 0.4);
 }
-
-/* Full-width rows */
 .address-form-grid input[name="address"],
 .address-form-grid input[name="street"],
 .address-form-grid input[name="landmark"] {
   grid-column: span 2;
 }
-
-/* =========================================================
-   EDIT ADDRESS — BUTTONS
-========================================================= */
-
 .btn-danger,
 .btn-secondary,
 .modal-cancel-btn {
@@ -400,51 +312,38 @@
   font-size: 15px;
   border: none;
 }
-
 .btn-danger {
   background: #c94f4f;
   color: white;
 }
-
 .btn-danger:hover {
   background: #b13f3f;
 }
-
 .btn-secondary {
   background: #b8834a;
   color: white;
 }
-
 .btn-secondary:hover {
   background: #a47039;
 }
-
 .modal-cancel-btn {
   background: #ddd3c5;
   color: #4b3a2b;
 }
-
 .modal-cancel-btn:hover {
   background: #c8b9a7;
 }
-
-/* =========================================================
-   TOGGLE SWITCH (SET AS DEFAULT)
-========================================================= */
-
 .switch {
   position: relative;
   display: inline-block;
   width: 42px;
   height: 22px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -453,7 +352,6 @@
   transition: 0.3s;
   border-radius: 34px;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -465,19 +363,13 @@
   transition: 0.3s;
   border-radius: 50%;
 }
-
 input:checked + .slider {
   background: #b8834a;
 }
 
-input:checked + .slider:before {
+inpt:checked + .slider:before {
   transform: translateX(20px);
 }
-
-/* =========================================================
-   MODAL BUTTON GROUP
-========================================================= */
-
 .address-modal-box > div:last-child {
   display: flex;
   gap: 10px;
@@ -489,27 +381,23 @@ input:checked + .slider:before {
   border-radius: 10px;
   margin-bottom: 20px;
 }
-
 .pm-title {
   font-size: 18px;
   font-weight: 600;
   color: #67442e;
   margin-bottom: 4px;
 }
-
 .pm-desc {
   font-size: 13px;
   color: #555;
   margin-bottom: 10px;
 }
-
 .pm-line {
   display: flex;
   justify-content: space-between;
   margin: 6px 0;
   font-size: 14px;
 }
-
 .pm-total-now {
   display: flex;
   justify-content: space-between;
@@ -518,51 +406,38 @@ input:checked + .slider:before {
   font-weight: bold;
   color: #a67c52;
 }
-
 .pm-cod {
   display: flex;
   justify-content: space-between;
   font-size: 16px;
   margin-top: 8px;
 }
-
 .highlight {
   color: #a67c52;
   font-weight: bold;
 }
-
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
 @media (max-width: 1024px) {
   .checkout-container {
     flex-direction: column;
     gap: 20px;
   }
-
   .checkout-details,
   .checkout-summary {
     width: 100%;
   }
-
   .product-header,
   .product-item {
     grid-template-columns: 80px 1.5fr 1fr 1fr 1fr;
     font-size: 14px;
   }
 }
-
 @media (max-width: 768px) {
   .checkout-page {
     padding: 10px 5px;
   }
-
   .checkout-title {
     font-size: 2rem;
   }
-
   .product-header,
   .product-item {
     grid-template-columns: 60px 1fr 1fr 1fr 1fr;
@@ -570,23 +445,19 @@ input:checked + .slider:before {
     gap: 10px;
   }
 }
-
 @media (max-width: 500px) {
   .address-modal-box {
     width: 90%;
     padding: 18px;
   }
-
   .address-form-grid {
     grid-template-columns: 1fr;
   }
-
   .address-form-grid input[name="address"],
   .address-form-grid input[name="street"],
   .address-form-grid input[name="landmark"] {
     grid-column: span 1;
   }
-
   .btn-danger,
   .btn-secondary,
   .modal-cancel-btn {

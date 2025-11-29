@@ -1322,10 +1322,7 @@ textarea {
   margin: 25px 0; 
 
 }
-
 /* ===== RESPONSIVE ADJUSTMENTS ===== */
-
-/* Large screens (1200px - 1024px) */
 @media (max-width: 1200px) {
   .admindash-main {
     margin-left: 220px;

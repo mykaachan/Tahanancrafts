@@ -5,7 +5,6 @@ html, body {
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
 }
-
 .cart-page {
   padding-top: 120px; 
   background: #fffdf9; 
@@ -16,52 +15,43 @@ html, body {
   padding-right: 20px;
   box-sizing: border-box;
 }
-
-
 .cart-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0; 
 }
-
 .cart-title {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 20px;
 }
-
 /* Main layout */
 .cart-layout {
   display: flex;
   gap: 40px;
   align-items: flex-start;
 }
-
 .cart-items {
   flex: 2;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
 /* CART ITEM */
 .cart-item {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
-
 .cart-item-box {
   flex: 1;
 }
-
 .item-header {
   background: #d5c1a1;
   padding: 5px 10px;
   border-radius: 6px 6px 0 0;
   font-weight: bold;
 }
-
 .item-body {
   display: flex;
   align-items: center;
@@ -70,46 +60,38 @@ html, body {
   padding: 10px;
   gap: 15px;
 }
-
 .item-body img {
   width: 120px;
   height: auto;
   border-radius: 6px;
 }
-
 .item-info {
   flex: 1;
 }
-
 .price {
   font-weight: bold;
 }
-
 .item-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 5px;
 }
-
 .qty-buttons {
   display: flex;
   gap: 5px;
 }
-
 .qty-buttons button {
   padding: 4px 10px;
   border: 1px solid #000;
   background: white;
   cursor: pointer;
 }
-
 .remove {
   font-size: 0.9rem;
   color: #444;
   cursor: pointer;
 }
-
 /* BACK BUTTON */
 .back-btn {
   margin-top: 10px;
@@ -120,7 +102,6 @@ html, body {
   border-radius: 6px;
   cursor: pointer;
 }
-
 /* SUMMARY */
 .cart-summary {
   flex: 1;
@@ -130,24 +111,20 @@ html, body {
   background: white;
   height: fit-content;
 }
-
 .cart-summary .location {
   font-size: 0.9rem;
   margin-bottom: 10px;
 }
-
 .summary-row {
   display: flex;
   justify-content: space-between;
   margin: 8px 0;
 }
-
 .total {
   margin: 15px 0;
   font-size: 1.3rem;
   font-weight: bold;
 }
-
 .checkout-btn {
   width: 100%;
   padding: 12px;
@@ -157,7 +134,6 @@ html, body {
   cursor: pointer;
   font-size: 1rem;
 }
-
 /* selection checkbox */
 .select-item {
   width: 18px;
@@ -165,7 +141,6 @@ html, body {
   cursor: pointer;
   accent-color: #d5c1a1; 
 }
-
 .item-body {
   display: flex;
   align-items: center;
@@ -180,38 +155,32 @@ html, body {
   padding: 0 40px;
   font-family: 'Segoe UI', sans-serif;
 }
-
 .related-title {
   font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 20px;
   text-align: left;
 }
-
 .related-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
   gap: 25px;
 }
-
 @media (max-width: 1200px) {
   .related-grid {
     grid-template-columns: repeat(3, 1fr); 
   }
 }
-
 @media (max-width: 900px) {
   .related-grid {
     grid-template-columns: repeat(2, 1fr); 
   }
 }
-
 @media (max-width: 600px) {
   .related-grid {
     grid-template-columns: 1fr; 
   }
 }
-
 .related-card {
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -221,7 +190,6 @@ html, body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
-
 .related-card img {
   width: 100%;
   height: 180px;
@@ -229,61 +197,49 @@ html, body {
   border-radius: 8px;
   margin-bottom: 10px;
 }
-
 .related-card h4 {
   font-size: 1rem;
   margin: 8px 0 4px;
 }
-
 .related-card p {
   font-size: 0.9rem;
   color: #555;
   margin-bottom: 6px;
 }
-
 .related-card .price {
   font-weight: bold;
   color: #000;
 }
-
 .related-card:hover {
   transform: translateY(-5px);
   box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
 }
-
 /* Tablet / Medium screens */
 @media (max-width: 1024px) {
   .cart-layout {
     flex-direction: column; 
     gap: 25px;
   }
-
   .cart-items {
     flex: 1;
     gap: 15px;
   }
-
   .cart-summary {
     width: 100%;
   }
-
   .cart-item img {
     width: 100px;
   }
-
   .cart-title {
     font-size: 2.5rem;
   }
-
   .related-section {
     padding: 0 20px;
   }
-
   .related-title {
     font-size: 1.4rem;
   }
 }
-
 /* Mobile / Small screens */
 @media (max-width: 768px) {
   .cart-page {
@@ -291,116 +247,91 @@ html, body {
     padding-right: 10px;
     padding-top: 60px;
   }
-
   .cart-title {
     font-size: 2rem;
   }
-
   .cart-layout {
     flex-direction: column;
     gap: 20px;
   }
-
   .cart-item {
     flex-direction: column;
     gap: 10px;
   }
-
   .item-body {
     flex-direction: column;
     gap: 10px;
   }
-
   .item-body img {
     width: 100%;
     height: auto;
   }
-
   .item-actions {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
   }
-
   .qty-buttons button {
     padding: 4px 8px;
   }
-
   .checkout-btn {
     font-size: 0.95rem;
     padding: 10px;
   }
-
   .back-btn {
     padding: 6px 12px;
   }
-
   .cart-summary {
     width: 100%;
     padding: 15px;
   }
-
   .related-section {
     padding: 0 15px;
   }
-
   .related-title {
     font-size: 1.3rem;
   }
-
   .related-card img {
     height: 150px;
   }
-
   .related-card h4 {
     font-size: 0.95rem;
   }
-
   .related-card p {
     font-size: 0.85rem;
   }
 }
-
 /* Very small / smartphones */
 @media (max-width: 480px) {
   .cart-title {
     font-size: 1.7rem;
   }
-
   .item-body img {
     max-width: 100%;
     height: auto;
   }
-
   .item-info {
     font-size: 0.9rem;
   }
-
   .price {
     font-size: 0.9rem;
   }
-
   .related-title {
     font-size: 1.1rem;
   }
-
   .related-card img {
     height: 130px;
   }
-
   .related-card h4 {
     font-size: 0.9rem;
   }
-
   .related-card p {
     font-size: 0.8rem;
   }
-
   .checkout-btn {
     font-size: 0.9rem;
     padding: 8px;
   }
-
   .back-btn {
     padding: 5px 10px;
   }

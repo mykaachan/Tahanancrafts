@@ -6,7 +6,6 @@
   font-family: 'Segoe UI', sans-serif;
   background: #ffffff; /* now white */
 }
-
 /* ===== HEADER ===== */
 .hf-header {
   display: flex;
@@ -20,12 +19,10 @@
   top: 0;
   z-index: 100;
 }
-
 .hf-logo {
   width: 70px;
   height: auto;
 }
-
 .hf-nav ul {
   display: flex;
   list-style: none;
@@ -33,30 +30,25 @@
   margin: 0;
   padding: 0;
 }
-
 .hf-nav a {
   text-decoration: none;
   color: #333;
   font-weight: 600;
   transition: color 0.2s ease;
 }
-
 .hf-nav a:hover {
-  color: #b78a4a; /* match cart/homepage hover color */
+  color: #b78a4a; 
 }
-
 .hf-actions {
   display: flex;
   align-items: center;
   gap: 20px;
 }
-
 .hf-search input {
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-radius: 20px;
 }
-
 .hf-search button {
   margin-left: 5px;
   padding: 6px 12px;
@@ -65,7 +57,6 @@
   background: #d5c1a1;
   cursor: pointer;
 }
-
 .hf-cart {
   padding: 6px 14px;
   border: none;
@@ -76,13 +67,11 @@
   text-decoration: none;
   color: #000;
 }
-
 /* ===== MAIN CONTENT ===== */
 .hf-main {
   flex: 1;
   padding: 40px 20px;
 }
-
 /* ===== FOOTER ===== */
 .hf-footer {
   background: #f7f4f1;
@@ -91,23 +80,19 @@
   flex-direction: column;
   gap: 30px;
 }
-
 .hf-footer-top {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 40px;
 }
-
 .hf-footer-left {
   max-width: 40%;
 }
-
 .hf-footer-left h2 {
   font-size: 1.4rem;
   margin-bottom: 10px;
 }
-
 .hf-register-btn {
   margin-top: 12px;
   padding: 10px 20px;
@@ -117,30 +102,25 @@
   cursor: pointer;
   font-weight: 600;
 }
-
 .hf-footer-right {
   flex: 1;
   min-width: 300px;
 }
-
 .hf-footer-logo {
   font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 15px;
 }
-
 .hf-footer-links {
   display: flex;
   gap: 50px;
   flex-wrap: wrap;
 }
-
 .hf-footer-links h4 {
   margin-bottom: 10px;
   font-size: 1rem;
   font-weight: 600;
 }
-
 .hf-footer-links a {
   display: block;
   margin: 4px 0;
@@ -148,11 +128,9 @@
   color: #333;
   font-size: 0.9rem;
 }
-
 .hf-footer-links a:hover {
   color: #b78a4a;
 }
-
 .hf-footer-bottom {
   border-top: 1px solid #ddd;
   padding-top: 15px;
@@ -161,45 +139,33 @@
   font-size: 0.9rem;
   color: #555;
 }
-
-
 /* ===== Responsive Adjustments Only ===== */
-
-/* Tablet / Medium screens */
 @media (max-width: 1024px) {
   .hf-header {
     padding: 15px 20px;
   }
-
   .hf-nav ul {
     gap: 15px;
   }
-
   .hf-actions {
     gap: 15px;
   }
-
   .hf-main {
     padding: 30px 15px;
   }
-
   .hf-footer {
     padding: 30px 20px;
   }
-
   .hf-footer-top {
     gap: 25px;
   }
-
   .hf-footer-left {
     max-width: 50%;
   }
-
   .hf-footer-links {
     gap: 30px;
   }
 }
-
 /* Mobile / Small screens */
 @media (max-width: 768px) {
   /* Header stacks vertically */
@@ -208,89 +174,71 @@
     align-items: flex-start;
     gap: 10px;
   }
-
   .hf-nav ul {
     flex-direction: column;
     gap: 10px;
     width: 100%;
   }
-
   .hf-actions {
     width: 100%;
     justify-content: flex-start;
     gap: 10px;
   }
-
   .hf-search input {
     width: 70%;
   }
-
   .hf-main {
     padding: 20px 10px;
   }
-
   /* Footer stacks left and right */
   .hf-footer {
     padding: 25px 15px;
     gap: 20px;
   }
-
   .hf-footer-top {
     flex-direction: column;
     gap: 20px;
   }
-
   .hf-footer-left {
     max-width: 100%;
   }
-
   .hf-footer-right {
     min-width: 100%;
   }
-
   .hf-footer-links {
     gap: 20px;
     flex-direction: column;
   }
 }
-
 /* Very small screens / smartphones */
 @media (max-width: 480px) {
   .hf-header {
     padding: 12px 10px;
   }
-
   .hf-logo {
     width: 60px;
   }
-
   .hf-search input {
     width: 60%;
   }
-
   .hf-actions {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-
   .hf-main {
     padding: 15px 8px;
   }
-
   .hf-footer {
     padding: 20px 10px;
     gap: 15px;
   }
-
   .hf-footer-top {
     gap: 15px;
   }
-
   .hf-footer-links {
     gap: 10px;
   }
-
   .hf-footer-bottom {
     flex-direction: column;
     gap: 10px;

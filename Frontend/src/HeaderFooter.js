@@ -3,13 +3,10 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "./Logo.svg";
 import "./HomePage.css";
 import "./PrivacyTerms.css"; // ✅ for modal styling
-
 function HeaderFooter({ children }) {
   const [activeModal, setActiveModal] = useState(null);
-
   const openModal = (type) => setActiveModal(type);
   const closeModal = () => setActiveModal(null);
-
   return (
     <div className="header-footer-wrapper">
       {/* ===== Header (unchanged) ===== */}
@@ -60,10 +57,8 @@ function HeaderFooter({ children }) {
           </Link>
         </div>
       </header>
-
       {/* ===== Page Content ===== */}
       <main style={{ marginTop: "120px" }}>{children}</main>
-
       {/* ===== Footer ===== */}
       <footer className="footer">
         <div className="footer-left">
@@ -78,7 +73,6 @@ function HeaderFooter({ children }) {
     <button className="register-btn">Register</button>
   </Link>
 </div>
-
         <div className="footer-right">
           <hr />
           <div className="footer-content">
@@ -118,7 +112,6 @@ function HeaderFooter({ children }) {
           </div>
         </div>
       </footer>
-
       {/* ===== POPUPS ===== */}
       {activeModal && (
         <div className="modal-overlay" onClick={closeModal}>
@@ -139,7 +132,6 @@ function HeaderFooter({ children }) {
                 </div>
               </>
             )}
-
             {activeModal === "support" && (
               <>
                 <h2>Support</h2>
@@ -160,7 +152,6 @@ function HeaderFooter({ children }) {
                 </div>
               </>
             )}
-
             {activeModal === "privacy" && (
               <>
                 <h2>Privacy Policy & Terms</h2>
@@ -176,7 +167,6 @@ function HeaderFooter({ children }) {
                 </div>
               </>
             )}
-
             <button className="close-modal-btn" onClick={closeModal}>
               Close
             </button>
@@ -186,5 +176,4 @@ function HeaderFooter({ children }) {
     </div>
   );
 }
-
 export default HeaderFooter;

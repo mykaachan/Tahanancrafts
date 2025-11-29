@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import "./HomeDashboard.css";
-
 const allTransactions = [
   {
     orderId: "#101011",
@@ -25,7 +24,6 @@ const allTransactions = [
     date: "1 May 2025",
   },
 ];
-
 const TransactionHistory = () => {
   const navigate = useNavigate();
   return (
@@ -73,5 +71,4 @@ const TransactionHistory = () => {
     </Layout>
   );
 };
-
 export default TransactionHistory;

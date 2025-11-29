@@ -11,7 +11,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
 export default function AdminForecast() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -19,7 +18,6 @@ export default function AdminForecast() {
     "🧺 New artisan trend identified",
     "💬 Market insight report generated",
   ]);
-
   const salesData = [
     { name: "Jan", value: 12000 },
     { name: "Feb", value: 9500 },
@@ -34,14 +32,12 @@ export default function AdminForecast() {
     { name: "Nov", value: 12000 },
     { name: "Dec", value: 14500 },
   ];
-
   const trendingCategories = [
     { rank: 1, category: "Home Decor", growth: "+28.5%", top: "Burdang Taal" },
     { rank: 2, category: "Kitchen Ware", growth: "+19.3%", top: "Kalis Taal" },
     { rank: 3, category: "Furniture", growth: "+15.1%", top: "Iraya Basket" },
     { rank: 4, category: "Accessories", growth: "+9.8%", top: "Kalipi Habing Iban" },
   ];
-
   const productTrends = [
     {
       name: "Saklit Habing Ibaan",
@@ -65,11 +61,9 @@ export default function AdminForecast() {
       img: "https://via.placeholder.com/40",
     },
   ];
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
-
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -85,7 +79,6 @@ export default function AdminForecast() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -97,17 +90,14 @@ export default function AdminForecast() {
                 </div>
               )}
             </div>
-
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Forecast & Trends</h2>
         </div>
-
         {/* ===== MAIN FORECAST SECTION ===== */}
         <div className="forecast-container">
           {/* SALES TREND + TRENDING CATEGORIES */}
@@ -126,7 +116,6 @@ export default function AdminForecast() {
                   <option>2024</option>
                 </select>
               </div>
-
               <div style={{ width: "100%", height: 230 }}>
                 <ResponsiveContainer>
                   <LineChart data={salesData}>
@@ -139,7 +128,6 @@ export default function AdminForecast() {
                 </ResponsiveContainer>
               </div>
             </div>
-
             <div className="trending-categories-card">
               <h3>Trending Categories</h3>
               <table className="trending-table">
@@ -164,7 +152,6 @@ export default function AdminForecast() {
               </table>
             </div>
           </div>
-
           {/* PRODUCT TRENDS TABLE */}
           <div className="product-trends-card">
             <h3>Product Trends</h3>
