@@ -11,13 +11,11 @@
   font-size: 12px;
   font-family: "Poppins", sans-serif;
 }
-
 /* === Privacy Terms === */
 .privacy-terms {
   margin-top: -10px;
   color: #5c4632;
 }
-
 /* === Checkbox Label === */
 .checkbox-label {
   display: flex;
@@ -25,14 +23,12 @@
   gap: 8px;
   line-height: 1.5;
 }
-
 .checkbox-label input[type="checkbox"] {
   accent-color: #a47c55;
   width: 12px;
   height: 12px;
   margin-top: 3px;
 }
-
 /* === Link Button === */
 .link-button {
   background: none;
@@ -43,11 +39,9 @@
   padding: 0;
   font-weight: 500;
 }
-
 .link-button:hover {
   color: #8a6748;
 }
-
 /* === Modal Overlay === */
 .modal-overlay {
   position: fixed;
@@ -58,7 +52,6 @@
   justify-content: center;
   z-index: 999;
 }
-
 /* === Modal Box === */
 .modal-content {
   background: #fdfbf8;
@@ -73,7 +66,6 @@
   position: relative;
   animation: fadeIn 0.3s ease;
 }
-
 /* === Modal Typography === */
 .modal-content h2 {
   margin-top: 0;
@@ -84,7 +76,6 @@
   border-bottom: 1px solid #d9c7b3;
   padding-bottom: 10px;
 }
-
 .modal-body h3,
 .modal-body h4,
 .modal-body p,
@@ -95,7 +86,6 @@
   font-size: 12px; /* unified smaller font for content */
   line-height: 1.6;
 }
-
 /* === Close Button === */
 .close-modal-btn {
   margin-top: 15px;
@@ -109,11 +99,9 @@
   transition: background 0.2s ease;
   font-size: 12px;
 }
-
 .close-modal-btn:hover {
   background: #8a6748;
 }
-
 /* === Animation === */
 @keyframes fadeIn {
   from {
@@ -125,20 +113,17 @@
     transform: translateY(0);
   }
 }
-
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
   .modal-content h2 {
     font-size: 16px; /* slightly smaller on tablets */
   }
 }
-
 @media (max-width: 480px) {
   .modal-content h2 {
     font-size: 14px; /* smaller on mobile */
   }
 }
-
 /* Make list numbers in Privacy Policy bigger */
 .modal-body ol, 
 .modal-body ul {

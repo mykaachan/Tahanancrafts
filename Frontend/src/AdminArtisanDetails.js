@@ -9,7 +9,6 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
 } from "react-icons/fa";
-
 export default function AdminArtisanDetails() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -17,7 +16,6 @@ export default function AdminArtisanDetails() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   const [artisan] = useState({
     name: "Sm Sunrise Weaving Association",
     shop: "Habing Ibaan",
@@ -31,7 +29,6 @@ export default function AdminArtisanDetails() {
     totalRefunds: 0,
     latestTransaction: "1 May 2025",
   });
-
   const transactions = [
     {
       id: "#101011",
@@ -43,7 +40,6 @@ export default function AdminArtisanDetails() {
       img: "https://via.placeholder.com/60.png?text=Product",
     },
   ];
-
   const products = [
     {
       id: 1,
@@ -56,11 +52,9 @@ export default function AdminArtisanDetails() {
       img: "https://via.placeholder.com/60.png?text=Product",
     },
   ];
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
-
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -76,7 +70,6 @@ export default function AdminArtisanDetails() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -92,17 +85,13 @@ export default function AdminArtisanDetails() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Artisan Details</h2>
         </div>
-
         {/* ===== ARTISAN DETAILS PAGE ===== */}
         <div className="customer-details">
-          {/* LEFT: Summary & Tables */}
           <div className="cust-summary">
-            {/* Summary Cards */}
             <div className="cust-cards">
               <div className="cust-card spent">
                 <h4>Total Revenue</h4>
@@ -117,7 +106,6 @@ export default function AdminArtisanDetails() {
                 <p className="amount">{artisan.totalRefunds}</p>
               </div>
             </div>
-
             {/* Transaction History */}
             <div className="cust-history">
               <div className="cust-history-header">
@@ -162,7 +150,6 @@ export default function AdminArtisanDetails() {
                 </tbody>
               </table>
             </div>
-
             {/* Products Table */}
             <div className="cust-history">
               <div className="cust-history-header">
@@ -208,7 +195,6 @@ export default function AdminArtisanDetails() {
               </table>
             </div>
           </div>
-
           {/* RIGHT: Profile Card with Icons */}
           <div className="cust-profile-card">
             <img src={artisan.logo} alt="artisan-logo" className="cust-avatar" />

@@ -17,12 +17,10 @@ export default function AdminCustDetails() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   return (
     <div className="admindash-container">
       {/* ===== SIDEBAR ===== */}
       <AdminSidebar />
-
       {/* ===== MAIN CONTENT ===== */}
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
@@ -55,12 +53,10 @@ export default function AdminCustDetails() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Customer Details</h2>
         </div>
-
         {/* ===== CUSTOMER DETAILS CONTENT ===== */}
         <div className="customer-details">
           {/* LEFT: Customer Profile Card */}
@@ -73,7 +69,6 @@ export default function AdminCustDetails() {
             <h3>Mikaela Mindanao</h3>
             <p className="cust-username">@Mikaela_M40</p>
             <hr />
-
             {/* ===== ICON INFO LIST ===== */}
             <div className="cust-info-list">
               <p>
@@ -98,7 +93,6 @@ export default function AdminCustDetails() {
               </p>
             </div>
           </div>
-
           {/* RIGHT: Summary Cards and Transaction History */}
           <div className="cust-summary">
             {/* ===== Summary Cards ===== */}
@@ -116,14 +110,12 @@ export default function AdminCustDetails() {
                 <p className="amount">0</p>
               </div>
             </div>
-
             {/* ===== Transaction History ===== */}
             <div className="cust-history">
               <div className="cust-history-header">
                 <h4>Transaction History</h4>
                 <input type="text" placeholder="Search..." />
               </div>
-
               <table className="cust-history-table">
                 <thead>
                   <tr>

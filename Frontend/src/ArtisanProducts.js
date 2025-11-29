@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell } from "react-icons/fa";
-
 export default function ArtisanProducts() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -11,7 +10,6 @@ export default function ArtisanProducts() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   const [products] = useState([
     {
       id: 1,
@@ -69,7 +67,6 @@ export default function ArtisanProducts() {
       img: "https://via.placeholder.com/40.png?text=Product",
     },
   ]);
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
@@ -88,7 +85,6 @@ export default function ArtisanProducts() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -104,12 +100,10 @@ export default function ArtisanProducts() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Artisan &gt; Products</h2>
         </div>
-
         {/* ===== PRODUCTS TABLE ===== */}
         <div className="cust-history">
           <table className="cust-history-table">
@@ -152,7 +146,6 @@ export default function ArtisanProducts() {
               ))}
             </tbody>
           </table>
-
           {/* ===== PAGINATION ===== */}
           <div className="pagination">
             <span>

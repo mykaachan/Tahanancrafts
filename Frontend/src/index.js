@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
 import LoginPage from './LoginPage';
 import ForgotPass from './ForgotPass';
 import ForgotPass2 from './ForgotPass2';
@@ -51,14 +50,10 @@ import TaalStory from './TaalStory';
 import PrivacyTerms from './PrivacyTerms';
 import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
 import SellerRegister from "./SellerRegister"; // ✅ default export
-
-
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 // ✅ Step 1: Create a conditional wrapper for the popup
 function ConditionalChatPopup() {
   const location = useLocation();
-
   // List of routes where popup should be hidden
   const hiddenPaths = [
     "/",
@@ -71,20 +66,16 @@ function ConditionalChatPopup() {
     "/change-password",
     "/sellerregister" 
   ];
-
   const shouldHide = hiddenPaths.includes(location.pathname);
-
   if (shouldHide) return null; // Don't render popup on those pages
   return <ChatPopup />;        // Render on all others
 }
-
 // ✅ Step 2: Main App Wrapper
 function MainApp() {
   return (
     <BrowserRouter>
       {/* Chat Popup shows everywhere except hidden paths */}
       <ConditionalChatPopup />
-
       <Routes>
         <Route path="/" element={<UnderDevelopment />} />
         <Route path="/login" element={<LoginPage />} />
@@ -130,19 +121,6 @@ function MainApp() {
         <Route path="/privacy-terms" element={<PrivacyTerms />} />
         <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
         <Route path="/sellerregister" element={<SellerRegister />} />
-        
-
-
-
-
-
-
-
-
-
-
-
-
         {/* ✅ Profile and its nested routes */}
         <Route path="/profile" element={<Profile />}>
           <Route
@@ -158,7 +136,6 @@ function MainApp() {
               </div>
             }
           />
-
           <Route
             path="edit"
             element={
@@ -176,7 +153,6 @@ function MainApp() {
               </div>
             }
           />
-
           <Route
             path="change-password"
             element={
@@ -194,7 +170,6 @@ function MainApp() {
               </div>
             }
           />
-
           <Route
             path="privacy"
             element={
@@ -208,7 +183,6 @@ function MainApp() {
             }
           />
         </Route>
-
          {/* ✅ My Purchases */}
             <Route path="purchase" element={
               <div className="purchase-page">
@@ -226,15 +200,12 @@ function MainApp() {
                   <p>No orders yet</p>
                 </div>
               </div>
-            }/>
-            
+            }/>            
 dir Frontend\src\TaalStory.*
       </Routes>
     </BrowserRouter>
   );
 }
-
-
 // ✅ Step 3: Render everything
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

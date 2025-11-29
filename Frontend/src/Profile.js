@@ -4,7 +4,6 @@ import HeaderFooter from "./HeaderFooter";
 import { getProfile, updateProfile, changePassword } from "./api";
 import "./Profile.css";
 import SidebarProfile from "./components/SidebarProfile";
-
 function Profile() {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,7 +20,6 @@ function Profile() {
   const location = useLocation();
   const navigate = useNavigate();
   const userId = localStorage.getItem("user_id");
-
   useEffect(() => {
     const fetchProfileData = async () => {
       if (!userId) {
@@ -41,11 +39,9 @@ function Profile() {
     };
     fetchProfileData();
   }, [userId, navigate]);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!profileData) return null;
-
   // Generate initials for fallback avatar
   const initials = profileData.name
     ? profileData.name
@@ -54,7 +50,6 @@ function Profile() {
         .join("")
         .toUpperCase()
     : "U";
-
   // Decide which avatar to display
   const avatarSrc =
     previewAvatar ||
@@ -65,12 +60,10 @@ function Profile() {
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
           initials
         )}&background=random&color=fff`);
-
   const handleLogout = () => {
     localStorage.removeItem("user_id");
     navigate("/");
   };
-
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -78,11 +71,9 @@ function Profile() {
       setPreviewAvatar(URL.createObjectURL(file));
     }
   };
-
   const handleChange = (e) => {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
-
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -94,7 +85,6 @@ function Profile() {
       formData.append("gender", profileData.gender || "");
       formData.append("date_of_birth", profileData.date_of_birth || "");
       if (avatarFile) formData.append("avatar", avatarFile);
-
       const updated = await updateProfile(userId, formData, true);
       alert(updated.message || "Profile updated successfully!");
       setIsEditing(false);
@@ -103,7 +93,6 @@ function Profile() {
       alert(err.message);
     }
   };
-
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setPasswordError("");
@@ -121,7 +110,6 @@ function Profile() {
       setPasswordLoading(false);
     }
   };
-
   // Convert short gender codes to readable form for display
   const getGenderLabel = (code) => {
     if (code === "M") return "Male";
@@ -129,7 +117,6 @@ function Profile() {
     if (code === "O") return "Other";
     return "";
   };
-
   return (
     <HeaderFooter>
       <div className="profile-page">
@@ -151,7 +138,6 @@ function Profile() {
                   <p><strong>Phone:</strong> {profileData.phone}</p>
                   <p><strong>Gender:</strong> {getGenderLabel(profileData.gender)}</p>
                   <p><strong>Date of Birth:</strong> {profileData.date_of_birth}</p>
-
                   <button className="btn-edit" onClick={() => setIsEditing(true)}>
                     Edit Profile
                   </button>
@@ -160,13 +146,11 @@ function Profile() {
               <button className="btn-logout" onClick={handleLogout}>Log out</button>
             </>
           )}
-
           {/* ✅ Edit Profile */}
           {location.pathname === "/profile" && isEditing && (
             <>
               <h2>Edit Profile</h2>
               <p className="subtitle">Update your account information</p>
-
               <div className="profile-box editing">
                 <form className="edit-profile-form" onSubmit={handleProfileSubmit}>
                   <label>
@@ -185,7 +169,6 @@ function Profile() {
                     Phone
                     <input type="text" name="phone" value={profileData.phone || ""} onChange={handleChange} />
                   </label>
-
                   <div className="dob-gender">
                     <label>
                       Date of Birth
@@ -212,7 +195,6 @@ function Profile() {
                       </select>
                     </label>
                   </div>
-
                   <div className="form-actions">
                     <button type="submit" className="btn-save">Save</button>
                     <button type="button" className="btn-cancel" onClick={() => setIsEditing(false)}>
@@ -220,7 +202,6 @@ function Profile() {
                     </button>
                   </div>
                 </form>
-
                 <div className="profile-avatar">
                   <img src={avatarSrc} alt="Profile" className="profile-img" />
                   <input type="file" accept="image/*" onChange={handleAvatarChange} />
@@ -228,13 +209,11 @@ function Profile() {
               </div>
             </>
           )}
-
            {/* ✅ Change Password Page */}
           {location.pathname === "/profile/change-password" && (
             <>
               <h2>Change Password</h2>
               <p className="subtitle">Secure your account by changing your password</p>
-
               <div className="profile-box">
                 <form className="edit-profile-form">
                   <label>
@@ -249,7 +228,6 @@ function Profile() {
                     Confirm New Password:
                     <input type="password" placeholder="Confirm new password" />
                   </label>
-
                   <div className="form-actions">
                     <button type="submit" className="btn-save">
                       Save
@@ -266,7 +244,6 @@ function Profile() {
               </div>
             </>
           )}
-
           {/* ✅ Privacy Settings Page */}
           {location.pathname === "/profile/privacy" && (
             <>
@@ -288,6 +265,5 @@ function Profile() {
       </div>
     </HeaderFooter>
   );
-
 }
 export default Profile;

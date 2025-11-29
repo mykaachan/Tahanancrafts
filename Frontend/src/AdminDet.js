@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell } from "react-icons/fa6";
-
 const AdminDet = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -10,12 +9,10 @@ const AdminDet = () => {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   return (
     <div className="admindash-container">
       {/* Sidebar */}
       <AdminSidebar />
-
       {/* Main Section */}
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
@@ -49,12 +46,10 @@ const AdminDet = () => {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Product Details</h2>
         </div>
-
         {/* ===== PRODUCT DETAILS FORM ===== */}
         <div className="product-details-container">
           <div className="product-details-form">
@@ -64,7 +59,6 @@ const AdminDet = () => {
                 <label>Product Name</label>
                 <input type="text" value="Kalpi Habing Iban" readOnly />
               </div>
-
               <div className="form-group">
                 <label>Description</label>
                 <textarea
@@ -72,17 +66,14 @@ const AdminDet = () => {
                   readOnly
                 ></textarea>
               </div>
-
               <div className="form-group">
                 <label>Category</label>
                 <input type="text" value="Purse" readOnly />
               </div>
-
               <div className="form-group">
                 <label>Stock Quantity</label>
                 <input type="text" value="100" readOnly />
               </div>
-
               {/* Price, Orders, Status Section */}
               <div className="product-details-grid">
                 <div className="product-details-field">
@@ -102,13 +93,11 @@ const AdminDet = () => {
                   <input type="text" value="Available" readOnly />
                 </div>
               </div>
-
               <div className="button-group">
                 <button className="delete-btn">Delete</button>
                 <button className="flag-btn">Flag</button>
               </div>
             </div>
-
             {/* Right Section (Images, Seller Info) */}
             <div className="right-section">
               <img
@@ -116,7 +105,6 @@ const AdminDet = () => {
                 alt="Product"
                 className="main-product-img"
               />
-
               <div className="gallery">
                 <p>Product Gallery</p>
                 <div className="gallery-grid">
@@ -131,7 +119,6 @@ const AdminDet = () => {
                     ))}
                 </div>
               </div>
-
               <div className="artisan-seller">
                 <p>Artisan Seller</p>
                 <div className="seller-card">
@@ -153,5 +140,4 @@ const AdminDet = () => {
     </div>
   );
 };
-
 export default AdminDet;

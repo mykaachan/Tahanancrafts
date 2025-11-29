@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import LayoutHeaderOnly from "./LayoutHeaderOnly";
 import "./SellerProfile.css";
-
 function SellerProfile() {
   const [qrCode, setQrCode] = useState(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
@@ -9,28 +8,23 @@ function SellerProfile() {
   const [showEditModal, setShowEditModal] = useState(false); 
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false); 
   const [showPrivacyModal, setShowPrivacyModal] = useState(false); 
-
   const [userInfo, setUserInfo] = useState({
     username: "habing_ibaan",
     name: "Habing Ibaan",
     email: "habing@example.com",
     address: "Ibaan, Batangas"
   });
-
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: ""
   });
-
   const saveUserInfo = () => {
     alert("User info saved!");
     setShowEditModal(false);
     setShowProfileModal(false);
   };
-
   const cancelEdit = () => setShowEditModal(false);
-
   const savePasswordChange = () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       alert("New password and confirm password do not match!");
@@ -39,24 +33,18 @@ function SellerProfile() {
     alert("Password changed successfully!");
     setShowChangePasswordModal(false);
   };
-
   const cancelPasswordChange = () => setShowChangePasswordModal(false);
-
   const saveMainChanges = () => alert("Main section changes saved!");
   const cancelMainChanges = () => alert("Main section changes canceled!");
-
   return (
     <LayoutHeaderOnly>
       <div className="seller-profile-container">
-
         {/* ===== Sidebar ===== */}
         <aside className="seller-sidebar">
           <div className="profile-avatar">
             <img src="/images/blankimage.png" alt="Profile" />
           </div>
-
           <p className="sidebar-placeholder-name">Habing Ibaan</p>
-
           <div className="sidebar-menu">
             <button
               className="edit-profile-btn sidebar-menu-btn"
@@ -64,7 +52,6 @@ function SellerProfile() {
             >
               My Account
             </button>
-
             {showAccountMenu && (
               <ul className="sidebar-submenu">
                 <li onClick={() => setShowProfileModal(true)}>Profile</li>
@@ -73,7 +60,6 @@ function SellerProfile() {
               </ul>
             )}
           </div>
-
           <button
             className="edit-profile-btn"
             style={{ marginTop: "auto" }}
@@ -82,7 +68,6 @@ function SellerProfile() {
             Logout
           </button>
         </aside>
-
         {/* ===== Main Section ===== */}
         <div className="seller-main">
           {/* ===== Existing form and upload sections remain unchanged ===== */}
@@ -101,7 +86,6 @@ function SellerProfile() {
                 Cancel
               </button>
             </div>
-
             <div className="form-section-qr" style={{ marginTop: "20px" }}>
               <label>QR Code</label>
               <div className="qr-upload-box">
@@ -136,13 +120,11 @@ function SellerProfile() {
               </button>
             </div>
           </div>
-
           <div className="upload-section">
             <div className="main-upload-box">
               <img src="/images/blankimage.png" alt="Upload" />
               <p>drop your image here, or upload</p>
             </div>
-
             <div className="small-upload-grid">
               {[1, 2, 3, 4].map((n) => (
                 <div className="small-upload-box" key={n}>
@@ -155,7 +137,6 @@ function SellerProfile() {
                 </div>
               ))}
             </div>
-
             <input
               type="file"
               accept="image/*"
@@ -175,7 +156,6 @@ function SellerProfile() {
             </label>
           </div>
         </div>
-
         {/* ===== Profile Modal ===== */}
         {showProfileModal && !showEditModal && (
           <div className="edit-modal-overlay" onClick={() => setShowProfileModal(false)}>
@@ -185,7 +165,6 @@ function SellerProfile() {
               <p><strong>Name:</strong> {userInfo.name}</p>
               <p><strong>Email:</strong> {userInfo.email}</p>
               <p><strong>Address:</strong> {userInfo.address}</p>
-
               <button
                 className="edit-profile-btn"
                 style={{ width: "100%", marginTop: "20px" }}
@@ -196,7 +175,6 @@ function SellerProfile() {
             </div>
           </div>
         )}
-
         {/* ===== Edit Profile Modal ===== */}
         {showEditModal && (
           <div className="edit-modal-overlay" onClick={cancelEdit}>
@@ -209,28 +187,24 @@ function SellerProfile() {
                 value={userInfo.username}
                 onChange={(e) => setUserInfo({ ...userInfo, username: e.target.value })}
               />
-
               <label>Name</label>
               <input
                 type="text"
                 value={userInfo.name}
                 onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
               />
-
               <label>Email</label>
               <input
                 type="email"
                 value={userInfo.email}
                 onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
               />
-
               <label>Address</label>
               <input
                 type="text"
                 value={userInfo.address}
                 onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
               />
-
               <div className="main-buttons-right" style={{ marginTop: "20px" }}>
                 <button className="edit-profile-btn small-btn" onClick={saveUserInfo}>
                   Save
@@ -242,34 +216,29 @@ function SellerProfile() {
             </div>
           </div>
         )}
-
         {/* ===== Change Password Modal ===== */}
         {showChangePasswordModal && (
           <div className="edit-modal-overlay" onClick={cancelPasswordChange}>
             <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
               <h2>Change Password</h2>
-
               <label>Current Password</label>
               <input
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
               />
-
               <label>New Password</label>
               <input
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
               />
-
               <label>Confirm New Password</label>
               <input
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
               />
-
               <div className="main-buttons-right" style={{ marginTop: "20px" }}>
                 <button className="edit-profile-btn small-btn" onClick={savePasswordChange}>
                   Save
@@ -281,7 +250,6 @@ function SellerProfile() {
             </div>
           </div>
         )}
-
         {/* ===== Privacy Settings Modal (Delete Account Request) ===== */}
         {showPrivacyModal && (
           <div className="edit-modal-overlay" onClick={() => setShowPrivacyModal(false)}>
@@ -291,7 +259,6 @@ function SellerProfile() {
                 If you want to delete your account, you can submit a request below.
                 Your data will be removed after review.
               </p>
-
               <div className="main-buttons-right" style={{ marginTop: "20px" }}>
                 <button
                   className="edit-profile-btn small-btn"
@@ -312,10 +279,8 @@ function SellerProfile() {
             </div>
           </div>
         )}
-
       </div>
     </LayoutHeaderOnly>
   );
 }
-
 export default SellerProfile;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell, FaTrash } from "react-icons/fa"; 
-
 export default function AdminProd() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -10,7 +9,6 @@ export default function AdminProd() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   const products = [
     {
       id: 1,
@@ -68,11 +66,9 @@ export default function AdminProd() {
       img: "https://i.imgur.com/fZlqQ7p.png",
     },
   ];
-
   return (
     <div className="admindash-container">
       <AdminSidebar />
-
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -88,7 +84,6 @@ export default function AdminProd() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -104,12 +99,10 @@ export default function AdminProd() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Products</h2>
         </div>
-
         {/* ===== PRODUCT TABLE ===== */}
         <div className="admincust-table">
           <table>
@@ -165,7 +158,6 @@ export default function AdminProd() {
               ))}
             </tbody>
           </table>
-
           {/* FOOTER */}
           <div className="table-footer">
             <p>Showing 1 - 5 from 100</p>

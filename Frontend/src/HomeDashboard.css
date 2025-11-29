@@ -335,194 +335,154 @@
   color: #b8a48a;
   font-size: 1.1rem;
 }
-
-/* =========================
-   DASHBOARD PAGE RESPONSIVE
-========================= */
-
 /* Tablet / Medium screens */
 @media (max-width: 1024px) {
   .dashboard-main {
     flex-direction: column; /* stack left and right */
     gap: 20px;
   }
-
   .dashboard-left,
   .dashboard-right {
     width: 100%;
   }
-
   .dashboard-header h2 {
     font-size: 1.8rem;
   }
-
   .todo-list-items {
     gap: 16px;
   }
-
   .todo-item {
     min-width: 100px;
     padding: 10px 14px;
   }
-
   .business-insights {
     flex-direction: column;
     gap: 16px;
   }
-
   .graph-card .graph-placeholder,
   .forecast-card .graph-placeholder {
     height: 100px;
   }
-
   .transaction-row,
   .transaction-history-list-header {
     grid-template-columns: 80px 1fr 80px 80px 80px;
     font-size: 13px;
   }
-
   .product-row {
     gap: 12px;
   }
-
   .product-image,
   .transaction-product-image,
   .top-seller-image {
     width: 32px;
     height: 32px;
   }
-
   .shop-performance-status {
     font-size: 1rem;
     padding: 6px 20px;
   }
-
   .export-report-btn {
     font-size: 0.95rem;
     padding: 8px 20px;
   }
 }
-
 /* Mobile / Small screens */
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 16px 8px 0 8px;
   }
-
   .dashboard-header h2 {
     font-size: 1.6rem;
   }
-
   .dashboard-breadcrumb {
     font-size: 0.85rem;
   }
-
   .todo-list-items {
     gap: 12px;
     justify-content: flex-start;
   }
-
   .todo-item {
     min-width: 90px;
     padding: 8px 12px;
   }
-
   .business-insights {
     flex-direction: column;
     gap: 12px;
   }
-
   .graph-card .graph-placeholder,
   .forecast-card .graph-placeholder {
     height: 80px;
     font-size: 0.9rem;
   }
-
   .transaction-row,
   .transaction-history-list-header {
     grid-template-columns: 60px 1fr 60px 60px 60px;
     font-size: 12px;
   }
-
   .product-row {
     gap: 10px;
   }
-
   .product-image,
   .transaction-product-image,
   .top-seller-image {
     width: 28px;
     height: 28px;
   }
-
   .shop-performance-status {
     font-size: 0.95rem;
     padding: 5px 18px;
   }
-
   .export-report-btn {
     font-size: 0.9rem;
     padding: 6px 18px;
   }
 }
-
 /* Very small / smartphones */
 @media (max-width: 480px) {
   .dashboard-header h2 {
     font-size: 1.4rem;
   }
-
   .dashboard-breadcrumb {
     font-size: 0.8rem;
   }
-
   .dashboard-main {
     gap: 12px;
   }
-
   .todo-list-items {
     gap: 8px;
     flex-wrap: wrap;
   }
-
   .todo-item {
     min-width: 70px;
     padding: 6px 10px;
     font-size: 0.85rem;
   }
-
   .business-insights {
     gap: 8px;
   }
-
   .graph-card .graph-placeholder,
   .forecast-card .graph-placeholder {
     height: 60px;
     font-size: 0.85rem;
   }
-
   .transaction-row,
   .transaction-history-list-header {
     grid-template-columns: 50px 1fr 50px 50px 50px;
     font-size: 11px;
   }
-
   .product-row {
     gap: 8px;
   }
-
   .product-image,
   .transaction-product-image,
   .top-seller-image {
     width: 24px;
     height: 24px;
   }
-
   .shop-performance-status {
     font-size: 0.9rem;
     padding: 4px 16px;
   }
-
   .export-report-btn {
     font-size: 0.85rem;
     padding: 5px 16px;

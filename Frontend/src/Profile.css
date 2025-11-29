@@ -7,7 +7,6 @@
   min-height: 80vh;
   font-family: 'Segoe UI', sans-serif;
 }
-
 /* ===== Sidebar ===== */
 .sidebar {
   width: 250px;
@@ -16,16 +15,13 @@
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-
 .profile-nav > ul > li {
-  margin-left: 20px; /* only top-level items */
+  margin-left: 20px; 
 }
-
 .profile-info {
   text-align: center;
   margin-bottom: 30px;
 }
-
 .profile-img {
   width: 90px;
   height: 90px;
@@ -33,32 +29,26 @@
   object-fit: cover;
   margin-bottom: 10px;
 }
-
 .username {
   margin: 5px 0;
   font-weight: 600;
 }
-
 .profile-nav ul {
   list-style: none;
   padding: 0;
 }
-
 .profile-nav li {
   margin: 15px 0;
 }
-
 .profile-nav a {
   text-decoration: none;
   color: #333;
   font-weight: 500;
   transition: color 0.2s ease;
 }
-
 .profile-nav a:hover {
   color: #7a5a36;
 }
-
 .toggle-btn {
   background: none;
   border: none;
@@ -72,22 +62,18 @@
   width: 100%;
   font-family: inherit;
 }
-
 .toggle-btn:hover {
   color: #7a5a36;
 }
-
 .submenu {
   margin-top: 5px;
   margin-left: 15px;
   list-style: none;
   padding: 0;
 }
-
 .submenu li {
   margin: 8px 0;
 }
-
 /* ===== Main Content ===== */
 .profile-content {
   flex: 1;
@@ -96,16 +82,13 @@
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-
 .profile-content h2 {
   margin-bottom: 5px;
 }
-
 .subtitle {
   color: #666;
   margin-bottom: 20px;
 }
-
 /* ===== Profile Box (shared for view + edit) ===== */
 .profile-box {
   background: #fff;
@@ -113,42 +96,35 @@
   border-radius: 16px;
   margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-
-  display: flex;            /* row layout */
-  align-items: flex-start;  /* align items to top */
-  gap: 30px;                /* spacing between details and avatar */
-  flex-wrap: wrap;          /* for small screens */
+  display: flex;            
+  align-items: flex-start;  
+  gap: 30px;                
+  flex-wrap: wrap;          
 }
-
 .profile-box.editing {
   display: flex;
   align-items: flex-start;
   gap: 30px;
   flex-wrap: wrap;
 }
-
-
 /* Profile details */
 .profile-details p {
   margin: 8px 0;
   font-size: 15px;
-  flex: 1;  /* take available space */
+  flex: 1;  
 }
-
 .btn-edit {
   margin-top: 20px;
   background: #7a5a36;
   color: white;
-  padding: 10px 20px;       /* bigger button */
+  padding: 10px 20px;       
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-edit:hover {
   background: #5a4028;
 }
-
 /* Avatar section */
 .profile-avatar {
   display: flex;
@@ -156,7 +132,6 @@
   align-items: center;
   min-width: 150px;
 }
-
 .profile-avatar img.profile-img {
   width: 150px;
   height: 150px;
@@ -164,7 +139,6 @@
   object-fit: cover;
   margin-bottom: 10px;
 }
-
 .avatar-circle {
   width: 80px;
   height: 80px;
@@ -172,7 +146,6 @@
   background: #ddd;
   margin-bottom: 10px;
 }
-
 .btn-select {
   background: white;
   border: 1px solid #ccc;
@@ -181,11 +154,9 @@
   cursor: pointer;
   font-size: 14px;
 }
-
 .btn-select:hover {
   background: #eee;
 }
-
 /* Logout */
 .btn-logout {
   margin-top: 10px;
@@ -197,31 +168,25 @@
   cursor: pointer;
   float: right;
 }
-
 .btn-logout:hover {
   background: #5a4028;
 }
-
 /* Responsive: stack for smaller screens */
 @media (max-width: 768px) {
    .profile-avatar {
     margin-top: 20px;
   }
-
   .profile-box.editing {
     flex-direction: column;
     align-items: center;
   }
-
   .edit-profile-form {
     width: 100%;
   }
-
   .edit-profile-form .dob-gender {
     flex-direction: column;
   }
 }
-
 /* ===== Edit Profile Form (inside box) ===== */
 .edit-profile-form {
   flex: 1; /* take available space */
@@ -229,19 +194,16 @@
   flex-direction: column;
   gap: 15px;
 }
-
 .edit-profile-form .dob-gender {
   display: flex;
   gap: 15px;
 }
-
 .edit-profile-form label {
   display: flex;
   flex-direction: column;
   font-weight: 500;
   color: #333;
 }
-
 .edit-profile-form input,
 .edit-profile-form select {
   margin-top: 5px;
@@ -251,49 +213,40 @@
   font-size: 16px;
   background: #fafafa;
 }
-
-
 .edit-profile-form input:focus,
 .edit-profile-form select:focus {
   outline: none;
   border-color: #7a5a36;
   box-shadow: 0 0 0 2px rgba(122, 90, 54, 0.2);
 }
-
 .form-actions {
   display: flex;
   gap: 15px;
   margin-top: 20px;
   justify-content: flex-start; /* align buttons to left */
 }
-
 .btn-save, .btn-cancel {
   padding: 10px 20px;
   border-radius: 6px;
   font-size: 15px;
   cursor: pointer;
 }
-
 .btn-save {
   background: #7a5a36;
   color: #fff;
   border: none;
 }
-
 .btn-save:hover {
   background: #5a4028;
 }
-
 .btn-cancel {
   background: #ccc;
   color: #333;
   border: none;
 }
-
 .btn-cancel:hover {
   background: #aaa;
 }
-
 .change-password-form {
   display: flex;
   flex-direction: column;
@@ -304,29 +257,24 @@
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-
 .change-password-form input {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 6px;
 }
-
 .change-password-form .btn-save {
   margin-top: 10px;
-  background: #e67300; /* Different from Edit Profile */
+  background: #e67300; 
   color: white;
   padding: 10px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
-
-
-
 /* ===== Request Account Deletion Button ===== */
 .btn-delete {
   margin-top: 15px;
-  background: #ec6c76;   /* red tone */
+  background: #ec6c76;   
   color: white;
   padding: 8px 16px;
   border: none;
@@ -335,14 +283,9 @@
   font-size: 15px;
   font-weight: 500;
 }
-
 .btn-delete:hover {
-  background: #c82333;   /* darker red */
+  background: #c82333;   
 }
-
-
-
-
 /* ===== Purchases Section ===== */
 .purchases-tabs {
   display: flex;
@@ -350,7 +293,6 @@
   margin-bottom: 20px;
   border-bottom: 2px solid #eee;
 }
-
 .purchases-tabs button {
   background: none;
   border: none;
@@ -361,12 +303,10 @@
   transition: color 0.2s ease, border-color 0.2s ease;
   border-bottom: 2px solid transparent;
 }
-
 .purchases-tabs button.active {
   color: #7a5a36;
   border-bottom: 2px solid #7a5a36;
 }
-
 .purchase-box {
   background: #fff;
   padding: 25px;
@@ -379,10 +319,6 @@
   color: #777;
   font-size: 15px;
 }
-
-
-
-
 /* ===== Orders List ===== */
 .orders-list {
   display: flex;
@@ -390,7 +326,6 @@
   gap: 25px;
   width: 100%;
 }
-
 .order-card {
   background: #f8f3ed;
   border-radius: 10px;
@@ -398,25 +333,21 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.08);
   padding: 15px;
 }
-
 .order-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
-
 .order-header h3 {
   font-size: 16px;
   font-weight: bold;
   color: #5a422b;
 }
-
 .order-actions {
   display: flex;
   gap: 8px;
 }
-
 .btn-small {
   background: #fff;
   border: 1px solid #ccc;
@@ -425,12 +356,10 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .order-status {
   font-size: 12px;
   color: #777;
 }
-
 .order-body {
   display: flex;
   gap: 15px;
@@ -439,7 +368,6 @@
   border-bottom: 1px solid #e5e5e5;
   align-items: center;
 }
-
 .order-img {
   width: 120px;
   height: 120px;
@@ -447,36 +375,30 @@
   border-radius: 6px;
   background: #ddd;
 }
-
 .order-info h4 {
   margin: 0;
   font-size: 15px;
   font-weight: bold;
 }
-
 .order-info p {
   margin: 5px 0 0;
   color: #555;
 }
-
 .order-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
 }
-
 .order-total {
   font-size: 15px;
   font-weight: bold;
   color: #333;
 }
-
 .order-buttons {
   display: flex;
   gap: 10px;
 }
-
 .btn-buy {
   background: #d9c5aa;
   border: none;
@@ -484,7 +406,6 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-contact {
   background: #fff;
   border: 1px solid #7a5a36;
@@ -493,21 +414,16 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
-
 /* ===== Profile Page Responsive ===== */
 @media (max-width: 1024px) {
   .profile-page {
-    flex-direction: column; /* stack sidebar + content */
-    padding: 20px;
+    flex-direction: column; 
     gap: 20px;
   }
-
   .sidebar {
     width: 100%;
     padding: 15px;
   }
-
   .profile-box,
   .purchase-box,
   .order-card {
@@ -515,67 +431,54 @@
     align-items: center;
     text-align: center;
   }
-
   .profile-avatar {
     margin-top: 15px;
   }
-
   .profile-details p {
     text-align: center;
   }
-
   .edit-profile-form .dob-gender {
     flex-direction: column;
   }
-
   .form-actions {
     justify-content: center;
     flex-wrap: wrap;
   }
-
   .purchases-tabs {
     flex-wrap: wrap;
     gap: 10px;
   }
-
   .order-body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
   }
-
   .order-footer {
     flex-direction: column;
     gap: 10px;
   }
 }
-
 @media (max-width: 768px) {
   .profile-box,
   .purchase-box,
   .order-card {
     width: 100%;
   }
-
   .sidebar {
     padding: 10px;
   }
-
   .profile-avatar img.profile-img {
     width: 120px;
     height: 120px;
   }
-
   .edit-profile-form input,
   .edit-profile-form select {
     width: 100%;
   }
-
   .btn-edit, .btn-save, .btn-cancel, .btn-delete {
     width: 100%;
   }
 }
-
 .btn-review {
   background: #7a5a36;
   color: white;
@@ -586,12 +489,9 @@
   font-size: 14px;
   font-weight: 500;
 }
-
 .btn-review:hover {
   background: #5a4028;
 }
-
-
 /* ===== Review Modal Overlay ===== */
 .review-modal-overlay {
   position: fixed;
@@ -599,8 +499,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(4px);   /* ✅ blur background */
-  background: rgba(0, 0, 0, 0.3); /* semi-transparent dark overlay */
+  backdrop-filter: blur(4px); 
+  background: rgba(0, 0, 0, 0.3); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -614,15 +514,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4); /* semi-transparent background */
-  backdrop-filter: blur(4px); /* blur effect for background */
+  background: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(4px); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
   animation: fadeIn 0.2s ease-in-out;
 }
-
 /* ===== Review Modal ===== */
 .review-modal {
   background: #fffdf9;
@@ -635,9 +534,8 @@
   flex-direction: column;
   gap: 15px;
   animation: scaleIn 0.2s ease-in-out;
-  z-index: 10000; /* above overlay */
+  z-index: 10000; 
 }
-
 /* Stars in review */
 .stars {
   font-size: 26px;
@@ -646,12 +544,10 @@
   gap: 5px;
   cursor: pointer;
 }
-
 .stars span:hover,
 .stars span.selected {
-  color: #f7b500; /* gold for selected */
+  color: #f7b500; 
 }
-
 /* Textarea */
 .review-textarea {
   width: 100%;
@@ -662,13 +558,11 @@
   font-size: 14px;
   resize: vertical;
 }
-
 /* Upload photo */
 .image-upload-container {
   display: flex;
   justify-content: flex-start;
 }
-
 .image-upload-label {
   cursor: pointer;
   padding: 6px 12px;
@@ -677,18 +571,15 @@
   color: #7a5a36;
   font-size: 14px;
 }
-
 .image-upload-label input {
   display: none;
 }
-
 /* Modal buttons */
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
-
 .btn-cancel {
   background: #ccc;
   color: #333;
@@ -697,11 +588,9 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-cancel:hover {
   background: #aaa;
 }
-
 .btn-submit {
   background: #7a5a36;
   color: #fff;
@@ -710,40 +599,32 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-submit:hover {
   background: #5a4028;
 }
-
 /* ===== Animations ===== */
 @keyframes fadeIn {
   from {opacity: 0;}
   to {opacity: 1;}
 }
-
 @keyframes scaleIn {
   from {transform: scale(0.95); opacity: 0;}
   to {transform: scale(1); opacity: 1;}
 }
-
 .anonymous-option {
-  margin-top: 10px;           /* spacing from textarea above */
+  margin-top: 10px;          
 }
-
 .checkbox-label {
-  display: flex;              /* make children horizontal */
-  flex-direction: row;        /* ensure checkbox and text are in a row */
-  align-items: center;        /* vertically center text with checkbox */
-  gap: 8px;                   /* space between checkbox and text */
+  display: flex;              
+  flex-direction: row;        
+  align-items: center;      
+  gap: 8px;                  
   cursor: pointer;
 }
-
 .checkbox-label input[type="checkbox"] {
-  margin: 0;                  /* remove default margin */
-  flex-shrink: 0;             /* prevent wrapping on small screens */
+  margin: 0;                 
+  flex-shrink: 0;             
 }
-
-
 /* DARK BACKGROUND */
 .review-modal-overlay {
   position: fixed;
@@ -757,7 +638,6 @@
   justify-content: center;
   z-index: 999;
 }
-
 /* MODAL BOX */
 .review-modal {
   background: #fff;
@@ -767,7 +647,6 @@
   width: 95%;
   animation: fadeIn 0.25s ease;
 }
-
 /* BUTTONS */
 .modal-buttons {
   display: flex;
@@ -775,7 +654,6 @@
   gap: 10px;
   margin-top: 20px;
 }
-
 .btn-cancel {
   background: #ccc;
   padding: 8px 15px;
@@ -783,7 +661,6 @@
   border: none;
   cursor: pointer;
 }
-
 .btn-submit {
   background: #4CAF50;
   color: white;
@@ -792,7 +669,6 @@
   border: none;
   cursor: pointer;
 }
-
 .btn-upload {
   background: #007bff;
   color: white;
@@ -801,15 +677,11 @@
   border: none;
   cursor: pointer;
 }
-
 /* SMOOTH ANIMATION */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-
-
-
 /* BUTTONS (fixed to brown theme) */
 .modal-buttons {
   display: flex;
@@ -817,7 +689,6 @@
   gap: 10px;
   margin-top: 20px;
 }
-
 /* Cancel button (brown outline style) */
 .btn-cancel {
   background: white;
@@ -827,11 +698,9 @@
   border-radius: 6px;
   cursor: pointer;
 }
-
 .btn-cancel:hover {
   background: #f1e6d8;
 }
-
 /* Submit button (solid brown) */
 .btn-submit {
   background: #7a5a36;
@@ -841,11 +710,9 @@
   border: none;
   cursor: pointer;
 }
-
 .btn-submit:hover {
   background: #5a4028;
 }
-
 /* Upload button (brown) */
 .btn-upload {
   background: #7a5a36;
@@ -855,7 +722,6 @@
   border: none;
   cursor: pointer;
 }
-
 .btn-upload:hover {
   background: #5a4028;
 }

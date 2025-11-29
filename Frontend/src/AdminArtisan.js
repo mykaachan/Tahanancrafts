@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell, FaTrash } from "react-icons/fa";
-
 export default function AdminArtisan() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
@@ -10,7 +9,6 @@ export default function AdminArtisan() {
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   const artisans = [
     {
       name: "SM Sunrise Weavers",
@@ -58,13 +56,9 @@ export default function AdminArtisan() {
       logo: "https://via.placeholder.com/40",
     },
   ];
-
   return (
     <div className="admindash-container">
-      {/* ===== SIDEBAR ===== */}
       <AdminSidebar />
-
-      {/* ===== MAIN CONTENT ===== */}
       <div className="admindash-main">
         {/* ===== HEADER ===== */}
         <header className="admindash-header">
@@ -96,12 +90,9 @@ export default function AdminArtisan() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
-        {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Artisans</h2>
         </div>
-
         {/* ===== ARTISAN TABLE (styled like AdminCustDetails) ===== */}
         <div className="admincust-table">
           <table>
@@ -152,7 +143,6 @@ export default function AdminArtisan() {
               ))}
             </tbody>
           </table>
-
           {/* ===== FOOTER ===== */}
           <div className="table-footer">
             <p>Showing 1 - 5 from 100</p>

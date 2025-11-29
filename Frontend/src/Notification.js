@@ -3,26 +3,22 @@ import React, { useState } from "react";
 import HeaderFooter from "./HeaderFooter";
 import SidebarProfile from "./components/SidebarProfile";
 import "./Profile.css";
-
 const Notification = () => {
   const [notifications, setNotifications] = useState([
     "Your order #1234 has been shipped!",
     "New promo: 20% off all items!",
     "Your payment for order #1233 is confirmed."
   ]);
-
   const markAsRead = (index) => {
     const updated = [...notifications];
     updated.splice(index, 1);
     setNotifications(updated);
   };
-
   return (
     <HeaderFooter>
       <div className="profile-page">
         {/* Sidebar (separate component now) */}
         <SidebarProfile />
-
         {/* Main Content */}
         <main className="profile-content">
           <h2>Notifications</h2>
@@ -49,5 +45,4 @@ const Notification = () => {
     </HeaderFooter>
   );
 };
-
 export default Notification;

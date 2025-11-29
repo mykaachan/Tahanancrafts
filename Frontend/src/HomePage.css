@@ -5,7 +5,6 @@ html, body {
   width: 100%;
   overflow-x: hidden;
 }
-
 .homepage {
   background: #fdf3e6;
   font-family: 'Segoe UI', sans-serif;
@@ -13,9 +12,7 @@ html, body {
   width: 100%;
   padding-top: 80px;
 }
-
-/* -------------------- HEADER -------------------- */
-
+/* ------------------- HEADER -------------------- */
 .homepage-header {
   display: flex;
   align-items: center;
@@ -29,11 +26,9 @@ html, body {
   z-index: 999;
   box-sizing: border-box;
 }
-
 .homepage-logo {
   width: 150px;
 }
-
 .nav-links ul {
   list-style: none;
   display: flex;
@@ -41,23 +36,19 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
 .nav-links ul li {
   font-weight: 500;
   cursor: pointer;
   transition: color 0.3s;
 }
-
 .nav-links ul li:hover {
   color: #6b4226;
 }
-
 .header-actions {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 .search-box {
   display: flex;
   align-items: center;
@@ -66,21 +57,18 @@ html, body {
   padding: 2px 8px;
   background: #fafafa;
 }
-
 .search-box input {
   border: none;
   outline: none;
   padding: 6px 8px;
   background: transparent;
 }
-
 .search-btn {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 16px;
 }
-
 .login-btn,
 .cart-btn {
   border: none;
@@ -89,14 +77,11 @@ html, body {
   cursor: pointer;
   transition: color 0.3s;
 }
-
 .login-btn:hover,
 .cart-btn:hover {
   color: #6b4226;
 }
-
 /* -------------------- FEATURED SECTION -------------------- */
-
 .featured-section {
   display: flex;
   width: 100%;
@@ -106,8 +91,6 @@ html, body {
   border: none;
   margin-top: -80px;   /* pulls section up */
 }
-
-
 /* LEFT SIDE (IMAGE) */
 .featured-left {
   flex: 1;
@@ -118,7 +101,6 @@ html, body {
   margin: 0;               /* remove margin */
   background: #fdf3e6;
 }
-
 /* IMAGE styling */
 .featured-photo {
   width: 100%;             /* make it fill the full left half */
@@ -129,7 +111,6 @@ html, body {
   padding: 0;              /* remove padding */
   box-shadow: none;        /* remove shadows touching right side */
 }
-
 /* RIGHT SIDE */
 .featured-box {
   flex: 1;
@@ -139,7 +120,6 @@ html, body {
   flex-direction: column;
   justify-content: center;
 }
-
 .featured-box h1 {
   font-size: 6rem;
   margin-bottom: -20px;
@@ -148,7 +128,6 @@ html, body {
   top: -120px;
   line-height: 1.1;
 }
-
 .featured-box {
   flex: 1;
   background: #c8b39a;
@@ -158,7 +137,6 @@ html, body {
   justify-content: center;
   color: #000;
 }
-
 .featured-box .stars {
   color: #f8b400;
   margin: 10px 0;
@@ -166,13 +144,11 @@ html, body {
   align-items: center;
   gap: 4px;
 }
-
 .featured-box .rating-value {
   color: #000;
   font-size: 0.95rem;
   margin-left: 6px;
 }
-
 .featured-box p {
   margin-top: 5px;
   margin-bottom: 20px;
@@ -180,7 +156,6 @@ html, body {
   color: #fff;
   max-width: 500px;
 }
-
 .shop-btn {
   background: #2c1810;
   color: #fff;
@@ -192,21 +167,17 @@ html, body {
   transition: background 0.3s;
   align-self: flex-start;
 }
-
 .shop-btn:hover {
   background: #6b4226;
 }
-
 /* ----------------------------------------- */
 /* SHOP CARDS (STATIC SECTION) – SAFE STYLES */
 /* ----------------------------------------- */
-
 .shop-cards {
   padding: px 0;
   margin: 0;
   background: #fdf3e6;
 }
-
 .shop-cards-grid {
   display: flex;
   justify-content: center;
@@ -214,14 +185,11 @@ html, body {
   background: #fdf3e6;
   padding: 40px 0;
 }
-
 /* -------------------- LATEST PRODUCTS -------------------- */
-
 .latest-products {
   padding: 0px;
   background: #c2b5a7ba; 
 }
-
 .latest-products-grid {
   display: flex;
   justify-content: center;
@@ -231,7 +199,6 @@ html, body {
   overflow-x: auto;
   padding: 0 20px;
 }
-
 .latest-products .product-item {
   text-align: center;
   width: 280px;
@@ -242,18 +209,15 @@ html, body {
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
 .latest-products .product-item img {
   width: 100%;
   height: 280px;
   border-radius: 10px;
   object-fit: cover;
 }
-
 .latest-products .product-item:hover {
   transform: scale(1.05) translateY(-5px);
 }
-
 .latest-products .product-name {
   margin-top: 12px;
   font-size: 18px;
@@ -261,12 +225,9 @@ html, body {
   color: #2e2e2e;
   transition: color 0.3s ease;
 }
-
 .latest-products .product-item:hover .product-name {
   color: #b3531a;
 }
-
-
 .product-card {
   width: 350px;
   height: 350px;
@@ -275,12 +236,9 @@ html, body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   transition: transform 0.3s ease;
 }
-
 .product-card:hover {
   transform: scale(1.05);
 }
-
-
 .latest-products-title::after {
   content: "";
   display: block;
@@ -289,17 +247,13 @@ html, body {
   background: #222;
   margin: 12px auto 0;
 }
-
-
 /* -------------------- HERITAGE SECTION -------------------- */
-
 .heritage-section {
   background: #c8b39a;
   padding: 60px 0;
   display: flex;
   justify-content: center;
 }
-
 .heritage-container {
   display: flex;
   align-items: center;
@@ -308,31 +262,26 @@ html, body {
   gap: 50px;
   padding: 0 20px;
 }
-
 .heritage-image img {
   width: 450px;
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-
 .heritage-content {
   flex: 1;
 }
-
 .heritage-content h2 {
   font-size: 2rem;
   color: #2e2e2e;
   margin-bottom: 20px;
 }
-
 .heritage-content p {
   font-size: 1.1rem;
   color: #3d3d3d;
   margin-bottom: 30px;
   line-height: 1.6;
 }
-
 .heritage-btn {
   background: #5a4634;
   color: white;
@@ -343,13 +292,10 @@ html, body {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-
 .heritage-btn:hover {
   background: #4a3929;
 }
-
 /* -------------------- TAHANANCRAFTS SECTION -------------------- */
-
 .tahanancrafts-section {
   display: flex;
   flex-direction: column;
@@ -360,7 +306,6 @@ html, body {
   background: #fdf3e6;
   position: relative;
 }
-
 .tahanancrafts-logo {
   width: 300px;
   height: auto;
@@ -370,7 +315,6 @@ html, body {
   transform: translateX(-50%);
   z-index: 2;
 }
-
 .description-box {
   background: #c2b5a7;
   padding: 60px 80px;
@@ -384,9 +328,7 @@ html, body {
   z-index: 1;
   text-align: center;
 }
-
 /* -------------------- FOOTER -------------------- */
-
 .footer {
   display: flex;
   justify-content: space-between;
@@ -397,26 +339,22 @@ html, body {
   font-family: 'Segoe UI', sans-serif;
   margin-top: 60px;
 }
-
 .footer-left {
   flex: 1;
   max-width: 30%;
 }
-
 .footer-left h2 {
   font-size: 36px;
   font-weight: 700;
   margin-bottom: 16px;
   line-height: 1.2;
 }
-
 .footer-left p {
   font-size: 16px;
   line-height: 1.7;
   margin-bottom: 24px;
   color: #d8cfc0;
 }
-
 .register-btn {
   background: #e5decf;
   color: #333;
@@ -428,29 +366,24 @@ html, body {
   font-weight: 600;
   transition: 0.2s;
 }
-
 .register-btn:hover {
   background: #fff4e2;
 }
-
 .footer-right {
   flex: 2;
   padding-left: 60px;
 }
-
 .footer-right hr {
   border: none;
   border-top: 1px solid #ffffff;
   margin: 12px 0;
 }
-
 .footer-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin: 24px 0;
 }
-
 .footer-logo {
   font-size: 36px;
   font-weight: 400;
@@ -458,12 +391,10 @@ html, body {
   margin-right: 70px;
   color: #000;
 }
-
 .footer-links {
   display: flex;
   gap: 70px;
 }
-
 .footer-links h4 {
   margin-bottom: 10px;
   font-size: 14px;
@@ -471,18 +402,15 @@ html, body {
   color: #e5decf;
   letter-spacing: 1px;
 }
-
 .footer-links p {
   margin: 5px 0;
   font-size: 14px;
   color: #d8cfc0;
   cursor: pointer;
 }
-
 .footer-links p:hover {
   text-decoration: underline;
 }
-
 .footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -490,9 +418,7 @@ html, body {
   color: #d8cfc0;
   margin-top: 14px;
 }
-
 /* -------------------- RESPONSIVE -------------------- */
-
 @media (max-width: 1024px) {
   .featured-section,
   .heritage-container,
@@ -502,7 +428,6 @@ html, body {
     align-items: center !important;
     gap: 20px !important;
   }
-
   .featured-box,
   .heritage-content,
   .extra-products .product-item,
@@ -510,119 +435,98 @@ html, body {
     width: 90% !important;
     max-width: 400px;
   }
-
   .featured-box h1 {
     font-size: 2rem !important;
     line-height: 1.2;
   }
-
   .featured-box h3,
   .heritage-content h2,
   .latest-products-title {
     font-size: 1.2rem !important;
   }
-
   .extra-products .product-item img {
     width: 100% !important;
     height: auto !important;
   }
-
   .tahanancrafts-logo {
     width: 150px !important;
   }
-
   .description-box {
     padding: 20px !important;
     font-size: 0.95rem !important;
     max-width: 95% !important;
   }
-
   .shop-btn,
   .heritage-btn {
     padding: 10px 20px !important;
     font-size: 0.95rem !important;
   }
-
   .latest-products-grid,
   .extra-products-grid {
     gap: 15px !important;
   }
-
   .homepage-container {
     padding: 10px !important;
   }
 }
-
 @media (max-width: 480px) {
   .featured-box h1 {
     font-size: 1.5rem !important;
   }
-
   .featured-box h3,
   .heritage-content h2,
   .latest-products-title {
     font-size: 1rem !important;
   }
-
   .shop-btn,
   .heritage-btn {
     padding: 8px 16px !important;
     font-size: 0.85rem !important;
   }
-
   .tahanancrafts-logo {
     width: 120px !important;
   }
-
   .description-box {
     padding: 15px !important;
     font-size: 0.9rem !important;
   }
 }
-
 /* REMOVE ALL DEFAULT SECTION GAPS */
 section {
   margin: 1 !important;
   padding: 1 !important;
   border: none !important;
 }
-
 /* REMOVE GAP ABOVE FEATURED SECTION */
 .featured-section {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-
 /* REMOVE ANY EXTRA WHITE SPACE CAUSED BY HEADER WRAPPER */
 .homepage-container {
   margin: 0 !important;
   padding: 0 !important;
 }
-
 /* FIX: featured image and text should be side by side with no gap */
 .featured-section {
   display: flex;
   align-items: stretch;
   gap: 0 !important;
 }
-
 /* REMOVE BLACK LINE UNDER FEATURED SECTION (it comes from latest-products::before) */
 .latest-products::before {
   display: none !important;
 }
-
 /* REMOVE GAP ABOVE LATEST PRODUCTS */
 .latest-products {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
-
 /* REMOVE GAP BELOW TAHANAN CRAFTS SECTION */
 .tahanancrafts-section {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
-
 /* REMOVE ANY GLOBAL BODY PADDING OR MARGIN */
 body, html {
   margin: 0 !important;

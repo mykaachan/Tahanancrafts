@@ -1,7 +1,6 @@
 import React from "react";
 import "./TaalStory.css";
 import HeaderFooter from "./HeaderFooter"; // unchanged
-
 function TaalStory() {
   return (
     <HeaderFooter>
@@ -27,7 +26,6 @@ function TaalStory() {
             </div>
           </div>
         </section>
-
         {/* ===== STORY SECTION 1 ===== */}
         <section className="taal-story-section">
           <div className="story-left">
@@ -46,7 +44,6 @@ function TaalStory() {
             </p>
           </div>
         </section>
-
         {/* ===== STORY SECTION 2 ===== */}
         <section className="taal-story-section reverse">
           <div className="story-left">
@@ -64,7 +61,6 @@ function TaalStory() {
             </p>
           </div>
         </section>
-
         {/* ===== STORY SECTION 3 ===== */}
         <section className="taal-story-section">
           <div className="story-left">
@@ -82,7 +78,6 @@ function TaalStory() {
             </p>
           </div>
         </section>
-
         {/* ===== LATEST PRODUCTS ===== */}
         <section className="latest-products">
           <h2>Latest Products</h2>
@@ -101,7 +96,6 @@ function TaalStory() {
             </div>
           </div>
         </section>
-
         {/* ===== MORE PRODUCTS ===== */}
         <section className="more-products">
           <h2>More Products</h2>
@@ -120,7 +114,6 @@ function TaalStory() {
             </div>
           </div>
         </section>
-
         {/* ===== HERITAGE SECTION (ADDED) ===== */}
         <section className="heritage-wrapper">
           <div className="heritage-inner">
@@ -134,7 +127,6 @@ function TaalStory() {
                 rooted in heritage.
               </p>
             </div>
-
             <div className="heritage-right">
               <img
                 src="https://via.placeholder.com/620x420?text=TAAL+Heritage+Photo"
@@ -147,5 +139,4 @@ function TaalStory() {
     </HeaderFooter>
   );
 }
-
 export default TaalStory;

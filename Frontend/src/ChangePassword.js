@@ -3,29 +3,22 @@ import './App.css';
 import { ReactComponent as Logo } from './Logo.svg';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 function ChangePassword() {
   const [newPass1, setNewPass1] = useState("");
   const [newPass2, setNewPass2] = useState("");
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
   const location = useLocation();
-
-  // ✅ Get contact + otp from ForgotPass2 (passed through navigate state)
   const { contact, otp } = location.state || {};
-
   const handleSavePassword = async () => {
     if (!newPass1 || !newPass2) {
       setMessage("Please fill in both password fields.");
       return;
     }
-
     if (newPass1 !== newPass2) {
       setMessage("Passwords do not match.");
       return;
     }
-
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/users/auth/change_password/`,
@@ -35,23 +28,19 @@ function ChangePassword() {
           newpass2: newPass2
         }
       );
-
       setMessage(res.data.message || "Password reset successful.");
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       setMessage(err.response?.data?.error || "Something went wrong.");
     }
   };
-
   return (
     <div className="App">
       <div className="App-background-overlay" />
-
       <div className="login-rectangle">
         <div className="logo-wrapper">
           <Logo className="logo-svg" />
         </div>
-
         <div className="form-wrapper">
           <input
             type="password"
@@ -67,13 +56,11 @@ function ChangePassword() {
             value={newPass2}
             onChange={(e) => setNewPass2(e.target.value)}
           />
-
           <div className="login-button-wrapper">
             <button className="login-button" onClick={handleSavePassword}>
               SAVE PASSWORD
             </button>
           </div>
-
           {/* ✅ Feedback message */}
           {message && <p style={{ color: "white", marginTop: "10px" }}>{message}</p>}
         </div>
@@ -81,5 +68,4 @@ function ChangePassword() {
     </div>
   );
 }
-
 export default ChangePassword;

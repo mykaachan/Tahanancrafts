@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import "./Shop.css";
 import {getImageUrl } from "./api";
-
 function ShopAllProducts() {
   const { artisan_id } = useParams();
   const [products, setProducts] = useState([]);
@@ -11,7 +10,6 @@ function ShopAllProducts() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
-
   useEffect(() => {
     const fetchShopProducts = async () => {
       try {
@@ -27,22 +25,17 @@ function ShopAllProducts() {
     };
     fetchShopProducts();
   }, [artisan_id]);
-
   const handleProductClick = (productId) => {
     const userId = localStorage.getItem("user_id");
-
     // Log product view
     fetch(`${API_URL}/api/products/product/log-view/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId, user_id: userId }),
     }).catch((err) => console.error("Failed to log product view:", err));
-
     navigate(`/product/${productId}`);
   };
-
   if (loading) return <p>Loading products...</p>;
-
   return (
     <HeaderFooter>
       <div className="shop-page">
@@ -64,16 +57,13 @@ function ShopAllProducts() {
               <button className="btn">Message</button>
             </div>
           </div>
-
         </div>
-
         <div className="shop-tabs">
           <Link to={`/shop/${artisan_id}`}>
             <button>Home</button>
           </Link>
           <button className="active">All Products</button>
         </div>
-
         <div className="recommended">
           <h3>ALL PRODUCTS</h3>
           <div className="product-grid">
@@ -108,5 +98,4 @@ function ShopAllProducts() {
     </HeaderFooter>
   );
 }
-
 export default ShopAllProducts;

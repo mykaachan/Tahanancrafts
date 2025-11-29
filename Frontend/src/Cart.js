@@ -4,12 +4,10 @@ import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { getCartItems, updateCartItem, removeCartItem } from "./api";
 import Footer from "./Footer";
-
 function Cart() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchCart = async () => {
       const userId = localStorage.getItem("user_id");
@@ -18,14 +16,11 @@ function Cart() {
         navigate("/login");
         return;
       }
-
       try {
         const data = await getCartItems(userId);
-
         const formatted = data.map((cartItem) => {
           const unitPrice = Number(cartItem.product.price);
           const qty = Number(cartItem.quantity);
-
           return {
             id: cartItem.id,
             product_id: cartItem.product.id,
@@ -40,7 +35,6 @@ function Cart() {
             selected: false,
           };
         });
-
         setItems(formatted);
       } catch (err) {
         console.error("Failed to fetch cart:", err);
@@ -49,21 +43,16 @@ function Cart() {
         setLoading(false);
       }
     };
-
     fetchCart();
   }, [navigate]);
-
   const updateQty = async (id, delta) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
-
     const userId = localStorage.getItem("user_id");
     const newQty = Math.max(1, item.qty + delta);
-
     try {
       await updateCartItem(id, newQty, userId);
       const newTotal = item.unit_price * newQty;
-
       setItems((prev) =>
         prev.map((i) =>
           i.id === id ? { ...i, qty: newQty, total: newTotal } : i
@@ -74,10 +63,8 @@ function Cart() {
       alert("Failed to update quantity.");
     }
   };
-
   const removeItem = async (id) => {
     const userId = localStorage.getItem("user_id");
-
     try {
       await removeCartItem(id, userId);
       setItems((prev) => prev.filter((item) => item.id !== id));
@@ -86,7 +73,6 @@ function Cart() {
       alert("Failed to remove item.");
     }
   };
-
   const toggleSelect = (id) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -94,12 +80,9 @@ function Cart() {
       )
     );
   };
-
   const selectedItems = items.filter((item) => item.selected);
   const subtotal = selectedItems.reduce((sum, item) => sum + item.total, 0);
-
   if (loading) return <p>Loading cart...</p>;
-
   return (
     <>
       {/* HEADER */}
@@ -113,7 +96,6 @@ function Cart() {
             <li><Link to="/profile">Profile</Link></li>
           </ul>
         </nav>
-
         <div className="header-actions">
           <div className="search-box">
             <input type="text" placeholder="Search" />
@@ -124,12 +106,10 @@ function Cart() {
           </Link>
         </div>
       </header>
-
       {/* CART CONTENT */}
       <main className="cart-page">
         <div className="cart-container">
           <h1 className="cart-title">My Shopping Cart</h1>
-
           <div className="cart-layout">
             {/* CART ITEMS */}
             <div className="cart-items">
@@ -138,7 +118,6 @@ function Cart() {
                   <div key={item.id} className="cart-item">
                     <div className="cart-item-box">
                       <div className="item-header">{item.name}</div>
-
                       <div className="item-body">
                         <input
                           type="checkbox"
@@ -146,16 +125,13 @@ function Cart() {
                           checked={item.selected}
                           onChange={() => toggleSelect(item.id)}
                         />
-
                         <img src={item.img} alt={item.desc} className="item-img" />
-
                         <div className="item-info">
                           <h3>{item.name}</h3>
                           <p>{item.desc}</p>
                           <p className="unit-price">Unit Price: ₱{item.unit_price}</p>
                           <p className="total-price">Subtotal: ₱{item.total}</p>
                         </div>
-
                         <div className="item-actions">
                           <p>Quantity: {item.qty}</p>
                           <div className="qty-buttons">
@@ -173,12 +149,10 @@ function Cart() {
               ) : (
                 <p>Your cart is empty.</p>
               )}
-
               <Link to="/products">
                 <button className="back-btn">Back to Shop</button>
               </Link>
             </div>
-
             {/* SUMMARY */}
             <div className="cart-summary">
               <hr />
@@ -208,10 +182,8 @@ function Cart() {
           </div>
         </div>
       </main>
-
       <Footer />
     </>
   );
 }
-
 export default Cart;

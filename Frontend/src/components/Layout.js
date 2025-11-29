@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Layout.css';
-
 const Layout = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
-
   const toggleNotifications = () => {
     setShowNotifications(prev => !prev);
   };
-
   return (
     <div className="layout">
       {/* Header */}
@@ -70,7 +67,6 @@ const Layout = ({ children }) => {
   </div>
 )}
       </header>
-
       <div className="main-container">
         {/* Sidebar */}
         <aside className="dashboard-sidebar">
@@ -89,7 +85,6 @@ const Layout = ({ children }) => {
             </Link>
           </nav>
         </aside>
-
         {/* Main Content */}
         <main className="main-content">
           {children}
@@ -98,5 +93,4 @@ const Layout = ({ children }) => {
     </div>
   );
 };
-
 export default Layout;

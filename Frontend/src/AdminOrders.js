@@ -3,16 +3,13 @@ import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar"; 
 import { FaBell } from "react-icons/fa";
-
 export default function AdminOrders() {
   const [showNotifications, setShowNotifications] = useState(false);
-
   const [notifications] = useState([
     "🧺 New artisan shop registered",
     "📦 Order #1234 has been delivered",
     "💬 New message from a customer",
   ]);
-
   const [orders] = useState([
     {
       id: 1,
@@ -65,7 +62,6 @@ export default function AdminOrders() {
       img: "https://via.placeholder.com/40.png?text=Product",
     },
   ]);
-
   return (
     <div className="admindash-container">
       <AdminSidebar /> {/* ✅ Sidebar included */}
@@ -84,7 +80,6 @@ export default function AdminOrders() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
@@ -100,12 +95,10 @@ export default function AdminOrders() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-
         {/* ===== PAGE TITLE ===== */}
         <div className="admindash-welcome">
           <h2>Orders &gt; History</h2>
         </div>
-
         {/* ===== ORDERS TABLE ===== */}
         <div className="cust-history">
           <table className="cust-history-table">
@@ -150,7 +143,6 @@ export default function AdminOrders() {
               ))}
             </tbody>
           </table>
-
           {/* ===== PAGINATION ===== */}
           <div className="pagination">
             <span>

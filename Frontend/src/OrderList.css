@@ -203,9 +203,6 @@
   color: #fff;
   border: none;
 }
-
-
-
 /* ===== Responsive Adjustments for Orders Page ===== */
 @media (max-width: 1024px) {
   .orders-list-header,
@@ -213,34 +210,28 @@
     grid-template-columns: 2fr 1fr 1fr 1fr; /* reduce columns */
     font-size: 0.9rem;
   }
-
   .orders-section {
     padding: 20px;
   }
-
   .order-product-image {
     width: 40px;
     height: 40px;
     margin-right: 12px;
   }
-
   .order-id-input,
   .export-btn,
   .pagination-btn {
     padding: 6px 10px;
     font-size: 0.9rem;
   }
-
   .status-dropdown {
     min-width: 100px;
     padding: 4px 0;
   }
-
   .status-option {
     padding: 6px 0;
     font-size: 0.85rem;
   }
-
   .order-product-name,
   .order-product-category,
   .order-id,
@@ -249,47 +240,39 @@
   .order-date {
     font-size: 0.85rem;
   }
-
   .orders-tabs {
     gap: 12px;
     flex-wrap: wrap;
   }
 }
-
 @media (max-width: 768px) {
   .orders-list-header,
   .order-row {
     grid-template-columns: 1fr 1fr 1fr; /* stack further */
     font-size: 0.85rem;
   }
-
   .order-product {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .order-product-image {
     margin-bottom: 6px;
   }
-
   .orders-controls {
     flex-direction: column;
     gap: 8px;
   }
-
   .orders-pagination {
     justify-content: center;
     flex-wrap: wrap;
   }
 }
-
 @media (max-width: 480px) {
   .orders-list-header,
   .order-row {
     grid-template-columns: 1fr 1fr; /* mobile stack */
     font-size: 0.8rem;
   }
-
   .order-product-name,
   .order-product-category,
   .order-id,
@@ -298,20 +281,16 @@
   .order-date {
     font-size: 0.8rem;
   }
-
   .status-dropdown {
     min-width: 90px;
   }
-
   .status-option {
     font-size: 0.8rem;
   }
-
   .orders-controls {
     flex-direction: column;
     align-items: stretch;
   }
-
   .order-id-input,
   .export-btn,
   .pagination-btn {
@@ -325,29 +304,24 @@
   border-radius: 8px;
   background-color: #fff;
 }
-
 .order-summary {
   display: flex;
   gap: 16px;
   margin-bottom: 12px;
 }
-
 .order-product-image {
   width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 6px;
 }
-
 .order-details div {
   margin-bottom: 4px;
 }
-
 .order-actions {
   display: flex;
   gap: 8px;
 }
-
 .approve-btn {
   background-color: #4caf50;
   color: white;
@@ -356,7 +330,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
 .decline-btn {
   background-color: #f44336;
   color: white;
@@ -365,7 +338,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
 .preorder-btn {
   background-color: #ff9800;
   color: white;
@@ -374,8 +346,6 @@
   border-radius: 4px;
   cursor: pointer;
 }
-
-
 .order-refund-card {
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -385,25 +355,21 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   font-family: 'Segoe UI', sans-serif;
 }
-
 .order-refund-card .order-summary {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .order-refund-card .field-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-top: 8px;
 }
-
 .order-refund-card label {
   width: 120px;
   font-weight: 600;
 }
-
 .order-refund-card select,
 .order-refund-card input[type="file"] {
   flex: 1;
@@ -411,13 +377,11 @@
   border: 1px solid #ccc;
   border-radius: 6px;
 }
-
 .order-refund-card .order-actions {
   margin-top: 12px;
   display: flex;
   gap: 12px;
 }
-
 .order-refund-card .approve-btn {
   background-color: #4CAF50;
   color: #fff;
@@ -426,7 +390,6 @@
   padding: 8px 16px;
   cursor: pointer;
 }
-
 .order-refund-card .decline-btn {
   background-color: #F44336;
   color: #fff;
@@ -435,16 +398,12 @@
   padding: 8px 16px;
   cursor: pointer;
 }
-
 .order-refund-card .approve-btn:hover {
   background-color: #45a049;
 }
-
 .order-refund-card .decline-btn:hover {
   background-color: #e53935;
 }
-
-
 /* Apply card style to all order types */
 .order-toship-card,
 .order-delivered-card,
@@ -459,7 +418,6 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   font-family: 'Segoe UI', sans-serif;
 }
-
 .order-toship-card .order-actions,
 .order-delivered-card .order-actions,
 .order-request-card .order-actions,
@@ -469,7 +427,6 @@
   gap: 12px;
   margin-top: 12px;
 }
-
 .order-toship-card .approve-btn,
 .order-delivered-card .approve-btn,
 .order-request-card .approve-btn,
@@ -483,7 +440,6 @@
   padding: 8px 16px;
   cursor: pointer;
 }
-
 .order-toship-card .decline-btn,
 .order-delivered-card .decline-btn,
 .order-request-card .decline-btn,

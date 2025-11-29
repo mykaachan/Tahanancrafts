@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css"; // your footer styles
-
 function Footer() {
   const [activeModal, setActiveModal] = useState(null);
-
   const openModal = (type) => setActiveModal(type);
   const closeModal = () => setActiveModal(null);
-
   return (
     <footer className="footer">
       <div className="footer-left">
@@ -17,7 +14,6 @@ function Footer() {
           <button className="register-btn">Register</button>
         </Link>
       </div>
-
       <div className="footer-right">
         <hr />
         <div className="footer-content">
@@ -45,7 +41,6 @@ function Footer() {
           <p onClick={() => openModal("privacy")} className="footer-link">Privacy — Terms</p>
         </div>
       </div>
-
       {activeModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -86,5 +81,4 @@ function Footer() {
     </footer>
   );
 }
-
 export default Footer;

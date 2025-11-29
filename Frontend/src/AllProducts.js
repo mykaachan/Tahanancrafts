@@ -2,8 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import './AllProducts.css';
-
-// Placeholder product data for frontend only
 const placeholderProducts = [
   {
     id: 1,
@@ -27,9 +25,7 @@ const placeholderProducts = [
     status: 'On Stock',
     orders: 12,
   },
-
 ];
-
 const getStatusClass = (status) => {
   switch (status) {
     case 'Low Stock':
@@ -42,15 +38,11 @@ const getStatusClass = (status) => {
       return '';
   }
 };
-
 const AllProducts = () => {
   const navigate = useNavigate();
-
   const handleDelete = (id) => {
-    
     alert('Delete product with id: ' + id);
   };
-
   return (
     <Layout>
       <div className="all-products-page-container">
@@ -94,7 +86,6 @@ const AllProducts = () => {
                   </td>
                 </tr>
               ))}
-            
             </tbody>
           </table>
           <div className="add-product-btn-container">
@@ -105,5 +96,4 @@ const AllProducts = () => {
     </Layout>
   );
 };
-
 export default AllProducts;

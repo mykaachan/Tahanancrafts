@@ -2,24 +2,19 @@ import React, { useState } from "react";
 import HeaderFooter from "./HeaderFooter";
 import SidebarProfile from "./components/SidebarProfile";
 import "./Profile.css";
-
 function MyPurchases() {
   const [activeTab, setActiveTab] = useState("all");
   const [showReview, setShowReview] = useState(false);
   const [showToPayModal, setShowToPayModal] = useState(false);
-
-
   return (
     <HeaderFooter>
       <div className="profile-page">
         {/* ===== Sidebar ===== */}
         <SidebarProfile />
-
         {/* ===== Main Content ===== */}
         <main className="profile-content">
           <h2>My Purchases</h2>
           <p className="subtitle">Track your order status here</p>
-
           {/* ===== Tabs ===== */}
           <div className="purchases-tabs">
             {[
@@ -43,7 +38,6 @@ function MyPurchases() {
               </button>
             ))}
           </div>
-
           {/* ===== Purchases Box ===== */}
           <div className="purchase-box">
             {/* ===== ALL ===== */}
@@ -84,7 +78,6 @@ function MyPurchases() {
                     </div>
                   </div>
                 </div>
-
                 {/* ===== Order 2 ===== */}
                 <div className="order-card">
                   <div className="order-header">
@@ -97,7 +90,6 @@ function MyPurchases() {
                       Parcel has been delivered | <strong>COMPLETED</strong>
                     </span>
                   </div>
-
                   <div className="order-body">
                     <img
                       src="https://via.placeholder.com/120"
@@ -109,7 +101,6 @@ function MyPurchases() {
                       <p>Hand-woven Coin Purse</p>
                     </div>
                   </div>
-
                   <div className="order-footer">
                     <p className="order-total">
                       Order Total: <strong>₱149</strong>
@@ -122,8 +113,6 @@ function MyPurchases() {
                 </div>
               </div>
             )}
-
-
             {/* ===== TO PAY ===== */}
 {activeTab === "to-pay" && (
   <div className="orders-list">
@@ -140,7 +129,6 @@ function MyPurchases() {
           <p>Price: ₱149</p>
           <p>Shipping Fee: ₱50</p>
         </div>
-
         <button
           className="btn-upload"
           onClick={() => setShowToPayModal(true)}
@@ -156,7 +144,6 @@ function MyPurchases() {
   <div className="review-modal-overlay">
     <div className="review-modal" style={{ width: "500px", maxWidth: "95%" }}>
       <h2>Payment Details</h2>
-
       <div className="to-pay-grid" style={{ display: "flex", gap: "20px" }}>
         <div className="to-pay-col" style={{ flex: 1 }}>
           <p><strong>Order Number:</strong> #12345</p>
@@ -166,7 +153,6 @@ function MyPurchases() {
           <p><strong>Shipping Fee:</strong> ₱50</p>
           <p><strong>Preorder:</strong> Yes</p>
         </div>
-
         <div className="to-pay-col" style={{ flex: 1 }}>
           <p><strong>Downpayment:</strong> ₱100</p>
           <p><strong>Total to Pay Now:</strong> ₱99</p>
@@ -185,8 +171,6 @@ function MyPurchases() {
     border: "1px solid #ccc"
   }}
 />
-
-
           {/* Upload screenshot */}
           <div className="image-upload-container">
             <label className="image-upload-label">
@@ -204,7 +188,6 @@ function MyPurchases() {
           </div>
         </div>
       </div>
-
       <div className="modal-buttons">
         <button
           className="btn-cancel"
@@ -217,14 +200,10 @@ function MyPurchases() {
     </div>
   </div>
 )}
-
-
             {/* ===== TO SHIP ===== */}
             {activeTab === "to-ship" && <p>No items to ship.</p>}
-
             {/* ===== TO RECEIVE ===== */}
             {activeTab === "to-receive" && <p>No items to receive.</p>}
-
             {/* ===== TO REVIEW ===== */}
             {activeTab === "to-review" && (
               <div className="orders-list">
@@ -240,7 +219,6 @@ function MyPurchases() {
                       <p>Quantity: 1</p>
                       <p>Price: ₱149</p>
                     </div>
-
                     <button
                       className="btn-review"
                       onClick={() => setShowReview(true)}
@@ -251,17 +229,14 @@ function MyPurchases() {
                 </div>
               </div>
             )}
-
             {/* ===== COMPLETED ===== */}
             {activeTab === "completed" && <p>No completed orders yet.</p>}
           </div>
-
 {/* ===== Review Modal ===== */}
 {showReview && (
   <div className="review-modal-overlay">
     <div className="review-modal">
       <h2>Write a Review</h2>
-
       {/* ⭐ Stars */}
       <div className="stars">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -270,21 +245,17 @@ function MyPurchases() {
           </span>
         ))}
       </div>
-
       {/* 📝 Thoughts */}
       <textarea
         className="review-textarea"
         placeholder="Share your thoughts..."
       ></textarea>
-
    {/* 🆕 Anonymous Checkbox */}
 <div className="anonymous-option">
   <label className="checkbox-label">
     <input type="checkbox" /> Post review anonymously
   </label>
 </div>
-
-
       {/* Buttons */}
       <div className="modal-buttons">
         <button
@@ -298,11 +269,9 @@ function MyPurchases() {
     </div>
   </div>
 )}
-
         </main>
       </div>
     </HeaderFooter>
   );
 }
-
 export default MyPurchases;
