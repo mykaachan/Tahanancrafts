@@ -56,15 +56,19 @@ function Checkout() {
           cart_item_ids.includes(i.id)
         );
 
-        const merged = backendFiltered.map((bItem) => {
-          const match = items_frontend.find((f) => f.id === bItem.id);
-          return {
-            ...bItem,
-            img: match?.img || null,
-            frontend_name: match?.name,
-            frontend_unit_price: match?.unit_price,
-          };
+        const merged = [];
+
+        backendFiltered.forEach((group) => {
+          group.items.forEach((item) => {
+            merged.push({
+              ...item,
+              artisan_id: group.artisan_id,
+              artisan_name: group.artisan_name,
+              artisan_qr: group.artisan_qr,
+            });
+          });
         });
+
 
         setSelectedItems(merged);
       } catch (err) {
