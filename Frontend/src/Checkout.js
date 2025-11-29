@@ -442,6 +442,90 @@ function Checkout() {
             </button>
           </div>
         </div>
+        {/* ========== Address Modal (Select) ========== */}
+        {showAddressModal && (
+          <div
+            className="address-modal-backdrop"
+            onClick={() => setShowAddressModal(false)}
+          >
+            <div
+              className="address-modal-box"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>Select Shipping Address</h2>
+                <button
+                  className="modal-close"
+                  onClick={() => setShowAddressModal(false)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="address-list">
+                {addresses.length === 0 && <p>No addresses yet.</p>}
+
+                {addresses.map((addr) => (
+                  <div
+                    key={addr.id}
+                    className={`address-card ${
+                      selectedAddress?.id === addr.id ? "selected" : ""
+                    }`}
+                    onClick={() => setSelectedAddress(addr)}
+                  >
+                    <div className="radio-col">
+                      <input
+                        type="radio"
+                        checked={selectedAddress?.id === addr.id}
+                        onChange={() => setSelectedAddress(addr)}
+                      />
+                    </div>
+
+                    <div className="address-col">
+                      <strong className="name">{addr.full_name}</strong>
+                      <span className="phone">{addr.phone}</span>
+                      <div className="full-address">
+                        {addr.address && <>{addr.address}, </>}
+                        {addr.barangay}, {addr.city}, {addr.province}
+                      </div>
+                      {addr.is_default && (
+                        <span className="default-tag">Default</span>
+                      )}
+                    </div>
+
+                    <button
+                      className="edit-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditAddressData(addr);
+                        setShowEditModal(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <button
+                  className="modal-add-btn"
+                  onClick={() => setShowAddModal(true)}
+                >
+                  + Add New Address
+                </button>
+
+                <button
+                  className="modal-save-btn"
+                  onClick={() => setShowAddressModal(false)}
+                >
+                  Save Selection
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </HeaderFooter>
   );
