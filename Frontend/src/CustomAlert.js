@@ -9,7 +9,7 @@ function CustomAlert({ show, title = "Notice", message, onClose, type = "info" }
     }
   }, [show, onClose]);
 
-  if (!show) return null; // 👈 this is key!
+  if (!show) return null; 
 
   return (
     <div className="custom-alert-overlay">

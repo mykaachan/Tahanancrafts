@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Products.css";
+import Footer from "./Footer";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
 function FilterGroup({ title, items, selectedItems, onChange }) {
@@ -283,43 +284,7 @@ function Products() {
           </div>
         </section>
       </div>
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="footer-left">
-          <h2>
-            Join us, <br /> artisans!
-          </h2>
-          <p>This is a sample description and does not hold any valuable meaning.</p>
-          <button className="register-btn">Register</button>
-        </div>
-        <div className="footer-right">
-          <hr />
-          <div className="footer-content">
-            <h1 className="footer-logo">THC</h1>
-            <div className="footer-links">
-              <div>
-                <h4>ABOUT US</h4>
-                <p>TahananCrafts</p>
-                <p>About</p>
-              </div>
-              <div>
-                <h4>SUPPORT</h4>
-                <p>Customer Support</p>
-                <p>Contact</p>
-              </div>
-              <div>
-                <h4>EMAIL</h4>
-                <p>Sample@email.com</p>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="footer-bottom">
-            <p>© 2025 - TahananCrafts</p>
-            <p>Privacy — Terms</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

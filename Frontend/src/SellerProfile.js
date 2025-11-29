@@ -5,10 +5,10 @@ import "./SellerProfile.css";
 function SellerProfile() {
   const [qrCode, setQrCode] = useState(null);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false); // first popup
-  const [showEditModal, setShowEditModal] = useState(false); // second popup
-  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false); // third popup
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false); // fourth popup
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); 
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false); 
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false); 
 
   const [userInfo, setUserInfo] = useState({
     username: "habing_ibaan",

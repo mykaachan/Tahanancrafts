@@ -27,7 +27,7 @@ const placeholderProducts = [
     status: 'On Stock',
     orders: 12,
   },
-  // Add more placeholder products as needed
+
 ];
 
 const getStatusClass = (status) => {
@@ -47,7 +47,7 @@ const AllProducts = () => {
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
-    // Placeholder for delete action, ready for backend integration
+    
     alert('Delete product with id: ' + id);
   };
 
@@ -94,8 +94,7 @@ const AllProducts = () => {
                   </td>
                 </tr>
               ))}
-              {/* Placeholder row for backend integration */}
-              {/* Example: <tr><td colSpan="6">Loading products...</td></tr> */}
+            
             </tbody>
           </table>
           <div className="add-product-btn-container">

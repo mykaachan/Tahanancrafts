@@ -8,7 +8,7 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaCalendarAlt,
-} from "react-icons/fa"; // ✅ added icons
+} from "react-icons/fa"; 
 
 export default function AdminCustDetails() {
   const [showNotifications, setShowNotifications] = useState(false);

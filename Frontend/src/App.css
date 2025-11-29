@@ -22,7 +22,7 @@ body, html, #root {
   bottom: 0;
   background-image: 
     linear-gradient(to right, rgba(228, 212, 192, 0.95), rgba(159, 132, 73, 0)),
-    url('./background.png'); /* ✅ Make sure this path is correct */
+    url('./background.png'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -222,9 +222,6 @@ body, html, #root {
   cursor: pointer;
 }
 
-/* --------------------
-   📱 RESPONSIVENESS
---------------------- */
 
 /* Tablet & smaller laptops */
 @media (max-width: 1024px) {
@@ -234,7 +231,7 @@ body, html, #root {
     transform: translate(-50%, -50%);
   }
 
-  /* Removed fixed login logo width for consistency */
+ 
 }
 
 /* Mobile phones */
@@ -285,13 +282,11 @@ body, html, #root {
   }
 }
 
-/* ===============================
-   ✅ Standardize logo size for all auth pages
-================================*/
+
 .login-logo,
 .signup-logo,
 .forgot-logo {
-  width: 280px;   /* ✅ same width across pages */
+  width: 280px;   
   max-width: 80%;
   height: auto;
   cursor: pointer;

@@ -208,7 +208,6 @@
 }
 
 
-
 /* ===== ADMIN DETAILS PAGE ===== */
 .product-details-container {
   background: #fffdf9;
@@ -423,26 +422,6 @@ textarea {
   box-shadow: 0 0 0 2px rgba(196, 164, 132, 0.2);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .admincust-table {
   background: #fff;
   border-radius: 12px;
@@ -546,8 +525,6 @@ textarea {
   color: white;
 }
 
-
-
 /* ===== PRODUCTS TABLE (MATCH CUSTOMER STYLE) ===== */
 .adminprod-table {
   background: #fff;
@@ -609,10 +586,6 @@ textarea {
   height: 16px;
 }
 
-
-
-
-
 .adminprod-table table,
 .admincust-table table {
   width: 100%;
@@ -637,8 +610,6 @@ textarea {
   color: #555;
 }
 
-
-
 /* ===== Delete Button (same as AdminProd) ===== */
 .action-delete {
   background: none;
@@ -653,13 +624,6 @@ textarea {
   color: #ef4444; /* lighter red */
   transform: scale(1.2);
 }
-
-
-  
-
-
-
-
 
 /* ===== CUSTOMER DETAILS PAGE ===== */
 .customer-details {
@@ -829,12 +793,6 @@ textarea {
   background: #d8f3dc;
   color: #2b9348;
 }
-
-
-
-
-
-
 
 /* ===== NOTIFICATIONS PAGE ===== */
 .notification-wrapper {
@@ -1166,16 +1124,6 @@ textarea {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
 /* ===== UNIVERSAL STATUS BADGES ===== */
 .status-badge {
   padding: 4px 10px;
@@ -1187,18 +1135,18 @@ textarea {
 
 /* Specific colors */
 .status-badge.waiting {
-  background: #fef3c7; /* light yellow */
-  color: #b45309;      /* dark yellow/orange */
+  background: #fef3c7; 
+  color: #b45309;      
 }
 
 .status-badge.approved {
-  background: #d4edda; /* light green */
-  color: #155724;      /* dark green */
+  background: #d4edda; 
+  color: #155724;      
 }
 
 .status-badge.declined {
-  background: #fde7d9; /* light red */
-  color: #c24621;      /* red */
+  background: #fde7d9; 
+  color: #c24621;      
 }
 
 
@@ -1366,12 +1314,12 @@ textarea {
   background: #f7efe7;
   border-radius: 6px;
   padding: 6px 12px;
-  display: flex;               /* changed from inline-block */
-  justify-content: center;     /* center horizontally */
-  align-items: center;         /* center vertically */
-  white-space: nowrap;         /* prevent text wrapping */
-  height: 32px;                /* ensure consistent height */
-  margin: 25px 0; /* vertical spacing from table row lines */
+  display: flex;               
+  justify-content: center;     
+  align-items: center;         
+  white-space: nowrap;         
+  height: 32px;                
+  margin: 25px 0; 
 
 }
 
@@ -1519,41 +1467,4 @@ textarea {
   }
 }
 
-/* Extra small screens / Phones (<480px) */
-@media (max-width: 480px) {
-  .admindash-header,
-  .admindash-header-right {
-    flex-direction: column;
-    gap: 8px;
-  }
 
-  .cust-profile-card {
-    max-width: 100%;
-    padding: 20px;
-  }
-
-  .cust-summary {
-    gap: 18px;
-  }
-
-  .gallery-grid {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .main-product-img {
-    width: 100%;
-    height: auto;
-  }
-
-  .forecast-container {
-    padding: 15px;
-    gap: 18px;
-  }
-
-  .sales-trend-card,
-  .trending-categories-card,
-  .product-trends-card {
-    padding: 16px;
-  }
-}

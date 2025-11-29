@@ -9,11 +9,10 @@
   flex-direction: column;
 }
 
-/* ===== Shop Banner (Full Cover Placeholder) ===== */
 .shop-banner {
   width: 100%;
-  height: 250px; /* adjust height as needed */
-  background: linear-gradient(145deg, #d4b896, #b38b6d); /* fallback gradient */
+  height: 250px; 
+  background: linear-gradient(145deg, #d4b896, #b38b6d); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -23,8 +22,8 @@
   justify-content: flex-start;
   gap: 30px;
   padding: 25px 60px;
-  margin: 0; /* ✅ removes gaps around banner */
-  border-radius: 0; /* ✅ ensures no curved edges causing visible space */
+  margin: 0; 
+  border-radius: 0; 
 }
 
 
@@ -32,9 +31,9 @@
 .shop-logo {
   width: 120px;
   height: 120px;
-  border-radius: 50%; /* Circle shape */
-  overflow: hidden;   /* Crop overflow */
-  background-color: #f0f0f0; /* Optional placeholder background */
+  border-radius: 50%; 
+  overflow: hidden;   
+  background-color: #f0f0f0; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +42,7 @@
 .shop-avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Fill the circle nicely */
+  object-fit: cover; 
   display: block;
 }
 
@@ -54,7 +53,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  text-align: left; /* ✅ keep text aligned beside the logo */
+  text-align: left; 
 }
 
 /* Shop name + description */
@@ -136,7 +135,7 @@
 /* Match products-page grid style */
 .recommended .product-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns like products page */
+  grid-template-columns: repeat(4, 1fr); 
   grid-auto-rows: auto;
   gap: 35px;
   padding-bottom: 20px;
@@ -167,7 +166,7 @@
   padding: 15px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   text-align: left;
-  width: 260px;  /* same width as product page */
+  width: 260px;  
   flex-shrink: 0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
@@ -182,11 +181,11 @@
 .recommended .product-card img,
 .recommended .product-card .placeholder-img {
   width: 100%;
-  height: 220px;  /* match product page */
+  height: 220px;  
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 12px;
-  background: #ddd; /* placeholder */
+  background: #ddd; 
 }
 
 /* Product Title */
@@ -223,7 +222,6 @@
   padding: 0;
 }
 
-
 /* ===== About Shop ===== */
 .about-shop {
   background: #f6e6d6;
@@ -241,7 +239,7 @@
   height: 200px;
   border-radius: 10px;
   object-fit: cover;
-  background: #ccc; /* ✅ placeholder for cover */
+  background: #ccc; 
 }
 
 .about-text {
@@ -261,15 +259,9 @@
   color: #444;
 }
 
-
-
-/* ===== Fix white gap under header (Shop page only) ===== */
 .shop-page {
-  margin-top: -30px; /* ✅ pulls banner up to meet header */
+  margin-top: -30px; 
 }
-
-
-
 
 /* ===== MOBILE / SMALL SCREENS ===== */
 @media (max-width: 992px) {

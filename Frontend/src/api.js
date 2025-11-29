@@ -114,7 +114,7 @@ export async function changePassword(oldPassword, newPassword, repeatPassword) {
       user_id: userId,
       old_password: oldPassword,
       new_password: newPassword,
-      repeat_password: repeatPassword, // must match backend
+      repeat_password: repeatPassword, 
     }),
   });
 
@@ -199,7 +199,7 @@ export async function addToCart(userId, productId, quantity) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      user_id: userId,       // ✅ must match your Django view (request.data.get("user"))
+      user_id: userId,       
       product_id: productId,
       quantity: quantity,
     }),

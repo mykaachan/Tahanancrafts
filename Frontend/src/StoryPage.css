@@ -2,18 +2,18 @@
 .story-content {
   padding-top: 120px;
   max-width: 100%;
-  margin: 0 60px;         /* a bit more breathing room */
+  margin: 0 60px;         
   display: flex;
   flex-direction: column;
-  gap: 60px;              /* more space between story rows */
+  gap: 60px;              
 }
 .story-page {
-  background-color: #f5f2ed; /* change this to any color you want */
+  background-color: #f5f2ed; 
 }
 
 /* Story Title */
 .story-title {
-  font-size: 3.5rem;       /* slightly smaller than before */
+  font-size: 3.5rem;       
   font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
@@ -21,7 +21,7 @@
   display: inline-block;
   border-bottom: 2px solid #000000;
   padding-bottom: 12px;
-  letter-spacing: 1px;     /* spacing for elegance */
+  letter-spacing: 1px;     
 }
 
 /* Story Row */
@@ -34,7 +34,7 @@
 
 /* Images */
 .story-image {
-  width: 55%;              /* a bit narrower to match screenshot */
+  width: 55%;             
   height: 400px;
   object-fit: cover;
   border-radius: 6px;
@@ -48,7 +48,7 @@
   background: #cdbeab;
   border-radius: 0;
   box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-  margin-top: 40px;        /* push down to align with screenshot */
+  margin-top: 40px;        
 }
 
 /* Text Styling */
@@ -72,7 +72,7 @@
   font-size: 1rem;
   line-height: 1.7;
   color: #2f2f2f;
-  text-align: justify;     /* cleaner alignment */
+  text-align: justify;     
 }
 
 /* Responsive */

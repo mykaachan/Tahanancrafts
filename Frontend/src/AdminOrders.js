@@ -1,7 +1,7 @@
 // src/AdminOrders.js
 import React, { useState } from "react";
 import "./AdminDash.css";
-import AdminSidebar from "./AdminSidebar"; // ✅ Import the sidebar
+import AdminSidebar from "./AdminSidebar"; 
 import { FaBell } from "react-icons/fa";
 
 export default function AdminOrders() {

@@ -9,14 +9,12 @@ function Checkout() {
 
   // Received from Cart.js: array of selected cart row IDs
   const cart_item_ids = location.state?.cart_item_ids || [];
-  const items_frontend = location.state?.items_frontend || []; // contains images
+  const items_frontend = location.state?.items_frontend || []; 
 
   // items loaded from backend based on cart_item_ids
   const [selectedItems, setSelectedItems] = useState([]);
 
-  // ----------------------------
   // Address State (unchanged UI)
-  // ----------------------------
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
 
@@ -41,9 +39,7 @@ function Checkout() {
     landmark: "",
   });
 
-  // ----------------------------
   // Load selected backend items
-  // ----------------------------
   useEffect(() => {
     const loadSelectedItems = async () => {
       const userId = localStorage.getItem("user_id");
@@ -65,7 +61,7 @@ function Checkout() {
 
           return {
             ...bItem,
-            img: match?.img || null, // use frontend image
+            img: match?.img || null, 
             frontend_name: match?.name,
             frontend_unit_price: match?.unit_price,
           };
@@ -80,10 +76,7 @@ function Checkout() {
     if (cart_item_ids.length > 0) loadSelectedItems();
   }, [cart_item_ids, items_frontend]);
 
-
-  // ----------------------------
   // Load addresses on mount (keeps your address UI)
-  // ----------------------------
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (!userId) return;
@@ -103,9 +96,7 @@ function Checkout() {
     })();
   }, [navigate]);
 
-  // ----------------------------
   // Helper: refresh addresses
-  // ----------------------------
   const refreshAddresses = async () => {
     try {
       const userId = localStorage.getItem("user_id");
@@ -127,9 +118,6 @@ function Checkout() {
     }
   };
 
-  // ----------------------------
-  // Place Order
-  // ----------------------------
   const placeOrder = async () => {
     const userId = localStorage.getItem("user_id");
 
@@ -169,9 +157,8 @@ function Checkout() {
     }
   };
 
-  // ----------------------------
+
   // Add Address handlers (same as your previous handlers)
-  // ----------------------------
   const handleAddChange = (e) =>
     setFormAdd({ ...formAdd, [e.target.name]: e.target.value });
 

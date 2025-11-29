@@ -80,25 +80,25 @@
 /* Make sidebar adjust on smaller screens */
 @media (max-width: 1024px) {
   .admin-sidebar {
-    width: 220px; /* slightly smaller on tablets */
+    width: 220px; 
   }
 }
 
 @media (max-width: 768px) {
   .admin-sidebar {
-    width: 200px; /* fits mobile */
-    position: relative; /* allow content to flow */
+    width: 200px; 
+    position: relative; 
     height: auto;
     min-height: 100vh;
   }
 
   .admin-sidebar-menu ul li {
-    font-size: 13px; /* slightly smaller text for mobile */
+    font-size: 13px; 
     padding: 8px 10px;
   }
 
   .admin-sidebar-logo img {
-    width: 70px; /* smaller logo for mobile */
+    width: 70px; 
   }
 
   .admin-sidebar-footer {

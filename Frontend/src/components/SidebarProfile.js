@@ -7,7 +7,6 @@ import "../Profile.css";
 const ProfileSidebar = () => {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [profileData, setProfileData] = useState(null);
-
   const toggleAccountMenu = () => setIsAccountOpen(!isAccountOpen);
   const userId = localStorage.getItem("user_id");
 

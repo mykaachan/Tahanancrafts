@@ -188,11 +188,8 @@ function Cart() {
                 <span>Subtotal ({selectedItems.length} items)</span>
                 <span>₱{subtotal}</span>
               </div>
-
               <hr />
-
               <h3 className="total">Total: ₱{subtotal}</h3>
-
               <button
                 className="checkout-btn"
                 disabled={selectedItems.length === 0}
@@ -207,7 +204,6 @@ function Cart() {
               >
                 Checkout
               </button>
-
             </div>
           </div>
         </div>

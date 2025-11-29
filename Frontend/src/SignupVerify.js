@@ -39,7 +39,6 @@ function SignupVerifyContact() {
     }
   };
 
-
   return (
     <div className="App">
       <div className="App-background-overlay" />

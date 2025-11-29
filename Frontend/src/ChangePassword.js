@@ -30,7 +30,7 @@ function ChangePassword() {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/users/auth/change_password/`,
         {
-          contact,      // email or phone
+          contact,      
           newpass1: newPass1,
           newpass2: newPass2
         }
@@ -42,8 +42,6 @@ function ChangePassword() {
       setMessage(err.response?.data?.error || "Something went wrong.");
     }
   };
-
-
 
   return (
     <div className="App">

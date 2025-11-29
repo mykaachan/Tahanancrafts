@@ -26,8 +26,7 @@ function Shop() {
 
     fetchTopSelling();
   }, [artisan_id]);
-
-
+  
   useEffect(() => {
     const fetchShopData = async () => {
       try {

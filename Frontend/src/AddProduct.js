@@ -13,7 +13,6 @@ const AddProduct = () => {
     regularPrice: '',
     salesPrice: ''
   });
-
   const [materials, setMaterials] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [materialOptions, setMaterialOptions] = useState([]);
@@ -38,12 +37,10 @@ const AddProduct = () => {
     }
     fetchOptions();
   }, []);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
@@ -55,7 +52,6 @@ const AddProduct = () => {
     setImages(prev => [...prev, ...newImages]);
     e.target.value = '';
   };
-
   const removeImage = (imageId) => {
     setImages(prev => {
       const imageToRemove = prev.find(img => img.id === imageId);
@@ -63,7 +59,6 @@ const AddProduct = () => {
       return prev.filter(img => img.id !== imageId);
     });
   };
-
   const handleMainImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -75,7 +70,6 @@ const AddProduct = () => {
     }
     e.target.value = '';
   };
-
   const deleteAllImages = () => {
     if (window.confirm('Are you sure you want to clear everything?')) {
       setFormData({
@@ -94,7 +88,6 @@ const AddProduct = () => {
       setMainImage(null);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -108,7 +101,6 @@ const AddProduct = () => {
         categories: formData.categories,
         materials: materials,
       };
-
       const response = await addProduct(dataToSend, mainImage, images);
       alert('Product added successfully!');
       console.log(response);
@@ -121,13 +113,11 @@ const AddProduct = () => {
       alert('Failed to add product. Check console for details.');
     }
   };
-
   return (
     <div className="add-product-container">
       <h1 className="page-title">Product Details</h1>
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-columns">
-
           {/* Left Column */}
           <div className="form-left-column">
             <div className="form-group">
@@ -141,7 +131,6 @@ const AddProduct = () => {
                 className="form-input"
               />
             </div>
-
             <div className="form-group">
               <label>Description</label>
               <textarea
@@ -153,7 +142,6 @@ const AddProduct = () => {
                 rows="4"
               />
             </div>
-
             <div className="form-group">
               <label>Category</label>
               <Select
@@ -171,7 +159,6 @@ const AddProduct = () => {
                 closeMenuOnSelect={false}
               />
             </div>
-
             <div className="form-group">
               <label>Brand Name</label>
               <input
@@ -183,7 +170,6 @@ const AddProduct = () => {
                 className="form-input"
               />
             </div>
-
             <div className="form-group">
               <label>Stock Quantity</label>
               <input
@@ -194,7 +180,6 @@ const AddProduct = () => {
                 className="form-input stock-input"
               />
             </div>
-
             <div className="price-row">
               <div className="form-group">
                 <label>Regular Price</label>
@@ -220,7 +205,6 @@ const AddProduct = () => {
               </div>
             </div>
           </div>
-
           {/* Right Column */}
           <div className="form-right-column">
             <div className="form-group">
@@ -237,7 +221,6 @@ const AddProduct = () => {
                 closeMenuOnSelect={false}
               />
             </div>
-
             {/* Main Image Upload */}
             <div className="form-group">
               <label>Main Product Image</label>
@@ -271,7 +254,6 @@ const AddProduct = () => {
                 />
               </div>
             </div>
-
             {/* Gallery Upload */}
             <div className="gallery-section">
               <h3 className="gallery-title">Product Gallery</h3>
@@ -294,7 +276,6 @@ const AddProduct = () => {
                   className="file-input"
                 />
               </div>
-
               {images.length > 0 && (
                 <div className="image-thumbnails">
                   {images.map((image) => (
@@ -312,7 +293,6 @@ const AddProduct = () => {
                       <span className="thumbnail-name">{image.name}</span>
                     </div>
                   ))}
-
                   {/* Empty slots */}
                   {Array.from({ length: Math.max(0, 4 - images.length) }).map(
                     (_, index) => (
@@ -335,7 +315,6 @@ const AddProduct = () => {
             </div>
           </div>
         </div>
-
         {/* Action Buttons */}
         <div className="form-actions">
           <button

@@ -69,7 +69,6 @@ const notifications = [
   },
 ];
 
-
   const [selectedNotif, setSelectedNotif] = useState(notifications[0]);
 
   const simpleNotifications = [

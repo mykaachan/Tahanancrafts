@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
-import { FaBell, FaTrash } from "react-icons/fa"; // ✅ use react-icons instead
+import { FaBell, FaTrash } from "react-icons/fa"; 
 
 const AdminCust = () => {
   const [showNotifications, setShowNotifications] = useState(false);

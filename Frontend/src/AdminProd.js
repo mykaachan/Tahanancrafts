@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
-import { FaBell, FaTrash } from "react-icons/fa"; // ✅ FIX: added FaTrash import
+import { FaBell, FaTrash } from "react-icons/fa"; 
 
 export default function AdminProd() {
   const [showNotifications, setShowNotifications] = useState(false);

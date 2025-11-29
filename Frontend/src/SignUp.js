@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import './SignUp.css';
 import { ReactComponent as Logo } from './Logo.svg';
 import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from './api'; // Import signup API
-import PrivacyTerms from './PrivacyTerms'; // ✅ Import PrivacyTerms
-import PrivacyPolicy from './PrivacyPolicy'; // ✅ Import PrivacyPolicy
+import { registerUser } from './api';
+import PrivacyTerms from './PrivacyTerms'; 
+import PrivacyPolicy from './PrivacyPolicy'; 
 
 function SignUp() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function SignUp() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
-  const [agreePrivacy, setAgreePrivacy] = useState(false); // ✅ Track checkbox
+  const [agreePrivacy, setAgreePrivacy] = useState(false); 
 
   const handleSignUp = async () => {
     console.log("🔹 Sign up button clicked");

@@ -149,7 +149,7 @@ const AdminDet = () => {
             </div>
           </div>
         </div>
-      </div> {/* end admindash-main */}
+      </div> 
     </div>
   );
 };

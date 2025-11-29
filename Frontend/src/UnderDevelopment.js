@@ -7,7 +7,7 @@ function UnderDevelopment() {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    navigate("/homepage"); // Go to your actual homepage route
+    navigate("/homepage"); 
   };
 
   return (

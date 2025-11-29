@@ -1,14 +1,14 @@
 /* Make the entire page one background color */
 html, body {
-  background-color: #fffdf9; /* same as your cart-page background */
+  background-color: #fffdf9; 
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .cart-page {
-  padding-top: 120px; /* ensures content starts below header */
-  background: #fffdf9; /* page color matches body */
+  padding-top: 120px; 
+  background: #fffdf9; 
   min-height: 70vh;
 
   /* side spacing */
@@ -21,7 +21,7 @@ html, body {
 .cart-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0;  /* 👈 remove its extra padding */
+  padding: 0; 
 }
 
 .cart-title {
@@ -163,7 +163,7 @@ html, body {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #d5c1a1; /* ✅ makes it match your theme */
+  accent-color: #d5c1a1; 
 }
 
 .item-body {
@@ -174,9 +174,6 @@ html, body {
   padding: 10px;
   gap: 15px;
 }
-
-
-
 .related-section {
   margin: 60px auto;
   max-width: 1200px;
@@ -193,25 +190,25 @@ html, body {
 
 .related-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns per row */
+  grid-template-columns: repeat(4, 1fr); 
   gap: 25px;
 }
 
 @media (max-width: 1200px) {
   .related-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
+    grid-template-columns: repeat(3, 1fr); 
   }
 }
 
 @media (max-width: 900px) {
   .related-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
 
 @media (max-width: 600px) {
   .related-grid {
-    grid-template-columns: 1fr; /* 1 column for mobile */
+    grid-template-columns: 1fr; 
   }
 }
 
@@ -254,16 +251,10 @@ html, body {
   box-shadow: 0px 6px 15px rgba(0,0,0,0.1);
 }
 
-
-
-/* =========================
-   CART PAGE RESPONSIVE
-========================= */
-
 /* Tablet / Medium screens */
 @media (max-width: 1024px) {
   .cart-layout {
-    flex-direction: column; /* Stack cart items and summary */
+    flex-direction: column; 
     gap: 25px;
   }
 

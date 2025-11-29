@@ -343,7 +343,6 @@ const SellerRegister = () => {
     </div>
   </div>
 )}
-
     </div>
   );
 };

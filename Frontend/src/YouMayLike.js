@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getImageUrl } from "./api"; // your helper to get image URL
+import { getImageUrl } from "./api"; 
 import "./ProductDetails.css";
 
 function RecommendedProducts({ productId }) {
@@ -15,7 +15,6 @@ function RecommendedProducts({ productId }) {
         );
         if (!response.ok) throw new Error("Failed to fetch recommendations");
         const data = await response.json();
-        // Ensure it's always an array
         setRecommendedProducts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching recommended products:", error);
