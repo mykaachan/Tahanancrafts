@@ -3,14 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Products.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
-
 function FilterGroup({ title, items, selectedItems, onChange }) {
   const [expanded, setExpanded] = useState(false);
-
   return (
     <div className={`filter-group ${expanded ? "expanded" : ""}`}>
       <h4>{title}</h4>
-
       {items.map((item, index) => (
         <label
           key={item.id}
@@ -28,7 +25,6 @@ function FilterGroup({ title, items, selectedItems, onChange }) {
           </div>
         </label>
       ))}
-
       {items.length > 4 && (
         <button
           className="show-more-btn"
@@ -40,18 +36,14 @@ function FilterGroup({ title, items, selectedItems, onChange }) {
     </div>
   );
 }
-
 function Products() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [materials, setMaterials] = useState([]);
-
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
   const navigate = useNavigate();
-
   // Fetch categories + materials on load
   useEffect(() => {
     async function loadFilters() {
@@ -68,17 +60,14 @@ function Products() {
     }
     loadFilters();
   }, []);
-
   // Fetch products whenever filters change
   useEffect(() => {
     async function loadProducts() {
       try {
         const userId = localStorage.getItem("user_id");
         let url;
-
         const hasFilters =
           selectedCategories.length > 0 || selectedMaterials.length > 0;
-
         // 🔥 If filters are active → use the NORMAL products endpoint
         if (hasFilters) {
           url = new URL(
@@ -98,7 +87,6 @@ function Products() {
           );
           url.searchParams.append("random", true);
         }
-
         // Apply filters only when hasFilters = true
         if (selectedCategories.length > 0) {
           url.searchParams.append("category", selectedCategories.join(","));
@@ -106,23 +94,17 @@ function Products() {
         if (selectedMaterials.length > 0) {
           url.searchParams.append("material", selectedMaterials.join(","));
         }
-
         console.log("Fetching:", url.toString());
-
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch products");
-
         const data = await response.json();
         setProducts(data);
       } catch (error) {
         console.error("Error loading products:", error);
       }
     }
-
     loadProducts();
   }, [selectedCategories, selectedMaterials]);
-
-
   // Toggle category by ID
   const toggleCategory = (categoryId) => {
     setSelectedCategories((prev) =>
@@ -131,7 +113,6 @@ function Products() {
         : [...prev, categoryId]
     );
   };
-
   // Toggle material by ID
   const toggleMaterial = (materialId) => {
     setSelectedMaterials((prev) =>
@@ -140,27 +121,22 @@ function Products() {
         : [...prev, materialId]
     );
   };
-
   // Search filter
   const filteredProducts = products.filter(
     (p) =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   // Log view + redirect
   function handleProductClick(productId) {
     const userId = localStorage.getItem("user_id");
-
     fetch(`${process.env.REACT_APP_API_URL}api/products/product/log-view/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId, user_id: userId }),
     });
-
     navigate(`/product/${productId}`);
   }
-
   return (
     <div className="products-page">
       {/* HEADER */}
@@ -192,7 +168,6 @@ function Products() {
             </li>
           </ul>
         </nav>
-
         <div className="header-actions">
           <div className="search-box">
             <input
@@ -209,13 +184,11 @@ function Products() {
           </Link>
         </div>
       </header>
-
       {/* PRODUCTS LAYOUT */}
       <div className="products-layout">
         {/* FILTER SIDEBAR */}
         <aside className="products-filters">
           <h3>Filter</h3>
-
           <button
             className="clear-filters-btn"
             onClick={() => {
@@ -225,14 +198,12 @@ function Products() {
           >
             Clear All Filters ✕
           </button>
-
           <FilterGroup
             title="Category"
             items={categories}
             selectedItems={selectedCategories}
             onChange={toggleCategory}
           />
-
           <FilterGroup
             title="Material"
             items={materials}
@@ -240,7 +211,6 @@ function Products() {
             onChange={toggleMaterial}
           />
         </aside>
-
         {/* RIGHT CONTENT */}
         <section className="products-content">
           {/* ACTIVE FILTER CHIPS */}
@@ -259,7 +229,6 @@ function Products() {
                   </div>
                 );
               })}
-
               {/* Material chips */}
               {selectedMaterials.map((matId) => {
                 const mat = materials.find((m) => m.id === matId);
@@ -273,7 +242,6 @@ function Products() {
                   </div>
                 );
               })}
-
               {/* Clear all via chips */}
               <button
                 className="clear-chips-btn"
@@ -286,7 +254,6 @@ function Products() {
               </button>
             </div>
           )}
-
           {/* PRODUCTS GRID */}
           <div className="products-grid">
             {filteredProducts.length === 0 ? (
@@ -316,7 +283,6 @@ function Products() {
           </div>
         </section>
       </div>
-
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-left">
@@ -326,7 +292,6 @@ function Products() {
           <p>This is a sample description and does not hold any valuable meaning.</p>
           <button className="register-btn">Register</button>
         </div>
-
         <div className="footer-right">
           <hr />
           <div className="footer-content">
@@ -358,5 +323,4 @@ function Products() {
     </div>
   );
 }
-
 export default Products;

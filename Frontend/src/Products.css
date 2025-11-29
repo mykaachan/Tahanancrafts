@@ -1,13 +1,10 @@
-/* ================================
-   MAIN PAGE LAYOUT
-================================ */
+/* MAIN PAGE LAYOUT*/
 .products-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   padding-top: 82px;
 }
-
 /* Layout: Sidebar + Products */
 .products-page .products-layout {
   display: flex;
@@ -16,33 +13,26 @@
   margin: 40px;
   overflow: hidden;
 }
-
-/* ================================
-   FILTER SIDEBAR
-================================ */
+/* FILTER SIDEBAR*/
 .products-page .products-filters {
   width: 180px;
   flex-shrink: 0;
   background-color: #fffdf9;
   padding-right: 10px;
 }
-
 .products-page .products-filters h3 {
   font-size: 1.4rem;
   margin-bottom: 20px;
   font-weight: bold;
 }
-
 .products-page .filter-group {
   margin-bottom: 25px;
 }
-
 .products-page .filter-group h4 {
   font-size: 1rem;
   margin-bottom: 10px;
   font-weight: 600;
 }
-
 /* FIXED: Label no longer forces display; React controls visibility */
 .products-page .filter-group label {
   cursor: pointer;
@@ -50,21 +40,18 @@
   font-size: 0.95rem;
   color: #111;
 }
-
 /* Flex alignment inside label */
 .products-page .filter-item {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .products-page input[type="checkbox"] {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
   accent-color: #998759;
 }
-
 /* Clear Filters Button */
 .clear-filters-btn {
   width: 100%;
@@ -79,14 +66,10 @@
   cursor: pointer;
   transition: 0.2s ease-in-out;
 }
-
 .clear-filters-btn:hover {
   background: #7f6e48;
 }
-
-/* ================================
-   ACTIVE FILTER CHIPS
-================================ */
+/*ACTIVE FILTER CHIPS*/
 .active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -94,7 +77,6 @@
   margin-bottom: 20px;
   padding: 5px 0;
 }
-
 .filter-chip {
   background: #998759;
   color: white;
@@ -107,11 +89,9 @@
   gap: 6px;
   transition: 0.2s;
 }
-
 .filter-chip:hover {
   background: #7f6e48;
 }
-
 .clear-chips-btn {
   background: none;
   border: none;
@@ -120,21 +100,16 @@
   cursor: pointer;
   text-decoration: underline;
 }
-
 .clear-chips-btn:hover {
   color: #7f6e48;
 }
-
-/* ================================
-   PRODUCTS SECTION
-================================ */
+/*PRODUCTS SECTION*/
 .products-page .products-content {
   flex: 1;
   overflow-y: auto;
   border-top: 2px solid #000;
   padding-top: 20px;
 }
-
 /* 4 columns ALWAYS */
 .products-page .products-grid {
   display: grid;
@@ -142,7 +117,6 @@
   gap: 20px;
   padding-bottom: 20px;
 }
-
 /* PRODUCT CARD */
 .products-page .product-card {
   background: #fff;
@@ -155,7 +129,6 @@
   box-sizing: border-box;
   margin: 0 auto;
 }
-
 /* PRODUCT IMAGE */
 .products-page .product-card img {
   width: 100%;
@@ -165,26 +138,22 @@
   border-radius: 8px;
   margin-bottom: 12px;
 }
-
 /* PRODUCT TEXT */
 .products-page .product-card h2 {
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 6px;
 }
-
 .products-page .product-card p {
   font-size: 0.95rem;
   color: #444;
 }
-
 .products-page .product-card .price {
   font-size: 1rem;
   font-weight: bold;
   margin-top: 8px;
   color: #000;
 }
-
 /* Show More Button */
 .products-page .show-more-btn {
   font-size: 0.85rem;
@@ -196,36 +165,28 @@
   padding: 0;
   font-weight: 500;
 }
-
 .products-page .show-more-btn:hover {
   text-decoration: underline;
 }
-
-/* ================================
-   LAYOUT SHRINKING (instead of responsive reflow)
-================================ */
-
+/* LAYOUT SHRINKING (instead of responsive reflow)*/
 /* Slight shrink for medium screen */
 @media (max-width: 1200px) {
   .products-page {
     zoom: 0.85;
   }
 }
-
 /* More shrink on tablets */
 @media (max-width: 768px) {
   .products-page {
     zoom: 0.75;
   }
 }
-
 /* Maximum shrink for small phones */
 @media (max-width: 480px) {
   .products-page {
     zoom: 0.60;
   }
 }
-
 /* Prevent horizontal scrollbars */
 html, body {
   overflow-x: hidden;
