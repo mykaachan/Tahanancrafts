@@ -2,24 +2,23 @@ import React, { useEffect, useState } from "react";
 import HeaderFooter from "./HeaderFooter";
 import "./Checkout.css";
 import { useLocation, useNavigate } from "react-router-dom";
+
 function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
-  // Received from Cart.js: array of selected cart row IDs
   const cart_item_ids = location.state?.cart_item_ids || [];
-  const items_frontend = location.state?.items_frontend || []; 
-  // items loaded from backend based on cart_item_ids
+  const items_frontend = location.state?.items_frontend || [];
   const [selectedItems, setSelectedItems] = useState([]);
-  // Address State (unchanged UI)
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  // Select Address modal
+  const [shippingFee, setShippingFee] = useState(0);
+  const [tempDeliveryId, setTempDeliveryId] = useState(null);
+  const [paymentMode, setPaymentMode] = useState("shipping_only"); // shipping_only | shipping_plus_partial | pay_all
+  const [partialAmount, setPartialAmount] = useState("");
   const [showAddressModal, setShowAddressModal] = useState(false);
-  // Add / Edit modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editAddressData, setEditAddressData] = useState(null);
-  // Add form state
   const [formAdd, setFormAdd] = useState({
     full_name: "",
     phone: "",
@@ -31,40 +30,51 @@ function Checkout() {
     street: "",
     landmark: "",
   });
+
+  // -------------------------
   // Load selected backend items
+  // -------------------------
   useEffect(() => {
     const loadSelectedItems = async () => {
       const userId = localStorage.getItem("user_id");
       if (!userId) return;
+
       try {
         const res = await fetch(
           `https://tahanancrafts.onrender.com/api/products/cart/carts/${userId}/`
         );
         const allItems = await res.json();
+
         const backendFiltered = allItems.filter((i) =>
           cart_item_ids.includes(i.id)
         );
+
         // Merge frontend + backend
         const merged = backendFiltered.map((bItem) => {
           const match = items_frontend.find((f) => f.id === bItem.id);
+
           return {
             ...bItem,
-            img: match?.img || null, 
+            img: match?.img || null,
             frontend_name: match?.name,
             frontend_unit_price: match?.unit_price,
           };
         });
+
         setSelectedItems(merged);
       } catch (err) {
         console.error("Error fetching selected items:", err);
       }
     };
+
     if (cart_item_ids.length > 0) loadSelectedItems();
   }, [cart_item_ids, items_frontend]);
-  // Load addresses on mount (keeps your address UI)
+
+  
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (!userId) return;
+
     (async function loadAddrs() {
       try {
         const res = await fetch(
@@ -79,7 +89,8 @@ function Checkout() {
       }
     })();
   }, [navigate]);
-  // Helper: refresh addresses
+
+ 
   const refreshAddresses = async () => {
     try {
       const userId = localStorage.getItem("user_id");
@@ -89,6 +100,7 @@ function Checkout() {
       const data = await res.json();
       setAddresses(data || []);
       const def = (data && data.find((a) => a.is_default)) || (data && data[0]);
+
       if (selectedAddress) {
         const still = data && data.find((a) => a.id === selectedAddress.id);
         setSelectedAddress(still || def || null);
@@ -99,16 +111,144 @@ function Checkout() {
       console.error(err);
     }
   };
+
+
+  useEffect(() => {
+    const loadShippingFee = async () => {
+      if (!selectedAddress) return;
+      if (!selectedItems || selectedItems.length === 0) return;
+
+      // Expecting backend cart items to include product.artisan_id
+      const firstItem = selectedItems[0];
+      const firstArtisanId =
+        firstItem?.product?.artisan_id || firstItem?.product?.artisan || null;
+
+      if (!firstArtisanId) {
+        console.warn("No artisan id found in selected items; cannot request quotation.");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `https://tahanancrafts.onrender.com/api/products/delivery/checkout-quotation/`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              shipping_address_id: selectedAddress.id,
+              artisan_id: firstArtisanId,
+            }),
+          }
+        );
+
+        // If unauthorized or server error, handle gracefully
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: "Unknown error" }));
+          console.error("Quotation request failed", res.status, err);
+          return;
+        }
+
+        const data = await res.json();
+
+        // store returned values
+        const total = Number(data?.quotation?.priceBreakdown?.total || 0);
+        setShippingFee(total);
+
+        if (data?.temp_delivery_id) {
+          setTempDeliveryId(data.temp_delivery_id);
+          localStorage.setItem("temp_delivery_id", data.temp_delivery_id);
+        }
+      } catch (err) {
+        console.error("Failed loading quotation:", err);
+      }
+    };
+
+    loadShippingFee();
+  }, [selectedAddress, selectedItems]);
+
+  // -------------------------
+  // Derived summary values
+  // -------------------------
+  const itemsSubtotal = selectedItems.reduce(
+    (sum, item) => sum + Number(item.total_price || item.price * item.quantity || 0),
+    0
+  );
+
+  const hasPreorder = selectedItems.some((i) => i.is_preorder === true);
+
+  // Calculate amounts based on paymentMode and preorder rules
+  const computePayments = () => {
+    let payNow = 0;
+    let codAmount = 0;
+
+    const partial = Number(partialAmount || 0);
+
+    if (paymentMode === "shipping_only") {
+      payNow = Number(shippingFee);
+      codAmount = Number(itemsSubtotal);
+    } else if (paymentMode === "shipping_plus_partial") {
+      payNow = Number(shippingFee) + partial;
+      codAmount = Number(itemsSubtotal) - partial;
+    } else if (paymentMode === "pay_all") {
+      payNow = Number(shippingFee) + Number(itemsSubtotal);
+      codAmount = 0;
+    }
+
+    // Preorder rule: minimum 50% of items total must be paid now (if any preorder exists)
+    if (hasPreorder) {
+      const minDown = Number(itemsSubtotal) * 0.5;
+      // If paying shipping_only, we should force payNow = shipping + minDown
+      if (paymentMode === "shipping_only") {
+        payNow = Number(shippingFee) + minDown;
+        codAmount = Number(itemsSubtotal) - minDown;
+      }
+      // If shipping_plus_partial, ensure partial >= minDown
+      if (paymentMode === "shipping_plus_partial") {
+        const effectivePartial = Math.max(partial, minDown);
+        payNow = Number(shippingFee) + effectivePartial;
+        codAmount = Number(itemsSubtotal) - effectivePartial;
+      }
+    }
+
+    // sanitize
+    payNow = Math.max(0, Number(payNow.toFixed(2)));
+    codAmount = Math.max(0, Number(codAmount.toFixed(2)));
+
+    return { payNow, codAmount };
+  };
+
+  const { payNow, codAmount } = computePayments();
+
+  // -------------------------
+  // Place Order (submit checkout)
+  // -------------------------
   const placeOrder = async () => {
     const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      alert("Please log in to place order.");
+      return;
+    }
+
     if (!selectedAddress) {
       alert("Select a shipping address first.");
       return;
     }
-    if (!cart_item_ids || cart_item_ids.length === 0) {
-      alert("No items selected for checkout.");
+
+    if (!tempDeliveryId) {
+      alert("Shipping fee hasn't been loaded yet. Try again in a moment.");
       return;
     }
+
+    if (hasPreorder && paymentMode === "shipping_plus_partial") {
+      const minDown = itemsSubtotal * 0.5;
+      if (Number(partialAmount) < minDown) {
+        if (!window.confirm(`Preorder items require at least 50% downpayment (₱${minDown}). Proceed with your smaller partial?`)) {
+          return;
+        }
+      }
+    }
+
     try {
       const res = await fetch(
         "https://tahanancrafts.onrender.com/api/products/product/checkout/",
@@ -122,23 +262,39 @@ function Checkout() {
             user_id: Number(userId),
             cart_item_ids,
             shipping_address_id: selectedAddress.id,
+            temp_delivery_id: tempDeliveryId,
+            payment_mode: paymentMode,
+            partial_amount: Number(partialAmount || 0)
           }),
         }
       );
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "unknown" }));
+        console.error("Checkout failed", res.status, err);
+        alert("Checkout failed: " + (err.detail || JSON.stringify(err)));
+        return;
+      }
+
+      // success
       const data = await res.json();
-      // navigate to purchases page, to-pay tab
+      // redirect to purchases (to-pay)
       navigate("/my-purchases?tab=to-pay");
     } catch (err) {
-      console.error(err);
+      console.error("Failed to place order.", err);
       alert("Failed to place order.");
     }
   };
-  // Add Address handlers (same as your previous handlers)
+
+  // -------------------------
+  // Address handlers (Add/Edit/Delete/SetDefault)
+  // -------------------------
   const handleAddChange = (e) =>
     setFormAdd({ ...formAdd, [e.target.name]: e.target.value });
+
   const saveNewAddress = async () => {
     const user_id = localStorage.getItem("user_id");
-    // validation: required fields
+
     if (
       !formAdd.full_name ||
       !formAdd.phone ||
@@ -151,6 +307,7 @@ function Checkout() {
       alert("Please fill all required fields.");
       return;
     }
+
     try {
       const res = await fetch(
         "https://tahanancrafts.onrender.com/api/users/shipping-address/create/",
@@ -171,6 +328,7 @@ function Checkout() {
           }),
         }
       );
+
       if (res.ok) {
         setShowAddModal(false);
         setFormAdd({
@@ -195,11 +353,12 @@ function Checkout() {
       alert("Failed to save address");
     }
   };
-  // Edit Address handlers
+
   const openEditModal = (addr) => {
     setEditAddressData({ ...addr });
     setShowEditModal(true);
   };
+
   const handleEditChange = (e) => {
     const { name, value, type, checked } = e.target;
     setEditAddressData({
@@ -207,8 +366,10 @@ function Checkout() {
       [name]: type === "checkbox" ? checked : value,
     });
   };
+
   const saveEditAddress = async () => {
     if (!editAddressData) return;
+
     try {
       const res = await fetch(
         `https://tahanancrafts.onrender.com/api/users/shipping-address/update/${editAddressData.id}/`,
@@ -231,14 +392,17 @@ function Checkout() {
       alert("Failed to update address");
     }
   };
+
   const deleteAddress = async () => {
     if (!editAddressData) return;
     if (!window.confirm("Delete this address?")) return;
+
     try {
       const res = await fetch(
         `https://tahanancrafts.onrender.com/api/users/shipping-address/delete/${editAddressData.id}/`,
         { method: "DELETE" }
       );
+
       if (res.ok) {
         setShowEditModal(false);
         await refreshAddresses();
@@ -250,8 +414,10 @@ function Checkout() {
       alert("Failed to delete address");
     }
   };
+
   const setDefaultAddress = async (idToSet) => {
     const userId = localStorage.getItem("user_id");
+
     try {
       const res = await fetch(
         `https://tahanancrafts.onrender.com/api/users/shipping-address/set-default/${idToSet}/`,
@@ -261,6 +427,7 @@ function Checkout() {
           body: JSON.stringify({ user_id: userId }),
         }
       );
+
       if (res.ok) {
         await refreshAddresses();
       } else {
@@ -271,35 +438,15 @@ function Checkout() {
       alert("Failed to set default address");
     }
   };
-  // Derived summary values (using returned backend fields)
-  const SHIPPING_PLACEHOLDER = 58;
-  const itemsSubtotal = selectedItems.reduce(
-    (sum, item) => sum + Number(item.total_price || item.price * item.quantity || 0),
-    0
-  );
-  const shippingFee = selectedAddress?.shipping_fee
-    ? Number(selectedAddress.shipping_fee)
-    : SHIPPING_PLACEHOLDER;
-  // downpayment logic preserved if you add it; currently rely on backend flags if needed.
-  const hasPreorder = selectedItems.some((i) => i.is_preorder === true);
-  const downpaymentAmount = hasPreorder ? itemsSubtotal * 0.5 : 0;
-  const totalPayNow = shippingFee + downpaymentAmount;
-  const codAmount = itemsSubtotal - downpaymentAmount;
-  const summary = {
-    total_items_amount: itemsSubtotal,
-    shipping_fee: shippingFee,
-    downpayment_required: hasPreorder,
-    downpayment_amount: downpaymentAmount,
-    total_pay_now: totalPayNow,
-    cod_amount: codAmount,
-    // pick first artisan qr for display (you said same QR used)
-    qr_code: selectedItems[0]?.artisan_qr || null,
-  };
-  // Render (shipping/address UI preserved exactly)
+
+  // -------------------------
+  // Render
+  // -------------------------
   return (
     <HeaderFooter>
       <div className="checkout-page">
         <h1 className="checkout-title">Checkout</h1>
+
         {/* Address */}
         <div className="address-bar">
           <div className="address-info">
@@ -321,6 +468,7 @@ function Checkout() {
               )}
             </div>
           </div>
+
           <button
             className="change-btn"
             onClick={() => setShowAddressModal(true)}
@@ -328,21 +476,25 @@ function Checkout() {
             Change
           </button>
         </div>
+
         <div className="checkout-container">
           {/* Items */}
           <div className="checkout-details">
             <h2>Products Ordered</h2>
+
             <div className="product-header">
               <span>Unit Price</span>
               <span>Quantity</span>
               <span>Item Subtotal</span>
             </div>
+
             {selectedItems.map((item) => (
               <div className="product-item" key={item.id}>
                 <img
                   src={
                     item.main_image ||
                     (item.product_main_image && item.product_main_image) ||
+                    item.img ||
                     "https://via.placeholder.com/150?text=No+Image"
                   }
                   alt={item.product_name}
@@ -358,48 +510,97 @@ function Checkout() {
               </div>
             ))}
           </div>
+
           {/* Summary */}
           <div className="checkout-summary">
             <h2>Order Summary</h2>
+
             <div className="summary-details">
               <p>
                 <span>Items Subtotal:</span>
-                <span>₱{summary.total_items_amount}</span>
+                <span>₱{itemsSubtotal.toFixed(2)}</span>
               </p>
+
               <p>
                 <span>Shipping Fee:</span>
                 <span>
-                  ₱{summary.shipping_fee}{" "}
+                  ₱{Number(shippingFee || 0).toFixed(2)}{" "}
                   {!selectedAddress?.shipping_fee && (
                     <span style={{ color: "#a67c52", fontSize: "13px" }}>
-                      (placeholder)
+                      (calculated)
                     </span>
                   )}
                 </span>
               </p>
-              {summary.downpayment_required && (
-                <p>
-                  <span>Downpayment (50%):</span>
-                  <span>₱{summary.downpayment_amount}</span>
+
+              {/* Payment Modes */}
+              <h3 style={{ marginTop: "15px" }}>Payment Options</h3>
+
+              <label style={{ display: "block", margin: "8px 0" }}>
+                <input
+                  type="radio"
+                  checked={paymentMode === "shipping_only"}
+                  onChange={() => setPaymentMode("shipping_only")}
+                />{" "}
+                Pay Shipping Fee Only
+              </label>
+
+              <label style={{ display: "block", margin: "8px 0" }}>
+                <input
+                  type="radio"
+                  checked={paymentMode === "shipping_plus_partial"}
+                  onChange={() => setPaymentMode("shipping_plus_partial")}
+                />{" "}
+                Pay Shipping + Partial Amount
+              </label>
+
+              {paymentMode === "shipping_plus_partial" && (
+                <input
+                  type="number"
+                  placeholder="Enter partial amount"
+                  value={partialAmount}
+                  onChange={(e) => setPartialAmount(e.target.value)}
+                  className="partial-input"
+                />
+              )}
+
+              <label style={{ display: "block", margin: "8px 0" }}>
+                <input
+                  type="radio"
+                  checked={paymentMode === "pay_all"}
+                  onChange={() => setPaymentMode("pay_all")}
+                />{" "}
+                Pay Shipping + FULL (Items + SF)
+              </label>
+
+              {hasPreorder && (
+                <p style={{ fontSize: "13px", color: "red" }}>
+                  Preorder item(s) detected — minimum 50% downpayment required.
                 </p>
               )}
-              <p className="total">
-                <span>Total:</span>
-                <span>₱{summary.total_items_amount + summary.shipping_fee}</span>
+
+              <hr />
+
+              <p>
+                <span>Amount to Pay Now:</span>
+                <span>₱{payNow.toFixed(2)}</span>
               </p>
+
               <p className="cod-amount" style={{ marginTop: "10px" }}>
                 <span>COD Remaining Balance:</span>
-                <span>₱{summary.cod_amount}</span>
+                <span>₱{codAmount.toFixed(2)}</span>
               </p>
             </div>
+
             {/* PAYMENT QR */}
             <div style={{ marginTop: "25px", textAlign: "center" }}>
               <h3>
-                Pay Shipping Fee {summary.downpayment_required && " + Downpayment"}
+                Pay Shipping Fee {hasPreorder ? " + downpayment (if applicable)" : ""}
               </h3>
-              {summary.qr_code ? (
+
+              {selectedItems[0]?.artisan_qr ? (
                 <img
-                  src={summary.qr_code}
+                  src={selectedItems[0].artisan_qr}
                   alt="Payment QR"
                   style={{
                     width: "200px",
@@ -412,11 +613,12 @@ function Checkout() {
                   No QR uploaded by seller
                 </p>
               )}
+
               <p style={{ marginTop: "8px", fontSize: "13px", color: "#555" }}>
                 Scan the QR to pay. After payment, upload proof in your Orders page.
               </p>
             </div>
-            {/* Payment Method */}
+
             <h2 style={{ marginTop: "20px" }}>Payment Method</h2>
             <p className="payment-method">Cash on Delivery</p>
 
@@ -426,6 +628,7 @@ function Checkout() {
           </div>
         </div>
       </div>
+
       {/* ========== Address Modal (Select) ========== */}
       {showAddressModal && (
         <div className="address-modal-backdrop" onClick={() => setShowAddressModal(false)}>
@@ -442,15 +645,22 @@ function Checkout() {
                 ✕
               </button>
             </div>
-            <div className="address-list">
+
+            <div className="address-list" style={{ maxHeight: 420, overflowY: "auto" }}>
               {addresses.length === 0 && <p>No addresses yet.</p>}
+
               {addresses.map((addr) => (
                 <div
                   key={addr.id}
-                  className={`address-card ${
-                    selectedAddress?.id === addr.id ? "selected" : ""
-                  }`}
+                  className={`address-card ${selectedAddress?.id === addr.id ? "selected" : ""}`}
                   onClick={() => setSelectedAddress(addr)}
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    padding: 10,
+                    borderBottom: "1px solid #eee",
+                    alignItems: "center"
+                  }}
                 >
                   <div className="radio-col">
                     <input
@@ -459,29 +669,47 @@ function Checkout() {
                       onChange={() => setSelectedAddress(addr)}
                     />
                   </div>
-                  <div className="address-col">
+
+                  <div className="address-col" style={{ flex: 1 }}>
                     <strong className="name">{addr.full_name}</strong>
-                    <span className="phone">{addr.phone}</span>
-                    <div className="full-address">
+                    <span className="phone" style={{ marginLeft: 8 }}>{addr.phone}</span>
+
+                    <div className="full-address" style={{ marginTop: 6 }}>
                       {addr.address && <>{addr.address}, </>}
                       {addr.barangay}, {addr.city}, {addr.province}
                     </div>
+
                     {addr.is_default && (
-                      <span className="default-tag">Default</span>
+                      <span className="default-tag" style={{ marginTop: 6, display: "inline-block", background: "#f3e9df", padding: "2px 6px", borderRadius: 6 }}>
+                        Default
+                      </span>
                     )}
                   </div>
-                  <button
-                    className="edit-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openEditModal(addr);
-                    }}
-                  >
-                    Edit
-                  </button>
+
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      className="edit-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEditModal(addr);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="set-default-btn"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        await setDefaultAddress(addr.id);
+                      }}
+                    >
+                      Set Default
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
+
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 className="modal-add-btn"
@@ -491,6 +719,7 @@ function Checkout() {
               >
                 + Add New Address
               </button>
+
               <button
                 className="modal-save-btn"
                 onClick={() => {
@@ -503,6 +732,7 @@ function Checkout() {
           </div>
         </div>
       )}
+
       {/* ========== Add Address Modal ========== */}
       {showAddModal && (
         <div className="address-modal-backdrop" onClick={() => setShowAddModal(false)}>
@@ -519,7 +749,8 @@ function Checkout() {
                 ✕
               </button>
             </div>
-            <div className="address-form-grid">
+
+            <div className="address-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <input
                 name="full_name"
                 placeholder="Full Name *"
@@ -575,6 +806,7 @@ function Checkout() {
                 onChange={handleAddChange}
               />
             </div>
+
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button className="modal-save-btn" onClick={saveNewAddress}>
                 Save Address
@@ -589,6 +821,7 @@ function Checkout() {
           </div>
         </div>
       )}
+
       {/* ========== Edit Address Modal ========== */}
       {showEditModal && editAddressData && (
         <div className="address-modal-backdrop" onClick={() => setShowEditModal(false)}>
@@ -606,7 +839,7 @@ function Checkout() {
               </button>
             </div>
 
-            <div className="address-form-grid">
+            <div className="address-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <input
                 name="full_name"
                 placeholder="Full Name"
@@ -680,6 +913,7 @@ function Checkout() {
                 </label>
               </label>
             </div>
+
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
               <button
                 className="btn-danger"
@@ -704,6 +938,7 @@ function Checkout() {
               >
                 Save
               </button>
+
               <button
                 className="modal-cancel-btn"
                 onClick={() => setShowEditModal(false)}
@@ -717,4 +952,5 @@ function Checkout() {
     </HeaderFooter>
   );
 }
+
 export default Checkout;
