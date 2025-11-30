@@ -314,6 +314,10 @@ function Cart() {
                       cart_item_ids,
                       items_frontend: selectedItems,
                       artisan_id: selectedGroup.artisan_id,
+
+                      artisan_pickup_lat: selectedGroup.artisan_pickup_lat,
+                      artisan_pickup_lng: selectedGroup.artisan_pickup_lng,
+                      artisan_pickup_address: selectedGroup.artisan_pickup_address,
                     },
                   });
 

@@ -107,14 +107,13 @@ function Checkout() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-              shipping_address: selectedAddress,
-              artisan: {
-                pickup_lat: items_frontend[0].artisan_pickup_lat,
-                pickup_lng: items_frontend[0].artisan_pickup_lng,
-                pickup_address: items_frontend[0].artisan_pickup_address
-              }
+            shipping_address: selectedAddress,
+            artisan: {
+              pickup_lat: location.state?.artisan_pickup_lat,
+              pickup_lng: location.state?.artisan_pickup_lng,
+              pickup_address: location.state?.artisan_pickup_address,
+            }
           }),
-
         }
       );
 
