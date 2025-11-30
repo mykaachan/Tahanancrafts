@@ -22,6 +22,8 @@ function Checkout() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editAddressData, setEditAddressData] = useState(null);
+  const [messageToSeller, setMessageToSeller] = useState("");
+
 
   const [formAdd, setFormAdd] = useState({
     full_name: "", phone: "", region: "", province: "", city: "",
@@ -218,6 +220,7 @@ function Checkout() {
       partial_amount: Number(partialAmount || 0),
       pay_now: Number(payNow || 0),
       cod_amount: Number(codAmount || 0),
+      message_to_seller: messageToSeller,
     };
 
     if (quotation) {
@@ -489,7 +492,24 @@ function Checkout() {
 
             <h2 style={{ marginTop: 20 }}>Payment Method</h2>
             <p className="payment-method">Cash on Delivery</p>
-
+            <div style={{ marginTop: "20px" }}>
+              <h3>Message to Seller (optional)</h3>
+              <textarea
+                className="seller-message-box"
+                placeholder="Write a message to the seller (optional)…"
+                value={messageToSeller}
+                onChange={(e) => setMessageToSeller(e.target.value)}
+                style={{
+                  width: "100%",
+                  minHeight: "80px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  resize: "vertical",
+                  fontSize: "14px",
+                }}
+              />
+            </div>
             <button className="btn-place-order" onClick={placeOrder}>Place Order</button>
           </div>
         </div>

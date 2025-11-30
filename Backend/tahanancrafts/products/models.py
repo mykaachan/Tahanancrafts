@@ -98,7 +98,7 @@ class UserActivity(models.Model):
 
 
 class Order(models.Model):
-    STATUS_PENDING = "pending"
+    STATUS_PENDING = "pending" # if the seller accept or reject (will be cancelled)
     STATUS_AWAITING_DOWNPAYMENT = "awaiting_downpayment"
     STATUS_AWAITING_SELLER_VERIFICATION = "awaiting_seller_verification"
     STATUS_PROCESSING = "processing"
@@ -147,6 +147,8 @@ class Order(models.Model):
     grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    message_to_seller = models.TextField(null=True, blank=True)   # NEW FIELD
+
 
     def calculate_totals(self):
         items_total = sum((item.subtotal for item in self.items.all()))

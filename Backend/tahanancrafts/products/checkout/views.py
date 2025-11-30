@@ -38,6 +38,8 @@ class CheckoutCreateOrderView(APIView):
         user_id = data.get("user_id")
         cart_item_ids = data.get("cart_item_ids", [])
         shipping_address_id = data.get("shipping_address_id")
+        message_to_seller = request.data.get("message_to_seller", "")
+
 
         if not user_id or not cart_item_ids or not shipping_address_id:
             return Response({"error": "user_id, cart_item_ids and shipping_address_id are required"}, status=400)
