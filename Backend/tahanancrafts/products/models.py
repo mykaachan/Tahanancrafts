@@ -140,7 +140,8 @@ class Order(models.Model):
 
     gcash_proof = models.ImageField(upload_to="payment_proofs/", null=True, blank=True)
     payment_verified = models.BooleanField(default=False)
-
+    partial_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0 )
+    cod_payment =  models.DecimalField(max_digits=10, decimal_places=2, default=0 )
     # totals
     total_items_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)

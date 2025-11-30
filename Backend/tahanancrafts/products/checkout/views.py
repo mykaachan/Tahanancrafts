@@ -65,8 +65,14 @@ class CheckoutCreateOrderView(APIView):
             order = Order.objects.create(
                 user=user,
                 shipping_address=shipping,
-                payment_method="cod" if payment_option in ["sf_only","partial","full","cod"] else payment_option,
-            )
+                payment_method="cod" if payment_option in ["sf_only", "partial", "full", "cod"] else payment_option,
+
+                # NEW FIELDS
+                partial_payment = partial_amount,
+                cod_payment = cod_amount,
+                message_to_seller = message_to_seller,
+        )
+
 
             # Create OrderItems from cart_item_ids
             items_added = []
