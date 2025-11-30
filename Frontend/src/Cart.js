@@ -23,6 +23,9 @@ function Cart() {
           artisan_id: group.artisan_id,
           artisan_name: group.artisan_name,
           artisan_qr: group.artisan_qr,
+          artisan_pickup_lat: group.artisan_pickup_lat,
+          artisan_pickup_lng: group.artisan_pickup_lng,
+          artisan_pickup_address: group.artisan_pickup_address,
           selected_all: false,
           items: group.items.map((item) => ({
             id: item.id,

@@ -68,8 +68,15 @@ class CartView(APIView):
                     "artisan_id": artisan_id,
                     "artisan_name": artisan_name,
                     "artisan_qr": artisan_qr,
+
+                    # ⭐ ADD THESE 3 LINES
+                    "artisan_pickup_lat": artisan.pickup_lat,
+                    "artisan_pickup_lng": artisan.pickup_lng,
+                    "artisan_pickup_address": artisan.pickup_address,
+
                     "items": []
                 }
+
 
             grouped[artisan_id]["items"].append({
                 "id": item.id,
@@ -116,6 +123,10 @@ class CartListView(APIView):
                     if item.product.artisan.gcash_qr
                     else None
                 ),
+                "artisan_pickup_lat": item.product.artisan.pickup_lat,
+                "artisan_pickup_lng": item.product.artisan.pickup_lng,
+                "artisan_pickup_address": item.product.artisan.pickup_address,
+
             }
             for item in cart_items
         ]
