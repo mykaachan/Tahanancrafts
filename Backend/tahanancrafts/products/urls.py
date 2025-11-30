@@ -5,5 +5,6 @@ urlpatterns = [
     path('review/', include('products.reviews.urls')),  # For review-related URLs
     path('cart/', include('products.cart.urls')),  # For cart-related URLs
     path('delivery/', include('products.delivery.urls')),  # For cart-related URLs
+    path('checkout/', include('products.checkout.urls')),
 
 ]

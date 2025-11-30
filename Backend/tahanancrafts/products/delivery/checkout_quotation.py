@@ -4,26 +4,29 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import status
 from django.shortcuts import get_object_or_404
-
 from users.models import ShippingAddress, Artisan
-from products.models import Delivery  # Final model you selected
-
 
 BASE_URL = "https://rest.sandbox.lalamove.com"
-
 
 def _sign(secret, path, body_str, timestamp):
     raw = f"{timestamp}\r\nPOST\r\n{path}\r\n\r\n{body_str}"
     return hmac.new(secret.encode(), raw.encode(), hashlib.sha256).hexdigest()
 
-
 class CheckoutQuotationView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Request body expected:
+        {
+          "shipping_address_id": <int>,
+          "artisan_id": <int>,
+          "user_id": <int>   # optional
+        }
 
+        Returns Lalamove quotation data (no DB write).
+        """
         shipping_address_id = request.data.get("shipping_address_id")
         artisan_id = request.data.get("artisan_id")
 
@@ -60,14 +63,13 @@ class CheckoutQuotationView(APIView):
                 "language": "en_PH",
                 "isRouteOptimized": False,
                 "specialRequests": [],
-
                 "stops": [
                     {
                         "coordinates": {
                             "lat": str(artisan.pickup_lat),
                             "lng": str(artisan.pickup_lng)
                         },
-                        "address": artisan.pickup_address
+                        "address": artisan.pickup_address or ""
                     },
                     {
                         "coordinates": {
@@ -89,26 +91,21 @@ class CheckoutQuotationView(APIView):
             "market": market,
         }
 
-        response = requests.post(url, headers=headers, data=body_str)
-        data = response.json()
+        try:
+            response = requests.post(url, headers=headers, data=body_str, timeout=10)
+        except requests.RequestException as e:
+            return Response({"message": "Upstream request failed", "detail": str(e)}, status=502)
 
+        try:
+            data = response.json()
+        except ValueError:
+            return Response({"message": "Invalid response from upstream"}, status=502)
+
+        # If Lalamove returned non-201 (e.g., 400/403/500), forward it
         if response.status_code != 201:
             return Response(data, status=response.status_code)
 
-        quotation = data["data"]
-
-        temp_delivery = Delivery.objects.create(
-            order=None,                      # Saved later when order is created
-            quotation_id=quotation["quotationId"],
-            pickup_stop_id=quotation["stops"][0]["stopId"],
-            dropoff_stop_id=quotation["stops"][1]["stopId"],
-            delivery_fee=quotation["priceBreakdown"]["total"],
-            distance_m=quotation["distance"]["value"],
-            quotation_expires_at=quotation["expiresAt"],
-            status="quotation_created"
-        )
-
+        # Return quotation data WITHOUT creating DB objects
         return Response({
-            "quotation": quotation,
-            "temp_delivery_id": temp_delivery.id
+            "quotation": data.get("data", {})
         }, status=201)
