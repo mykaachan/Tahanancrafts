@@ -4,6 +4,7 @@ import HeaderFooter from "./HeaderFooter";
 import "./Checkout.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
+
 function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();

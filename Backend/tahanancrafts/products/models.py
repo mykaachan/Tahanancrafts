@@ -98,14 +98,14 @@ class UserActivity(models.Model):
 
 
 class Order(models.Model):
-    STATUS_PENDING = "pending" # if the seller accept or reject (will be cancelled)
-    STATUS_AWAITING_DOWNPAYMENT = "awaiting_downpayment"
-    STATUS_AWAITING_SELLER_VERIFICATION = "awaiting_seller_verification"
-    STATUS_PROCESSING = "processing"
-    STATUS_READY_TO_SHIP = "ready_to_ship"
-    STATUS_SHIPPED = "shipped"
+    STATUS_PENDING = "pending" # waiting for sf and partial payment
+    STATUS_AWAITING_DOWNPAYMENT = "awaiting_downpayment" # for pre-order only
+    STATUS_AWAITING_SELLER_VERIFICATION = "awaiting_seller_verification" # if the seller accept or reject (will be cancelled)
+    STATUS_PROCESSING = "processing" # if seller accepts
+    STATUS_READY_TO_SHIP = "ready_to_ship" # if seller done packing
+    STATUS_SHIPPED = "shipped" # if lalamove already gets the order
     STATUS_DELIVERED = "delivered"
-    STATUS_CANCELLED = "cancelled"
+    STATUS_CANCELLED = "cancelled" # if user cancels before seller accepts and if the seller rejects
 
     STATUS_CHOICES = [
         (STATUS_PENDING, "Pending"),
