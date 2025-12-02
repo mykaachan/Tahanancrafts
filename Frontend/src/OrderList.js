@@ -3,13 +3,11 @@ import Layout from './components/Layout';
 import './OrderList.css';
 const STATUS_TABS = [
   { key: 'all', label: 'All' },
-  { key: 'to-ship', label: 'To Ship' },
-  { key: 'shipping', label: 'Shipping' },
-  { key: 'delivered', label: 'Delivered' },
-  { key: 'refund', label: 'Refund/Cancel' },
   { key: 'requests', label: 'Order Requests' },
-  { key: 'preorders', label: 'Pre-Orders' },
-  { key: 'shipping-paid', label: 'Shipping Fee Paid Orders' },
+  { key: 'to-ship', label: 'To Ship' },
+  { key: 'to-receive', label: 'To Receive' },     // 🔹 was "Shipping"
+  { key: 'completed', label: 'Completed' },       // 🔹 was "Delivered"
+  { key: 'refund', label: 'Refund/Cancel' }
 ];
 const placeholderOrders = [
   {
@@ -45,14 +43,13 @@ const placeholderOrders = [
 ];
 const statusFilterMap = {
   all: () => true,
-  'to-ship': order => order.status === 'To Ship',
-  shipping: order => order.status === 'Shipping',
-  delivered: order => order.status === 'Delivered',
-  refund: order => order.status === 'Refunded' || order.status === 'Cancelled',
   requests: order => order.status === 'Pending',
-  preorders: order => order.isPreorder === true,
-  'shipping-paid': order => order.shippingFeePaid > 0,
+  'to-ship': order => order.status === 'To Ship',
+  'to-receive': order => order.status === 'To Receive', // 🔹 NEW
+  completed: order => order.status === 'Completed',       // 🔹 NEW
+  refund: order => order.status === 'Refunded' || order.status === 'Cancelled',
 };
+
 const STATUS_TRANSITIONS = {
   Pending: ['To Ship', 'Cancelled'],
   'To Ship': ['Shipping', 'Cancelled'],
@@ -125,12 +122,12 @@ const OrderList = () => {
           {/* Orders List */}
           <div className="orders-list-container">
             {/* NORMAL TABS (ALSO ADD "TO SHIP" HERE) */}
-            {activeTab !== 'requests' && 
- activeTab !== 'preorders' && 
- activeTab !== 'shipping-paid' && 
- activeTab !== 'to-ship' &&
- activeTab !== 'delivered' &&
- activeTab !== 'refund' && (
+           {activeTab !== 'requests' &&
+            activeTab !== 'to-ship' &&
+            activeTab !== 'to-receive' &&
+            activeTab !== 'completed' &&
+            activeTab !== 'refund' && (
+
               <>
                 <div className="orders-list-header">
                   <span>Products(s)</span>
@@ -235,136 +232,136 @@ const OrderList = () => {
               </div>
             )}
             {/* ✅ DELIVERED TAB */}
-{activeTab === 'delivered' && (
-  <div className="orders-list">
-    {(filteredOrders.length === 0 ? [{
-      id: 'placeholder',
-      productImage: '/images/blankimage.png',
-      productName: 'Sample Product',
-      orders: 1,
-      date: 'TBD',
-      isPlaceholder: true,
-    }] : filteredOrders).map(order => (
-      <div className="order-delivered-card" key={order.id}>
-        <div className="order-summary">
-          <img src={order.productImage} alt={order.productName} className="order-product-image" />
-          <div className="order-details">
-            <div><strong>Product Name:</strong> {order.productName}</div>
-            <div><strong>Quantity:</strong> {order.orders}</div>
-            <div><strong>Buyer Name:</strong> John Doe</div>
-            <div><strong>Address:</strong> 123 Main St, City</div>
-            <div><strong>Delivery Date:</strong> {order.date}</div>
-          </div>
-        </div>
-        <div className="order-actions">
-          <button className="approve-btn">Mark as Delivered</button>
-          <button className="decline-btn">Report Buyer Issue</button>
-        </div>
-        {shippingFields[order.id]?.shipmentProof && (
-          <div className="field-row">
-            <label>Shipment Proof:</label>
-            <a
-              href={URL.createObjectURL(shippingFields[order.id].shipmentProof)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              View
-            </a>
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)}
-{/* Refund/Cancel Tab */}
-{activeTab === 'refund' && (
-  <div className="orders-list">
-    {(filteredOrders.length === 0 ? [
-      {
-        id: 'BC-0001',
-        buyer: 'John Doe',
-        refundAmount: 500,
-        reason: 'Buyer Cancellation',
-        status: 'Pending',
-      },
-      {
-        id: 'SC-0002',
-        buyer: 'Jane Smith',
-        refundAmount: 1200,
-        reason: 'Seller Cancellation',
-        status: 'Processed',
-      },
-      {
-        id: 'AC-0003',
-        buyer: 'Mark Lee',
-        refundAmount: 800,
-        reason: 'Auto-cancel Unpaid Shipping/Downpayment',
-        status: 'Pending',
-      }
-    ] : filteredOrders).map(order => {
-      const fields = shippingFields[order.id] || {};
-      return (
-        <div className="order-refund-card" key={order.id}>
-          <div className="order-summary">
-            <div><strong>Order ID:</strong> #{order.id}</div>
-            <div><strong>Buyer:</strong> {order.buyer || 'John Doe'}</div>
-            <div><strong>Refund Amount:</strong> ₱{order.refundAmount || 0}</div>
+            {activeTab === 'completed' && (
+              <div className="orders-list">
+                {(filteredOrders.length === 0 ? [{
+                  id: 'placeholder',
+                  productImage: '/images/blankimage.png',
+                  productName: 'Sample Product',
+                  orders: 1,
+                  date: 'TBD',
+                  isPlaceholder: true,
+                }] : filteredOrders).map(order => (
+                  <div className="order-delivered-card" key={order.id}>
+                    <div className="order-summary">
+                      <img src={order.productImage} alt={order.productName} className="order-product-image" />
+                      <div className="order-details">
+                        <div><strong>Product Name:</strong> {order.productName}</div>
+                        <div><strong>Quantity:</strong> {order.orders}</div>
+                        <div><strong>Buyer Name:</strong> John Doe</div>
+                        <div><strong>Address:</strong> 123 Main St, City</div>
+                        <div><strong>Delivery Date:</strong> {order.date}</div>
+                      </div>
+                    </div>
+                    <div className="order-actions">
+                      <button className="approve-btn">Mark as Delivered</button>
+                      <button className="decline-btn">Report Buyer Issue</button>
+                    </div>
+                    {shippingFields[order.id]?.shipmentProof && (
+                      <div className="field-row">
+                        <label>Shipment Proof:</label>
+                        <a
+                          href={URL.createObjectURL(shippingFields[order.id].shipmentProof)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          View
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* Refund/Cancel Tab */}
+            {activeTab === 'refund' && (
+              <div className="orders-list">
+                {(filteredOrders.length === 0 ? [
+                  {
+                    id: 'BC-0001',
+                    buyer: 'John Doe',
+                    refundAmount: 500,
+                    reason: 'Buyer Cancellation',
+                    status: 'Pending',
+                  },
+                  {
+                    id: 'SC-0002',
+                    buyer: 'Jane Smith',
+                    refundAmount: 1200,
+                    reason: 'Seller Cancellation',
+                    status: 'Processed',
+                  },
+                  {
+                    id: 'AC-0003',
+                    buyer: 'Mark Lee',
+                    refundAmount: 800,
+                    reason: 'Auto-cancel Unpaid Shipping/Downpayment',
+                    status: 'Pending',
+                  }
+                ] : filteredOrders).map(order => {
+                  const fields = shippingFields[order.id] || {};
+                  return (
+                    <div className="order-refund-card" key={order.id}>
+                      <div className="order-summary">
+                        <div><strong>Order ID:</strong> #{order.id}</div>
+                        <div><strong>Buyer:</strong> {order.buyer || 'John Doe'}</div>
+                        <div><strong>Refund Amount:</strong> ₱{order.refundAmount || 0}</div>
 
-            <div className="field-row">
-              <label>Reason:</label>
-              <select
-                value={fields.refundReason || order.reason || ''}
-                onChange={e => handleShippingFieldChange(order.id, 'refundReason', e.target.value)}
-              >
-                <option value="">Select Reason</option>
-                <option value="Buyer Cancellation">Buyer Cancellation</option>
-                <option value="Seller Cancellation">Seller Cancellation</option>
-                <option value="Auto-cancel Unpaid Shipping/Downpayment">Auto-cancel Unpaid Shipping/Downpayment</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label>Status:</label>
-              <select
-                value={fields.refundStatus || order.status || ''}
-                onChange={e => handleShippingFieldChange(order.id, 'refundStatus', e.target.value)}
-              >
-                <option value="">Select Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Processed">Processed</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label>Proof of Refund:</label>
-              <input
-                type="file"
-                accept="image/*,application/pdf"
-                onChange={e => handleShippingFieldChange(order.id, 'refundProof', e.target.files[0])}
-              />
-              {fields.refundProof && (
-                <a
-                  href={URL.createObjectURL(fields.refundProof)}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ marginLeft: '8px' }}
-                >
-                  View
-                </a>
-              )}
-            </div>
-          </div>
-          <div className="order-actions">
-            <button className="approve-btn" onClick={() => alert(`Refund processed for order ${order.id}`)}>
-              Process Refund
-            </button>
-            <button className="decline-btn" onClick={() => alert(`Refund canceled for order ${order.id}`)}>
-              Cancel Refund
-            </button>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-)}
+                        <div className="field-row">
+                          <label>Reason:</label>
+                          <select
+                            value={fields.refundReason || order.reason || ''}
+                            onChange={e => handleShippingFieldChange(order.id, 'refundReason', e.target.value)}
+                          >
+                            <option value="">Select Reason</option>
+                            <option value="Buyer Cancellation">Buyer Cancellation</option>
+                            <option value="Seller Cancellation">Seller Cancellation</option>
+                            <option value="Auto-cancel Unpaid Shipping/Downpayment">Auto-cancel Unpaid Shipping/Downpayment</option>
+                          </select>
+                        </div>
+                        <div className="field-row">
+                          <label>Status:</label>
+                          <select
+                            value={fields.refundStatus || order.status || ''}
+                            onChange={e => handleShippingFieldChange(order.id, 'refundStatus', e.target.value)}
+                          >
+                            <option value="">Select Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Processed">Processed</option>
+                          </select>
+                        </div>
+                        <div className="field-row">
+                          <label>Proof of Refund:</label>
+                          <input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            onChange={e => handleShippingFieldChange(order.id, 'refundProof', e.target.files[0])}
+                          />
+                          {fields.refundProof && (
+                            <a
+                              href={URL.createObjectURL(fields.refundProof)}
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{ marginLeft: '8px' }}
+                            >
+                              View
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                      <div className="order-actions">
+                        <button className="approve-btn" onClick={() => alert(`Refund processed for order ${order.id}`)}>
+                          Process Refund
+                        </button>
+                        <button className="decline-btn" onClick={() => alert(`Refund canceled for order ${order.id}`)}>
+                          Cancel Refund
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             {/* Order Requests */}
             {activeTab === 'requests' && (
               <div className="orders-list">
@@ -390,93 +387,6 @@ const OrderList = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-            {/* Preorder Orders */}
-            {activeTab === 'preorders' && (
-              <div className="orders-list">
-                {filteredOrders.length === 0 ? (
-                  <div className="no-orders">No preorder orders found.</div>
-                ) : filteredOrders.map(order => {
-                  const downpayment = (order.price || 0) * 0.5;
-                  const fields = preorderFields[order.id] || {};
-                  return (
-                    <div className="order-preorder-card" key={order.id}>
-                      <div className="order-summary">
-                        <img src={order.productImage} alt={order.productName} className="order-product-image" />
-                        <div className="order-details">
-                          <div><strong>Product Name:</strong> {order.productName}</div>
-                          <div><strong>Quantity:</strong> {order.orders}</div>
-                          <div><strong>Buyer Name:</strong> John Doe</div>
-                          <div><strong>Shipping Address:</strong> 123 Main St, City, Country</div>
-                          <div><strong>Payment Method:</strong> COD / Prepaid</div>
-                          <label>Estimated Completion Date:</label>
-                          <input
-                            type="date"
-                            value={fields.estimatedDate || ''}
-                            onChange={e => handlePreorderFieldChange(order.id, 'estimatedDate', e.target.value)}
-                          />
-                          <label>Notes to Buyer:</label>
-                          <textarea
-                            value={fields.notes || ''}
-                            onChange={e => handlePreorderFieldChange(order.id, 'notes', e.target.value)}
-                          />
-                          <label>Downpayment (50%):</label>
-                          <input type="number" value={downpayment} readOnly />
-                        </div>
-                      </div>
-                      <div className="order-actions">
-                        <button onClick={() => confirmPreorder(order)} className="approve-btn">Confirm Preorder Request</button>
-                        <button onClick={() => rejectPreorder(order)} className="decline-btn">Reject Preorder</button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            {/* Shipping Fee Paid Orders */}
-            {activeTab === 'shipping-paid' && (
-              <div className="orders-list">
-                {filteredOrders.length === 0 ? (
-                  <div className="no-orders">No shipping fee paid orders found.</div>
-                ) : filteredOrders.map(order => {
-                  const fields = shippingFields[order.id] || {};
-                  return (
-                    <div className="order-shipping-paid-card" key={order.id}>
-                      <div className="order-summary">
-                        <img src={order.productImage} alt={order.productName} className="order-product-image" />
-                        <div className="order-details">
-                          <div><strong>Product Name:</strong> {order.productName}</div>
-                          <div><strong>Quantity:</strong> {order.orders}</div>
-                          <div><strong>Buyer Name:</strong> John Doe</div>
-                          <div><strong>Shipping Fee Paid:</strong> ₱{order.shippingFeePaid}</div>
-                        </div>
-                      </div>
-                      <div className="order-actions">
-                        <button onClick={() => acceptShippingOrder(order)} className="approve-btn">Accept Order</button>
-                        <select
-                          value={fields.refundReason || ''}
-                          onChange={e => handleShippingFieldChange(order.id, 'refundReason', e.target.value)}
-                        >
-                          <option value="">Select Refund Reason</option>
-                          <option value="Out of stock">Out of stock</option>
-                          <option value="Cannot fulfill on time">Cannot fulfill on time</option>
-                          <option value="Incorrect product listing">Incorrect product listing</option>
-                          <option value="Other reasons">Other reasons</option>
-                        </select>
-                        <button onClick={() => refundBuyer(order)} className="decline-btn">Refund Buyer</button>
-                      </div>
-                      <div className="field-row">
-                        <label>Upload Proof of Refund:</label>
-                        <input
-                          type="file"
-                          accept="image/*,application/pdf"
-                          onChange={e => handleShippingFieldChange(order.id, 'refundProof', e.target.files[0])}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
               </div>
             )}
           </div>

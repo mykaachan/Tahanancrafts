@@ -7,12 +7,17 @@ from rest_framework.generics import ListAPIView
 from django.db.models import Q
 import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
-from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations
+from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
 from rest_framework.decorators import api_view, permission_classes
 from products.checkout.services.checkout_service import create_orders_from_cart
+from django.db import transaction, IntegrityError
+from django.shortcuts import get_object_or_404
+from chat.notification import send_notification
+
+
 
 
 
@@ -415,6 +420,7 @@ class CheckoutView(APIView):
             return Response({"error": "shipping_address_id required"}, status=400)
 
         try:
+            
             orders = create_orders_from_cart(
                 user=request.user,
                 shipping_address_id=shipping_address_id,
@@ -425,41 +431,102 @@ class CheckoutView(APIView):
 
         result = []
 
-        for order in orders:
+        # Use transaction to ensure artisan assignment + notifications happen atomically per order
+        try:
+            with transaction.atomic():
+                for order in orders:
+                    # ensure totals are correct (safe if create_orders_from_cart already did this)
+                    try:
+                        order.calculate_totals()
+                    except Exception:
+                        # ignore if method not present or already calculated
+                        pass
 
-            # get first product → seller → QR
-            first_item = order.items.first()
-            artisan = first_item.product.artisan
-            qr_url = artisan.gcash_qr.url if artisan.gcash_qr else None
+                    # Get first item and its artisan (assumes an order always has at least one item)
+                    first_item = order.items.first()
+                    if not first_item:
+                        # skip or raise — here we skip
+                        continue
 
-            items_total = order.total_items_amount
-            shipping_fee = order.shipping_fee
+                    artisan = first_item.product.artisan
 
-            # Compute downpayment
-            downpayment = order.downpayment_amount if order.downpayment_required else 0
+                    # Save artisan into order (in case it's not already set)
+                    if artisan and order.artisan_id != artisan.id:
+                        order.artisan = artisan
 
-            # Money to pay via QR now
-            total_pay_now = shipping_fee + downpayment
+                    # Ensure status is awaiting_payment as your single entry point
+                    order.status = Order.STATUS_AWAITING_PAYMENT
+                    order.save()
 
-            # Remaining COD
-            cod_remaining = items_total - downpayment
+                    # Add a timeline entry
+                    order.add_timeline(
+                        status=Order.STATUS_AWAITING_PAYMENT,
+                        description="Awaiting Payment."
+                    )
 
-            # === FINAL RESPONSE FOR THIS ORDER ===
-            result.append({
-                "order_id": order.id,
+                    # Notify artisan (different event depending on preorder flag)
+                    try:
+                        if order.downpayment_required:
+                            send_notification(
+                                event="new_order_preorder",
+                                order=order,
+                                buyer=order.user,
+                                artisan=artisan
+                            )
+                        else:
+                            # COD or regular shipping-fee flow (buyer still needs to pay shipping)
+                            send_notification(
+                                event="new_order_cod",
+                                order=order,
+                                buyer=order.user,
+                                artisan=artisan
+                            )
+                    except Exception as e:
+                        # don't fail the whole checkout if notification can't send
+                        print("Notification error:", e)
 
-                # PAYMENT SUMMARY
-                "qr_code": qr_url,
-                "shipping_fee": str(shipping_fee),
-                "downpayment_required": order.downpayment_required,
-                "downpayment_amount": str(downpayment),
-                "total_pay_now": str(total_pay_now),
-                "cod_amount": str(cod_remaining),
+                    # Build response entry
+                    qr_url = None
+                    try:
+                        # artisan.gcash_qr may be an ImageField or a string; handle safely
+                        if hasattr(artisan, "gcash_qr") and artisan.gcash_qr:
+                            try:
+                                qr_url = artisan.gcash_qr.url
+                            except Exception:
+                                qr_url = str(artisan.gcash_qr)
+                    except Exception:
+                        qr_url = None
 
-                # ORDER META
-                "total_items_amount": str(items_total),
-                "grand_total": str(order.grand_total),
-                "payment_method": order.payment_method,
-            })
+                    items_total = order.total_items_amount
+                    shipping_fee = order.shipping_fee
+
+                    downpayment = order.downpayment_amount if order.downpayment_required else 0
+                    total_pay_now = (shipping_fee or 0) + (downpayment or 0)
+                    cod_remaining = (items_total or 0) - (downpayment or 0)
+
+                    result.append({
+                        "order_id": order.id,
+                        # ARTISAN INFO
+                        "artisan_id": artisan.id if artisan else None,
+                        "artisan_name": artisan.name if artisan else None,
+                        "artisan_qr": qr_url,
+
+                        # PAYMENT SUMMARY
+                        "qr_code": qr_url,
+                        "shipping_fee": str(shipping_fee or "0.00"),
+                        "downpayment_required": bool(order.downpayment_required),
+                        "downpayment_amount": str(downpayment),
+                        "total_pay_now": str(total_pay_now),
+                        "cod_amount": str(cod_remaining),
+
+                        # ORDER META
+                        "total_items_amount": str(items_total),
+                        "grand_total": str(order.grand_total),
+                        "payment_method": order.payment_method,
+                    })
+        except IntegrityError as exc:
+            return Response({"error": "Database error during checkout: " + str(exc)}, status=500)
+        except Exception as exc:
+            return Response({"error": "Unexpected error during checkout: " + str(exc)}, status=500)
 
         return Response(result, status=201)

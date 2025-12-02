@@ -159,53 +159,134 @@ function ProductDetail() {
           <div className="iraya-details">
             <h1>{product.name}</h1>
             <h2>{product.brandName || "—"}</h2>
+
+            {/* ⭐ Ratings + Total Reviews */}
+            <div className="product-rating-box">
+              <span className="rating-stars">⭐ {product.avg_rating}</span>
+              <span className="rating-count">({reviews.length} reviews)</span>
+            </div>
+
+            {/* 📦 Stock */}
+            <p className="product-stock">
+              Stock: <strong>{product.stock_quantity}</strong> available
+            </p>
+
             {/* Show description instead of categories */}
             <p className="description">
               {product.description || "No description available."}
             </p>
             <h3 className="price">
-              ₱{Number(product.regular_price).toLocaleString()}
+              {product.sales_price ? (
+                <>
+                  ₱{product.sales_price}
+                  <span className="regular-price">₱{product.regular_price}</span>
+                </>
+              ) : (
+                <>₱{product.regular_price}</>
+              )}
             </h3>
-            {/* You can remove this one if you don’t want description repeated */}
-            {/* <p className="description">{product.description}</p> */}
+
+            <p className="total">
+              ₱{(
+                (product.sales_price || product.regular_price) * quantity
+              ).toLocaleString()}
+            </p>
+
             {/* Quantity controls */}
-            <div className="quantity">
-              <label>Quantity</label>
-              <div className="quantity-controls">
-                <button onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}>
-                  -
-                </button>
-                <span>{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)}>+</button>
+              <div className="quantity">
+                <label>Quantity</label>
+                <div className="quantity-controls">
+
+                  {/* MINUS */}
+                  <button
+                    onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+                    className="qty-btn"
+                  >
+                    -
+                  </button>
+
+                  {/* INPUT BOX */}
+                  <input
+                    type="number"
+                    className="qty-input"
+                    value={quantity}
+                    onChange={(e) => {
+                      let val = Number(e.target.value);
+
+                      // prevent below 1
+                      if (val < 1) val = 1;
+
+                      // 🛑 PREVENT ABOVE STOCK
+                      if (val > product.stock_quantity) {
+                        alert(`Only ${product.stock_quantity} stocks available.`);
+                        val = product.stock_quantity;
+                      }
+
+                      setQuantity(val);
+                    }}
+                    onBlur={(e) => {
+                      let val = Number(e.target.value);
+                      if (!val || val < 1) val = 1;
+
+                      // 🛑 Ensure stays within stock
+                      if (val > product.stock_quantity) val = product.stock_quantity;
+
+                      setQuantity(val);
+                    }}
+                    min="1"
+                    max={product.stock_quantity}
+                  />
+
+                  {/* PLUS */}
+                  <button
+                    onClick={() => {
+                      if (quantity + 1 > product.stock_quantity) {
+                        alert(`Only ${product.stock_quantity} stocks available.`);
+                        return;
+                      }
+                      setQuantity(quantity + 1);
+                    }}
+                    className="qty-btn"
+                  >
+                    +
+                  </button>
+
+                </div>
               </div>
-            </div>
-            <div className="add-to-cart">
-              <button
-                onClick={async () => {
-                  try {
-                    const userId = localStorage.getItem("user_id");
-                    if (!userId) {
-                      alert("⚠️ Please log in to add items to your cart.");
-                      navigate("/login");
-                      return;
+
+              {/* Add to Cart */}
+              <div className="add-to-cart">
+                <button
+                  onClick={async () => {
+                    try {
+                      const userId = localStorage.getItem("user_id");
+                      if (!userId) {
+                        alert("⚠️ Please log in to add items to your cart.");
+                        navigate("/login");
+                        return;
+                      }
+
+                      // 🛑 FINAL CHECK BEFORE API CALL
+                      if (quantity > product.stock_quantity) {
+                        alert(`Only ${product.stock_quantity} stocks available.`);
+                        return;
+                      }
+
+                      await addToCart(userId, product.id, quantity);
+                      alert("✅ Item added to cart!");
+
+                    } catch (err) {
+                      console.error("Add to cart failed:", err);
+                      alert(
+                        err.response?.data?.error ||
+                        `❌ Failed to add to cart: ${err.message}`
+                      );
                     }
-                    // Ensure quantity is always at least 1
-                    const qty = quantity && quantity > 0 ? quantity : 1;
-                    // Call your API function
-                    await addToCart(userId, product.id, qty);
-                    alert("✅ Item added to cart!");
-                  } catch (err) {
-                    console.error("Add to cart failed:", err);
-                    alert(`❌ Failed to add to cart: ${err.message}`);
-                  }
-                }}
-              >
-                Add to Cart
-              </button>
-            </div>
-              <p className="total">
-                ₱{(product.regular_price * quantity).toLocaleString()}
-              </p>
+                  }}
+                >
+                  Add to Cart
+                </button>
+              </div>
             </div>
           </div>
         </div>

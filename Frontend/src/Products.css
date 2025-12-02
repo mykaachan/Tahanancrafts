@@ -52,6 +52,36 @@
   flex-shrink: 0;
   accent-color: #998759;
 }
+/* PRICE ROW — ALL INLINE */
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* SALE PRICE */
+.price-sale {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #ff5a00;
+}
+
+/* REGULAR PRICE */
+.price-regular {
+  font-size: 0.95rem;
+  color: #8f8f8f;
+  text-decoration: line-through;
+}
+
+/* DISCOUNT PERCENT */
+.price-discount {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ff5a00;
+}
+
+
 /* Clear Filters Button */
 .clear-filters-btn {
   width: 100%;

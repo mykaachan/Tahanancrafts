@@ -1,22 +1,90 @@
-from rest_framework import serializers  # For creating API serializers
-from products.models import Product  # Your product model
+from rest_framework import serializers
+from products.models import (
+    Order, OrderItem, Delivery, OrderTimeline, PaymentProof, Product
+)
+from users.models import Artisan
 
-class TestReviewSerializer(serializers.Serializer):
-    product_id = serializers.IntegerField()
-    rating = serializers.IntegerField(min_value=1, max_value=5)
-    comment = serializers.CharField(max_length=500, required=False)
+class SimpleArtisanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artisan
+        fields = ["id", "name", "gcash_qr"]
 
-    def validate_product_id(self, value):
-        if not Product.objects.filter(id=value).exists():
-            raise serializers.ValidationError("Product does not exist.")
-        return value
+class SimpleProductSerializer(serializers.ModelSerializer):
+    artisan = SimpleArtisanSerializer(read_only=True)
 
-    def validate_rating(self, value):
-        if value < 1 or value > 5:
-            raise serializers.ValidationError("Rating must be between 1 and 5.")
-        return value
+    class Meta:
+        model = Product
+        fields = ["id", "name", "main_image", "description", "artisan"]
 
-    def validate_comment(self, value):
-        if len(value) > 500:
-            raise serializers.ValidationError("Comment cannot exceed 500 characters.")
-        return value
+class OrderItemSerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer()
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrderItem
+        fields = ["id", "product", "quantity", "price", "subtotal"]
+
+    def get_subtotal(self, obj):
+        return obj.price * obj.quantity
+
+
+# -----------------------------
+# DELIVERY INFO
+# -----------------------------
+class DeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        fields = [
+            "lalamove_order_id",
+            "tracking_link",
+            "status",
+            "driver_id",
+            "driver_name",
+            "driver_phone",
+            "driver_plate_number",
+            "pod_image_url",
+            "delivery_fee",
+            "distance_m",
+        ]
+
+
+
+# -----------------------------
+# ORDER TIMELINE
+# -----------------------------
+class OrderTimelineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderTimeline
+        fields = ["id", "status", "description", "created_at","order","reason"]
+
+class PaymentProofSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentProof
+        fields = "__all__"
+        read_only_fields = ["id", "extracted_text", "is_verified", "created_at"]
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+    delivery = DeliverySerializer()
+    timeline = OrderTimelineSerializer(many=True)
+    payment_proofs = PaymentProofSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "status",
+            "payment_method",
+            "payment_verified",
+            "downpayment_required",
+            "downpayment_amount",
+            "total_items_amount",
+            "shipping_fee",
+            "grand_total",
+            "created_at",
+            "message_to_seller",
+            "items",
+            "delivery",
+            "timeline",
+            "payment_proofs",
+        ]

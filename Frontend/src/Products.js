@@ -131,7 +131,7 @@ function Products() {
   // Log view + redirect
   function handleProductClick(productId) {
     const userId = localStorage.getItem("user_id");
-    fetch(`${process.env.REACT_APP_API_URL}api/products/product/log-view/`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/products/product/log-view/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId, user_id: userId }),
@@ -276,7 +276,28 @@ function Products() {
                     />
                     <h2>{product.name}</h2>
                     <p>{product.description}</p>
-                    <span className="price">₱{product.regular_price}</span>
+                    <div className="price-row">
+                      {product.sales_price ? (
+                        <>
+                          <span className="price-sale">₱{product.sales_price}</span>
+
+                          <span className="price-regular">₱{product.regular_price}</span>
+
+                          <span className="price-discount">
+                            -
+                            {Math.round(
+                              ((product.regular_price - product.sales_price) /
+                                product.regular_price) * 100
+                            )}
+                            %
+                          </span>
+                        </>
+                      ) : (
+                        <span className="price-sale">₱{product.regular_price}</span>
+                      )}
+                    </div>
+
+
                   </div>
                 </Link>
               ))

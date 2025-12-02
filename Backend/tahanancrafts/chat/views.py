@@ -10,6 +10,9 @@ from rest_framework import status
 from django.db.models import Q
 from users.models import CustomUser
 from rest_framework.decorators import api_view, permission_classes
+from .models import Notification
+from .serializers import NotificationSerializer
+
 
 
 class UserConversationsView(generics.ListAPIView):
@@ -70,11 +73,6 @@ class CreateMessageView(generics.CreateAPIView):
 class SendMessageView(APIView):
     permission_classes = [AllowAny]
 
-    """
-    Creates conversation automatically if it doesn't exist.
-    """
-
-
     def post(self, request):
         sender_id = request.data.get("sender")
         receiver_id = request.data.get("receiver")
@@ -107,3 +105,33 @@ class SendMessageView(APIView):
             "conversation": ConversationSerializer(conversation).data,
             "message": MessageSerializer(message).data
         }, status=status.HTTP_201_CREATED)
+    
+
+class UserNotificationsView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, user_id):
+        notifications = Notification.objects.filter(user_id=user_id)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=200)
+
+
+class ArtisanNotificationsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, artisan_id):
+        notifications = Notification.objects.filter(artisan_id=artisan_id)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data, status=200)
+
+
+class MarkNotificationReadView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, notif_id):
+        try:
+            notif = Notification.objects.get(id=notif_id)
+            notif.is_read = True
+            notif.save()
+            return Response({"message": "Marked as read"}, status=200)
+        except Notification.DoesNotExist:
+            return Response({"error": "Notification not found"}, status=404)

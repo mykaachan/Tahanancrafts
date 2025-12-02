@@ -182,3 +182,53 @@ def validate_and_return_new_password(newpass1, newpass2):
     if newpass1 != newpass2:
         raise ValueError("Passwords do not match.")
     return newpass1
+
+
+def send_payment_received_email(to_email, amount, reference, payment_type, order_id):
+    """
+    Sends email when user uploads a payment proof.
+    """
+
+    try:
+        client.send(
+            {
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [to_email],
+                "subject": f"Payment Received for Order #{order_id}",
+                "html": f"""
+                    <html><body>
+                    <h2>Payment Received</h2>
+                    <p>Your payment has been submitted successfully.</p>
+
+                    <p><strong>Order ID:</strong> {order_id}</p>
+                    <p><strong>Payment Type:</strong> {payment_type}</p>
+                    <p><strong>Amount Paid:</strong> ₱{amount}</p>
+                    <p><strong>Reference Number:</strong> {reference}</p>
+
+                    <br>
+                    <p>Please wait for the seller to verify your payment.</p>
+                    <p>If you have any concerns, you may contact the seller through the message box on the website.</p>
+                    <p>You may also email us at <strong>tahanancrafts.shop@gmail.com</strong>.</p>
+
+                    <br>
+                    <p>Thank you!</p>
+                    <p><strong>TahananCrafts Team</strong></p>
+                    </body></html>
+                """,
+                "text": (
+                    f"Payment Received\n"
+                    f"Order ID: {order_id}\n"
+                    f"Payment Type: {payment_type}\n"
+                    f"Amount Paid: ₱{amount}\n"
+                    f"Reference Number: {reference}\n"
+                    f"Please wait for seller verification."
+                ),
+            }
+        )
+
+        print(f"📧 Payment received email sent to {to_email}")
+        return True
+
+    except Exception as e:
+        print(f"❌ Failed to send payment received email: {e}")
+        return False

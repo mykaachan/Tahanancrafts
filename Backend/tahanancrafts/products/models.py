@@ -17,6 +17,7 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     brandName = models.CharField(max_length=255, default="Unknown Brand")
     description = models.TextField()
+    long_description = models.TextField(null=True,blank=True)
     stock_quantity = models.PositiveIntegerField()
     regular_price = models.DecimalField(max_digits=10, decimal_places=2)
     sales_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -98,73 +99,79 @@ class UserActivity(models.Model):
 
 
 class Order(models.Model):
-    STATUS_PENDING = "pending" # waiting for sf and partial payment
-    STATUS_AWAITING_DOWNPAYMENT = "awaiting_downpayment" # for pre-order only
-    STATUS_AWAITING_SELLER_VERIFICATION = "awaiting_seller_verification" # if the seller accept or reject (will be cancelled)
-    STATUS_PROCESSING = "processing" # if seller accepts
-    STATUS_READY_TO_SHIP = "ready_to_ship" # if seller done packing
-    STATUS_SHIPPED = "shipped" # if lalamove already gets the order
+    STATUS_AWAITING_PAYMENT = "awaiting_payment"          # shipping fee OR dp+sf
+    STATUS_AWAITING_VERIFICATION = "awaiting_verification"
+    STATUS_PROCESSING = "processing"                      # artisan accepted + packing
+    STATUS_READY_TO_SHIP = "ready_to_ship"
+    STATUS_SHIPPED = "shipped"
     STATUS_DELIVERED = "delivered"
-    STATUS_CANCELLED = "cancelled" # if user cancels before seller accepts and if the seller rejects
+    STATUS_COMPLETED = "completed"
+    STATUS_CANCELLED = "cancelled"
+    STATUS_REFUND = "refund"
 
     STATUS_CHOICES = [
-        (STATUS_PENDING, "Pending"),
-        (STATUS_AWAITING_DOWNPAYMENT, "Awaiting Downpayment"),
-        (STATUS_AWAITING_SELLER_VERIFICATION, "Awaiting Seller Verification"),
+        (STATUS_AWAITING_PAYMENT, "Awaiting Payment"),
+        (STATUS_AWAITING_VERIFICATION, "Awaiting Verification"),
         (STATUS_PROCESSING, "Processing"),
         (STATUS_READY_TO_SHIP, "Ready to Ship"),
         (STATUS_SHIPPED, "Shipped"),
         (STATUS_DELIVERED, "Delivered"),
+        (STATUS_COMPLETED, "Completed"),
         (STATUS_CANCELLED, "Cancelled"),
+        (STATUS_REFUND, "Refund"),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    artisan = models.ForeignKey(Artisan, on_delete=models.CASCADE, related_name="orders", null=True)
+
     shipping_address = models.ForeignKey(
-        "users.ShippingAddress",    # <-- include the app name!
+        "users.ShippingAddress",
         on_delete=models.PROTECT,
         related_name="orders"
     )
 
-    status = models.CharField(max_length=40, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    status = models.CharField(max_length=40, choices=STATUS_CHOICES,
+                              default=STATUS_AWAITING_PAYMENT)
 
     # Payment
     payment_method = models.CharField(
         max_length=20,
-        choices=[("cod", "Cash on Delivery"), ("gcash_down", "GCash Downpayment")],
+        choices=[("cod", "Cash on Delivery"), ("gcash", "GCash")],
         default="cod"
     )
 
-    # Downpayment always 50% for any preorder
     downpayment_required = models.BooleanField(default=False)
     downpayment_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
-    gcash_proof = models.ImageField(upload_to="payment_proofs/", null=True, blank=True)
     payment_verified = models.BooleanField(default=False)
-    partial_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0 )
-    cod_payment =  models.DecimalField(max_digits=10, decimal_places=2, default=0 )
-    # totals
+
     total_items_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    partial_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0 )
+    cod_payment = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    gcash_proof = models.TextField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
-    message_to_seller = models.TextField(null=True, blank=True)   # NEW FIELD
-
+    message_to_seller = models.TextField(null=True, blank=True)
 
     def calculate_totals(self):
-        items_total = sum((item.subtotal for item in self.items.all()))
+        items_total = sum(item.subtotal for item in self.items.all())
         self.total_items_amount = items_total
         self.grand_total = items_total + self.shipping_fee
 
-        # Always 50% if preorder
         if self.downpayment_required:
-            self.downpayment_amount = (self.grand_total * Decimal("0.50"))
+            self.downpayment_amount = self.grand_total * Decimal("0.50")
         else:
             self.downpayment_amount = Decimal("0.00")
 
         self.save()
 
-
+    def add_timeline(self, status, description=None):
+        OrderTimeline.objects.create(
+            order=self,
+            status=status,
+            description=description
+        )
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -260,3 +267,63 @@ class Delivery(models.Model):
 
     def __str__(self):
         return f"Delivery for Order #{self.order.id}"
+
+class PaymentProof(models.Model):
+    PAYMENT_TYPES = [
+        ("downpayment", "Downpayment"),
+        ("fullpayment", "Full Payment"),
+        ("cod_balance", "COD Balance"),
+    ]
+
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="payment_proofs"
+    )
+
+    payment_type = models.CharField(
+        max_length=20,
+
+        choices=PAYMENT_TYPES,
+        default="downpayment"
+    )
+
+    reference_number = models.CharField(max_length=255, null=True, blank=True)
+    sender_account = models.CharField(max_length=255, null=True, blank=True)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    payment_source = models.CharField(max_length=50, null=True, blank=True)
+
+
+    proof_image = models.ImageField(
+        upload_to="payment_proofs/",
+        null=True,
+        blank=True
+    )
+
+    extracted_text = models.TextField(null=True, blank=True)  # OCR result
+    is_verified = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"PaymentProof #{self.id} for Order {self.order.id}"
+
+class OrderTimeline(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="timeline"
+    )
+
+    status = models.CharField(max_length=50)  
+    description = models.TextField(null=True, blank=True)
+    reason = models.TextField(null=True, blank=True)
+
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.status} - Order {self.order.id}"
