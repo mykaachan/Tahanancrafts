@@ -12,14 +12,8 @@ from products.models import (
 )
 
 from .serializers import OrderSerializer
-from .ocr_utils import (
-    extract_text_from_image,
-    extract_reference_number,
-    extract_amount,
-    extract_sender_account
-)
 
-from users.utils import send_payment_received_email
+
 from chat.notification import send_notification   # ⭐ Notification System
 
 class UploadPaymentProofView(APIView):
@@ -36,20 +30,24 @@ class UploadPaymentProofView(APIView):
         order = get_object_or_404(Order, id=order_id)
 
         # Create payment proof entry
-        proof = PaymentProof.objects.create(
+        PaymentProof.objects.create(
             order=order,
             payment_type=payment_type,
             proof_image=proof_image
         )
 
+        # Update order status
+        order.status = Order.STATUS_AWAITING_VERIFICATION
+        order.save()
+
         # Add timeline
         order.add_timeline(
-            status="payment_proof_uploaded",
-            description="Buyer uploaded a payment proof."
+            status=Order.STATUS_AWAITING_VERIFICATION,
+            description="Buyer uploaded payment proof. Awaiting seller verification."
         )
 
-        # Notify artisan
-        artisan = order.artisan
+        # Notify artisan (NO EMAIL)
+        artisan = order.items.first().product.artisan
         send_notification(
             event="buyer_uploaded_proof",
             order=order,
@@ -57,7 +55,10 @@ class UploadPaymentProofView(APIView):
             artisan=artisan
         )
 
-        return Response({"message": "Payment proof uploaded successfully."}, status=201)
+        return Response({
+            "message": "Payment proof uploaded successfully.",
+            "order_status": order.status
+        }, status=201)
 
 
 
@@ -115,80 +116,49 @@ class ConfirmReceivedView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        order_id = request.data.get("order_id")
-        user_id = request.data.get("user_id")
-
-        user = request.user if request.user.is_authenticated else get_object_or_404(CustomUser, id=user_id)
-        order = get_object_or_404(Order, id=order_id, user=user)
+        order = get_object_or_404(Order, id=request.data.get("order_id"), user=request.user)
+        def update_status(order, new_status, description):
+            order.status = new_status
+            order.save()
+            order.add_timeline(new_status, description)
 
         if order.status != Order.STATUS_SHIPPED:
-            return Response({"error": "Order is not yet shipped."}, status=400)
+            return Response({"error": "Order is not shipped yet"}, status=400)
 
-        order.status = Order.STATUS_DELIVERED
-        order.save()
+        update_status(order, Order.STATUS_DELIVERED, "Buyer confirmed delivery.")
 
-        order.add_timeline(
-            status="delivered",
-            description="Buyer confirmed the delivery."
-        )
+        # Optional auto-complete:
+        update_status(order, Order.STATUS_COMPLETED, "Order completed.")
 
-        send_notification(
-            "order_delivered",
-            order=order,
-            buyer=user,
-            artisan=order.artisan
-        )
+        return Response({"message": "Order delivered"}, status=200)
 
-        return Response({"message": "Order delivery confirmed."}, status=200)
 
 
 class VerifyPaymentView(APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        order_id = request.data.get("order_id")
-        action = request.data.get("action")   # approve or reject
+    
 
-        order = get_object_or_404(Order, id=order_id)
-        buyer = order.user
-        artisan = order.artisan
+
+    def post(self, request):
+        order = get_object_or_404(Order, id=request.data.get("order_id"))
+        action = request.data.get("action")
+        
+        def update_status(order, new_status, description):
+            order.status = new_status
+            order.save()
+            order.add_timeline(new_status, description)
 
         if action == "approve":
             order.payment_verified = True
-            order.status = Order.STATUS_PROCESSING
-            order.save()
-
-            order.add_timeline(
-                status="payment_verified",
-                description="Artisan approved the buyer's payment."
-            )
-
-            send_notification(
-                "payment_verified",
-                order=order,
-                buyer=buyer,
-                artisan=artisan
-            )
-
-            return Response({"message": "Payment approved."}, status=200)
+            update_status(order, Order.STATUS_PROCESSING, "Seller approved payment.")
 
         elif action == "reject":
             order.payment_verified = False
-            order.status = Order.STATUS_AWAITING_PAYMENT
-            order.save()
+            update_status(order, Order.STATUS_AWAITING_PAYMENT, "Payment rejected. Buyer must re-upload proof.")
 
-            order.add_timeline(
-                status="payment_rejected",
-                description="Artisan rejected the buyer's payment proof."
-            )
+        else:
+            return Response({"error": "Invalid action"}, status=400)
 
-            send_notification(
-                "payment_rejected",
-                order=order,
-                buyer=buyer,
-                artisan=artisan
-            )
+        return Response({"message": "Payment updated"}, status=200)
 
-            return Response({"message": "Payment rejected."}, status=200)
-
-        return Response({"error": "Invalid action"}, status=400)

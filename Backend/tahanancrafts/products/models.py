@@ -285,7 +285,7 @@ class PaymentProof(models.Model):
         max_length=20,
 
         choices=PAYMENT_TYPES,
-        default="downpayment"
+        default="shipping fee"
     )
 
     reference_number = models.CharField(max_length=255, null=True, blank=True)
