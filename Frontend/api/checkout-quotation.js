@@ -39,9 +39,9 @@ export default async function handler(req, res) {
     const timestamp = String(Date.now());
 
     // Schedule 5 minutes ahead
-    const scheduleAt = new Date(Date.now() + 5 * 60_000)
-      .toISOString()
-      .replace(".000Z", ".00Z");
+   const scheduleAt = new Date(Date.now() + 15 * 60_000)
+    .toISOString()
+    .replace(/\.\d{3}Z$/, ".000Z");
 
     const payload = {
       data: {

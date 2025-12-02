@@ -64,12 +64,23 @@ class BookOrderView(APIView):
         order = get_object_or_404(Order, id=order_id)
         delivery = get_object_or_404(Delivery, order=order)
 
+        # Normalize phone to E.164
+        def normalize_phone(phone):
+            phone = phone.strip()
+            if phone.startswith("+63"):
+                return phone
+            if phone.startswith("0"):
+                return "+63" + phone[1:]
+            return phone
+
+        buyer_phone = normalize_phone(order.shipping_address.phone)
+
         response = create_order_from_quotation(
             quotation_id=delivery.quotation_id,
             pickup_stop_id=delivery.pickup_stop_id,
             drop_stop_id=delivery.dropoff_stop_id,
             buyer_name=order.shipping_address.full_name,
-            buyer_phone=order.shipping_address.phone
+            buyer_phone=buyer_phone
         )
 
         if response.status_code != 201:
@@ -83,3 +94,4 @@ class BookOrderView(APIView):
         delivery.save()
 
         return Response(data, 201)
+

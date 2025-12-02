@@ -20,7 +20,7 @@ function MyPurchases() {
   const [proofPaymentType, setProofPaymentType] = useState("downpayment"); // default
   const [error, setError] = useState(null);
 
-  const API_URL = "https://tahanancrafts.onrender.com" //http://localhost:8000;
+  const API_URL = "https://tahanancrafts.onrender.com"// "http://localhost:8000";
 
   useEffect(() => {
   const userId = localStorage.getItem("user_id");

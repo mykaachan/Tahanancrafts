@@ -82,8 +82,20 @@ class ArtisanOrdersView(APIView):
 
     def get(self, request, artisan_id):
         artisan = get_object_or_404(Artisan, id=artisan_id)
-        orders = Order.objects.filter(artisan=artisan).order_by("-created_at")
-        return Response(OrderSerializer(orders, many=True).data, status=200)
+
+        product_ids = artisan.products.values_list("id", flat=True)
+
+        order_ids = (
+            OrderItem.objects
+            .filter(product_id__in=product_ids)
+            .values_list("order_id", flat=True)
+            .distinct()
+        )
+
+        orders = Order.objects.filter(id__in=order_ids).order_by("-created_at")
+
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data, status=200)
 
 class CancelOrderView(APIView):
     permission_classes = [AllowAny]
