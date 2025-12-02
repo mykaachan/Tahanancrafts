@@ -1,4 +1,3 @@
-// /api/book-order.js
 import crypto from "crypto";
 
 export default async function handler(req, res) {
@@ -7,61 +6,73 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { order } = req.body;
+    const { order_id } = req.body;
 
-    if (!order) {
-      return res.status(400).json({ error: "order required" });
+    if (!order_id) {
+      return res.status(400).json({ error: "order_id required" });
     }
 
-    const delivery = order.delivery;
-    if (!delivery) {
-      return res.status(400).json({ error: "delivery object missing" });
+    // 🔥 1. FETCH ORDER + DELIVERY FROM DJANGO
+    const djangoOrderRes = await fetch(
+      `${process.env.DJANGO_API_URL}/api/products/orders/get-order/${order_id}/`
+    );
+
+    if (!djangoOrderRes.ok) {
+      return res
+        .status(djangoOrderRes.status)
+        .json(await djangoOrderRes.json());
     }
 
-    // -------------------------
-    //  Normalize phone to E.164
-    // -------------------------
+    const djangoData = await djangoOrderRes.json();
+    const order = djangoData.order;
+    const delivery = djangoData.delivery;
+
+    if (!delivery || !delivery.quotation_id) {
+      return res.status(400).json({
+        error: "Delivery quotation missing. Generate quotation first.",
+      });
+    }
+
+    // 🔥 2. NORMALIZE BUYER PHONE TO E.164
     function normalizePhone(phone) {
       phone = phone.trim();
       if (phone.startsWith("+63")) return phone;
-      if (phone.startsWith("0")) return "+63" + phone.slice(1);
+      if (phone.startsWith("0")) return "+63" + phone.substring(1);
       return phone;
     }
 
-    const buyerPhone = normalizePhone(order.shipping_address.phone);
+    const buyerPhone = normalizePhone(order.shipping_phone);
 
-    // -------------------------
-    //  Lalamove API call
-    // -------------------------
+    // 🔥 3. PREPARE LALAMOVE BOOK PAYLOAD
     const apiKey = process.env.LALAMOVE_API_KEY;
     const secret = process.env.LALAMOVE_SECRET;
 
     const path = "/v3/orders";
-    const baseUrl = "https://rest.sandbox.lalamove.com";
+    const url = "https://rest.sandbox.lalamove.com" + path;
     const market = "PH";
 
     const timestamp = String(Date.now());
 
     const payload = {
       data: {
-        quotationId: delivery.quotationId,
+        quotationId: delivery.quotation_id,
         sender: {
-          stopId: delivery.pickup_stop_id
+          stopId: delivery.pickup_stop_id,
         },
-        recipient: {
-          stopId: delivery.drop_stop_id,
-          name: order.shipping_address.full_name,
-          phone: buyerPhone
-        }
-      }
+        recipients: [
+          {
+            stopId: delivery.dropoff_stop_id,
+            name: order.shipping_name,
+            phone: buyerPhone,
+          },
+        ],
+      },
     };
 
-    const bodyString = JSON.stringify(payload);
+    const bodyStr = JSON.stringify(payload);
 
-    // HMAC Signature for Lalamove
-    const raw =
-      `${timestamp}\r\nPOST\r\n${path}\r\n\r\n` + bodyString;
-
+    // 🔥 4. HMAC SIGNATURE
+    const raw = `${timestamp}\r\nPOST\r\n${path}\r\n\r\n${bodyStr}`;
     const signature = crypto
       .createHmac("sha256", secret)
       .update(raw)
@@ -70,31 +81,35 @@ export default async function handler(req, res) {
     const headers = {
       "Content-Type": "application/json",
       Authorization: `hmac ${apiKey}:${timestamp}:${signature}`,
-      market
+      market,
     };
 
-    const response = await fetch(baseUrl + path, {
+    // 🔥 5. SEND REQUEST TO LALAMOVE
+    const lalamoveRes = await fetch(url, {
       method: "POST",
       headers,
-      body: bodyString
+      body: bodyStr,
     });
 
-    const parsed = await response.json();
+    const lalamoveData = await lalamoveRes.json();
 
-    if (response.status !== 201) {
-      return res.status(response.status).json(parsed);
+    if (lalamoveRes.status !== 201) {
+      return res.status(lalamoveRes.status).json({
+        error: "Lalamove error",
+        details: lalamoveData,
+      });
     }
 
-    // -------------------------
-    //  RETURN EXACT SAME FIELDS
-    // -------------------------
-    return res.status(201).json(parsed.data);
-
+    // 🔥 6. RETURN SUCCESS
+    return res.status(200).json({
+      message: "Order booked successfully",
+      data: lalamoveData.data,
+    });
   } catch (error) {
-    console.error("BOOK ORDER API ERROR:", error);
+    console.error("BOOK ORDER ERROR:", error);
     return res.status(500).json({
       error: "Server error",
-      detail: error.message
+      details: error.message,
     });
   }
 }
