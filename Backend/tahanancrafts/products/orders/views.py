@@ -149,9 +149,6 @@ class ConfirmReceivedView(APIView):
 class VerifyPaymentView(APIView):
     permission_classes = [AllowAny]
 
-    
-
-
     def post(self, request):
         order = get_object_or_404(Order, id=request.data.get("order_id"))
         action = request.data.get("action")

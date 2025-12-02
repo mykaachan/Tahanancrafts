@@ -9,6 +9,7 @@ from products.models import Order, Delivery
 from users.models import ShippingAddress
 from products.delivery.services import create_quotation, create_order_from_quotation
 
+from django.apps import AppConfig
 
 # products/delivery/views.py
 class GetQuotationView(APIView):
@@ -93,5 +94,57 @@ class BookOrderView(APIView):
         delivery.tracking_link = data["shareLink"]
         delivery.save()
 
+        order.status = Order.STATUS_READY_TO_SHIP
+        order.add_timeline(Order.STATUS_READY_TO_SHIP, "Ready for Pickup")
+        order.save()
+
         return Response(data, 201)
+
+def simulate_delivery_progress():
+    deliveries = Delivery.objects.filter(
+        status__in=["ASSIGNING_DRIVER", "PICKED_UP", "ON_GOING_DELIVERY"]
+    )
+
+    print("🚚 Delivery simulation tick running...")
+
+    for d in deliveries:
+        order = d.order
+
+        # Determine the next simulated status
+        if d.status == "ASSIGNING_DRIVER":
+            new_status = "PICKED_UP"
+        elif d.status == "PICKED_UP":
+            new_status = "ON_GOING_DELIVERY"
+        elif d.status == "ON_GOING_DELIVERY":
+            new_status = "DELIVERED"
+        else:
+            continue
+
+        # Update Delivery
+        d.status = new_status
+        d.save()
+
+        # Mirror status to Order + timeline
+        if new_status == "PICKED_UP":
+            order.status = Order.STATUS_SHIPPED
+            order.add_timeline(Order.STATUS_SHIPPED, "Courier has picked up your order.")
+
+        elif new_status == "ON_GOING_DELIVERY":
+            order.status = Order.STATUS_SHIPPED
+            order.add_timeline(Order.STATUS_SHIPPED, "On the way.")
+
+        elif new_status == "DELIVERED":
+            order.status = Order.STATUS_DELIVERED
+            order.add_timeline(Order.STATUS_DELIVERED, "Order delivered successfully.")
+
+        order.save()
+
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(simulate_delivery_progress, 'interval', seconds=60)
+    scheduler.start()
+
 
