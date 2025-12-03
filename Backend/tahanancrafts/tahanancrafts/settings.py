@@ -239,7 +239,8 @@ DEFAULT_FROM_EMAIL = 'noreply@www.tahanancrafts.shop'  # verified sender email u
 
 #EMAIL_HOST_PASSWORD = 'xakqeqpetfuqsdws'          # use App Password (not your Gmail password)
 """
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", ".vercel.app"]
+
 
 
 EMAIL_BACKEND = "resend.django.EmailBackend"  # Resend backend
