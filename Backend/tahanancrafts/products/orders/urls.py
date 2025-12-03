@@ -6,7 +6,9 @@ from.views import (UploadPaymentProofView,
                     UploadPaymentProofView, 
                     VerifyPaymentView,
                     ArtisanOrdersView,
-                    GetOrderForBookingView
+                    GetOrderForBookingView,
+                    ToShippedView,
+                    RefundProofView,
                 )
 
 urlpatterns = [
@@ -17,6 +19,10 @@ urlpatterns = [
     path('verify-payment/', VerifyPaymentView.as_view(), name="verify-payment"),
     path("artisan/orders-view/<int:artisan_id>/", ArtisanOrdersView.as_view()),
     path("get-order/<int:order_id>/", GetOrderForBookingView.as_view()),
+    path('to-shipped/', ToShippedView.as_view(), name='order-to-shipped'),
+    path('refund/', RefundProofView.as_view(), name="refund"),
+
+
 ]
 
 

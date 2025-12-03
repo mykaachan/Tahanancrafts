@@ -461,6 +461,7 @@ class CheckoutView(APIView):
                     # Add a timeline entry
                     order.add_timeline(
                         status=Order.STATUS_AWAITING_PAYMENT,
+
                         description="Awaiting Payment."
                     )
 

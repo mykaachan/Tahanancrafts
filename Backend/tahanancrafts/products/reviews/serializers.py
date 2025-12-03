@@ -25,20 +25,5 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']
 
     def create(self, validated_data):
-        """
-        Update rating if the user already reviewed this product,
-        otherwise create a new one.
-        """
-        user = validated_data['user']
-        product = validated_data['product']
-        existing = Rating.objects.filter(
-            user=user,
-            order_item=validated_data.get('order_item')
-        ).first()
-
-        if existing:
-            existing.score = validated_data.get('score', existing.score)
-            existing.review = validated_data.get('review', existing.review)
-            existing.save()
-            return existing
-        return super().create(validated_data)
+        
+        return Rating.objects.create(**validated_data)

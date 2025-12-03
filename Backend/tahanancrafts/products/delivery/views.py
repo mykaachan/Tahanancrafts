@@ -135,9 +135,9 @@ def simulate_delivery_progress():
             )
 
         elif new_status == "ON_GOING_DELIVERY":
-            order.status = Order.STATUS_SHIPPED
+            order.status = Order.STATUS_IN_TRANSIT
             order.add_timeline(
-                Order.STATUS_SHIPPED,
+                Order.STATUS_IN_TRANSIT,
                 "On the way."
             )
 

@@ -104,7 +104,9 @@ class Order(models.Model):
     STATUS_PROCESSING = "processing"                      # artisan accepted + packing
     STATUS_READY_TO_SHIP = "ready_to_ship"
     STATUS_SHIPPED = "shipped"
+    STATUS_IN_TRANSIT = "in_transit"
     STATUS_DELIVERED = "delivered"
+    STATUS_TO_REVIEW = "to_review"
     STATUS_COMPLETED = "completed"
     STATUS_CANCELLED = "cancelled"
     STATUS_REFUND = "refund"
@@ -115,7 +117,9 @@ class Order(models.Model):
         (STATUS_PROCESSING, "Processing"),
         (STATUS_READY_TO_SHIP, "Ready to Ship"),
         (STATUS_SHIPPED, "Shipped"),
+        (STATUS_IN_TRANSIT, "In Transit"),
         (STATUS_DELIVERED, "Delivered"),
+        (STATUS_TO_REVIEW, "To Review"),
         (STATUS_COMPLETED, "Completed"),
         (STATUS_CANCELLED, "Cancelled"),
         (STATUS_REFUND, "Refund"),
@@ -181,7 +185,9 @@ class OrderItem(models.Model):
         Product, related_name="order_items", on_delete=models.CASCADE
     )
     quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # snapshot of product price
+    price = models.DecimalField(max_digits=10, decimal_places=2) 
+    reviewed = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"{self.product.name} (x{self.quantity}) in Order #{self.order.id}"
@@ -307,6 +313,42 @@ class PaymentProof(models.Model):
 
     def __str__(self):
         return f"PaymentProof #{self.id} for Order {self.order.id}"
+    
+class Refund(models.Model):
+    STATUS_PENDING = "pending"
+    STATUS_PROCESSED = "processed"
+
+    REFUND_STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending"),
+        (STATUS_PROCESSED, "Processed"),
+    ]
+
+    # Relationships
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="refunds")
+    artisan = models.ForeignKey(Artisan, on_delete=models.CASCADE, related_name="refunds")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="refunds")
+
+    # Basic info
+    user_name = models.CharField(max_length=255)   # snapshot of username at time of refund
+    refund_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    # Proof of refund
+    refund_proof = models.ImageField(upload_to="refunds/", null=True, blank=True)
+
+    # Status
+    refund_status = models.CharField(
+        max_length=20,
+        choices=REFUND_STATUS_CHOICES,
+        default=STATUS_PENDING
+    )
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Refund #{self.id} for Order {self.order.id}"
+    
 
 class OrderTimeline(models.Model):
     order = models.ForeignKey(
@@ -319,6 +361,13 @@ class OrderTimeline(models.Model):
     description = models.TextField(null=True, blank=True)
     reason = models.TextField(null=True, blank=True)
 
+    refund = models.ForeignKey(
+        Refund,
+        on_delete=models.CASCADE,
+        null=True,              
+        blank=True,            
+        related_name="timeline_refunds"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
