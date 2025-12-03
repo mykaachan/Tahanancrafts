@@ -110,32 +110,43 @@ def simulate_delivery_progress():
     for d in deliveries:
         order = d.order
 
-        # Determine the next simulated status
+        # Determine next step
         if d.status == "ASSIGNING_DRIVER":
             new_status = "PICKED_UP"
+
         elif d.status == "PICKED_UP":
             new_status = "ON_GOING_DELIVERY"
+
         elif d.status == "ON_GOING_DELIVERY":
             new_status = "DELIVERED"
+
         else:
             continue
 
-        # Update Delivery
+        # 1️⃣ Update Delivery
         d.status = new_status
         d.save()
 
-        # Mirror status to Order + timeline
         if new_status == "PICKED_UP":
             order.status = Order.STATUS_SHIPPED
-            order.add_timeline(Order.STATUS_SHIPPED, "Courier has picked up your order.")
+            order.add_timeline(
+                Order.STATUS_SHIPPED,
+                "Courier has picked up your order."
+            )
 
         elif new_status == "ON_GOING_DELIVERY":
             order.status = Order.STATUS_SHIPPED
-            order.add_timeline(Order.STATUS_SHIPPED, "On the way.")
+            order.add_timeline(
+                Order.STATUS_SHIPPED,
+                "On the way."
+            )
 
         elif new_status == "DELIVERED":
             order.status = Order.STATUS_DELIVERED
-            order.add_timeline(Order.STATUS_DELIVERED, "Order delivered successfully.")
+            order.add_timeline(
+                Order.STATUS_DELIVERED,
+                "Order delivered successfully."
+            )
 
         order.save()
 

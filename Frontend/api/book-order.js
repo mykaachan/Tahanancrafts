@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     // 🔥 1. FETCH ORDER + DELIVERY FROM DJANGO
     const djangoOrderRes = await fetch(
-      `${API_URL}/api/products/orders/get-order/${order_id}/`
+      `${API_URL}/api/products/orders/orders/get-order/${order_id}/`
     );
 
     if (!djangoOrderRes.ok) {
