@@ -1,93 +1,121 @@
-// /api/book-order.js
 import crypto from "crypto";
+
+// Helper: read raw body if Vercel fails to parse JSON
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", chunk => (data += chunk));
+    req.on("end", () => resolve(data));
+    req.on("error", reject);
+  });
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  try {
-    const { order, delivery, artisan } = req.body;
+  let body = req.body;
 
-    if (!order || !delivery || !artisan) {
-      return res.status(400).json({ error: "order, delivery, artisan required" });
+  // Fix Vercel JSON issue: manually parse if empty
+  if (!body || Object.keys(body).length === 0) {
+    try {
+      const rawBody = await getRawBody(req);
+      body = JSON.parse(rawBody);
+    } catch (error) {
+      return res.status(400).json({
+        error: "Invalid JSON body",
+        detail: error.message,
+      });
     }
+  }
 
-    // Normalize phone
-    const normalizePhone = (p) => {
-      if (!p) return null;
-      p = p.trim();
-      if (p.startsWith("+63")) return p;
-      if (p.startsWith("0")) return "+63" + p.substring(1);
-      return "+63" + p;
-    };
+  const { order, delivery, artisan } = body;
 
-    const buyerPhone = normalizePhone(order.shipping_phone);
-    const senderPhone = normalizePhone(artisan.phone);
+  if (!order || !delivery || !artisan) {
+    return res.status(400).json({
+      error: "order, delivery, artisan required",
+    });
+  }
 
+  try {
     const apiKey = process.env.LALAMOVE_API_KEY;
     const secret = process.env.LALAMOVE_SECRET;
 
     const path = "/v3/orders";
     const baseUrl = "https://rest.sandbox.lalamove.com";
-    const market = "PH";
-
     const timestamp = String(Date.now());
+
+    // Normalize buyer phone
+    let buyerPhone = order.shipping_phone.trim();
+    if (buyerPhone.startsWith("0")) buyerPhone = "+63" + buyerPhone.slice(1);
+    if (!buyerPhone.startsWith("+63")) buyerPhone = "+63" + buyerPhone;
 
     const payload = {
       data: {
         quotationId: delivery.quotation_id,
-
         sender: {
           name: artisan.name,
-          phone: senderPhone
+          phone: artisan.phone,
         },
-
-        recipients: [
+        recipient: {
+          name: order.shipping_name,
+          phone: buyerPhone,
+        },
+        stops: [
           {
-            name: order.shipping_name,
-            phone: buyerPhone,
-            remarks: "",
-            address: {
-              displayString: order.shipping_address
-            }
-          }
+            stopId: delivery.pickup_stop_id,
+          },
+          {
+            stopId: delivery.dropoff_stop_id,
+          },
         ],
-
-        isPODEnabled: false,
-        isRecipientSMSEnabled: true
-      }
+      },
     };
 
     const bodyStr = JSON.stringify(payload);
 
-    const raw = `${timestamp}\r\nPOST\r\n${path}\r\n\r\n${bodyStr}`;
-    const signature = crypto.createHmac("sha256", secret).update(raw).digest("hex");
+    // HMAC Signature
+    const rawToSign =
+      `${timestamp}\r\nPOST\r\n${path}\r\n\r\n` + bodyStr;
+
+    const signature = crypto
+      .createHmac("sha256", secret)
+      .update(rawToSign)
+      .digest("hex");
 
     const headers = {
       "Content-Type": "application/json",
       Authorization: `hmac ${apiKey}:${timestamp}:${signature}`,
-      market
+      market: "PH",
     };
 
-    const response = await fetch(baseUrl + path, {
+    // Send request
+    const bookingResponse = await fetch(baseUrl + path, {
       method: "POST",
       headers,
-      body: bodyStr
+      body: bodyStr,
     });
 
-    const responseData = await response.json();
+    const bookingData = await bookingResponse.json();
 
-    if (response.status !== 201) {
-      return res.status(response.status).json({
+    // If Lalamove returned error
+    if (bookingResponse.status !== 201) {
+      return res.status(bookingResponse.status).json({
         error: "Lalamove error",
-        details: responseData
+        details: bookingData,
       });
     }
 
-    return res.status(200).json(responseData);
+    // Success
+    return res.status(200).json({
+      booking: bookingData.data,
+    });
 
-  } catch (err) {
-    return res.status(500).json({ error: "Server error", details: err.message });
+  } catch (error) {
+    return res.status(500).json({
+      error: "BOOK ORDER ERROR",
+      detail: error.message,
+    });
   }
 }
