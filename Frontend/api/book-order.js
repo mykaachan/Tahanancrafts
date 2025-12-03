@@ -1,6 +1,8 @@
 // /api/book-order.js
 import crypto from "crypto";
 
+const API = "https://tahanancrafts.onrender.com"
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
     }
 
     // 1️⃣ Fetch order details from Django
-    const djangoUrl = `${process.env.DJANGO_BASE_URL}/api/products/orders/get-order-for-booking/${order_id}/`;
+    const djangoUrl = `${API}/api/products/orders/get-order-for-booking/${order_id}/`;
 
     const fetchRes = await fetch(djangoUrl);
     const data = await fetchRes.json();
