@@ -1,0 +1,9 @@
+{
+  "name": "tahanancrafts",
+  "type": "docker",
+  "envs": {
+    "DEBUG": "False",
+    "SECRET_KEY": "your-secret-key",
+    "ALLOWED_HOSTS": "*"
+  }
+}

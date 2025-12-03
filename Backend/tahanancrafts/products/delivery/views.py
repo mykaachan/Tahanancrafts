@@ -155,7 +155,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(simulate_delivery_progress, 'interval', seconds=60)
+    scheduler.add_job(simulate_delivery_progress, 'interval', seconds=150)
     scheduler.start()
 
 

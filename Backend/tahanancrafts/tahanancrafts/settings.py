@@ -239,6 +239,8 @@ DEFAULT_FROM_EMAIL = 'noreply@www.tahanancrafts.shop'  # verified sender email u
 
 #EMAIL_HOST_PASSWORD = 'xakqeqpetfuqsdws'          # use App Password (not your Gmail password)
 """
+ALLOWED_HOSTS = ["*"]
+
 
 EMAIL_BACKEND = "resend.django.EmailBackend"  # Resend backend
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
@@ -280,3 +282,7 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
     },
 }
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
