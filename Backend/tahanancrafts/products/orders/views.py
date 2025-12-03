@@ -178,15 +178,20 @@ class GetOrderForBookingView(APIView):
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
 
+        # Fetch Delivery
         try:
             delivery = order.delivery
         except Delivery.DoesNotExist:
-            return Response(
-                {"error": "delivery object missing"},
-                status=400
-            )
+            return Response({"error": "delivery object missing"}, status=400)
 
         shipping = order.shipping_address
+        artisan = order.artisan  # this holds the Artisan object
+
+        if not artisan:
+            return Response({"error": "Artisan not linked to this order"}, status=400)
+
+        # 🔥 Fetch artisan’s user record for phone/email
+        artisan_user = artisan.user  # FK to CustomUser
 
         return Response({
             "order": {
@@ -201,5 +206,16 @@ class GetOrderForBookingView(APIView):
                 "quotation_id": delivery.quotation_id,
                 "pickup_stop_id": delivery.pickup_stop_id,
                 "dropoff_stop_id": delivery.dropoff_stop_id,
+            },
+            "artisan": {
+                "id": artisan.id,
+                "name": artisan.name,
+                "pickup_address": artisan.pickup_address,
+                "pickup_lat": artisan.pickup_lat,
+                "pickup_lng": artisan.pickup_lng,
+
+                # 🔥 pulled from CustomUser
+                "phone": artisan_user.phone if artisan_user else None,
+                "email": artisan_user.email if artisan_user else None,
             }
         }, status=200)

@@ -111,6 +111,12 @@ class CheckoutCreateOrderView(APIView):
             order.downpayment_required = downpayment_required
             if downpayment_required:
                 order.downpayment_amount = (order.grand_total * 0.5)
+            first_item = order.items.first()
+            artisan = first_item.product.artisan
+
+            order.artisan = artisan  
+            order.save()
+
             order.save()
 
             # Create Delivery record (linked to order)
