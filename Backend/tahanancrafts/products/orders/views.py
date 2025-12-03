@@ -170,4 +170,36 @@ class VerifyPaymentView(APIView):
             return Response({"error": "Invalid action"}, status=400)
 
         return Response({"message": "Payment updated"}, status=200)
+    
 
+class GetOrderForBookingView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+
+        try:
+            delivery = order.delivery
+        except Delivery.DoesNotExist:
+            return Response(
+                {"error": "delivery object missing"},
+                status=400
+            )
+
+        shipping = order.shipping_address
+
+        return Response({
+            "order": {
+                "id": order.id,
+                "shipping_name": shipping.full_name,
+                "shipping_phone": shipping.phone,
+                "shipping_address": shipping.address,
+                "shipping_city": shipping.city,
+                "shipping_barangay": shipping.barangay,
+            },
+            "delivery": {
+                "quotation_id": delivery.quotation_id,
+                "pickup_stop_id": delivery.pickup_stop_id,
+                "dropoff_stop_id": delivery.dropoff_stop_id,
+            }
+        }, status=200)

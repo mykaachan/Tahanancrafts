@@ -5,7 +5,8 @@ from.views import (UploadPaymentProofView,
                     ConfirmReceivedView, 
                     UploadPaymentProofView, 
                     VerifyPaymentView,
-                    ArtisanOrdersView
+                    ArtisanOrdersView,
+                    GetOrderForBookingView
                 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path("confirm-received/", ConfirmReceivedView.as_view(), name="order-confirm-received"),
     path('verify-payment/', VerifyPaymentView.as_view(), name="verify-payment"),
     path("artisan/orders-view/<int:artisan_id>/", ArtisanOrdersView.as_view()),
+    path("orders/get-order/<int:order_id>/", GetOrderForBookingView.as_view()),
 ]
 
 
