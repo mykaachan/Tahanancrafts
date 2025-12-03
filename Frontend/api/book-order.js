@@ -1,5 +1,5 @@
 import crypto from "crypto";
-const API_URL = "http://localhost:8000" //"https://tahanancrafts.onrender.com"
+const API_URL = "https://tahanancrafts.onrender.com"
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
