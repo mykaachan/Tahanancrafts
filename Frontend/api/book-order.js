@@ -1,4 +1,5 @@
 import crypto from "crypto";
+const API_URL = "https://tahanancrafts.onrender.com"
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
 
     // 🔥 1. FETCH ORDER + DELIVERY FROM DJANGO
     const djangoOrderRes = await fetch(
-      `${process.env.DJANGO_API_URL}/api/products/orders/get-order/${order_id}/`
+      `${process.env.REACT_APP_API_URL}/api/products/orders/get-order/${order_id}/`
     );
 
     if (!djangoOrderRes.ok) {
