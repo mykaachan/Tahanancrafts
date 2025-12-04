@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const API = "https://tahanancrafts.onrender.com";
+
+//const API = "https://tahanancrafts.onrender.com"; 
+const API = "http://127.0.0.1:8000";
+
 function ChatPopup() {
   const [open, setOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
@@ -12,64 +15,81 @@ function ChatPopup() {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedReceiver, setSelectedReceiver] = useState(null);
   const navigate = useNavigate();
-  const userId = localStorage.getItem("user_id");
-  // Click chat button → check login
+  const userId = Number(localStorage.getItem("user_id"));
+
   const handleOpenChat = () => {
     if (!userId) {
       navigate("/login");
       return;
     }
-    setOpen(!open);
+    setOpen((prev) => !prev);
   };
-  // Fetch conversations
+
+  /* -------------------------------------------
+      FETCH CONVERSATIONS WHEN POPUP IS OPEN
+  -------------------------------------------- */
   useEffect(() => {
     if (!open || !userId) return;
+
     axios
       .get(`${API}/api/chat/conversations/${userId}/`)
       .then((res) => {
         setConversations(res.data);
-
         if (!activeConversation && res.data.length > 0) {
           setActiveConversation(res.data[0]);
           markAsSeen(res.data[0].id);
         }
       })
       .catch(console.error);
-  }, [open]);
-  // Mark as seen
+  }, [open, userId]);
+
+  /* -------------------------------------------
+      MARK AS SEEN
+  -------------------------------------------- */
   const markAsSeen = (conversationId) => {
     axios.post(`${API}/api/chat/messages/${conversationId}/mark-seen/`, {
       user_id: userId,
     });
   };
-  // Switch conversation
+
+  /* -------------------------------------------
+      OPEN A CONVERSATION FROM SIDEBAR
+  -------------------------------------------- */
   const openChatWindow = (convo) => {
     setActiveConversation(convo);
     markAsSeen(convo.id);
   };
-  // Send message in existing conversation
+
+  /* -------------------------------------------
+      SEND MESSAGE (EXISTING CONVERSATION)
+  -------------------------------------------- */
   const sendMessage = () => {
     if (!newMessage.trim() || !activeConversation) return;
 
     const receiver =
-      activeConversation.user1 === parseInt(userId)
+      activeConversation.user1 === userId
         ? activeConversation.user2
         : activeConversation.user1;
+
     axios
       .post(`${API}/api/chat/messages/send/`, {
         sender: userId,
-        receiver: receiver,
+        receiver,
         text: newMessage,
       })
       .then((res) => {
         setActiveConversation(res.data.conversation);
         setNewMessage("");
+
         axios
           .get(`${API}/api/chat/conversations/${userId}/`)
           .then((res) => setConversations(res.data));
       });
   };
-  // Search users (new message modal)
+
+  /* -------------------------------------------
+      SEARCH USERS (NEW MESSAGE)
+  -------------------------------------------- */
   const searchUsers = (q) => {
     setSearchQuery(q);
     if (q.length < 1) {
@@ -81,9 +101,13 @@ function ChatPopup() {
       .get(`${API}/api/chat/users/search/?q=${q}`)
       .then((res) => setSearchResults(res.data));
   };
-  // Send first message to a selected user
+
+  /* -------------------------------------------
+      SEND FIRST MESSAGE (NO CONVO YET)
+  -------------------------------------------- */
   const sendNewMessage = () => {
     if (!selectedReceiver || !newMessage.trim()) return;
+
     axios
       .post(`${API}/api/chat/messages/send/`, {
         sender: userId,
@@ -96,11 +120,36 @@ function ChatPopup() {
         setSearchQuery("");
         setSearchResults([]);
         setNewMessage("");
+
         axios
           .get(`${API}/api/chat/conversations/${userId}/`)
           .then((res) => setConversations(res.data));
       });
   };
+
+  /* -------------------------------------------
+      GLOBAL FUNCTION: openChatWithUser(id)
+      Called from MyPurchases
+  -------------------------------------------- */
+  useEffect(() => {
+    window.openChatWithUserByName = (name) => {
+      const convo = conversations.find(
+        c => c.other_user_name.toLowerCase() === name.toLowerCase()
+      );
+
+      if (convo) {
+        setActiveConversation(convo);
+        setOpen(true);
+      } else {
+        alert("No chat found with this artisan.");
+      }
+    };
+
+  }, [conversations]);
+
+  /* -------------------------------------------
+      UI STARTS HERE
+  -------------------------------------------- */
   return (
     <>
       {/* Floating Chat Button */}
@@ -125,8 +174,9 @@ function ChatPopup() {
       >
         💬
       </button>
-      {/* Chat Window */}
-      {open && userId && (
+
+      {/* CHAT WINDOW */}
+      {open && (
         <div
           style={{
             position: "fixed",
@@ -142,7 +192,7 @@ function ChatPopup() {
             zIndex: 999999,
           }}
         >
-          {/* Sidebar */}
+          {/* SIDEBAR */}
           <div
             style={{
               width: "35%",
@@ -163,7 +213,7 @@ function ChatPopup() {
             >
               Chats
             </div>
-            {/* NEW MESSAGE BUTTON */}
+
             <button
               onClick={() => setNewMsgMode(true)}
               style={{
@@ -179,7 +229,7 @@ function ChatPopup() {
             >
               ➕ New Message
             </button>
-            {/* Conversation List */}
+
             <div style={{ flex: 1, overflowY: "auto" }}>
               {conversations.map((convo) => (
                 <div
@@ -196,22 +246,37 @@ function ChatPopup() {
                     alignItems: "center",
                   }}
                 >
+                  {/* Avatar */}
                   <div
                     style={{
-                      width: "40px",
-                      height: "40px",
+                      width: "45px",
+                      height: "45px",
                       borderRadius: "50%",
                       background: "#d4c3b7",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      overflow: "hidden",
+                      marginRight: "10px",
                       fontWeight: "bold",
                       color: "#4b3a2f",
-                      marginRight: "10px",
                     }}
                   >
-                    {convo.other_user_initial}
+                    {convo.other_user_avatar ? (
+                      <img
+                        src={`${API}${convo.other_user_avatar}`}
+                        alt="avatar"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <span>{convo.other_user_initial}</span>
+                    )}
                   </div>
+
                   <div>
                     <div style={{ fontWeight: "600" }}>
                       {convo.other_user_name}
@@ -221,19 +286,20 @@ function ChatPopup() {
                         fontSize: "0.8rem",
                         color: "#625d57",
                         whiteSpace: "nowrap",
-                        width: "140px",
+                        width: "150px",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {convo.last_message}
+                      {convo.last_message || "No messages yet"}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          {/* Chat Area */}
+
+          {/* CHAT BODY */}
           <div
             style={{
               width: "65%",
@@ -242,7 +308,6 @@ function ChatPopup() {
               background: "#fdfaf7",
             }}
           >
-            {/* Messages */}
             <div
               style={{
                 flex: 1,
@@ -251,8 +316,11 @@ function ChatPopup() {
               }}
             >
               {activeConversation?.messages?.map((msg) => {
-                const isUser = msg.sender === parseInt(userId);
-                const senderName = isUser ? "You" : activeConversation.other_user_name;
+                const isUser = msg.sender === userId;
+                const senderName = isUser
+                  ? "You"
+                  : activeConversation.other_user_name;
+
                 return (
                   <div
                     key={msg.id}
@@ -263,30 +331,25 @@ function ChatPopup() {
                       alignItems: isUser ? "flex-end" : "flex-start",
                     }}
                   >
-                    {/* Sender name */}
                     <div
                       style={{
                         fontSize: "0.75rem",
                         color: "#6d5a4b",
                         marginBottom: "2px",
-                        marginLeft: isUser ? "0" : "6px",
-                        marginRight: isUser ? "6px" : "0",
                       }}
                     >
                       {senderName}
                     </div>
-                    {/* Bubble */}
+
                     <div
                       style={{
                         background: isUser ? "#fff" : "#f2e6db",
-                        color: "#4b3a2f",
                         padding: "10px 14px",
                         borderRadius: "14px",
                         maxWidth: "70%",
                       }}
                     >
                       {msg.text}
-                      {/* Seen status */}
                       {isUser && (
                         <div
                           style={{
@@ -304,7 +367,8 @@ function ChatPopup() {
                 );
               })}
             </div>
-            {/* Input + SEND BUTTON */}
+
+            {/* MESSAGE INPUT */}
             <div
               style={{
                 padding: "12px",
@@ -320,7 +384,7 @@ function ChatPopup() {
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 type="text"
-                placeholder="Type a message here"
+                placeholder="Type a message..."
                 style={{
                   flex: 1,
                   padding: "10px",
@@ -328,6 +392,7 @@ function ChatPopup() {
                   border: "1px solid #d1c3b3",
                 }}
               />
+
               <button
                 onClick={sendMessage}
                 style={{
@@ -337,7 +402,6 @@ function ChatPopup() {
                   border: "none",
                   color: "white",
                   fontWeight: "bold",
-                  cursor: "pointer",
                 }}
               >
                 Send
@@ -346,7 +410,8 @@ function ChatPopup() {
           </div>
         </div>
       )}
-      {/* New Message Modal */}
+
+      {/* NEW MESSAGE MODAL */}
       {newMsgMode && (
         <div
           style={{
@@ -370,12 +435,12 @@ function ChatPopup() {
               padding: "20px",
             }}
           >
-            <h3 style={{ marginTop: 0 }}>New Message</h3>
-            <label style={{ fontWeight: "bold" }}>To:</label>
+            <h3>New Message</h3>
+
             <input
               value={searchQuery}
               onChange={(e) => searchUsers(e.target.value)}
-              placeholder="Search user name"
+              placeholder="Search user..."
               style={{
                 width: "100%",
                 padding: "10px",
@@ -384,13 +449,14 @@ function ChatPopup() {
                 border: "1px solid #ccc",
               }}
             />
+
             {searchResults.map((u) => (
               <div
                 key={u.id}
                 onClick={() => {
                   setSelectedReceiver(u);
-                  setSearchResults([]);
                   setSearchQuery(u.name);
+                  setSearchResults([]);
                 }}
                 style={{
                   padding: "8px",
@@ -403,19 +469,20 @@ function ChatPopup() {
                 {u.name}
               </div>
             ))}
-            <label style={{ fontWeight: "bold" }}>Message:</label>
+
             <input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type your message"
+              placeholder="Type a message..."
               style={{
                 width: "100%",
                 padding: "10px",
-                borderRadius: "8px",
                 border: "1px solid #ccc",
-                marginBottom: "10px",
+                borderRadius: "8px",
+                marginBottom: "15px",
               }}
             />
+
             <div style={{ textAlign: "right" }}>
               <button
                 onClick={() => setNewMsgMode(false)}
@@ -425,11 +492,11 @@ function ChatPopup() {
                   background: "#ccc",
                   border: "none",
                   borderRadius: "6px",
-                  cursor: "pointer",
                 }}
               >
                 Cancel
               </button>
+
               <button
                 onClick={sendNewMessage}
                 style={{
@@ -438,7 +505,6 @@ function ChatPopup() {
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
-                  cursor: "pointer",
                 }}
               >
                 Send
@@ -450,4 +516,5 @@ function ChatPopup() {
     </>
   );
 }
+
 export default ChatPopup;

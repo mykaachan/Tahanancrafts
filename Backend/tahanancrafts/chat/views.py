@@ -12,18 +12,25 @@ from users.models import CustomUser
 from rest_framework.decorators import api_view, permission_classes
 from .models import Notification
 from .serializers import NotificationSerializer
+from rest_framework.permissions import AllowAny
 
 
 
-class UserConversationsView(generics.ListAPIView):
-    serializer_class = ConversationSerializer
+class UserConversationsView(APIView):
     permission_classes = [AllowAny]
+    def get(self, request, user_id):
+        conversations = Conversation.objects.filter(
+            Q(user1_id=user_id) | Q(user2_id=user_id)
+        ).prefetch_related("messages", "user1__profile", "user2__profile")
 
-    def get_queryset(self):
-        user_id = self.kwargs["user_id"]
-        return Conversation.objects.filter(
-            models.Q(user1_id=user_id) | models.Q(user2_id=user_id)
+        serializer = ConversationSerializer(
+            conversations,
+            many=True,
+            context={"request": request},
         )
+
+        return Response(serializer.data)
+
     
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -57,9 +64,8 @@ def mark_seen(request, conversation_id):
 
     Message.objects.filter(
         conversation=conversation,
-        sender_id__ne=user_id,  # NOT the current user
         seen=False
-    ).update(seen=True)
+    ).exclude(sender_id=user_id).update(seen=True)
 
     return Response({"status": "seen updated"})
 

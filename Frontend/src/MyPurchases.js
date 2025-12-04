@@ -1,54 +1,51 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import SidebarProfile from "./components/SidebarProfile";
 import "./Profile.css";
 import { useLocation } from "react-router-dom";
-
 function MyPurchases() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const defaultTab = params.get("tab") || "all";
-
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [showReview, setShowReview] = useState(false);
   const [showToPayModal, setShowToPayModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null); // Selected order for details modal
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewAnonymous, setReviewAnonymous] = useState(false);
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingProof, setUploadingProof] = useState(false);
   const [proofFile, setProofFile] = useState(null);
   const [proofPaymentType, setProofPaymentType] = useState("downpayment"); // default
   const [error, setError] = useState(null);
+  const [showRefundModal, setShowRefundModal] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const [refundImage, setRefundImage] = useState(null);
+  const [refundSubmitting, setRefundSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const API_URL = "https://tahanancrafts.onrender.com"// "http://localhost:8000";
 
-  useEffect(() => {
-  const userId = localStorage.getItem("user_id");
-  if (!userId) {
-    setOrders([]);
-    setLoading(false);
-    return;
-  }
+  function getFriendlyImage(product) {
+    if (!product) return null;
 
-  async function loadOrders() {
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/products/orders/my-orders/?user_id=${userId}`
-      );
-      const data = await res.json();
-      setOrders(data);
-    } catch (err) {
-      console.error("Failed to load orders:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
+    // If the backend provides something like "/media/...":
+    const makeUrl = (path) => {
+      if (!path) return null;
+      return path.startsWith("http") ? path : `${API_URL}${path}`;
+    };
 
-  loadOrders();
-}, []);
+    if (product.main_image) return makeUrl(product.main_image);
 
+    if (product.images && product.images.length > 0)
+      return makeUrl(product.images[0].image);
 
-  // Helper: get auth headers if token present
+    return null;
+}
   const getAuthHeaders = () => {
     const token = localStorage.getItem("auth_token");
     if (token) {
@@ -56,18 +53,14 @@ function MyPurchases() {
     }
     return {};
   };
-
-  // Fetch orders for user
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
     try {
       const userId = localStorage.getItem("user_id");
       if (!userId) {
-        // if no user provided, fallback to API without user_id? backend probably needs it.
         throw new Error("No user_id in localStorage. Please log in.");
       }
-
       const url = `${API_URL}/api/products/orders/my-orders/?user_id=${userId}`;
       const res = await fetch(url, {
         method: "GET",
@@ -76,45 +69,52 @@ function MyPurchases() {
           ...getAuthHeaders(),
         },
       });
-
       if (res.status === 400) {
         const txt = await res.text();
         throw new Error(`Bad Request: ${txt}`);
       }
-
       if (res.status === 404) {
         throw new Error("Orders not found");
       }
-
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to fetch orders");
       }
-
       const data = await res.json();
 
-      // Expecting list of orders; adapt mapping if API has different shape.
-      // We'll keep the same minimal fields used by the UI.
     const mapped = (data || []).map((o) => {
-      const firstItem = o.items?.[0];
-      const product = firstItem?.product;
-      const artisan = product?.artisan;
+      const firstItem = o.items?.[0] || null;
+
+      // Find ANY artisan from items[] safely
+      let artisan = null;
+      if (o.items && o.items.length > 0) {
+        for (const item of o.items) {
+          if (item.product?.artisan) {
+            artisan = item.product.artisan;
+            break;
+          }
+        }
+      }
+
+      // Fallback artisan to prevent null errors
+      const safeArtisan = artisan || {
+        id: 0,
+        name: "Unknown Artisan",
+        gcash_qr: null,
+      };
+
+      const product = firstItem?.product || {};
 
       return {
         id: o.id,
         title: product?.name || `Order #${o.id}`,
         subtitle: product?.description || "",
         price: firstItem ? Number(firstItem.price) : 0,
-        img: product?.main_image || "https://via.placeholder.com/120",
+        img: product?.main_image
+          ? `${API_URL}${product.main_image}`
+          : "https://via.placeholder.com/120",
 
-        // 🔥 NEW — Include artisan details
-        artisan: artisan
-          ? {
-              id: artisan.id,
-              name: artisan.name,
-              gcash_qr: artisan.gcash_qr,
-            }
-          : null,
+        artisan: safeArtisan,  // <-- ALWAYS SAFE
 
         status: mapBackendStatusToTab(o.status),
         quantity: firstItem?.quantity || 1,
@@ -140,30 +140,22 @@ function MyPurchases() {
       setLoading(false);
     }
   };
-
-  // Helper to map backend status to the simplified tab names we use
   const mapBackendStatusToTab = (status) => {
     if (!status) return "all";
     const s = status.toLowerCase();
-    if (["pending", "awaiting_downpayment"].includes(s)) return "to-pay";
+    if (["awaiting_payment", "awaiting_verification"].includes(s)) return "to-pay";
     if (["processing", "ready_to_ship"].includes(s)) return "to-ship";
-    if (["shipped"].includes(s)) return "to-receive";
-    if (["delivered"].includes(s)) return "to-review";
-    if (["cancelled"].includes(s)) return "completed"; // show canceled in completed for now
-    if (["delivered", "completed"].includes(s)) return "completed";
+    if (["shipped","in_transit","delivered"].includes(s)) return "to-receive";
+    if (["to_review"].includes(s)) return "to-review";
+    if (["refund","cancelled"].includes(s)) return "cancel/refund";
+    if (["completed"].includes(s)) return "completed";
     return "all";
   };
-
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Rerender filtered orders
   const filteredOrders =
     activeTab === "all" ? orders : orders.filter((o) => o.status === activeTab);
-
-  // Cancel Order API call
   const cancelOrder = async (orderId) => {
     if (!window.confirm("Cancel this order? This action may not be reversible.")) return;
     try {
@@ -187,10 +179,9 @@ function MyPurchases() {
       alert("Cancel failed: " + (err.message || err));
     }
   };
-
-  // Confirm Received API call
   const confirmReceived = async (orderId) => {
-    if (!window.confirm("Mark order as received?")) return;
+    if (!window.confirm("Mark this order as received?")) return;
+
     try {
       const res = await fetch(`${API_URL}/api/products/orders/confirm-received/`, {
         method: "POST",
@@ -198,22 +189,27 @@ function MyPurchases() {
           "Content-Type": "application/json",
           ...getAuthHeaders(),
         },
-        body: JSON.stringify({ order_id: orderId }),
+        body: JSON.stringify({
+          order_id: orderId,
+          action: "received"   // ⭐ REQUIRED by backend
+        }),
       });
+
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to confirm received");
       }
-      alert("Order confirmed as received. Thank you!");
+
+      alert("Order marked as received!");
       await fetchOrders();
       setSelectedOrder(null);
+
     } catch (err) {
       console.error("confirmReceived error:", err);
       alert("Confirm received failed: " + (err.message || err));
     }
   };
 
-  // Upload payment proof
   const uploadPaymentProof = async (order) => {
     if (!proofFile) {
       alert("Please select an image to upload.");
@@ -229,17 +225,14 @@ function MyPurchases() {
       const res = await fetch(`${API_URL}/api/products/orders/payment/upload-proof/`, {
         method: "POST",
         headers: {
-          // DO NOT set Content-Type with FormData
           ...getAuthHeaders(),
         },
         body: form,
       });
-
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Upload proof failed");
       }
-
       const data = await res.json();
       alert("Payment proof uploaded. Seller will verify shortly.");
       setProofFile(null);
@@ -252,45 +245,121 @@ function MyPurchases() {
       setUploadingProof(false);
     }
   };
+  const submitReview = async () => {
+    if (!reviewStars) {
+      alert("Please select a star rating.");
+      return;
+    }
+    setReviewSubmitting(true);
+    try {
+      const userId = localStorage.getItem("user_id");
+      const item = selectedOrder.raw.items[0];
+      const res = await fetch(`${API_URL}/api/products/review/create-review/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({
+          user: userId,
+          product: item.product.id,
+          order_item: item.id,
+          score: reviewStars,
+          review: reviewText,
+          anonymous: reviewAnonymous,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      alert("Review submitted!");
+      setShowReview(false);
+      fetchOrders(); // refresh
+    } catch (err) {
+      alert("Review failed: " + err.message);
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+  const normalizeStatus = (s) => {
+    if (!s) return "";
+    return s.replace(/_/g, " ").toUpperCase();
+  };
+  const renderStatusText = (status, order) => {
+    const backendStatus = order?.raw?.status; // e.g. "cancelled", "refund"
+    const timeline = order?.raw?.timeline || [];
 
-  // Render status text (kept from your original file style)
-  const renderStatusText = (status) => {
+    // get latest timeline entry
+    const latest = timeline.length > 0 ? timeline[timeline.length - 1] : null;
+    let latestDescription = latest?.description || null;
+
+    // remove ending punctuation
+    if (latestDescription) {
+      latestDescription = latestDescription.replace(/[.,!?]$/, "");
+    }
+
+    const readableStatus = normalizeStatus(backendStatus);
+
+    // ⭐ Dynamic CANCEL / REFUND
+    if (status === "cancel/refund") {
+      return (
+        <>
+          {latestDescription || "Order update"} |{" "}
+          <strong>{readableStatus}</strong>
+        </>
+      );
+    }
+
+    // ⭐ Use timeline description dynamically
+    if (latestDescription) {
+      return (
+        <>
+          {latestDescription} | <strong>{readableStatus}</strong>
+        </>
+      );
+    }
+
+    // ⭐ fallback if timeline not available
     switch (status) {
       case "to-pay":
         return (
           <>
-            Awaiting Payment | <strong>TO PAY</strong>
+            Awaiting Payment | <strong>{readableStatus}</strong>
           </>
         );
       case "to-ship":
         return (
           <>
-            Seller will ship soon | <strong>TO SHIP</strong>
+            Seller will ship soon | <strong>{readableStatus}</strong>
           </>
         );
       case "to-receive":
         return (
           <>
-            Your parcel is on the way | <strong>TO RECEIVE</strong>
+            Your parcel is on the way | <strong>{readableStatus}</strong>
           </>
         );
       case "to-review":
         return (
           <>
-            Delivered | <strong>TO REVIEW</strong>
+            Delivered | <strong>{readableStatus}</strong>
           </>
         );
       case "completed":
+        return (
+          <>
+            Parcel has been delivered | <strong>{readableStatus}</strong>
+          </>
+        );
       default:
         return (
           <>
-            Parcel has been delivered | <strong>COMPLETED</strong>
+            {readableStatus} | <strong>{readableStatus}</strong>
           </>
         );
     }
   };
 
-  // Buttons based on status (keeps original look & actions)
   const renderButtonsForStatus = (status, order) => {
     switch (status) {
       case "to-pay":
@@ -321,10 +390,21 @@ function MyPurchases() {
       case "to-ship":
         return (
           <>
-            <button className="btn-contact" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="btn-contact"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (order?.artisan?.id) {
+                  window.openChatWithUser(order.artisan.id);
+                } else {
+                  alert("This order has no artisan associated.");
+                }
+              }}
+            >
               Message
             </button>
-          </>
+
+          </>   
         );
 
       case "to-receive":
@@ -334,18 +414,33 @@ function MyPurchases() {
               className="btn-buy"
               onClick={async (e) => {
                 e.stopPropagation();
-                // call confirm received
                 await confirmReceived(order.id);
               }}
             >
               Confirm Received
             </button>
-            <button className="btn-contact" onClick={(e) => e.stopPropagation()}>
+
+            <button
+              className="btn-cancel"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedOrder(order);
+                setShowRefundModal(true);
+              }}
+            >
+              Refund
+            </button>
+
+            <button className="btn-contact"  onClick={() => {
+              const id = selectedOrder?.artisan?.id;
+              if (id) window.openChatWithUser(id);
+              else alert("Artisan not available.");
+            }}
+            >
               Message
             </button>
           </>
         );
-
       case "to-review":
         return (
           <>
@@ -359,12 +454,13 @@ function MyPurchases() {
             >
               Write a Review
             </button>
-            <button className="btn-contact" onClick={(e) => e.stopPropagation()}>
+            <button className="btn-contact"  
+            onClick={() => window.openChatWithUserByName(selectedOrder.artisan.name)}
+            >
               Message
             </button>
           </>
         );
-
       default:
         return (
           <>
@@ -381,14 +477,36 @@ function MyPurchases() {
             >
               Buy Again
             </button>
-            <button className="btn-contact" onClick={(e) => e.stopPropagation()}>
+            <button className="btn-contact"  onClick={() => window.openChatWithUser(selectedOrder.artisan.id)}>
               Message
             </button>
           </>
         );
     }
   };
-
+  const submitRefund = async () => {
+    if (!refundReason.trim()) return alert("Refund reason is required.");
+    setRefundSubmitting(true);
+    try {
+      const form = new FormData();
+      form.append("order_id", selectedOrder.id);
+      form.append("reason", refundReason);
+      if (refundImage) form.append("refund_proof", refundImage);
+      const res = await fetch(`${API_URL}/api/products/orders/refund/`, {
+        method: "POST",
+        headers: { ...getAuthHeaders() },
+        body: form,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      alert("Refund requested.");
+      setShowRefundModal(false);
+      fetchOrders();
+    } catch (err) {
+      alert("Failed: " + err.message);
+    } finally {
+      setRefundSubmitting(false);
+    }
+  };
   return (
     <HeaderFooter>
       <div className="profile-page">
@@ -406,6 +524,7 @@ function MyPurchases() {
               "to-ship",
               "to-receive",
               "to-review",
+              "cancel/refund",
               "completed",
             ].map((tab) => (
               <button
@@ -422,14 +541,12 @@ function MyPurchases() {
               </button>
             ))}
           </div>
-
           {/* MAIN AREA */}
           <div className="purchase-box">
             <div style={{ marginBottom: 12 }}>
               {loading && <div>Loading orders...</div>}
               {error && <div style={{ color: "crimson" }}>{error}</div>}
             </div>
-
             <div className="orders-list">
               {filteredOrders.length === 0 && !loading ? (
                 <p>No orders yet.</p>
@@ -438,17 +555,24 @@ function MyPurchases() {
                   <div className="order-card" key={order.id}>
                     {/* HEADER */}
                     <div className="order-header">
-                      <h3>{order.title}</h3>
+                      <h3>{order.artisan.name}</h3>
                       <p style={{ fontSize: "13px", opacity: 0.7 }}>
-                        By {order.artisan?.name}
                       </p>
                       <div className="order-actions">
-                        <button className="btn-small">View Shop</button>
+                       <button
+                        className="btn-small"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevents opening order modal
+                          navigate(`/shop/${order.artisan.id}/products`);
+                        }}
+                      >
+                        View Shop
+                      </button>
+
+                        
                       </div>
-
-                      <span className="order-status">{renderStatusText(order.status)}</span>
+                      <span className="order-status">{renderStatusText(order.status, order)}</span>
                     </div>
-
                     {/* BODY */}
                     <div
                       className="order-body"
@@ -463,13 +587,11 @@ function MyPurchases() {
                         <p>Price: ₱{order.price}</p>
                       </div>
                     </div>
-
                     {/* FOOTER */}
                     <div className="order-footer">
                       <p className="order-total">
                         Order Total: <strong>₱{order.total}</strong>
                       </p>
-
                       <div className="order-buttons">
                         {renderButtonsForStatus(order.status, order)}
                       </div>
@@ -478,7 +600,6 @@ function MyPurchases() {
                 ))
               )}
             </div>
-
             {/* ORDER DETAILS MODAL */}
             {selectedOrder && (
               <div className="review-modal-overlay">
@@ -496,7 +617,6 @@ function MyPurchases() {
                   }}
                 >
                   <h2 style={{ marginBottom: "20px" }}>Order Details</h2>
-
                   {/* SELLER HEADER */}
                   <div
                     style={{
@@ -511,10 +631,8 @@ function MyPurchases() {
                     }}
                   >
                     <div style={{ fontWeight: "600", fontSize: "17px" }}>
-                      {selectedOrder.title} — {selectedOrder.artisan?.name || "Artisan Shop"}
+                      {selectedOrder.artisan?.name || "Artisan Shop"}
                     </div>
-
-
                     <button
                       style={{
                         background: "#8B5E3C",
@@ -525,14 +643,12 @@ function MyPurchases() {
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        // Chat: navigate to chat / message UI (placeholder)
-                        alert("Open chat with artisan (not implemented).");
+                        
                       }}
                     >
                       Chat with Artisan
                     </button>
                   </div>
-
                   {/* DELIVERY BAR (Only for certain statuses) */}
                   {["to-receive", "to-review", "completed"].includes(
                     selectedOrder.status
@@ -558,7 +674,6 @@ function MyPurchases() {
                           <strong>{selectedOrder.delivery?.courier || "Courier"}</strong> —{" "}
                           {selectedOrder.delivery?.tracking_number || "No tracking"}
                         </div>
-
                         <button
                           style={{
                             background: "#C9A27A",
@@ -576,7 +691,6 @@ function MyPurchases() {
                           Track Package
                         </button>
                       </div>
-
                       <p style={{ margin: 0, fontSize: "13px", opacity: 0.8 }}>
                         {selectedOrder.status === "completed"
                           ? "Order has been received. Thank you!"
@@ -584,7 +698,6 @@ function MyPurchases() {
                       </p>
                     </div>
                   )}
-
                   {/* PAYMENT QR (TO PAY ONLY) */}
                   {selectedOrder.status === "to-pay" && (
                     <div
@@ -612,8 +725,6 @@ function MyPurchases() {
                           border: "1px solid #ccc",
                         }}
                       />
-
-
                       {/* Upload Screenshot for payment proof */}
                       <div style={{ marginTop: 12 }}>
                         <label
@@ -671,7 +782,6 @@ function MyPurchases() {
                       </div>
                     </div>
                   )}
-
                   {/* ITEMS LIST */}
                   <div
                     style={{
@@ -710,7 +820,6 @@ function MyPurchases() {
                           </p>
                           <p style={{ marginTop: "8px" }}>Qty: {it.quantity}</p>
                         </div>
-
                         <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                           <p style={{ fontWeight: "600" }}>₱{it.price}</p>
                           <p style={{ fontSize: 12, opacity: 0.8 }}>
@@ -719,13 +828,11 @@ function MyPurchases() {
                         </div>
                       </div>
                     ))}
-
                     {/* ORDER TOTAL */}
                     <div style={{ textAlign: "right" }}>
                       <p>Subtotal: ₱{selectedOrder.subtotal}</p>
                       <p>Shipping Fee: ₱{selectedOrder.shipping_fee}</p>
                       <p>Discount: -₱{selectedOrder.discount}</p>
-
                       <p
                         style={{
                           marginTop: "8px",
@@ -738,7 +845,6 @@ function MyPurchases() {
                       </p>
                     </div>
                   </div>
-
                   {/* BOTTOM GRID */}
                   <div
                     style={{
@@ -775,12 +881,10 @@ function MyPurchases() {
                           </div>
                         ))
                       )}
-
                       <p style={{ marginTop: "10px" }}>
                         Payment Method: <strong>{selectedOrder.payment_method}</strong>
                       </p>
                     </div>
-
                     {/* TOTAL SUMMARY */}
                     <div
                       style={{
@@ -791,7 +895,6 @@ function MyPurchases() {
                       }}
                     >
                       <h3>Total Summary</h3>
-
                       <p>
                         <span>Subtotal</span>
                         <span style={{ float: "right" }}>₱{selectedOrder.subtotal}</span>
@@ -804,9 +907,7 @@ function MyPurchases() {
                         <span>Discount</span>
                         <span style={{ float: "right" }}>-₱{selectedOrder.discount}</span>
                       </p>
-
                       <hr style={{ borderColor: "#E5DED3", margin: "12px 0" }} />
-
                       <p
                         style={{
                           fontWeight: "bold",
@@ -819,7 +920,6 @@ function MyPurchases() {
                       </p>
                     </div>
                   </div>
-
                   {/* BUTTONS */}
                   <div
                     style={{
@@ -842,27 +942,6 @@ function MyPurchases() {
                     >
                       Close
                     </button>
-
-                    {/* TO PAY – Upload Payment Proof */}
-                    {selectedOrder.status === "to-pay" && (
-                      <button
-                        className="btn-buy"
-                        style={{
-                          padding: "10px 20px",
-                          borderRadius: "8px",
-                          background: "#8B5E3C",
-                          color: "#fff",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          setShowToPayModal(true);
-                        }}
-                      >
-                        Upload Payment Proof
-                      </button>
-                    )}
-
                     {/* MESSAGE */}
                     {["to-ship", "to-review", "completed", "to-receive"].includes(
                       selectedOrder.status
@@ -876,12 +955,11 @@ function MyPurchases() {
                           border: "none",
                           cursor: "pointer",
                         }}
-                        onClick={() => alert("Open message to artisan (not implemented)")}
+                         onClick={() => window.openChatWithUser(selectedOrder.artisan.id)}
                       >
                         Message Artisan
                       </button>
                     )}
-
                     {/* WRITE REVIEW */}
                     {selectedOrder.status === "to-review" && (
                       <button
@@ -898,7 +976,6 @@ function MyPurchases() {
                         Write a Review
                       </button>
                     )}
-
                     {/* BUY AGAIN */}
                     {selectedOrder.status === "completed" && (
                       <button
@@ -927,7 +1004,6 @@ function MyPurchases() {
                 </div>
               </div>
             )}
-
             {/* REVIEW MODAL */}
             {showReview && (
               <div className="review-modal-overlay">
@@ -939,32 +1015,81 @@ function MyPurchases() {
 
                   <div className="stars" style={{ fontSize: 22, margin: "8px 0" }}>
                     {[1, 2, 3, 4, 5].map((n) => (
-                      <span key={n} className="star" style={{ marginRight: 6 }}>
+                      <span
+                        key={n}
+                        className="star"
+                        style={{
+                          marginRight: 6,
+                          cursor: "pointer",
+                          color: reviewStars >= n ? "#FFD700" : "#ccc",
+                        }}
+                        onClick={() => setReviewStars(n)}
+                      >
                         ★
                       </span>
                     ))}
                   </div>
-
                   <textarea
                     className="review-textarea"
                     placeholder="Share your thoughts about the product..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
                     style={{ width: "100%", minHeight: 100 }}
                   ></textarea>
-
                   <div style={{ marginTop: 10, marginBottom: 12 }}>
                     <label className="checkbox-label">
-                      <input type="checkbox" /> Post review anonymously
+                      <input
+                        type="checkbox"
+                        checked={reviewAnonymous}
+                        onChange={(e) => setReviewAnonymous(e.target.checked)}
+                      />
+                      Post review anonymously
                     </label>
                   </div>
-
                   <div className="modal-buttons">
                     <button className="btn-cancel" onClick={() => setShowReview(false)}>
                       Cancel
                     </button>
-                    <button className="btn-submit" onClick={() => {
-                      alert("Submit review (not implemented)");
-                      setShowReview(false);
-                    }}>Submit Review</button>
+                    <button className="btn-submit" onClick={submitReview}>
+                      {reviewSubmitting ? "Submitting..." : "Submit Review"}
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* REFUND MODAL */}
+            {showRefundModal && selectedOrder && (
+              <div className="review-modal-overlay">
+                <div className="review-modal" style={{ width: "500px", maxWidth: "95%" }}>
+                  <h2>Refund Request</h2>
+
+                  <textarea
+                    className="review-textarea"
+                    placeholder="Reason for refund..."
+                    value={refundReason}
+                    onChange={(e) => setRefundReason(e.target.value)}
+                    style={{ width: "100%", minHeight: 100 }}
+                  />
+
+                  <div style={{ marginTop: 10 }}>
+                    <label className="image-upload-label">
+                      Upload Refund Proof (optional)
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setRefundImage(e.target.files[0])}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="modal-buttons">
+                    <button className="btn-cancel" onClick={() => setShowRefundModal(false)}>
+                      Cancel
+                    </button>
+                    <button className="btn-submit" onClick={() => submitRefund()}>
+                      {refundSubmitting ? "Submitting..." : "Submit Refund"}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1027,7 +1152,6 @@ function MyPurchases() {
                       </div>
                     </div>
                   </div>
-
                   <div className="modal-buttons" style={{ marginTop: 14 }}>
                     <button
                       className="btn-cancel"
@@ -1048,8 +1172,6 @@ function MyPurchases() {
     </HeaderFooter>
   );
 }
-
-/* ---------- small helpers ---------- */
 function formatDate(d) {
   if (!d) return "-";
   try {
@@ -1065,5 +1187,4 @@ function getFriendlyImage(product) {
   if (product.images && product.images.length > 0) return product.images[0].image;
   return null;
 }
-
 export default MyPurchases;
