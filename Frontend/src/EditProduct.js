@@ -72,6 +72,7 @@ const EditProduct = () => {
   const [images, setImages] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [deletedImages, setDeletedImages] = useState([]);
+  const [navigate, SetNavigate] = useState([]);
 
   /* ---------------------------
      Load categories + materials
