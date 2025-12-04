@@ -198,6 +198,33 @@
 .products-page .show-more-btn:hover {
   text-decoration: underline;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 16px;
+  font-weight: 500;
+}
+
 /* LAYOUT SHRINKING (instead of responsive reflow)*/
 /* Slight shrink for medium screen */
 @media (max-width: 1200px) {

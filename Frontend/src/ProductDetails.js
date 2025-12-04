@@ -17,6 +17,12 @@ function ProductDetail() {
   const [reviews, setReviews] = useState([]);
   const [sort, setSort] = useState("Latest");
   let productId = id; // Ensure productId is defined
+
+  useEffect(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [id]);
+
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {

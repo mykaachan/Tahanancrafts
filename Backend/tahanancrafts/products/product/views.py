@@ -17,10 +17,6 @@ from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404
 from chat.notification import send_notification
 
-
-
-
-
 class ProductListView(APIView):
     permission_classes = [AllowAny]
 
@@ -83,15 +79,11 @@ class MaterialListView(ListAPIView):
 
 
 # CREATE product
-# CREATE Product (UPDATED + FIXED)
 class AddProductView(APIView):
     permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, *args, **kwargs):
-        # ----------------------------------------
-        # 1. GET ARTISAN ID FROM FRONTEND
-        # ----------------------------------------
         artisan_id = request.data.get("artisan_id")
 
         if not artisan_id:
@@ -105,43 +97,23 @@ class AddProductView(APIView):
         except Artisan.DoesNotExist:
             return Response({"error": "Invalid artisan_id"}, status=404)
 
-        # ----------------------------------------
-        # 2. SERIALIZER VALIDATION
-        # ----------------------------------------
         serializer = ProductSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
 
-        # ----------------------------------------
-        # 3. CREATE PRODUCT
-        # ----------------------------------------
         product = serializer.save(artisan=artisan)
 
-        # ----------------------------------------
-        # 4. HANDLE CATEGORIES (IDs)
-        # ----------------------------------------
         category_ids = request.data.getlist("categories")
         if category_ids:
             product.categories.set(Category.objects.filter(id__in=category_ids))
 
-        # ----------------------------------------
-        # 5. HANDLE MATERIALS (IDs)
-        # ----------------------------------------
         material_ids = request.data.getlist("materials")
         if material_ids:
             product.materials.set(Material.objects.filter(id__in=material_ids))
-
-        # ----------------------------------------
-        # 6. HANDLE IMAGES (FILES)
-        # ----------------------------------------
         images = request.FILES.getlist("images")
         for img in images:
             ProductImage.objects.create(product=product, image=img)
-
-        # ----------------------------------------
-        # 7. RETURN FULL PRODUCT INFO
-        # ----------------------------------------
         read_output = ProductReadSerializer(product)
         return Response(read_output.data, status=201)
 
@@ -158,6 +130,8 @@ class ProductTestView(APIView):
 
 # DELETE product
 class DeleteProductView(APIView):
+    permission_classes = [AllowAny]
+
     def delete(self, request, *args, **kwargs):
         product_id = request.data.get('id') or request.query_params.get('id') or kwargs.get('id')
         if not product_id:
@@ -172,6 +146,8 @@ class DeleteProductView(APIView):
 
 # UPDATE product
 class UpdateProductView(APIView):
+    permission_classes = [AllowAny]
+
     parser_classes = [MultiPartParser, FormParser]
 
     def put(self, request, *args, **kwargs):
@@ -311,13 +287,40 @@ class ShopProductsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, artisan_id):
-        # Fetch products by artisan
-        products = Product.objects.filter(artisan__id=artisan_id).prefetch_related(
-            "categories", "materials", "images"
-        )
-        product_serializer = ProductReadSerializer(products, many=True)
 
-        # Fetch artisan info
+        # Annotate each product with total orders EXCEPT cancelled
+        products = (
+            Product.objects.filter(artisan_id=artisan_id)
+            .prefetch_related("categories", "materials", "images")
+            .annotate(
+                total_orders=Count(
+                    "order_items__order",
+                    filter=~Q(order_items__order__status="cancelled"),
+                    distinct=True
+                )
+            )
+        )
+
+        # Serialize each product manually (to include total_orders)
+        serialized_products = []
+        for p in products:
+            serialized_products.append({
+                "id": p.id,
+                "name": p.name,
+                "description": p.description,
+                "long_description": p.long_description,
+                "stock_quantity": p.stock_quantity,
+                "regular_price": p.regular_price,
+                "sales_price": p.sales_price,
+                "main_image": p.main_image.url if p.main_image else None,
+                "categories": [c.name for c in p.categories.all()],
+                "materials": [m.name for m in p.materials.all()],
+                "images": [{"id": img.id, "image": img.image.url} for img in p.images.all()],
+                "created_at": p.created_at,
+                "total_orders": p.total_orders,   # ⭐ NEW FIELD
+            })
+
+        # Artisan info
         try:
             artisan_obj = Artisan.objects.get(id=artisan_id)
             artisan = {
@@ -329,7 +332,7 @@ class ShopProductsView(APIView):
             artisan = None
 
         return Response({
-            "products": product_serializer.data,
+            "products": serialized_products,
             "artisan": artisan
         }, status=status.HTTP_200_OK)
 

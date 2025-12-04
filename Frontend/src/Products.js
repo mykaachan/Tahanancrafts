@@ -4,8 +4,10 @@ import "./Products.css";
 import Footer from "./Footer";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
+
 function FilterGroup({ title, items, selectedItems, onChange }) {
   const [expanded, setExpanded] = useState(false);
+
   return (
     <div className={`filter-group ${expanded ? "expanded" : ""}`}>
       <h4>{title}</h4>
@@ -26,17 +28,16 @@ function FilterGroup({ title, items, selectedItems, onChange }) {
           </div>
         </label>
       ))}
+
       {items.length > 4 && (
-        <button
-          className="show-more-btn"
-          onClick={() => setExpanded(!expanded)}
-        >
+        <button className="show-more-btn" onClick={() => setExpanded(!expanded)}>
           {expanded ? "Show Less" : "Show More"}
         </button>
       )}
     </div>
   );
 }
+
 function Products() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -45,7 +46,9 @@ function Products() {
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  // Fetch categories + materials on load
+  const [currentPage, setCurrentPage] = useState(1);
+  const PRODUCTS_PER_PAGE = 12;
+
   useEffect(() => {
     async function loadFilters() {
       try {
@@ -53,96 +56,79 @@ function Products() {
           fetchCategories(),
           fetchMaterials(),
         ]);
+
         setCategories(catData);
         setMaterials(matData);
       } catch (error) {
         console.error("Error loading filters:", error);
       }
     }
+
     loadFilters();
   }, []);
-  // Fetch products whenever filters change
+
   useEffect(() => {
     async function loadProducts() {
       try {
-        const userId = localStorage.getItem("user_id");
-        let url;
-        const hasFilters =
-          selectedCategories.length > 0 || selectedMaterials.length > 0;
-        // 🔥 If filters are active → use the NORMAL products endpoint
-        if (hasFilters) {
-          url = new URL(
-            `${process.env.REACT_APP_API_URL}/api/products/product/products/`
-          );
-        } 
-        // 🔥 If no filters → use personalized for logged-in user
-        else if (userId) {
-          url = new URL(
-            `${process.env.REACT_APP_API_URL}/api/products/product/personalized/${userId}/`
-          );
-        } 
-        // 🔥 No user, no filters → random products
-        else {
-          url = new URL(
-            `${process.env.REACT_APP_API_URL}/api/products/product/products/`
-          );
-          url.searchParams.append("random", true);
-        }
-        // Apply filters only when hasFilters = true
-        if (selectedCategories.length > 0) {
-          url.searchParams.append("category", selectedCategories.join(","));
-        }
-        if (selectedMaterials.length > 0) {
-          url.searchParams.append("material", selectedMaterials.join(","));
-        }
-        console.log("Fetching:", url.toString());
+        let url = `${process.env.REACT_APP_API_URL}/api/products/product/products/`;
+
         const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch products");
-        const data = await response.json();
+        let data = await response.json();
+
+        if (selectedCategories.length > 0) {
+          data = data.filter((p) =>
+            p.categories.some((c) => selectedCategories.includes(c.id))
+          );
+        }
+
+        if (selectedMaterials.length > 0) {
+          data = data.filter((p) =>
+            p.materials.some((m) => selectedMaterials.includes(m.id))
+          );
+        }
+
         setProducts(data);
-      } catch (error) {
-        console.error("Error loading products:", error);
+      } catch (err) {
+        console.error("Error loading products:", err);
       }
     }
+
     loadProducts();
   }, [selectedCategories, selectedMaterials]);
-  // Toggle category by ID
-  const toggleCategory = (categoryId) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((c) => c !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-  // Toggle material by ID
-  const toggleMaterial = (materialId) => {
-    setSelectedMaterials((prev) =>
-      prev.includes(materialId)
-        ? prev.filter((m) => m !== materialId)
-        : [...prev, materialId]
-    );
-  };
-  // Search filter
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategories, selectedMaterials]);
+
   const filteredProducts = products.filter(
     (p) =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  // Log view + redirect
+
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const indexOfLast = currentPage * PRODUCTS_PER_PAGE;
+  const indexOfFirst = indexOfLast - PRODUCTS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
+
   function handleProductClick(productId) {
     const userId = localStorage.getItem("user_id");
+
     fetch(`${process.env.REACT_APP_API_URL}/api/products/product/log-view/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId, user_id: userId }),
     });
+
     navigate(`/product/${productId}`);
   }
+
   return (
     <div className="products-page">
       {/* HEADER */}
       <header className="homepage-header">
         <Logo className="logo-svg homepage-logo" />
+
         <nav className="nav-links">
           <ul>
             <li>
@@ -169,6 +155,7 @@ function Products() {
             </li>
           </ul>
         </nav>
+
         <div className="header-actions">
           <div className="search-box">
             <input
@@ -185,11 +172,13 @@ function Products() {
           </Link>
         </div>
       </header>
-      {/* PRODUCTS LAYOUT */}
+
+      {/* PAGE LAYOUT */}
       <div className="products-layout">
-        {/* FILTER SIDEBAR */}
+        {/* FILTERS */}
         <aside className="products-filters">
           <h3>Filter</h3>
+
           <button
             className="clear-filters-btn"
             onClick={() => {
@@ -199,68 +188,41 @@ function Products() {
           >
             Clear All Filters ✕
           </button>
+
           <FilterGroup
             title="Category"
             items={categories}
             selectedItems={selectedCategories}
-            onChange={toggleCategory}
+            onChange={(id) =>
+              setSelectedCategories((prev) =>
+                prev.includes(id)
+                  ? prev.filter((c) => c !== id)
+                  : [...prev, id]
+              )
+            }
           />
+
           <FilterGroup
             title="Material"
             items={materials}
             selectedItems={selectedMaterials}
-            onChange={toggleMaterial}
+            onChange={(id) =>
+              setSelectedMaterials((prev) =>
+                prev.includes(id)
+                  ? prev.filter((m) => m !== id)
+                  : [...prev, id]
+              )
+            }
           />
         </aside>
-        {/* RIGHT CONTENT */}
+
+        {/* PRODUCTS */}
         <section className="products-content">
-          {/* ACTIVE FILTER CHIPS */}
-          {(selectedCategories.length > 0 || selectedMaterials.length > 0) && (
-            <div className="active-filters">
-              {/* Category chips */}
-              {selectedCategories.map((catId) => {
-                const cat = categories.find((c) => c.id === catId);
-                return (
-                  <div
-                    key={catId}
-                    className="filter-chip"
-                    onClick={() => toggleCategory(catId)}
-                  >
-                    {cat?.name} ✕
-                  </div>
-                );
-              })}
-              {/* Material chips */}
-              {selectedMaterials.map((matId) => {
-                const mat = materials.find((m) => m.id === matId);
-                return (
-                  <div
-                    key={matId}
-                    className="filter-chip"
-                    onClick={() => toggleMaterial(matId)}
-                  >
-                    {mat?.name} ✕
-                  </div>
-                );
-              })}
-              {/* Clear all via chips */}
-              <button
-                className="clear-chips-btn"
-                onClick={() => {
-                  setSelectedCategories([]);
-                  setSelectedMaterials([]);
-                }}
-              >
-                Clear All ✕
-              </button>
-            </div>
-          )}
-          {/* PRODUCTS GRID */}
           <div className="products-grid">
-            {filteredProducts.length === 0 ? (
+            {currentProducts.length === 0 ? (
               <p>No products found.</p>
             ) : (
-              filteredProducts.map((product) => (
+              currentProducts.map((product) => (
                 <Link
                   key={product.id}
                   to={`/product/${product.id}`}
@@ -276,35 +238,68 @@ function Products() {
                     />
                     <h2>{product.name}</h2>
                     <p>{product.description}</p>
+
                     <div className="price-row">
                       {product.sales_price ? (
                         <>
-                          <span className="price-sale">₱{product.sales_price}</span>
+                          <span className="price-sale">
+                            ₱{product.sales_price}
+                          </span>
 
-                          <span className="price-regular">₱{product.regular_price}</span>
+                          <span className="price-regular">
+                            ₱{product.regular_price}
+                          </span>
 
                           <span className="price-discount">
                             -
                             {Math.round(
-                              ((product.regular_price - product.sales_price) /
-                                product.regular_price) * 100
+                              ((product.regular_price -
+                                product.sales_price) /
+                                product.regular_price) *
+                                100
                             )}
                             %
                           </span>
                         </>
                       ) : (
-                        <span className="price-sale">₱{product.regular_price}</span>
+                        <span className="price-sale">
+                          ₱{product.regular_price}
+                        </span>
                       )}
                     </div>
-
-
                   </div>
                 </Link>
               ))
             )}
           </div>
+
+          {/* PAGINATION */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+              >
+                ← Previous
+              </button>
+
+              <span className="pagination-info">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                className="pagination-btn"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </section>
       </div>
+
       <Footer />
     </div>
   );

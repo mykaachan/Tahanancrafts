@@ -73,17 +73,45 @@
   font-weight: 500;
   display: inline-block;
 }
+/* LOW STOCK (1–10 items) */
 .status-low {
   background: #ffe5d0;
   color: #d97a00;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
 }
+
+/* ON STOCK (more than 10 items) */
 .status-on {
   background: #e6f7e6;
   color: #2e7d32;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
 }
+
+/* OUT OF STOCK (0 items) */
 .status-out {
   background: #fbeaea;
   color: #c62828;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+.edit-btn {
+  background: none;
+  border: none;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.edit-btn:hover {
+  opacity: 0.7;
 }
 .delete-btn {
   background: none;
@@ -207,4 +235,26 @@
     padding: 6px 14px;
     font-size: 0.85rem;
   }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: white;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

@@ -2,7 +2,10 @@
 import axios from "axios";
 // ✅ Base URL of your Django backend
 export const API_URL = `${process.env.REACT_APP_API_URL}`;
+//export const API_URL = ` http://127.0.0.1:8000`;
 export const MEDIA_URL = process.env.REACT_APP_API_URL;
+//export const MEDIA_URL = ` http://127.0.0.1:8000`;
+
 // ✅ Create an axios instance
 const api = axios.create({
   baseURL: API_URL,
@@ -118,7 +121,8 @@ export async function fetchMaterials() {
 }
 export async function addProduct(formData, mainImage = null, galleryImages = []) {
   const data = new FormData();
-  // Append all fields
+
+  // Append all normal fields
   for (const key in formData) {
     if (Array.isArray(formData[key])) {
       formData[key].forEach(val => data.append(key, val));
@@ -126,15 +130,24 @@ export async function addProduct(formData, mainImage = null, galleryImages = [])
       data.append(key, formData[key]);
     }
   }
-  // Main image
-  if (mainImage) data.append("main_image", mainImage.file);
-  // Gallery images
-  galleryImages.forEach(img => data.append("images", img.file));
-  const res = await api.post("/api/products/product/add_product/", data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return res.data;
-}
+
+  // ⭐ REQUIRED for backend
+  const artisanId = localStorage.getItem("artisan_id");
+    data.append("artisan_id", localStorage.getItem("artisan_id"));
+
+    // Append main image
+    if (mainImage) data.append("main_image", mainImage.file);
+
+    // Append gallery images
+    galleryImages.forEach(img => data.append("images", img.file));
+
+    const res = await api.post("/api/products/product/add_product/", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return res.data;
+  }
+
 // src/api.js
 export function getImageUrl(path) {
   if (!path) return "";

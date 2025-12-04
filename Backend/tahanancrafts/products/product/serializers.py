@@ -20,6 +20,8 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
 
 class ProductSerializer(serializers.ModelSerializer):
+    artisan = serializers.PrimaryKeyRelatedField(read_only=True)  # ← FIX
+
     categories = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(), many=True
     )
@@ -27,10 +29,13 @@ class ProductSerializer(serializers.ModelSerializer):
         queryset=Material.objects.all(), many=True
     )
     images = ProductImageSerializer(many=True, required=False)
+    brandName = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    long_description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Product
         fields = '__all__'
+
 
     def create(self, validated_data):
         categories = validated_data.pop('categories', [])
@@ -40,15 +45,16 @@ class ProductSerializer(serializers.ModelSerializer):
         # Create product
         product = Product.objects.create(**validated_data)
 
-        # Add categories and materials (M2M)
+        # Add categories and materials
         product.categories.set(categories)
         product.materials.set(materials)
 
-        # Save product images
+        # Save images
         for image_data in images:
             ProductImage.objects.create(product=product, **image_data)
 
         return product
+
 
     def update(self, instance, validated_data):
         categories_data = validated_data.pop("categories", [])
@@ -97,11 +103,13 @@ class ProductReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            "id", "name", "description", "brandName",
+            "id", "name", "description", "long_description",   # ✅ ADD THIS
+            "brandName",
             "stock_quantity", "regular_price", "sales_price",
             "main_image", "created_at", "categories",
-            "materials", "images", "artisan","avg_rating"
+            "materials", "images", "artisan","avg_rating","total_orders"
         ]
+
 
     def get_avg_rating(self, obj):
         avg = Rating.objects.filter(product=obj).aggregate(Avg("score"))["score__avg"]

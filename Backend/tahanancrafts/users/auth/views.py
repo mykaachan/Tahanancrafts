@@ -187,7 +187,6 @@ class VerifyRegisterOTPView(APIView):
 
 
 # Request OTP for login
-# Request OTP for login
 class LoginRequestOTPView(APIView):
     permission_classes = [AllowAny]
 

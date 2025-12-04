@@ -18,6 +18,7 @@ import ProductDetails from './ProductDetails';
 import Cart from './Cart';
 import Layout from './components/Layout';
 import AddProduct from './AddProduct';
+import EditProduct from './EditProduct';
 import SignupVerifyContact from './SignupVerify';
 import AllProducts from './AllProducts';
 import OrderList from './OrderList';
@@ -92,6 +93,7 @@ function MainApp() {
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
         <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
+        <Route path="/edit-product/:id" element={<Layout><EditProduct /></Layout>} />
         <Route path="/seller-dashboard" element={<HomeDashboard />} />
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="/order-list" element={<OrderList />} />
