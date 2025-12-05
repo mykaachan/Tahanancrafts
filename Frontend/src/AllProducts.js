@@ -180,7 +180,7 @@ const AllProducts = () => {
                           </span>
                         </td>
 
-                        <td>{product.total_orders || 0}</td>
+                        <td>{product.order_count || 0}</td>
 
                         <td className="actions">
                           <button

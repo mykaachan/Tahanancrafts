@@ -293,7 +293,7 @@ class ShopProductsView(APIView):
             Product.objects.filter(artisan_id=artisan_id)
             .prefetch_related("categories", "materials", "images")
             .annotate(
-                total_orders=Count(
+                order_count =Count(
                     "order_items__order",
                     filter=~Q(order_items__order__status="cancelled"),
                     distinct=True

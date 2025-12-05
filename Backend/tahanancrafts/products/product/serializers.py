@@ -45,6 +45,7 @@ class ProductSerializer(serializers.ModelSerializer):
         # Create product
         product = Product.objects.create(**validated_data)
 
+
         # Add categories and materials
         product.categories.set(categories)
         product.materials.set(materials)
@@ -99,6 +100,8 @@ class ProductReadSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     artisan = ArtisanSerializer(read_only=True)
     avg_rating = serializers.SerializerMethodField()
+    order_count = serializers.IntegerField(read_only=True)
+
 
     class Meta:
         model = Product

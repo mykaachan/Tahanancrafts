@@ -70,7 +70,7 @@ function Products() {
   useEffect(() => {
     async function loadProducts() {
       try {
-        let url = `${process.env.REACT_APP_API_URL}/api/products/product/products/`;
+        let url = `https://tahanancrafts.onrender.com/api/products/product/products/`;
 
         const response = await fetch(url);
         let data = await response.json();
