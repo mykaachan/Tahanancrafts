@@ -25,6 +25,7 @@ class Product(models.Model):
     categories = models.ManyToManyField(Category, related_name='products')
     materials = models.ManyToManyField(Material, related_name='products')
     is_preorder = models.BooleanField(default=False)
+    total_orders = models.IntegerField(null = True, blank = True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     artisan = models.ForeignKey(
