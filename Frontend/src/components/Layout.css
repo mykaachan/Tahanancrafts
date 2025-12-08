@@ -126,105 +126,26 @@
     padding: 15px 20px;
   }
 }
+/* LAYOUT SHRINKING (instead of responsive reflow)*/
+/* Slight shrink for medium screen */
+@media (max-width: 1200px) {
+  .products-page {
+    zoom: 0.85;
+  }
+}
+/* More shrink on tablets */
 @media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-  }
-  .dashboard-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 10px 0;
-  }
-  .nav-item {
-    padding: 10px;
-    flex-direction: column;
-    align-items: center;
-  }
-  .main-content {
-    padding: 15px;
-  }
-  .header-main {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 15px;
-  }
-  .header-actions {
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .logo-image {
-    height: 50px;
-  }
-  .username {
-    font-size: 12px;
+  .products-page {
+    zoom: 0.75;
   }
 }
+/* Maximum shrink for small phones */
 @media (max-width: 480px) {
-  .dashboard-sidebar {
-    flex-direction: column;
-    padding: 10px 0;
-  }
-  .nav-item {
-    padding: 8px;
-    font-size: 12px;
-  }
-  .main-content {
-    padding: 10px;
-  }
-  .header-main {
-    padding: 8px 10px;
-  }
-  .logo-image {
-    height: 40px;
+  .products-page {
+    zoom: 0.60;
   }
 }
-.notification-popup {
-  position: absolute;
-  top: 60px; 
-  right: 20px;
-  width: 300px; 
-  max-width: 90%;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 20px; 
-  z-index: 1000;
-}
-.notification-popup h4 {
-  margin: 0 0 10px;
-  font-size: 16px;
-}
-.notification-popup ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.notification-popup ul li {
-  display: flex;           
-  justify-content: space-between; 
-  align-items: center;    
-  padding: 8px 0;         
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
-  gap: 10px;              
-}
-.notification-popup ul li:last-child {
-  border-bottom: none;
-}
-.view-order-btn {
-  background: #7a5a36;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  cursor: pointer;
-  font-size: 12px;
-  flex-shrink: 0; 
-}
-.view-order-btn:hover {
-  background: #5a4028;
+/* Prevent horizontal scrollbars */
+html, body {
+  overflow-x: hidden;
 }

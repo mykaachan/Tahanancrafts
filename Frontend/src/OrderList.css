@@ -203,253 +203,55 @@
   color: #fff;
   border: none;
 }
-/* ===== Responsive Adjustments for Orders Page ===== */
-@media (max-width: 1024px) {
-  .orders-list-header,
-  .order-row {
-    grid-template-columns: 2fr 1fr 1fr 1fr; /* reduce columns */
-    font-size: 0.9rem;
-  }
-  .orders-section {
-    padding: 20px;
-  }
-  .order-product-image {
-    width: 40px;
-    height: 40px;
-    margin-right: 12px;
-  }
-  .order-id-input,
-  .export-btn,
-  .pagination-btn {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
-  .status-dropdown {
-    min-width: 100px;
-    padding: 4px 0;
-  }
-  .status-option {
-    padding: 6px 0;
-    font-size: 0.85rem;
-  }
-  .order-product-name,
-  .order-product-category,
-  .order-id,
-  .order-status,
-  .order-orders,
-  .order-date {
-    font-size: 0.85rem;
-  }
-  .orders-tabs {
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-}
-@media (max-width: 768px) {
-  .orders-list-header,
-  .order-row {
-    grid-template-columns: 1fr 1fr 1fr; /* stack further */
-    font-size: 0.85rem;
-  }
-  .order-product {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .order-product-image {
-    margin-bottom: 6px;
-  }
-  .orders-controls {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .orders-pagination {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-}
-@media (max-width: 480px) {
-  .orders-list-header,
-  .order-row {
-    grid-template-columns: 1fr 1fr; /* mobile stack */
-    font-size: 0.8rem;
-  }
-  .order-product-name,
-  .order-product-category,
-  .order-id,
-  .order-status,
-  .order-orders,
-  .order-date {
-    font-size: 0.8rem;
-  }
-  .status-dropdown {
-    min-width: 90px;
-  }
-  .status-option {
-    font-size: 0.8rem;
-  }
-  .orders-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .order-id-input,
-  .export-btn,
-  .pagination-btn {
-    width: 100%;
-  }
-}
-.order-request-card {
-  border: 1px solid #ddd;
+.modal-card {
+  background: #fff;
+  border: 1px solid #e0d3c0;
+  border-radius: 10px;
   padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  background-color: #fff;
+  margin-bottom: 18px;
 }
-.order-summary {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-.order-product-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-.order-details div {
-  margin-bottom: 4px;
-}
-.order-actions {
-  display: flex;
-  gap: 8px;
-}
-.approve-btn {
-  background-color: #4caf50;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.decline-btn {
-  background-color: #f44336;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.preorder-btn {
-  background-color: #ff9800;
-  color: white;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.order-refund-card {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  font-family: 'Segoe UI', sans-serif;
-}
-.order-refund-card .order-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.order-refund-card .field-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
-.order-refund-card label {
-  width: 120px;
+
+.modal-card-title {
+  font-size: 1.1rem;
   font-weight: 600;
+  margin-bottom: 10px;
+  color: #4d3c2e;
 }
-.order-refund-card select,
-.order-refund-card input[type="file"] {
-  flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.order-refund-card .order-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 12px;
-}
-.order-refund-card .approve-btn {
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.order-refund-card .decline-btn {
-  background-color: #F44336;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-.order-refund-card .approve-btn:hover {
-  background-color: #45a049;
-}
-.order-refund-card .decline-btn:hover {
-  background-color: #e53935;
-}
-/* Apply card style to all order types */
-.order-toship-card,
-.order-delivered-card,
-.order-request-card,
-.order-preorder-card,
-.order-shipping-paid-card {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  font-family: 'Segoe UI', sans-serif;
-}
-.order-toship-card .order-actions,
-.order-delivered-card .order-actions,
-.order-request-card .order-actions,
-.order-preorder-card .order-actions,
-.order-shipping-paid-card .order-actions {
+
+.modal-actions-row {
   display: flex;
   gap: 12px;
   margin-top: 12px;
 }
-.order-toship-card .approve-btn,
-.order-delivered-card .approve-btn,
-.order-request-card .approve-btn,
-.order-preorder-card .approve-btn,
-.order-shipping-paid-card .approve-btn,
-.order-refund-card .approve-btn {
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
+
+.modal-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e0d3c0;
   border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
+  margin-top: 4px;
 }
-.order-toship-card .decline-btn,
-.order-delivered-card .decline-btn,
-.order-request-card .decline-btn,
-.order-preorder-card .decline-btn,
-.order-shipping-paid-card .decline-btn,
-.order-refund-card .decline-btn {
-  background-color: #F44336;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
+
+/* LAYOUT SHRINKING (instead of responsive reflow)*/
+/* Slight shrink for medium screen */
+@media (max-width: 1200px) {
+  .products-page {
+    zoom: 0.85;
+  }
+}
+/* More shrink on tablets */
+@media (max-width: 768px) {
+  .products-page {
+    zoom: 0.75;
+  }
+}
+/* Maximum shrink for small phones */
+@media (max-width: 480px) {
+  .products-page {
+    zoom: 0.60;
+  }
+}
+/* Prevent horizontal scrollbars */
+html, body {
+  overflow-x: hidden;
 }

@@ -1,0 +1,23 @@
+/* LAYOUT SHRINKING (instead of responsive reflow)*/
+/* Slight shrink for medium screen */
+@media (max-width: 1200px) {
+  .products-page {
+    zoom: 0.85;
+  }
+}
+/* More shrink on tablets */
+@media (max-width: 768px) {
+  .products-page {
+    zoom: 0.75;
+  }
+}
+/* Maximum shrink for small phones */
+@media (max-width: 480px) {
+  .products-page {
+    zoom: 0.60;
+  }
+}
+/* Prevent horizontal scrollbars */
+html, body {
+  overflow-x: hidden;
+}

@@ -67,34 +67,26 @@
   color: #2f2f2f;
   text-align: justify;     
 }
-/* Responsive */
+/* LAYOUT SHRINKING (instead of responsive reflow)*/
+/* Slight shrink for medium screen */
+@media (max-width: 1200px) {
+  .products-page {
+    zoom: 0.85;
+  }
+}
+/* More shrink on tablets */
 @media (max-width: 768px) {
-  .story-row {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .story-image,
-  .story-text {
-    width: 100%;
-  }
-  .story-image {
-    max-height: 350px;
+  .products-page {
+    zoom: 0.75;
   }
 }
-.story-row:last-child {
-  border-bottom: 2px solid #2e2e2e;
-  padding-bottom: 50px;
-  margin-bottom: 40px;
+/* Maximum shrink for small phones */
+@media (max-width: 480px) {
+  .products-page {
+    zoom: 0.60;
+  }
 }
-/* Hover effect for story images */
-.story-image:hover {
-  transform: scale(1.03);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-}
-/* Hover effect for description box */
-.story-text:hover {
-  transform: scale(1.01);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+/* Prevent horizontal scrollbars */
+html, body {
+  overflow-x: hidden;
 }
