@@ -110,7 +110,7 @@ class ProductReadSerializer(serializers.ModelSerializer):
             "brandName",
             "stock_quantity", "regular_price", "sales_price",
             "main_image", "created_at", "categories",
-            "materials", "images", "artisan","avg_rating","total_orders"
+            "materials", "images", "artisan","avg_rating","total_orders", "order_count"
         ]
 
 
