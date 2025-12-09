@@ -5,7 +5,6 @@ from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
-from tifffile import product
 import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem
