@@ -42,7 +42,7 @@ export default function AdminDash() {
   // FETCH DASHBOARD DATA
   // -------------------------------------
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/admin/dashboard/")
+    fetch("https://tahanancrafts.onrender.com/api/products/admin/dashboard/")
       .then((res) => res.json())
       .then((json) => {
         setData(json);
