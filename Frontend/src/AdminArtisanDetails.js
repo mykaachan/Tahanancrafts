@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   FaBell,
   FaUser,
@@ -9,60 +10,111 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
 } from "react-icons/fa";
+
 export default function AdminArtisanDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const BASE_API = "https://tahanancrafts.onrender.com";
+  const MEDIA_URL = BASE_API;
+
+  const [artisan, setArtisan] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
     "🧺 New artisan shop registered",
-    "📦 Order #1234 has been delivered",
-    "💬 New message from a customer",
+    "📦 Order update received",
+    "💬 Customer sent a message",
   ]);
-  const [artisan] = useState({
-    name: "Sm Sunrise Weaving Association",
-    shop: "Habing Ibaan",
-    sellerId: "ID-FFF012",
-    email: "habingibaan@email.com",
-    phone: "09888888888",
-    address: "V537+RX2, Ibaan, Batangas",
-    logo: "https://via.placeholder.com/100x100.png?text=Logo",
-    totalRevenue: 5478,
-    totalOrders: 14,
-    totalRefunds: 0,
-    latestTransaction: "1 May 2025",
-  });
-  const transactions = [
-    {
-      id: "#101011",
-      product: "Sakbit Habing Ibaan",
-      category: "Weaved Bag",
-      total: 1500,
-      status: "Processing",
-      date: "1 May 2025",
-      img: "https://via.placeholder.com/60.png?text=Product",
-    },
-  ];
-  const products = [
-    {
-      id: 1,
-      name: "Sakbit Habing Ibaan",
-      category: "Weaved Bag",
-      stock: 10,
-      price: 500,
-      status: "Low Stock",
-      date: "1 May 2025",
-      img: "https://via.placeholder.com/60.png?text=Product",
-    },
-  ];
+
+  // Pagination
+  const [orderPage, setOrderPage] = useState(1);
+  const [productPage, setProductPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Helper for initials
+  const getInitials = (name) => {
+    if (!name) return "A";
+    const parts = name.split(" ");
+    return parts.length >= 2
+      ? (parts[0][0] + parts[1][0]).toUpperCase()
+      : parts[0][0].toUpperCase();
+  };
+
+  // ---- LOAD DATA ----
+  useEffect(() => {
+    async function load() {
+      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
+      const data = await res.json();
+
+      const art = data.lists.artisans.find((a) => a.id === parseInt(id));
+      setArtisan(art);
+
+      const artisanOrders = data.lists.orders.filter(
+        (o) => o.artisan === parseInt(id)
+      );
+      setOrders(artisanOrders);
+
+      const artisanProducts = data.lists.products.filter(
+        (p) => p.artisan === parseInt(id)
+      );
+      setProducts(artisanProducts);
+    }
+    load();
+  }, [id]);
+
+  if (!artisan) return <div>Loading artisan details...</div>;
+
+  // Avatar
+  const avatarSrc = artisan.main_photo
+    ? `${MEDIA_URL}${artisan.main_photo}`
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        artisan.name
+      )}&background=random&color=fff`;
+
+  // Totals
+  const totalRevenue = orders.reduce(
+    (sum, o) => sum + parseFloat(o.total_items_amount),
+    0
+  );
+  const totalRefunds = orders.filter((o) => o.status === "refund").length;
+
+  // Pagination Logic
+  const totalOrderPages = Math.ceil(orders.length / itemsPerPage);
+  const paginatedOrders = orders.slice(
+    (orderPage - 1) * itemsPerPage,
+    orderPage * itemsPerPage
+  );
+
+  const totalProductPages = Math.ceil(products.length / itemsPerPage);
+  const paginatedProducts = products.slice(
+    (productPage - 1) * itemsPerPage,
+    productPage * itemsPerPage
+  );
+
+  // Status classes
+  const getStatusClass = (status) => {
+    const green = ["completed", "delivered", "to_review"];
+    const red = ["refund", "cancelled"];
+    if (green.includes(status)) return "badge-green";
+    if (red.includes(status)) return "badge-red";
+    return "badge-yellow";
+  };
+
   return (
     <div className="admindash-container">
       <AdminSidebar />
+
       <div className="admindash-main">
-        {/* ===== HEADER ===== */}
+        {/* HEADER */}
         <header className="admindash-header">
           <input
-            type="text"
             className="admindash-search"
             placeholder="🔍 Search artisan details..."
           />
+
           <div className="admindash-header-right">
             <div
               className="admindash-bell"
@@ -70,14 +122,11 @@ export default function AdminArtisanDetails() {
             >
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
+
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
-                  <ul>
-                    {notifications.map((notif, index) => (
-                      <li key={index}>{notif}</li>
-                    ))}
-                  </ul>
+                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
                 </div>
               )}
             </div>
@@ -85,32 +134,45 @@ export default function AdminArtisanDetails() {
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-        {/* ===== PAGE TITLE ===== */}
-        <div className="admindash-welcome">
-          <h2>Artisan Details</h2>
+
+        {/* BREADCRUMB */}
+        <div className="admindash-welcome breadcrumb-header">
+          <h2>
+            <span
+              className="breadcrumb-link"
+              onClick={() => navigate("/adminartisan")}
+            >
+              Artisans
+            </span>{" "}
+            &gt; {artisan.name}
+          </h2>
         </div>
-        {/* ===== ARTISAN DETAILS PAGE ===== */}
+
+        {/* MAIN CONTENT */}
         <div className="customer-details">
+          {/* SUMMARY CARDS */}
           <div className="cust-summary">
             <div className="cust-cards">
               <div className="cust-card spent">
                 <h4>Total Revenue</h4>
-                <p className="amount">₱{artisan.totalRevenue.toLocaleString()}</p>
+                <p className="amount">₱{totalRevenue.toLocaleString()}</p>
               </div>
+
               <div className="cust-card orders">
                 <h4>Total Orders</h4>
-                <p className="amount">{artisan.totalOrders}</p>
+                <p className="amount">{orders.length}</p>
               </div>
+
               <div className="cust-card refunds">
                 <h4>Total Refunds</h4>
-                <p className="amount">{artisan.totalRefunds}</p>
+                <p className="amount">{totalRefunds}</p>
               </div>
             </div>
-            {/* Transaction History */}
+
+            {/* TRANSACTION HISTORY */}
             <div className="cust-history">
-              <div className="cust-history-header">
-                <h4>Transaction History</h4>
-              </div>
+              <h4>Transaction History</h4>
+
               <table className="cust-history-table">
                 <thead>
                   <tr>
@@ -121,40 +183,74 @@ export default function AdminArtisanDetails() {
                     <th>Date</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {transactions.map((t) => (
-                    <tr key={t.id}>
-                      <td>{t.id}</td>
-                      <td>
-                        <div className="cust-prod">
-                          <img src={t.img} alt={t.product} />
-                          <div>
-                            <p className="prod-name">{t.product}</p>
-                            <p className="prod-category">{t.category}</p>
+                  {paginatedOrders.map((o) => {
+                    const item = o.items[0];
+                    const product = products.find((p) => p.id === item.product);
+
+                    return (
+                      <tr key={o.id}>
+                        <td>#{o.id}</td>
+
+                        <td>
+                          <div className="cust-prod">
+                            <img
+                              src={MEDIA_URL + product.main_image}
+                              width={45}
+                              alt=""
+                            />
+                            <div>
+                              <p className="prod-name">{product.name}</p>
+                              <small>{product.categories[0]}</small>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td>₱{t.total.toLocaleString()}</td>
-                      <td>
-                        <span
-                          className={`status-badge ${
-                            t.status === "Processing" ? "active" : "inactive"
-                          }`}
-                        >
-                          {t.status}
-                        </span>
-                      </td>
-                      <td>{t.date}</td>
-                    </tr>
-                  ))}
+                        </td>
+
+                        <td>₱{o.total_items_amount}</td>
+
+                        <td>
+                          <span className={`status-badge ${getStatusClass(o.status)}`}>
+                            {o.status.replace("_", " ")}
+                          </span>
+                        </td>
+
+                        <td>{new Date(o.created_at).toLocaleDateString()}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
-            </div>
-            {/* Products Table */}
-            <div className="cust-history">
-              <div className="cust-history-header">
-                <h4>Products ({products.length})</h4>
+
+              {/* ORDER PAGINATION */}
+              <div className="pagination">
+                <button disabled={orderPage === 1} onClick={() => setOrderPage(orderPage - 1)}>
+                  &lt;
+                </button>
+
+                {[...Array(totalOrderPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    className={orderPage === i + 1 ? "active" : ""}
+                    onClick={() => setOrderPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button
+                  disabled={orderPage === totalOrderPages}
+                  onClick={() => setOrderPage(orderPage + 1)}
+                >
+                  &gt;
+                </button>
               </div>
+            </div>
+
+            {/* PRODUCTS TABLE */}
+            <div className="cust-history">
+              <h4>Products ({products.length})</h4>
+
               <table className="cust-history-table">
                 <thead>
                   <tr>
@@ -165,64 +261,100 @@ export default function AdminArtisanDetails() {
                     <th>Date</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  {products.map((p) => (
+                  {paginatedProducts.map((p) => (
                     <tr key={p.id}>
                       <td>
                         <div className="cust-prod">
-                          <img src={p.img} alt={p.name} />
+                          <img
+                            src={MEDIA_URL + p.main_image}
+                            width={50}
+                            alt={p.name}
+                          />
                           <div>
                             <p className="prod-name">{p.name}</p>
-                            <p className="prod-category">{p.category}</p>
+                            <small>{p.categories[0]}</small>
                           </div>
                         </div>
                       </td>
-                      <td>{p.stock}</td>
-                      <td>₱{p.price}</td>
+
+                      <td>{p.stock_quantity}</td>
+                      <td>₱{p.sales_price}</td>
+
                       <td>
                         <span
                           className={`status-badge ${
-                            p.status === "Low Stock" ? "inactive" : "active"
+                            p.stock_quantity <= 5 ? "badge-red" : "badge-green"
                           }`}
                         >
-                          {p.status}
+                          {p.stock_quantity <= 5 ? "Low Stock" : "In Stock"}
                         </span>
                       </td>
-                      <td>{p.date}</td>
+
+                      <td>{new Date(p.created_at).toLocaleDateString()}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+
+              {/* PRODUCT PAGINATION */}
+              <div className="pagination">
+                <button
+                  disabled={productPage === 1}
+                  onClick={() => setProductPage(productPage - 1)}
+                >
+                  &lt;
+                </button>
+
+                {[...Array(totalProductPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    className={productPage === i + 1 ? "active" : ""}
+                    onClick={() => setProductPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                <button
+                  disabled={productPage === totalProductPages}
+                  onClick={() => setProductPage(productPage + 1)}
+                >
+                  &gt;
+                </button>
+              </div>
             </div>
           </div>
-          {/* RIGHT: Profile Card with Icons */}
+
+          {/* RIGHT PROFILE CARD */}
           <div className="cust-profile-card">
-            <img src={artisan.logo} alt="artisan-logo" className="cust-avatar" />
-            <h3 className="cust-name">{artisan.name}</h3>
-            <p className="cust-username">{artisan.shop}</p>
+            <img src={avatarSrc} alt="artisan-logo" className="cust-avatar" />
+
+            <h3>{artisan.name}</h3>
+            <p className="cust-username">{artisan.short_description}</p>
             <hr />
 
-            {/* Icon Info List */}
             <div className="cust-info-list">
               <p>
-                <FaUser className="cust-icon" />
-                <strong>Seller ID:</strong> {artisan.sellerId}
+                <FaUser className="cust-icon" /> <strong>ID:</strong> {artisan.id}
               </p>
               <p>
-                <FaEnvelope className="cust-icon" />
-                <strong>Email:</strong> {artisan.email}
+                <FaEnvelope className="cust-icon" />{" "}
+                <strong>Email:</strong> {artisan.user_email || "N/A"}
               </p>
               <p>
-                <FaPhone className="cust-icon" />
-                <strong>Phone:</strong> {artisan.phone}
+                <FaPhone className="cust-icon" />{" "}
+                <strong>Phone:</strong> {artisan.user_phone || "N/A"}
               </p>
               <p>
-                <FaMapMarkerAlt className="cust-icon" />
-                <strong>Address:</strong> {artisan.address}
+                <FaMapMarkerAlt className="cust-icon" />{" "}
+                <strong>Location:</strong> {artisan.location}
               </p>
               <p>
-                <FaCalendarAlt className="cust-icon" />
-                <strong>Latest Transaction:</strong> {artisan.latestTransaction}
+                <FaCalendarAlt className="cust-icon" />{" "}
+                <strong>Created:</strong>{" "}
+                {new Date(artisan.created_at).toLocaleDateString()}
               </p>
             </div>
           </div>

@@ -334,15 +334,15 @@
 .status-badge.delivered,
 .status-badge.completed,
 .status-badge.to_review {
-  background-color: #d4f6d2;
-  color: #237a1d;
+  background-color: #e6f7e6;
+  color: #2e7d32;
 }
 
 /* RED STATUSES */
 .status-badge.cancelled,
 .status-badge.refund {
-  background-color: #ffd3d3;
-  color: #b70000;
+  background-color: #fbeaea;
+  color: #c62828;
 }
 
 /* YELLOW FOR ALL OTHER STATUS VALUES */
@@ -354,8 +354,8 @@
 .status-badge.to_pay,
 .status-badge.to_ship,
 .status-badge.to_receive {
-  background-color: #fff2c2;
-  color: #7a5d00;
+  background-color: #ffe5d0;
+  color: #d97a00;
 }
 
 .admindash-card.yellow {
@@ -1084,17 +1084,17 @@ textarea {
 /* ===== Status Badges ===== */
 .status-badge.waiting {
   background: #fef3c7;
-  color: #b45309;
+  color: #d97a00;
 }
 
 .status-badge.approved {
   background: #d4edda;
-  color: #155724;
+  color: #2e7d32;
 }
 
 .status-badge.rejected {
   background: #fde7d9;
-  color: #c24621;
+  color: #c62828;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1320,18 +1320,35 @@ textarea {
   object-fit: cover;
 }
 
+.badge-green {
+  background: #4caf50;
+  color: white;
+}
+
+.badge-red {
+  background: #e53935;
+  color: white;
+}
+
+.badge-yellow {
+  background: #fbc02d;
+  color: white;
+}
+
 .cust-avatar-bubble {
-  width: 100px;
-  height: 100px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
-  background: #b37b4e; /* nice warm artisan brown */
+  background: #6e6e6e;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
+  margin: 0 auto;
 }
+
 
 /* Slight shrink for medium screen */
 @media (max-width: 1200px) {

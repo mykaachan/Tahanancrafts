@@ -112,7 +112,7 @@ function MainApp() {
         <Route path="/admincust" element={<AdminCust />} />
         <Route path="/admincustdetails/:id" element={<AdminCustDetails />} />
         <Route path="/adminartisan" element={<AdminArtisan />} />
-        <Route path="/adminartisandetails" element={<AdminArtisanDetails />} />
+        <Route path="/adminartisandetails/:id" element={<AdminArtisanDetails />} />
         <Route path="/artisanproducts" element={<ArtisanProducts />} />
         <Route path="/admintranshistory" element={<AdminTransHistory />} />
         <Route path="/adminnotification" element={<AdminNotification />} />
