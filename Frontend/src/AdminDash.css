@@ -119,13 +119,31 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* Card Title → Smaller but still emphasized */
+.admindash-card h3 {
+  font-size: 16px;     /* smaller */
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.75;       /* softer look */
+}
+
+/* Card Number → Bigger and bold */
+.admindash-card p {
+  font-size: 20px;     /* bigger content */
+  font-weight: 700;
+  margin: 0;
+  margin-top: 4px;
+  color: #2d261f;
+}
+
 .admindash-card.beige { background: #f3e7d4; }
 .admindash-card.taupe { background: #e2d1c3; }
 .admindash-card.lightgray { background: #e9e7e3; }
 .admindash-card.green { background: #d3e4c4; }
 
 .admindash-icon {
-  font-size: 28px;
+  font-size: 26px;     
+  opacity: 0.9;
 }
 
 /* ===== MAIN CONTENT GRID ===== */
@@ -259,7 +277,98 @@
   color: #6d6d6d;
   margin-top: 2px;
 }
+.styled-order {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
 
+.order-thumb {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.order-text {
+  flex-grow: 1;
+}
+
+.order-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.order-product {
+  font-size: 14px;
+  margin: 0;
+}
+
+.order-artisan {
+  color: #7d7d7d;
+  font-size: 12px;
+}
+
+.order-right {
+  text-align: right;
+  min-width: 90px;
+}
+
+.order-total {
+  font-weight: bold;
+  margin-top: 4px;
+}
+/* Status Badge */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* GREEN STATUSES */
+.status-badge.delivered,
+.status-badge.completed,
+.status-badge.to_review {
+  background-color: #d4f6d2;
+  color: #237a1d;
+}
+
+/* RED STATUSES */
+.status-badge.cancelled,
+.status-badge.refund {
+  background-color: #ffd3d3;
+  color: #b70000;
+}
+
+/* YELLOW FOR ALL OTHER STATUS VALUES */
+.status-badge.awaiting_payment,
+.status-badge.awaiting_seller_verification,
+.status-badge.processing,
+.status-badge.shipped,
+.status-badge.on_delivery,
+.status-badge.to_pay,
+.status-badge.to_ship,
+.status-badge.to_receive {
+  background-color: #fff2c2;
+  color: #7a5d00;
+}
+
+.admindash-card.yellow {
+  background: #fff7c2;
+}
+
+.admindash-card.blue {
+  background: #cfe8ff;
+}
+
+.admindash-card.purple {
+  background: #e5d0ff;
+}
 
 /* ===== FORM STYLING ===== */
 .form-group {
@@ -1137,7 +1246,93 @@ textarea {
 
 .decline-btn:hover { background-color: #a43b1c; }
 
-/* LAYOUT SHRINKING (instead of responsive reflow)*/
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+  padding: 20px;
+}
+
+/* ===== MODAL CARD (Scrollable, centered) ===== */
+.modal-card {
+  background: #fff;
+  width: 90%;
+  max-width: 520px;
+  max-height: 85vh;          /* <— prevents overflowing screen */
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  overflow-y: auto;          /* <— scrolls the inside of the modal */
+  animation: fadeInScale 0.2s ease;
+}
+
+/* Smooth animation */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Modal Close Button */
+.modal-close-btn {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  color: #444;
+}
+
+/* Modal Image */
+.modal-img {
+  width: 100%;
+  border-radius: 10px;
+  margin: 10px 0;
+  object-fit: cover;
+  background-color: #f3f3f3;
+}
+
+/* Title inside modal */
+.modal-card h3 {
+  margin-top: 0;
+  color: #4b3a2a;
+}
+
+/* Text spacing */
+.modal-card p {
+  line-height: 1.5;
+  color: #333;
+}
+
+.cust-avatar-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.cust-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cust-avatar-bubble {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #b37b4e; /* nice warm artisan brown */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+}
+
 /* Slight shrink for medium screen */
 @media (max-width: 1200px) {
   .products-page {

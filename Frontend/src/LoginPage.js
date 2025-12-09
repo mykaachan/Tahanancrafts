@@ -28,9 +28,9 @@ function LoginPage() {
       if (data.user?.role) localStorage.setItem("user_role", data.user.role);
 
       // ⭐ Admin shortcut login
-      if (data.redirect === "/AdminDash") {
+      if (data.redirect === "/admin") {
         alert(data.message || "Redirecting to admin dashboard...");
-        window.location.href = "/AdminDash";
+        window.location.href = "/admin";
         return;
       }
 

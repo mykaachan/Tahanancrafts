@@ -120,44 +120,68 @@ class ProductReadSerializer(serializers.ModelSerializer):
 
 
 class UpdateProductSerializer(serializers.ModelSerializer):
-    categories = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
-    materials = serializers.PrimaryKeyRelatedField(queryset=Material.objects.all(), many=True)
-    images = serializers.ListField(
-        child=serializers.ImageField(), required=False
+
+    # Make all M2M optional
+    categories = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        many=True,
+        required=False
     )
-    
+
+    materials = serializers.PrimaryKeyRelatedField(
+        queryset=Material.objects.all(),
+        many=True,
+        required=False
+    )
+
+    # WRITE-ONLY image uploads (prevents the crash)
+    images = serializers.ListField(
+        child=serializers.ImageField(),
+        required=False,
+        write_only=True
+    )
+
     class Meta:
         model = Product
         fields = [
-            'name', 'description', 'brandName', 
-            'stock_quantity', 'regular_price', 'sales_price', 
-            'categories', 'materials', 'main_image', 'images'
+            'name', 'description', 'long_description', 'brandName',
+            'stock_quantity', 'regular_price', 'sales_price',
+            'categories', 'materials',
+            'main_image', 'images'
         ]
+        extra_kwargs = {
+            'name': {'required': False},
+            'description': {'required': False},
+            'long_description': {'required': False},
+            'brandName': {'required': False},
+            'stock_quantity': {'required': False},
+            'regular_price': {'required': False},
+            'sales_price': {'required': False},
+            'main_image': {'required': False},
+        }
 
-    
     def update(self, instance, validated_data):
-        # Pop out related data
+
         categories = validated_data.pop('categories', None)
         materials = validated_data.pop('materials', None)
         images = validated_data.pop('images', None)
-        
-        # Update basic fields
+
+        # Update simple attributes
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-        
-        # Update many-to-many relationships if provided
+
+        # Update relationships if sent
         if categories is not None:
             instance.categories.set(categories)
+
         if materials is not None:
             instance.materials.set(materials)
-        
-        # Update nested images if provided
+
+        # Update product gallery images
         if images is not None:
             instance.images.all().delete()
-            for image in images:
-                ProductImage.objects.create(product=instance, image=image)
+            for img in images:
+                ProductImage.objects.create(product=instance, image=img)
 
-        
         return instance
-

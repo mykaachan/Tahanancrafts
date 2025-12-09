@@ -91,7 +91,6 @@ function MainApp() {
         <Route path="/iraya" element={<Iraya />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
-        <Route path="/admin" element={<Layout><AllProducts /></Layout>} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
         <Route path="/edit-product/:id" element={<Layout><EditProduct /></Layout>} />
         <Route path="/seller-dashboard" element={<HomeDashboard />} />
@@ -107,11 +106,11 @@ function MainApp() {
         <Route path="/notification" element={<Notification />} />
         <Route path="/create-user" element={<UserForm />} />
         <Route path="/adminsidebar" element={<AdminSidebar />} />
-        <Route path="/admindash" element={<AdminDash />} />
+        <Route path="/admin" element={<AdminDash />} />
         <Route path="/adminprod" element={<AdminProd />} />
-        <Route path="/admindet" element={<AdminDet />} />
+        <Route path="/admindet/:id" element={<AdminDet />} />
         <Route path="/admincust" element={<AdminCust />} />
-        <Route path="/admincustdetails" element={<AdminCustDetails />} />
+        <Route path="/admincustdetails/:id" element={<AdminCustDetails />} />
         <Route path="/adminartisan" element={<AdminArtisan />} />
         <Route path="/adminartisandetails" element={<AdminArtisanDetails />} />
         <Route path="/artisanproducts" element={<ArtisanProducts />} />

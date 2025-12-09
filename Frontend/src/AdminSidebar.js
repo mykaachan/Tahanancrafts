@@ -12,7 +12,7 @@ function AdminSidebar() {
         <p className="admin-menu-label">GENERAL</p>
         <ul>
           <li>
-            <Link to="/admindash" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link to="/admin" style={{ textDecoration: "none", color: "inherit" }}>
               Dashboard
             </Link>
           </li>

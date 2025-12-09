@@ -5,6 +5,7 @@ from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
+from tifffile import product
 import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem
@@ -160,7 +161,7 @@ class UpdateProductView(APIView):
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = UpdateProductSerializer(instance=product, data=request.data)
+        serializer = UpdateProductSerializer(product, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Product updated successfully", "product": serializer.data}, status=status.HTTP_200_OK)

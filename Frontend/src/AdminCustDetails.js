@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   FaBell,
   FaUser,
@@ -8,114 +10,153 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaCalendarAlt,
-} from "react-icons/fa"; 
+} from "react-icons/fa";
 
 export default function AdminCustDetails() {
+  const { id } = useParams();
+  //const BASE_API = "http://127.0.0.1:8000";
+  const BASE_API = "https://tahanancrafts.onrender.com";
+  const MEDIA_URL = BASE_API;
+
+  const [customer, setCustomer] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
     "🧺 New artisan shop registered",
-    "📦 Order #1234 has been delivered",
-    "💬 New message from a customer",
+    "📦 Order update received",
+    "💬 Customer sent a message",
   ]);
+
+  // Extract initials from name
+  const getInitials = (name) => {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return parts[0][0].toUpperCase();
+  };
+
+  const initials = getInitials(customer?.name);
+
+  // Build avatar source
+  const avatarSrc =
+    customer?.avatar
+      ? customer.avatar.startsWith("http")
+        ? customer.avatar
+        : `${process.env.REACT_APP_BASE_URL}${customer.avatar}`
+      : null;
+
+
+  useEffect(() => {
+    async function load() {
+      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
+      const data = await res.json();
+
+      const cust = data.lists.customers.find((c) => c.id === parseInt(id));
+      const userOrders = data.lists.orders.filter((o) => o.user === parseInt(id));
+
+      setCustomer(cust);
+      setOrders(userOrders);
+      setProducts(data.lists.products);
+    }
+    load();
+  }, [id]);
+
+  if (!customer) return <div>Loading...</div>;
+
+  // Total spent
+  const totalSpent = orders.reduce((sum, o) => sum + parseFloat(o.total_items_amount), 0);
+
+  // Total refunds
+  const totalRefunds = orders.filter((o) => o.status === "refund").length;
+
   return (
     <div className="admindash-container">
-      {/* ===== SIDEBAR ===== */}
       <AdminSidebar />
-      {/* ===== MAIN CONTENT ===== */}
       <div className="admindash-main">
-        {/* ===== HEADER ===== */}
+        
         <header className="admindash-header">
-          <input
-            type="text"
-            className="admindash-search"
-            placeholder="🔍 Search customers..."
-          />
+          <input className="admindash-search" placeholder="🔍 Search..." />
+
           <div className="admindash-header-right">
             <div
               className="admindash-bell"
               onClick={() => setShowNotifications(!showNotifications)}
             >
-              <FaBell size={20} color="#fffdf9" />
+              <FaBell size={20} />
               {notifications.length > 0 && <span className="notif-dot"></span>}
-
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
-                  <ul>
-                    {notifications.map((notif, index) => (
-                      <li key={index}>{notif}</li>
-                    ))}
-                  </ul>
+                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
                 </div>
               )}
             </div>
+
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-        {/* ===== PAGE TITLE ===== */}
+
         <div className="admindash-welcome">
-          <h2>Customer Details</h2>
+         <div className="admindash-welcome breadcrumb-header">
+            <h2>
+              <span className="breadcrumb-link" onClick={() => navigate("/admincust")}>
+                Customers
+              </span>{" "}
+              &gt; {customer?.id}
+            </h2>
+          </div>
         </div>
-        {/* ===== CUSTOMER DETAILS CONTENT ===== */}
+
         <div className="customer-details">
-          {/* LEFT: Customer Profile Card */}
           <div className="cust-profile-card">
-            <img
-              src="https://via.placeholder.com/100"
-              alt="Customer"
-              className="cust-avatar"
-            />
-            <h3>Mikaela Mindanao</h3>
-            <p className="cust-username">@Mikaela_M40</p>
+            <div className="cust-avatar-wrapper">
+              {avatarSrc ? (
+                <img src={avatarSrc} alt={initials} className="cust-avatar" />
+              ) : (
+                <div className="cust-avatar-bubble">{initials}</div>
+              )}
+            </div>
+
+            <h3>{customer.name}</h3>
+            <p className="cust-username">@_{customer.username}</p>
+
             <hr />
-            {/* ===== ICON INFO LIST ===== */}
+
             <div className="cust-info-list">
-              <p>
-                <FaUser className="cust-icon" />
-                <strong>User ID:</strong> ID-0112233
-              </p>
-              <p>
-                <FaEnvelope className="cust-icon" />
-                <strong>Billing Email:</strong> Mikaelam@email.com
-              </p>
-              <p>
-                <FaPhone className="cust-icon" />
-                <strong>Phone:</strong> 09999999999
-              </p>
-              <p>
-                <FaMapMarkerAlt className="cust-icon" />
-                <strong>Delivery Address:</strong> Villa Maria Subdivision, Cahigam, Rosario Batangas
-              </p>
-              <p>
-                <FaCalendarAlt className="cust-icon" />
-                <strong>Latest Transaction:</strong> 1 May 2025
-              </p>
+              <p><FaUser /> <strong>ID:</strong> {customer.id}</p>
+              <p><FaEnvelope /> <strong>Email:</strong> {customer.email}</p>
+              <p><FaPhone /> <strong>Phone:</strong> {customer.phone || "N/A"}</p>
+              <p><FaCalendarAlt /> <strong>Total Orders:</strong> {orders.length}</p>
             </div>
           </div>
-          {/* RIGHT: Summary Cards and Transaction History */}
+
+          {/* RIGHT SIDE */}
           <div className="cust-summary">
-            {/* ===== Summary Cards ===== */}
             <div className="cust-cards">
               <div className="cust-card spent">
                 <h4>Total Spent</h4>
-                <p className="amount">₱1,249</p>
+                <p className="amount">₱{totalSpent.toFixed(2)}</p>
               </div>
+
               <div className="cust-card orders">
                 <h4>Total Orders</h4>
-                <p className="amount">3</p>
+                <p className="amount">{orders.length}</p>
               </div>
+
               <div className="cust-card refunds">
                 <h4>Total Refunds</h4>
-                <p className="amount">0</p>
+                <p className="amount">{totalRefunds}</p>
               </div>
             </div>
-            {/* ===== Transaction History ===== */}
+
+            {/* Transaction Table */}
             <div className="cust-history">
-              <div className="cust-history-header">
-                <h4>Transaction History</h4>
-                <input type="text" placeholder="Search..." />
-              </div>
+              <h4>Transaction History</h4>
+
               <table className="cust-history-table">
                 <thead>
                   <tr>
@@ -126,49 +167,44 @@ export default function AdminCustDetails() {
                     <th>Date</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  <tr>
-                    <td>#101011</td>
-                    <td>
-                      <div className="cust-prod">
-                        <img
-                          src="https://via.placeholder.com/40"
-                          alt="Basket"
-                        />
-                        <div>
-                          <p>Iraya Basket Lipa</p>
-                          <small>Basket</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>₱550</td>
-                    <td>
-                      <span className="status-badge active">Processing</span>
-                    </td>
-                    <td>1 May 2025</td>
-                  </tr>
-                  <tr>
-                    <td>#101012</td>
-                    <td>
-                      <div className="cust-prod">
-                        <img
-                          src="https://via.placeholder.com/40"
-                          alt="Coin Purse"
-                        />
-                        <div>
-                          <p>Kalpi Habing Ibaan</p>
-                          <small>Coin Purse</small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>₱699</td>
-                    <td>
-                      <span className="status-badge active">Processing</span>
-                    </td>
-                    <td>1 May 2025</td>
-                  </tr>
+                  {orders.map((o) => {
+                    const firstItem = o.items[0];
+                    const product = products.find((p) => p.id === firstItem.product);
+
+                    return (
+                      <tr key={o.id}>
+                        <td>#{o.id}</td>
+
+                        <td>
+                          <div className="cust-prod">
+                            <img
+                              src={MEDIA_URL + product.main_image}
+                              alt={product.name}
+                              width={40}
+                            />
+                            <div>
+                              <p>{product.name}</p>
+                              <small>{product.categories[0]}</small>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>₱{o.total_items_amount}</td>
+
+                        <td>
+                          <span className="status-badge active">{o.status}</span>
+                        </td>
+
+                        <td>{new Date(o.created_at).toLocaleDateString()}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
+
               </table>
+
             </div>
           </div>
         </div>
