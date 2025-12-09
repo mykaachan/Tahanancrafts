@@ -186,6 +186,20 @@
   color: #4b3a2a;
 }
 
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;  
+}
+
+.product-right {
+  text-align: right;
+}
+
+.product-price {
+  font-weight: bold;
+}
+
 .status {
   font-size: 12px;
   padding: 2px 8px;
@@ -238,6 +252,14 @@
   flex-direction: column;
   align-items: center;
 }
+
+.sold-count {
+  display: block;
+  font-size: 11px;
+  color: #6d6d6d;
+  margin-top: 2px;
+}
+
 
 /* ===== FORM STYLING ===== */
 .form-group {

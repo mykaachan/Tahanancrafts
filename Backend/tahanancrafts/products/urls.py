@@ -8,4 +8,6 @@ urlpatterns = [
     path('checkout/', include('products.checkout.urls')),
     path('orders/', include('products.orders.urls')),
     path('dashboard/', include('products.dashboard.urls')),
+    path('admin/', include('products.admin.urls')),
+
 ]
