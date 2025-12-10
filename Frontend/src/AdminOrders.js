@@ -1,157 +1,167 @@
 // src/AdminOrders.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminDash.css";
-import AdminSidebar from "./AdminSidebar"; 
+import AdminSidebar from "./AdminSidebar";
 import { FaBell } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 export default function AdminOrders() {
+  const BASE_API = "https://tahanancrafts.onrender.com";
+  const MEDIA_URL = BASE_API;
+  const navigate = useNavigate();
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications] = useState([
     "🧺 New artisan shop registered",
-    "📦 Order #1234 has been delivered",
-    "💬 New message from a customer",
+    "📦 Order update received",
+    "💬 Customer sent a message",
   ]);
-  const [orders] = useState([
-    {
-      id: 1,
-      orderId: "#2001",
-      productName: "Weaved Bag",
-      category: "Bag",
-      price: 500,
-      status: "Pending",
-      date: "10 May 2025",
-      img: "https://via.placeholder.com/40.png?text=Product",
-    },
-    {
-      id: 2,
-      orderId: "#2002",
-      productName: "Coin Purse",
-      category: "Accessory",
-      price: 349,
-      status: "Completed",
-      date: "11 May 2025",
-      img: "https://via.placeholder.com/40.png?text=Product",
-    },
-    {
-      id: 3,
-      orderId: "#2003",
-      productName: "Table runner",
-      category: "Home Decor",
-      price: 149,
-      status: "Shipped",
-      date: "12 May 2025",
-      img: "https://via.placeholder.com/40.png?text=Product",
-    },
-    {
-      id: 4,
-      orderId: "#2004",
-      productName: "Bucket Hat",
-      category: "Fashion",
-      price: 1200,
-      status: "Pending",
-      date: "13 May 2025",
-      img: "https://via.placeholder.com/40.png?text=Product",
-    },
-    {
-      id: 5,
-      orderId: "#2005",
-      productName: "Butterfly Knife",
-      category: "Tools",
-      price: 349,
-      status: "Completed",
-      date: "14 May 2025",
-      img: "https://via.placeholder.com/40.png?text=Product",
-    },
-  ]);
+
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [artisans, setArtisans] = useState([]);
+
+  const itemsPerPage = 5;
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    async function load() {
+      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
+      const data = await res.json();
+
+      setOrders(data.lists.orders);
+      setProducts(data.lists.products);
+      setArtisans(data.lists.artisans);
+    }
+    load();
+  }, []);
+
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const paginatedOrders = orders.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  const getStatusClass = (status) => {
+    const green = ["completed", "delivered", "to_review"];
+    const red = ["refund", "cancelled"];
+    if (green.includes(status)) return "badge-green";
+    if (red.includes(status)) return "badge-red";
+    return "badge-yellow";
+  };
+
   return (
     <div className="admindash-container">
-      <AdminSidebar /> {/* ✅ Sidebar included */}
+      <AdminSidebar />
+
       <div className="admindash-main">
-        {/* ===== HEADER ===== */}
+        {/* HEADER */}
         <header className="admindash-header">
-          <input
-            type="text"
-            className="admindash-search"
-            placeholder="🔍 Search orders..."
-          />
+          <input className="admindash-search" placeholder="🔍 Search orders..." />
+
           <div className="admindash-header-right">
-            <div
-              className="admindash-bell"
-              onClick={() => setShowNotifications(!showNotifications)}
-            >
+            <div className="admindash-bell" onClick={() => setShowNotifications(!showNotifications)}>
               <FaBell size={20} color="#fffdf9" />
               {notifications.length > 0 && <span className="notif-dot"></span>}
+
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
-                  <ul>
-                    {notifications.map((notif, index) => (
-                      <li key={index}>{notif}</li>
-                    ))}
-                  </ul>
+                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
                 </div>
               )}
             </div>
+
             <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
-        {/* ===== PAGE TITLE ===== */}
+
         <div className="admindash-welcome">
           <h2>Orders &gt; History</h2>
         </div>
-        {/* ===== ORDERS TABLE ===== */}
+
         <div className="cust-history">
           <table className="cust-history-table">
             <thead>
               <tr>
                 <th>Product</th>
                 <th>Order ID</th>
-                <th>Category</th>
-                <th>Price</th>
+                <th>Total</th>
                 <th>Status</th>
                 <th>Date</th>
               </tr>
             </thead>
+
             <tbody>
-              {orders.map((o) => (
-                <tr key={o.id}>
-                  <td>
-                    <div className="cust-prod">
-                      <img src={o.img} alt={`Product ${o.id}`} />
-                      <div>
-                        <p className="prod-name">{o.productName}</p>
-                        <small className="prod-category">{o.category}</small>
+              {paginatedOrders.map((order) => {
+                const item = order.items[0];
+                const product = products.find((p) => p.id === item.product);
+                if (!product) return null;
+
+                const artisan = artisans.find((a) => a.id === product.artisan);
+
+                return (
+                  <tr
+                    key={order.id}
+                    className="clickable-row"
+                    onClick={() => navigate(`/adminorders/${order.id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>
+                      <div className="cust-prod">
+                        <img src={MEDIA_URL + product.main_image} width={40} alt="" />
+                        <div>
+                          <p className="prod-name">{product.name}</p>
+                          <small>{artisan ? artisan.name : "Unknown Artisan"}</small>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td>{o.orderId}</td>
-                  <td>{o.category}</td>
-                  <td>₱{o.price}</td>
-                  <td>
-                    <span
-                      className={`status-badge ${
-                        o.status === "Completed" || o.status === "Shipped"
-                          ? "active"
-                          : "inactive"
-                      }`}
-                    >
-                      {o.status}
-                    </span>
-                  </td>
-                  <td>{o.date}</td>
-                </tr>
-              ))}
+                    </td>
+
+                    <td>#{order.id}</td>
+                    <td>₱{order.total_items_amount}</td>
+
+                    <td>
+                      <span className={`status-badge ${getStatusClass(order.status)}`}>
+                        {order.status.replace("_", " ")}
+                      </span>
+                    </td>
+
+                    <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-          {/* ===== PAGINATION ===== */}
+
+          {/* PAGINATION */}
           <div className="pagination">
             <span>
-              Showing 1 - {orders.length} from {orders.length}
+              Showing {(page - 1) * itemsPerPage + 1} -{" "}
+              {Math.min(page * itemsPerPage, orders.length)} of {orders.length}
             </span>
+
             <div className="pagination-buttons">
-              <button disabled>&lt;</button>
-              <button className="active">1</button>
-              <button disabled>&gt;</button>
+              <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+                &lt;
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  className={page === i + 1 ? "active" : ""}
+                  onClick={() => setPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                &gt;
+              </button>
             </div>
           </div>
         </div>

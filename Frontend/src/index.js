@@ -45,6 +45,7 @@ import ArtisanProducts from "./ArtisanProducts";
 import AdminTransHistory from "./AdminTransHistory";
 import AdminNotification from './AdminNotification';
 import AdminOrders from './AdminOrders';
+import AdminOrderDet from './AdminOrderDet';
 import AdminForecast from './AdminForecast';
 import UnderDevelopment from './UnderDevelopment';
 import TaalStory from './TaalStory';
@@ -117,6 +118,7 @@ function MainApp() {
         <Route path="/admintranshistory" element={<AdminTransHistory />} />
         <Route path="/adminnotification" element={<AdminNotification />} />
         <Route path="/adminorders" element={<AdminOrders />} /> 
+        <Route path="/adminorders/:id" element={<AdminOrderDet />} /> 
         <Route path="/adminforecast" element={<AdminForecast />} />
         <Route path="/taalstory" element={<TaalStory />} />
         <Route path="/privacy-terms" element={<PrivacyTerms />} />

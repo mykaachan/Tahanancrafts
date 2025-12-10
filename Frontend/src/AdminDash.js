@@ -1,14 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
-
-import {
-  FaBell,
-  FaUsers,
-  FaStore,
-  FaCartShopping,
-  FaPesoSign,
-} from "react-icons/fa6";
+import AdminHeader from "./AdminHeader";
+import { FaUsers, FaStore, FaCartShopping, FaPesoSign } from "react-icons/fa6";
 
 import {
   BarChart,
@@ -21,7 +15,9 @@ import {
 } from "recharts";
 
 export default function AdminDash() {
-  const BASE_URL = "https://tahanancrafts.onrender.com";
+  //const BASE_URL = "https://tahanancrafts.onrender.com";
+  const BASE_URL = "http://127.0.0.1:8000";
+
 
   // STATE
   const [data, setData] = useState(null);
@@ -30,11 +26,10 @@ export default function AdminDash() {
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState("monthly");
 
-  const notifications = [
-    "🧺 New artisan shop registered",
-    "📦 An order has been delivered",
-    "💬 New message from a customer",
-  ];
+  // Profile & Change Password Popups
+  const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+
 
   // FETCH DASHBOARD DATA
   useEffect(() => {
@@ -258,32 +253,11 @@ export default function AdminDash() {
 
       <div className="admindash-main">
         {/* HEADER */}
-        <header className="admindash-header">
-          <input className="admindash-search" placeholder="🔍 Search" />
-          <div className="admindash-header-right">
-            <div
-              className="admindash-bell"
-              onClick={() => setShowNotifications(!showNotifications)}
-            >
-              <FaBell size={20} color="#fffdf9" />
-              {notifications.length > 0 && <span className="notif-dot"></span>}
-
-              {showNotifications && (
-                <div className="admindash-dropdown">
-                  <h4>Notifications</h4>
-                  <ul>
-                    {notifications.map((notif, idx) => (
-                      <li key={idx}>{notif}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <button className="admindash-logout">Logout</button>
-            <div className="admindash-profile-circle"></div>
-          </div>
-        </header>
+        <AdminHeader
+          showNotifications={showNotifications}
+          setShowNotifications={setShowNotifications}
+          setShowProfilePopup={setShowProfilePopup}
+        />
 
         {/* WELCOME */}
         <div className="admindash-welcome">
