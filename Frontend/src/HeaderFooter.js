@@ -32,7 +32,7 @@ function HeaderFooter({ children }) {
                 to="/story"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
-                Story
+                Heritage
               </Link>
             </li>
             <li>
