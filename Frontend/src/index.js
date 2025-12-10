@@ -79,8 +79,7 @@ function MainApp() {
       {/* Chat Popup shows everywhere except hidden paths */}
       <ConditionalChatPopup />
       <Routes>
-        <Route path="/" element={<UnderDevelopment />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/forgotpass2" element={<ForgotPass2 />} />
         <Route path="/change-password" element={<ChangePassword />} />
