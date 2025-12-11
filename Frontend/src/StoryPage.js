@@ -52,7 +52,7 @@ function StoryPage() {
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/products">Products</Link></li>
-            <li><Link to="/story">Story</Link></li>
+            <li><Link to="/story">Heritage</Link></li>
             <li><Link to="/profile">Profile</Link></li>
           </ul>
         </nav>
