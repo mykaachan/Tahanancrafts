@@ -275,3 +275,56 @@
     gap: 10px;
   }
 }
+/* Base font scaling */
+.hf-wrapper {
+  font-size: clamp(14px, 1.2vw, 18px);
+}
+.hf-header, .hf-footer, .hf-main {
+  font-size: inherit;
+}
+
+/* Header links/buttons */
+.hf-nav a,
+.hf-cart,
+.hf-search input,
+.hf-search button,
+.hf-register-btn {
+  font-size: clamp(0.8rem, 1vw, 1rem);
+}
+
+/* Footer titles & links */
+.hf-footer-left h2,
+.hf-footer-logo,
+.hf-footer-links h4,
+.hf-footer-links a {
+  font-size: clamp(0.9rem, 1vw, 1.4rem);
+}
+/* Header padding */
+.hf-header {
+  padding: clamp(10px, 2vw, 20px) clamp(15px, 3vw, 40px);
+}
+
+/* Main padding */
+.hf-main {
+  padding: clamp(15px, 4vw, 40px);
+}
+
+/* Footer padding */
+.hf-footer {
+  padding: clamp(20px, 4vw, 40px);
+}
+.hf-logo {
+  width: clamp(50px, 10vw, 70px);
+  height: auto;
+}
+
+.hf-search input {
+  width: clamp(120px, 40%, 250px);
+}
+/* Uncomment if you want all elements to shrink proportionally */
+@media (max-width: 480px) {
+  .hf-wrapper {
+    transform: scale(0.85);
+    transform-origin: top left;
+  }
+}
