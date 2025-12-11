@@ -1,6 +1,12 @@
 /* ===== PAGE LAYOUT ===== */
 .seller-profile-container {
   display: flex;
+  gap: 24px;
+  padding: 28px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
   background: #f8f6f0;
   min-height: 100vh;
   font-family: 'Lato', sans-serif;
@@ -9,25 +15,34 @@
 
 /* ===== SIDEBAR ===== */
 .seller-sidebar {
-  width: 180px; /* thinner sidebar */
-  background-color: #fff;
-  border-right: 1px solid #e0e0e0;
-  padding: 30px 0;
+  width: 260px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(30,30,30,0.06);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.02);
+  gap: 14px;
+  position: sticky;
+  top: 24px;
+  height: fit-content;
 }
 
 /* Avatar */
+.profile-avatar {
+  width: 100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
 .profile-avatar img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 140px;
+  height: 140px;
   object-fit: cover;
-  background-color: #f0d9bb;
-  margin-bottom: 18px;
-  border: 2px solid #f8f6f0;
+  border-radius: 50%;
+  border: 6px solid #fff6ef;
+  box-shadow: 0 6px 18px rgba(30,30,30,0.06);
 }
 
 /* Info Section */
@@ -55,12 +70,28 @@
 /* ===== MAIN SECTION ===== */
 .seller-main {
   flex: 1;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
   padding: 50px 60px;
   background-color: #f7eddf;
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 40px;
   color: #000;
+}
+
+/* Profile Card */
+.profile-card {
+  background:#fff;
+  border-radius:10px;
+  padding:18px;
+  box-shadow:0 6px 18px rgba(30,30,30,0.06);
+}
+
+/* Profile Header */
+.profile-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
 
 /* ===== FORM SECTION ===== */
@@ -152,6 +183,114 @@
   margin: 0;
 }
 
+/* ===== media section ===== */
+.media-section {
+  display:flex;
+  gap:18px;
+  margin-top:14px;
+}
+
+.media-column {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.media-preview {
+  width:100%;
+  height:160px;
+  background:#faf7f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.media-preview.small {
+  height:100px;
+  width:120px;
+}
+
+.media-preview img {
+  max-width:100%;
+  max-height:100%;
+  object-fit:cover;
+}
+
+/* ===== BUTTONS ===== */
+.primary-btn,
+.save-btn,
+.upload-label {
+  background:#c59d5f;
+  color:#fff;
+  border:none;
+  padding:10px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.secondary-btn {
+  background:#fff;
+  color:#8b5e3c;
+  border:1px solid #e7e1d6;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.delete-photo {
+  position:absolute;
+  right:6px;
+  top:6px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  border:none;
+  padding:6px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ===== GALLERY ===== */
+.gallery-section {
+  background:#fff;
+  padding:16px;
+  border-radius:10px;
+  box-shadow:0 6px 18px rgba(30,30,30,0.06);
+}
+
+.gallery-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.gallery-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap:12px;
+}
+
+.gallery-item {
+  position:relative;
+  border-radius:8px;
+  overflow:hidden;
+  background:#faf7f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:120px;
+}
+
+.gallery-item img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
 /* ===== Seller Profile Responsive ===== */
 @media (max-width: 1024px) {
   .seller-profile-container {
@@ -220,7 +359,6 @@
     height: 90px;
   }
 }
-
 
 /* Blur background when popup is open */
 .blur-bg {

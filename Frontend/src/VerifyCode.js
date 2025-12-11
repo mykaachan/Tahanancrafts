@@ -45,7 +45,7 @@ function VerifyCode() {
         navigate("/seller-dashboard");
       } 
       else if (user.role === "admin") {
-        navigate("/AdminDash");
+        navigate("/Admin");
       }
       else {
         navigate("/");

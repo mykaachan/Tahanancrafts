@@ -1,142 +1,117 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./TaalStory.css";
-import HeaderFooter from "./HeaderFooter"; // unchanged
+import HeaderFooter from "./HeaderFooter";
+
 function TaalStory() {
+  const { artisan_id } = useParams(); // dynamic URL
+  const BASE_URL = "https://tahanancrafts.onrender.com";
+  //const BASE_URL = "http://127.0.0.1:8000";
+
+  const [artisan, setArtisan] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchStory(id) {
+    const urls = [
+      `${BASE_URL}/api/users/artisan/story/${id}/`,
+      `${BASE_URL}/api/artisan/story/${id}/`,
+      `${BASE_URL}/api/users/story/${id}/`,
+    ];
+
+    for (let url of urls) {
+      try {
+        const res = await fetch(url);
+        if (res.ok) return await res.json();
+      } catch (err) {}
+    }
+
+    throw new Error("No valid story endpoint found.");
+  }
+
+  useEffect(() => {
+    async function loadStory() {
+      try {
+        const data = await fetchStory(artisan_id);
+        setArtisan(data);
+      } catch (err) {
+        console.error("Error loading artisan:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadStory();
+  }, [artisan_id]);
+
+  if (loading) return <HeaderFooter><p>Loading...</p></HeaderFooter>;
+  if (!artisan) return <HeaderFooter><p>No artisan found.</p></HeaderFooter>;
+
+  const photos = artisan.photos || [];
+  const latestProducts = artisan.latest_products?.slice(0, 3) || [];
+
   return (
     <HeaderFooter>
       <div className="taal-story-page">
-        {/* ===== HERO SECTION ===== */}
+
+        {/* HERO */}
         <section className="taal-hero">
           <div className="taal-hero-content">
             <img
-              src="https://via.placeholder.com/400x400?text=SM+Sunrise+Logo"
-              alt="SM Sunrise Weaving Association"
+              src={artisan.main_photo ? BASE_URL + artisan.main_photo : "https://via.placeholder.com/400"}
               className="taal-hero-logo"
             />
+
             <div className="taal-hero-text">
-              <h1>SM Sunrise Weaving Association</h1>
-              <p>
-                Taal, Batangas is a historic town renowned for its well-preserved
-                Spanish colonial architecture and rich cultural heritage. Known as
-                the “Heritage Town,” it showcases traditional crafts like the
-                balisong and handwoven textiles. With landmarks such as the Basilica
-                of St. Martin de Tours and vibrant festivals, Taal offers a unique
-                glimpse into Filipino history, artistry, and tradition.
-              </p>
+              <h1>{artisan.name}</h1>
+              <p>{artisan.about_shop}</p>
+              {artisan.vision && <p><strong>Vision:</strong> {artisan.vision}</p>}
+              {artisan.mission && <p><strong>Mission:</strong> {artisan.mission}</p>}
             </div>
           </div>
         </section>
-        {/* ===== STORY SECTION 1 ===== */}
-        <section className="taal-story-section">
-          <div className="story-left">
-            <img
-              src="https://via.placeholder.com/500x350?text=Weaving+Process"
-              alt="Weaving Process"
-            />
-          </div>
-          <div className="story-right">
-            <p>
-              In a quiet corner of Ibaan, Batangas, the rhythmic clack of wooden
-              looms tells a story of patience, resilience, and pride. The women of
-              the SM Sunrise Weaving Association gather each day, weaving not just
-              threads but the legacy of “Habing Ibaan”—a handloom craft passed down
-              through generations.
-            </p>
-          </div>
-        </section>
-        {/* ===== STORY SECTION 2 ===== */}
-        <section className="taal-story-section reverse">
-          <div className="story-left">
-            <img
-              src="https://via.placeholder.com/500x350?text=Weaving+Tools"
-              alt="Weaving Tools"
-            />
-          </div>
-          <div className="story-right">
-            <p>
-              Once known for mosquito nets when Ibaan was the “Kulambo Capital,”
-              these weavers now transform their intricate patterns into bags,
-              scarves, and blankets. Each piece reflects their deep connection to
-              their roots.
-            </p>
-          </div>
-        </section>
-        {/* ===== STORY SECTION 3 ===== */}
-        <section className="taal-story-section">
-          <div className="story-left">
-            <img
-              src="https://via.placeholder.com/500x350?text=Finished+Products"
-              alt="Finished Products"
-            />
-          </div>
-          <div className="story-right">
-            <p>
-              Through their hands, the colors and textures of local culture are
-              preserved—stitched into every fold, every fiber, every finished
-              work. Their crafts are more than products—they are woven stories of
-              heritage and hope.
-            </p>
-          </div>
-        </section>
-        {/* ===== LATEST PRODUCTS ===== */}
+
+        {/* STORY SECTIONS */}
+        {[0,1,2].map((i) => (
+          <section key={i} className={`taal-story-section ${i === 1 ? "reverse" : ""}`}>
+            <div className="story-left">
+              <img
+                src={photos[i]?.photo ? BASE_URL + photos[i].photo : "https://via.placeholder.com/500"}
+              />
+            </div>
+            <div className="story-right">
+              <p>
+                {i === 0 && "The artisans of Taal continue a legacy of weaving..."}
+                {i === 1 && "Passed down through generations, these crafts symbolize resilience..."}
+                {i === 2 && "Every creation carries a story woven with dedication..."}
+              </p>
+            </div>
+          </section>
+        ))}
+
+        {/* LATEST PRODUCTS */}
         <section className="latest-products">
           <h2>Latest Products</h2>
           <div className="product-grid">
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Product 1" />
-              <p>Handwoven Bag</p>
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Product 2" />
-              <p>Handwoven Pouch</p>
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Product 3" />
-              <p>Handwoven Scarf</p>
-            </div>
+            {latestProducts.map((p) => (
+              <div key={p.id} className="product-card">
+                <img src={p.main_image ? BASE_URL + p.main_image : "https://via.placeholder.com/300"} />
+                <p>{p.name}</p>
+              </div>
+            ))}
           </div>
+
+          {/* SEE MORE BUTTON */}
+          <button
+            className="see-more-btn"
+            onClick={() => (window.location.href = `/shop/${artisan_id}/products`)}
+          >
+            See More Products →
+          </button>
         </section>
-        {/* ===== MORE PRODUCTS ===== */}
-        <section className="more-products">
-          <h2>More Products</h2>
-          <div className="product-grid">
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Shawl" />
-              <p>Balabal Shawl — ₱899</p>
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Coin Purse" />
-              <p>Kalpi Coin Purse — ₱349</p>
-            </div>
-            <div className="product-card">
-              <img src="https://via.placeholder.com/300x240" alt="Blanket" />
-              <p>Koomot Blanket — ₱349</p>
-            </div>
-          </div>
-        </section>
-        {/* ===== HERITAGE SECTION (ADDED) ===== */}
-        <section className="heritage-wrapper">
-          <div className="heritage-inner">
-            <div className="heritage-left">
-              <h2>Woven by Hand, Rooted in Heritage</h2>
-              <p>
-                Taal's artisans keep tradition alive through their handmade crafts,
-                each one reflecting the town’s rich heritage and creative spirit.
-                From intricate embroidery to finely crafted blades, their work
-                carries stories passed down through generations—woven by hand,
-                rooted in heritage.
-              </p>
-            </div>
-            <div className="heritage-right">
-              <img
-                src="https://via.placeholder.com/620x420?text=TAAL+Heritage+Photo"
-                alt="Taal Heritage"
-              />
-            </div>
-          </div>
-        </section>
+
       </div>
     </HeaderFooter>
   );
 }
+
 export default TaalStory;

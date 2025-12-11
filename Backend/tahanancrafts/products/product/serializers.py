@@ -42,19 +42,25 @@ class ProductSerializer(serializers.ModelSerializer):
         materials = validated_data.pop('materials', [])
         images = validated_data.pop('images', [])
 
-        # Create product
-        product = Product.objects.create(**validated_data)
+        # 🔥 Extract main_image manually because DRF does NOT include it in validated_data
+        main_image = self.context["request"].FILES.get("main_image")
 
+        # Create product
+        product = Product.objects.create(
+            **validated_data,
+            main_image=main_image  # ← SAVE MAIN IMAGE HERE
+        )
 
         # Add categories and materials
         product.categories.set(categories)
         product.materials.set(materials)
 
-        # Save images
+        # Save gallery images
         for image_data in images:
             ProductImage.objects.create(product=product, **image_data)
 
         return product
+
 
 
     def update(self, instance, validated_data):
@@ -185,3 +191,19 @@ class UpdateProductSerializer(serializers.ModelSerializer):
                 ProductImage.objects.create(product=instance, image=img)
 
         return instance
+
+class ProductListSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.SerializerMethodField()
+    sold_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ("id","name","thumbnail","regular_price","sales_price","stock_quantity","brandName","sold_count")
+
+    def get_thumbnail(self, obj):
+        # prefer a thumbnail field or create a small URL for the main image
+        if obj.images.exists():
+            return obj.images.first().thumbnail_url
+        if obj.main_image:
+            return obj.main_image.url  # or a resized url
+        return "/static/images/default-thumb.png"

@@ -15,8 +15,8 @@ import {
 } from "recharts";
 
 export default function AdminDash() {
-  //const BASE_URL = "https://tahanancrafts.onrender.com";
-  const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = "https://tahanancrafts.onrender.com";
+  //const BASE_URL = "http://127.0.0.1:8000";
 
 
   // STATE

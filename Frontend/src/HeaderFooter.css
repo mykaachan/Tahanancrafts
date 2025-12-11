@@ -139,6 +139,37 @@
   font-size: 0.9rem;
   color: #555;
 }
+/* Ensure header keeps its beige theme and font, but remove default blue underlines/colors for links */
+.hf-nav a,
+.hf-nav a:visited,
+.hf-footer-links a {
+  text-decoration: none; /* remove underline */
+  color: inherit;        /* use surrounding text color instead of browser blue */
+}
+
+/* hover still shows accent color, keep visual feedback */
+.hf-nav a:hover,
+.hf-footer-links a:hover {
+  color: #b78a4a;
+  text-decoration: none;
+}
+
+/* keep a subtle focus ring for accessibility (keyboard navigation) */
+.hf-nav a:focus,
+.hf-footer-links a:focus,
+.hf-cart:focus,
+.hf-search button:focus,
+.hf-register-btn:focus {
+  outline: 2px solid rgba(183,138,74,0.18);
+  outline-offset: 2px;
+}
+
+/* reinforce header font-family so link defaults don't override it */
+.hf-header,
+.hf-header * {
+  font-family: 'Segoe UI', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
 /* ===== Responsive Adjustments Only ===== */
 @media (max-width: 1024px) {
   .hf-header {

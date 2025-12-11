@@ -1,69 +1,95 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import HeaderFooter from "./HeaderFooter";
 import { getProfile, updateProfile, changePassword } from "./api";
 import "./Profile.css";
 import SidebarProfile from "./components/SidebarProfile";
+
 function Profile() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const userId = localStorage.getItem("user_id");
+
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [previewAvatar, setPreviewAvatar] = useState(null);
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState("");
-  const [passwordLoading, setPasswordLoading] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const location = useLocation();
-  const navigate = useNavigate();
-  const userId = localStorage.getItem("user_id");
+
+  // Cache keys
+  const CACHE_KEY = `profile_${userId}`;
+  const CACHE_TIME_KEY = `profile_time_${userId}`;
+  const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+  /** Load cached profile data FIRST (instant UI) */
   useEffect(() => {
-    const fetchProfileData = async () => {
-      if (!userId) {
-        alert("Please log in to view your profile.");
-        navigate("/login");
-        return;
-      }
+    if (!userId) {
+      alert("Please log in to view your profile.");
+      navigate("/login");
+      return;
+    }
+
+    const cached = localStorage.getItem(CACHE_KEY);
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+
+    if (cached && cachedTime && Date.now() - cachedTime < CACHE_DURATION) {
+      setProfileData(JSON.parse(cached));
+      setLoading(false);
+    }
+
+    /** Fetch fresh profile info in background */
+    async function fetchFresh() {
       try {
-        setLoading(true);
-        const data = await getProfile(userId);
-        setProfileData(data.user || data);
+        const fresh = await getProfile(userId);
+        const user = fresh.user || fresh;
+
+        setProfileData(user);
+        localStorage.setItem(CACHE_KEY, JSON.stringify(user));
+        localStorage.setItem(CACHE_TIME_KEY, Date.now());
       } catch (err) {
-        setError("Failed to load profile.");
+        console.error("Failed loading profile:", err);
       } finally {
         setLoading(false);
       }
-    };
-    fetchProfileData();
+    }
+
+    fetchFresh();
   }, [userId, navigate]);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-  if (!profileData) return null;
-  // Generate initials for fallback avatar
-  const initials = profileData.name
-    ? profileData.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-    : "U";
-  // Decide which avatar to display
-  const avatarSrc =
-    previewAvatar ||
-    (profileData.avatar
-      ? profileData.avatar.startsWith("http")
+
+  /** Avatar (must run BEFORE conditional returns) */
+  const avatarSrc = useMemo(() => {
+    if (!profileData) return "";
+
+    if (previewAvatar) return previewAvatar;
+
+    if (profileData.avatar) {
+      return profileData.avatar.startsWith("http")
         ? profileData.avatar
-        : `${process.env.REACT_APP_BASE_URL || `fetch(${process.env.REACT_APP_API_URL}`}${profileData.avatar}`
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          initials
-        )}&background=random&color=fff`);
+        : `${process.env.REACT_APP_API_URL}${profileData.avatar}`;
+    }
+
+    const initials = profileData.name
+      ? profileData.name.split(" ").map(n => n[0]).join("").toUpperCase()
+      : "U";
+
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      initials
+    )}&background=random&color=fff`;
+  }, [profileData, previewAvatar]);
+
+  // ❗ CONDITIONAL RETURNS MUST COME AFTER ALL HOOKS
+  if (loading && !profileData) return <p>Loading...</p>;
+  if (!profileData) return <p>No profile found.</p>;
+
+  /** Actions */
   const handleLogout = () => {
     localStorage.removeItem("user_id");
-    navigate("/");
+    localStorage.removeItem("artisan_id");
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    navigate("/login");
   };
+
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -71,137 +97,133 @@ function Profile() {
       setPreviewAvatar(URL.createObjectURL(file));
     }
   };
-  const handleChange = (e) => {
-    setProfileData({ ...profileData, [e.target.name]: e.target.value });
-  };
+
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    Object.keys(profileData).forEach((key) => {
+      if (profileData[key] !== undefined) {
+        formData.append(key, profileData[key]);
+      }
+    });
+    if (avatarFile) formData.append("avatar", avatarFile);
+
     try {
-      const formData = new FormData();
-      formData.append("username", profileData.username);
-      formData.append("name", profileData.name);
-      formData.append("email", profileData.email);
-      formData.append("phone", profileData.phone);
-      formData.append("gender", profileData.gender || "");
-      formData.append("date_of_birth", profileData.date_of_birth || "");
-      if (avatarFile) formData.append("avatar", avatarFile);
-      const updated = await updateProfile(userId, formData, true);
-      alert(updated.message || "Profile updated successfully!");
+      const res = await updateProfile(userId, formData, true);
+      alert(res.message || "Profile updated!");
+
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(CACHE_TIME_KEY);
+
       setIsEditing(false);
       window.location.reload();
     } catch (err) {
       alert(err.message);
     }
   };
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    setPasswordError("");
-    setPasswordSuccess("");
-    setPasswordLoading(true);
-    try {
-      const res = await changePassword(oldPassword, newPassword, repeatPassword);
-      setPasswordSuccess(res.success || "Password changed successfully!");
-      setOldPassword("");
-      setNewPassword("");
-      setRepeatPassword("");
-    } catch (err) {
-      setPasswordError(err.message);
-    } finally {
-      setPasswordLoading(false);
-    }
-  };
-  // Convert short gender codes to readable form for display
-  const getGenderLabel = (code) => {
-    if (code === "M") return "Male";
-    if (code === "F") return "Female";
-    if (code === "O") return "Other";
-    return "";
-  };
+
+  const getGenderLabel = (code) =>
+    code === "M" ? "Male" :
+    code === "F" ? "Female" :
+    code === "O" ? "Other" : "";
+
   return (
     <HeaderFooter>
       <div className="profile-page">
-        <SidebarProfile />
+        <SidebarProfile profile={profileData} />
         <main className="profile-content">
-          {/* ✅ View Profile */}
+
+          {/* VIEW PROFILE */}
           {location.pathname === "/profile" && !isEditing && (
             <>
               <h2>My Profile</h2>
               <p className="subtitle">Manage and protect your account</p>
+
               <div className="profile-box">
                 <div className="profile-avatar">
                   <img src={avatarSrc} alt="Profile" className="profile-img" />
                 </div>
+
                 <div className="profile-details">
                   <p><strong>Username:</strong> {profileData.username}</p>
                   <p><strong>Name:</strong> {profileData.name}</p>
                   <p><strong>Email:</strong> {profileData.email}</p>
                   <p><strong>Phone:</strong> {profileData.phone}</p>
-                  <p><strong>Gender:</strong> {getGenderLabel(profileData.gender)}</p>
-                  <p><strong>Date of Birth:</strong> {profileData.date_of_birth}</p>
                   <button className="btn-edit" onClick={() => setIsEditing(true)}>
                     Edit Profile
                   </button>
                 </div>
               </div>
-              <button className="btn-logout" onClick={handleLogout}>Log out</button>
+
+              <button className="btn-logout" onClick={handleLogout}>
+                Log out
+              </button>
             </>
           )}
-          {/* ✅ Edit Profile */}
+
+          {/* EDIT PROFILE */}
           {location.pathname === "/profile" && isEditing && (
             <>
               <h2>Edit Profile</h2>
-              <p className="subtitle">Update your account information</p>
               <div className="profile-box editing">
                 <form className="edit-profile-form" onSubmit={handleProfileSubmit}>
-                  <label>
-                    Username
-                    <input type="text" name="username" value={profileData.username || ""} onChange={handleChange} />
+                  <label>Username
+                    <input
+                      type="text"
+                      name="username"
+                      value={profileData.username || ""}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, username: e.target.value })
+                      }
+                    />
                   </label>
-                  <label>
-                    Name
-                    <input type="text" name="name" value={profileData.name || ""} onChange={handleChange} />
+
+                  <label>Name
+                    <input
+                      type="text"
+                      name="name"
+                      value={profileData.name || ""}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, name: e.target.value })
+                      }
+                    />
                   </label>
-                  <label>
-                    Email
-                    <input type="email" name="email" value={profileData.email || ""} onChange={handleChange} />
+
+                  <label>Email
+                    <input
+                      type="email"
+                      name="email"
+                      value={profileData.email || ""}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, email: e.target.value })
+                      }
+                    />
                   </label>
-                  <label>
-                    Phone
-                    <input type="text" name="phone" value={profileData.phone || ""} onChange={handleChange} />
+
+                  <label>Phone
+                    <input
+                      type="text"
+                      name="phone"
+                      value={profileData.phone || ""}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, phone: e.target.value })
+                      }
+                    />
                   </label>
-                  <div className="dob-gender">
-                    <label>
-                      Date of Birth
-                      <input
-                        type="date"
-                        name="date_of_birth"
-                        value={profileData.date_of_birth || ""}
-                        onChange={handleChange}
-                      />
-                    </label>
-                    <label>
-                      Gender
-                      <select
-                        name="gender"
-                        value={profileData.gender || ""}
-                        onChange={(e) =>
-                          setProfileData({ ...profileData, gender: e.target.value })
-                        }
-                      >
-                        <option value="">Select</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                        <option value="O">Other</option>
-                      </select>
-                    </label>
-                  </div>
+
                   <div className="form-actions">
                     <button type="submit" className="btn-save">Save</button>
-                    <button type="button" className="btn-cancel" onClick={() => setIsEditing(false)}>
+                    <button
+                      type="button"
+                      className="btn-cancel"
+                      onClick={() => setIsEditing(false)}
+                    >
                       Cancel
                     </button>
                   </div>
                 </form>
+
                 <div className="profile-avatar">
                   <img src={avatarSrc} alt="Profile" className="profile-img" />
                   <input type="file" accept="image/*" onChange={handleAvatarChange} />
@@ -209,61 +231,11 @@ function Profile() {
               </div>
             </>
           )}
-           {/* ✅ Change Password Page */}
-          {location.pathname === "/profile/change-password" && (
-            <>
-              <h2>Change Password</h2>
-              <p className="subtitle">Secure your account by changing your password</p>
-              <div className="profile-box">
-                <form className="edit-profile-form">
-                  <label>
-                    Old Password:
-                    <input type="password" placeholder="Enter old password" />
-                  </label>
-                  <label>
-                    New Password:
-                    <input type="password" placeholder="Enter new password" />
-                  </label>
-                  <label>
-                    Confirm New Password:
-                    <input type="password" placeholder="Confirm new password" />
-                  </label>
-                  <div className="form-actions">
-                    <button type="submit" className="btn-save">
-                      Save
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn-cancel"
-                      onClick={() => window.history.back()} // go back
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </>
-          )}
-          {/* ✅ Privacy Settings Page */}
-          {location.pathname === "/profile/privacy" && (
-            <>
-              <h2>Privacy Settings</h2>
-              <p className="subtitle">Manage your privacy and account settings</p>
 
-              <div className="profile-box">
-                <p>
-                  If you would like to permanently delete your account, you can send a
-                  request below. This action cannot be undone.
-                </p>
-                <button className="btn-delete">
-                  Request Account Deletion
-                </button>
-              </div>
-            </>
-          )}
         </main>
       </div>
     </HeaderFooter>
   );
 }
+
 export default Profile;

@@ -79,13 +79,13 @@ function MainApp() {
       {/* Chat Popup shows everywhere except hidden paths */}
       <ConditionalChatPopup />
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPass />} />
         <Route path="/forgotpass2" element={<ForgotPass2 />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
-        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/story" element={<StoryPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/iraya" element={<Iraya />} />
@@ -119,7 +119,7 @@ function MainApp() {
         <Route path="/adminorders" element={<AdminOrders />} /> 
         <Route path="/adminorders/:id" element={<AdminOrderDet />} /> 
         <Route path="/adminforecast" element={<AdminForecast />} />
-        <Route path="/taalstory" element={<TaalStory />} />
+        <Route path="/heritage/:artisan_id" element={<TaalStory />} />
         <Route path="/privacy-terms" element={<PrivacyTerms />} />
         <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
         <Route path="/sellerregister" element={<SellerRegister />} />

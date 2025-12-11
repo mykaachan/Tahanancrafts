@@ -41,7 +41,10 @@ function ChatPopup() {
           markAsSeen(res.data[0].id);
         }
       })
-      .catch(console.error);
+      .catch((err) => {
+        console.error("Fetch conversations error:", err.response?.data || err.message);
+        alert("Failed to load conversations: " + (err.response?.data?.detail || err.message));
+      });
   }, [open, userId]);
 
   /* -------------------------------------------

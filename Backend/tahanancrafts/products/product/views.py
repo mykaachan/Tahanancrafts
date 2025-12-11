@@ -5,6 +5,8 @@ from rest_framework import status, serializers as drf_serializers
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
+from django.db.models import Sum, Prefetch
+from django.db.models.functions import Coalesce
 import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem
@@ -21,35 +23,66 @@ class ProductListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        params = request.query_params
-        return self.filter_products(params)
 
-    def filter_products(self, params):
-        category_param = params.get("category", "")
-        material_param = params.get("material", "")
+        # Pre-calc sold count ONCE per product using annotation
+        valid_statuses = [
+            Order.STATUS_COMPLETED,
+            Order.STATUS_DELIVERED,
+            Order.STATUS_TO_REVIEW
+        ]
 
-        qs = Product.objects.all().prefetch_related("categories", "materials", "images")
+        products = (
+            Product.objects
+            .annotate(
+                sold_count=Sum(
+                    "order_items__quantity",
+                    filter=Q(order_items__order__status__in=valid_statuses)
+                )
+            )
+            .prefetch_related(
+                Prefetch("images", queryset=ProductImage.objects.only("id", "image")),
+                Prefetch("categories", queryset=Category.objects.only("id", "name")),
+                Prefetch("materials", queryset=Material.objects.only("id", "name")),
+            )
+            .select_related("artisan")
+            .only(
+                "id",
+                "name",
+                "brandName",
+                "description",
+                "long_description",
+                "stock_quantity",
+                "regular_price",
+                "sales_price",
+                "main_image",
+                "artisan",
+                "created_at"
+            )
+        )
 
-        # ✅ Handle multiple categories (OR logic)
-        if category_param:
-            category_list = [c.strip() for c in category_param.split(",") if c.strip()]
-            if all(c.isdigit() for c in category_list):
-                qs = qs.filter(categories__id__in=category_list)
-            else:
-                qs = qs.filter(categories__name__in=category_list)
+        data = []
+        for p in products:
+            data.append({
+                "id": p.id,
+                "name": p.name,
+                "brandName": p.brandName,
+                "description": p.description,
+                "long_description": p.long_description,
+                "stock_quantity": p.stock_quantity,
+                "regular_price": str(p.regular_price),
+                "sales_price": str(p.sales_price),
+                "main_image": p.main_image.url if p.main_image else None,
+                "categories": [{"id": c.id, "name": c.name} for c in p.categories.all()],
+                "materials": [{"id": m.id, "name": m.name} for m in p.materials.all()],
+                "images": [img.image.url for img in p.images.all()],
+                "is_preorder": p.is_preorder,
+                "total_orders": p.total_orders,
+                "created_at": p.created_at,
+                "artisan": p.artisan.id if p.artisan else None,
+                "sold_count": p.sold_count or 0,
+            })
 
-        # ✅ Handle multiple materials (OR logic)
-        if material_param:
-            material_list = [m.strip() for m in material_param.split(",") if m.strip()]
-            if all(m.isdigit() for m in material_list):
-                qs = qs.filter(materials__id__in=material_list)
-            else:
-                qs = qs.filter(materials__name__in=material_list)
-
-        # ✅ Distinct to avoid duplicates
-        serializer = ProductReadSerializer(qs.distinct(), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
+        return Response(data)
 
 
 # Category List
@@ -92,30 +125,51 @@ class AddProductView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Get artisan
         try:
             artisan = Artisan.objects.get(id=artisan_id)
         except Artisan.DoesNotExist:
             return Response({"error": "Invalid artisan_id"}, status=404)
 
-        serializer = ProductSerializer(data=request.data)
+        # Save main image manually before serializer
+        main_image = request.FILES.get("main_image")
+
+        # Build serializer with main image included
+        serializer = ProductSerializer(
+            data={**request.data, "main_image": main_image}
+        )
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
 
+        # Save product
         product = serializer.save(artisan=artisan)
 
+        # SAVE CATEGORIES
         category_ids = request.data.getlist("categories")
         if category_ids:
             product.categories.set(Category.objects.filter(id__in=category_ids))
 
+        # SAVE MATERIALS
         material_ids = request.data.getlist("materials")
         if material_ids:
             product.materials.set(Material.objects.filter(id__in=material_ids))
-        images = request.FILES.getlist("images")
-        for img in images:
+
+        # SAVE GALLERY IMAGES
+        gallery_images = request.FILES.getlist("images")
+        for img in gallery_images:
             ProductImage.objects.create(product=product, image=img)
+
+        # ⭐ Return complete readable output
         read_output = ProductReadSerializer(product)
-        return Response(read_output.data, status=201)
+
+        return Response(
+            {
+                "message": "Product added successfully!",
+                "product": read_output.data,
+            },
+            status=201
+        )
 
 
 # Small test view

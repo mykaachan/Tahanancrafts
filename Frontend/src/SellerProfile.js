@@ -1,286 +1,247 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LayoutHeaderOnly from "./LayoutHeaderOnly";
 import "./SellerProfile.css";
+
 function SellerProfile() {
+  const artisanId = localStorage.getItem("artisan_id");
+  const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
+
+  const [artisan, setArtisan] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+
+  const [formData, setFormData] = useState({
+    username: "",
+    name: "",
+    email: "",
+    address: "",
+    about_shop: "",
+    vision: "",
+    mission: "",
+  });
+
+  const [mainImage, setMainImage] = useState(null);
   const [qrCode, setQrCode] = useState(null);
-  const [showAccountMenu, setShowAccountMenu] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false); 
-  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false); 
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false); 
-  const [userInfo, setUserInfo] = useState({
-    username: "habing_ibaan",
-    name: "Habing Ibaan",
-    email: "habing@example.com",
-    address: "Ibaan, Batangas"
-  });
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
-  });
-  const saveUserInfo = () => {
-    alert("User info saved!");
-    setShowEditModal(false);
-    setShowProfileModal(false);
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  useEffect(() => {
+    if (!artisanId) return;
+    fetch(`${API_URL}/api/users/artisan/story/${artisanId}/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setArtisan(data);
+        setFormData({
+          username: data.username || "",
+          name: data.name || "",
+          email: data.email || "",
+          address: data.location || "",
+          about_shop: data.about_shop || "",
+          vision: data.vision || "",
+          mission: data.mission || "",
+        });
+        setMainImage(data.main_photo || null);
+        setGalleryImages(data.gallery_photos || []);
+      })
+      .catch((err) => console.error("Error fetching artisan:", err));
+  }, [API_URL, artisanId]);
+
+  if (!artisan) return <LayoutHeaderOnly><p className="loading">Loading profile...</p></LayoutHeaderOnly>;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const cancelEdit = () => setShowEditModal(false);
-  const savePasswordChange = () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("New password and confirm password do not match!");
-      return;
+
+  const handleSave = async () => {
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => form.append(key, formData[key] ?? ""));
+    if (mainImage instanceof File) form.append("main_photo", mainImage);
+    if (qrCode instanceof File) form.append("qr_code", qrCode);
+
+    try {
+      const res = await fetch(`${API_URL}/api/users/artisan/update/${artisanId}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+        body: form,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        alert("Profile updated successfully!");
+        setEditMode(false);
+        // refresh displayed data
+        setArtisan(result);
+        setGalleryImages(result.gallery_photos || galleryImages);
+        setMainImage(result.main_photo || mainImage);
+      } else {
+        console.error(result);
+        alert("Update failed.");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("Update error. See console.");
     }
-    alert("Password changed successfully!");
-    setShowChangePasswordModal(false);
   };
-  const cancelPasswordChange = () => setShowChangePasswordModal(false);
-  const saveMainChanges = () => alert("Main section changes saved!");
-  const cancelMainChanges = () => alert("Main section changes canceled!");
+
+  const handleGalleryUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const form = new FormData();
+    for (let i = 0; i < files.length; i++) form.append("photos", files[i]);
+    try {
+      const res = await fetch(`${API_URL}/api/users/artisan/add-photo/${artisanId}/`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
+        body: form,
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setGalleryImages((prev) => [...prev, ...result.photos]);
+        alert("Photos uploaded!");
+      } else {
+        console.error(result);
+        alert("Upload failed.");
+      }
+    } catch (err) {
+      console.error("Gallery upload error:", err);
+      alert("Upload error. See console.");
+    }
+  };
+
+  const deletePhoto = async (photoId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/users/artisan/delete-photo/${photoId}/`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("access")}` },
+      });
+      if (res.ok) {
+        setGalleryImages((prev) => prev.filter((img) => img.id !== photoId));
+      } else {
+        alert("Delete failed");
+      }
+    } catch (err) {
+      console.error("Photo delete error:", err);
+      alert("Delete error. See console.");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("artisan_id");
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    window.location.href = "/login";
+  };
+
   return (
     <LayoutHeaderOnly>
       <div className="seller-profile-container">
-        {/* ===== Sidebar ===== */}
         <aside className="seller-sidebar">
           <div className="profile-avatar">
-            <img src="/images/blankimage.png" alt="Profile" />
+            <img
+              src={mainImage ? (mainImage.startsWith("http") ? mainImage : `${API_URL}${mainImage}`) : "/images/blankimage.png"}
+              alt="Profile"
+            />
           </div>
-          <p className="sidebar-placeholder-name">Habing Ibaan</p>
-          <div className="sidebar-menu">
-            <button
-              className="edit-profile-btn sidebar-menu-btn"
-              onClick={() => setShowAccountMenu(!showAccountMenu)}
-            >
-              My Account
+          <div className="sidebar-info">
+            <h3 className="artisan-name">{artisan.name || "Artisan"}</h3>
+            <p className="artisan-username">@{artisan.username}</p>
+            <p className="artisan-location">{artisan.location || ""}</p>
+          </div>
+
+          <div className="sidebar-actions">
+            <button className="primary-btn" onClick={() => setEditMode((s) => !s)}>
+              {editMode ? "Cancel" : "Edit Profile"}
             </button>
-            {showAccountMenu && (
-              <ul className="sidebar-submenu">
-                <li onClick={() => setShowProfileModal(true)}>Profile</li>
-                <li onClick={() => setShowChangePasswordModal(true)}>Change Password</li>
-                <li onClick={() => setShowPrivacyModal(true)}>Privacy Settings</li>
-              </ul>
-            )}
+            <button className="secondary-btn" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
-          <button
-            className="edit-profile-btn"
-            style={{ marginTop: "auto" }}
-            onClick={() => alert("Logged out")}
-          >
-            Logout
-          </button>
         </aside>
-        {/* ===== Main Section ===== */}
-        <div className="seller-main">
-          {/* ===== Existing form and upload sections remain unchanged ===== */}
-          <div className="form-section">
-            <label>Name</label>
-            <input type="text" placeholder="Enter your name" />
 
-            <label>Description</label>
-            <textarea placeholder="Write something about your shop or products..." />
-
-            <div className="main-buttons-right">
-              <button className="edit-profile-btn small-btn" onClick={saveMainChanges}>
-                Save
-              </button>
-              <button className="edit-profile-btn small-btn" onClick={cancelMainChanges}>
-                Cancel
-              </button>
+        <main className="seller-main">
+          <div className="profile-card">
+            <div className="profile-header">
+              <h2>Seller Profile</h2>
+              <div className="header-actions">
+                {editMode && <button className="save-btn" onClick={handleSave}>Save Changes</button>}
+              </div>
             </div>
-            <div className="form-section-qr" style={{ marginTop: "20px" }}>
-              <label>QR Code</label>
-              <div className="qr-upload-box">
-                {qrCode ? (
-                  <img src={qrCode} alt="QR Code" />
-                ) : (
-                  <p>Drop your QR code here, or upload</p>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="qr-upload-input"
-                  style={{ display: "none" }}
-                  onChange={(e) =>
-                    setQrCode(URL.createObjectURL(e.target.files[0]))
-                  }
-                />
-                <label htmlFor="qr-upload-input">
-                  <button className="edit-profile-btn small-btn qr-upload-btn">
-                    Upload QR Code
-                  </button>
-                </label>
+
+            <div className="profile-form">
+              <div className="form-column">
+                <label>Username</label>
+                <input name="username" value={formData.username} onChange={handleChange} disabled={!editMode} />
+
+                <label>Name</label>
+                <input name="name" value={formData.name} onChange={handleChange} disabled={!editMode} />
+
+                <label>Email</label>
+                <input name="email" value={formData.email} onChange={handleChange} disabled={!editMode} type="email" />
+
+                <label>Address</label>
+                <input name="address" value={formData.address} onChange={handleChange} disabled={!editMode} />
               </div>
 
-              <button
-                className="edit-profile-btn small-btn save-qr-btn"
-                onClick={() =>
-                  qrCode ? alert("QR Code saved!") : alert("No QR Code uploaded.")
-                }
-              >
-                Save QR Code
-              </button>
+              <div className="form-column">
+                <label>About Shop</label>
+                <textarea name="about_shop" value={formData.about_shop} onChange={handleChange} disabled={!editMode} rows="4" />
+
+                <label>Vision</label>
+                <textarea name="vision" value={formData.vision} onChange={handleChange} disabled={!editMode} rows="3" />
+
+                <label>Mission</label>
+                <textarea name="mission" value={formData.mission} onChange={handleChange} disabled={!editMode} rows="3" />
+              </div>
+            </div>
+
+            <div className="media-section">
+              <div className="media-column">
+                <label>Main Image</label>
+                <div className="media-preview">
+                  <img
+                    src={mainImage ? (mainImage instanceof File ? URL.createObjectURL(mainImage) : (mainImage.startsWith("http") ? mainImage : `${API_URL}${mainImage}`)) : "/images/blankimage.png"}
+                    alt="Main"
+                  />
+                </div>
+                <input type="file" accept="image/*" disabled={!editMode} onChange={(e) => setMainImage(e.target.files[0])} />
+              </div>
+
+              <div className="media-column">
+                <label>QR Code</label>
+                <div className="media-preview small">
+                  <img src={qrCode ? (qrCode instanceof File ? URL.createObjectURL(qrCode) : (qrCode.startsWith("http") ? qrCode : `${API_URL}${qrCode}`)) : "/images/blankqr.png"} alt="QR" />
+                </div>
+                <input type="file" accept="image/*" disabled={!editMode} onChange={(e) => setQrCode(e.target.files[0])} />
+              </div>
             </div>
           </div>
-          <div className="upload-section">
-            <div className="main-upload-box">
-              <img src="/images/blankimage.png" alt="Upload" />
-              <p>drop your image here, or upload</p>
+
+          <section className="gallery-section">
+            <div className="gallery-header">
+              <h3>Gallery</h3>
+              {editMode && (
+                <>
+                  <input id="gallery-upload" type="file" multiple onChange={handleGalleryUpload} style={{ display: "none" }} />
+                  <label htmlFor="gallery-upload" className="upload-label">Upload Photos</label>
+                </>
+              )}
             </div>
-            <div className="small-upload-grid">
-              {[1, 2, 3, 4].map((n) => (
-                <div className="small-upload-box" key={n}>
-                  <img src="/images/blankimage.png" alt={`Upload ${n}`} />
-                  <p>
-                    drop your image
-                    <br />
-                    here, or upload
-                  </p>
+
+            <div className="gallery-grid">
+              {galleryImages.length === 0 && <div className="empty-gallery">No photos</div>}
+              {galleryImages.map((photo) => (
+                <div className="gallery-item" key={photo.id}>
+                  <img src={photo.photo.startsWith("http") ? photo.photo : `${API_URL}${photo.photo}`} alt="gallery" />
+                  {editMode && <button className="delete-photo" onClick={() => deletePhoto(photo.id)}>Delete</button>}
                 </div>
               ))}
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              id="single-upload-input"
-              style={{ display: "none" }}
-              onChange={(e) =>
-                alert(`You selected: ${e.target.files[0].name}`)
-              }
-            />
-            <label htmlFor="single-upload-input">
-              <button
-                className="edit-profile-btn"
-                style={{ width: "100%", marginTop: "10px" }}
-              >
-                Upload
-              </button>
-            </label>
-          </div>
-        </div>
-        {/* ===== Profile Modal ===== */}
-        {showProfileModal && !showEditModal && (
-          <div className="edit-modal-overlay" onClick={() => setShowProfileModal(false)}>
-            <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Seller Profile</h2>
-              <p><strong>Username:</strong> {userInfo.username}</p>
-              <p><strong>Name:</strong> {userInfo.name}</p>
-              <p><strong>Email:</strong> {userInfo.email}</p>
-              <p><strong>Address:</strong> {userInfo.address}</p>
-              <button
-                className="edit-profile-btn"
-                style={{ width: "100%", marginTop: "20px" }}
-                onClick={() => setShowEditModal(true)}
-              >
-                Edit Profile
-              </button>
-            </div>
-          </div>
-        )}
-        {/* ===== Edit Profile Modal ===== */}
-        {showEditModal && (
-          <div className="edit-modal-overlay" onClick={cancelEdit}>
-            <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Edit Profile</h2>
-
-              <label>Username</label>
-              <input
-                type="text"
-                value={userInfo.username}
-                onChange={(e) => setUserInfo({ ...userInfo, username: e.target.value })}
-              />
-              <label>Name</label>
-              <input
-                type="text"
-                value={userInfo.name}
-                onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-              />
-              <label>Email</label>
-              <input
-                type="email"
-                value={userInfo.email}
-                onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-              />
-              <label>Address</label>
-              <input
-                type="text"
-                value={userInfo.address}
-                onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-              />
-              <div className="main-buttons-right" style={{ marginTop: "20px" }}>
-                <button className="edit-profile-btn small-btn" onClick={saveUserInfo}>
-                  Save
-                </button>
-                <button className="edit-profile-btn small-btn" onClick={cancelEdit}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* ===== Change Password Modal ===== */}
-        {showChangePasswordModal && (
-          <div className="edit-modal-overlay" onClick={cancelPasswordChange}>
-            <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Change Password</h2>
-              <label>Current Password</label>
-              <input
-                type="password"
-                value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-              />
-              <label>New Password</label>
-              <input
-                type="password"
-                value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-              />
-              <label>Confirm New Password</label>
-              <input
-                type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-              />
-              <div className="main-buttons-right" style={{ marginTop: "20px" }}>
-                <button className="edit-profile-btn small-btn" onClick={savePasswordChange}>
-                  Save
-                </button>
-                <button className="edit-profile-btn small-btn" onClick={cancelPasswordChange}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* ===== Privacy Settings Modal (Delete Account Request) ===== */}
-        {showPrivacyModal && (
-          <div className="edit-modal-overlay" onClick={() => setShowPrivacyModal(false)}>
-            <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>Privacy Settings</h2>
-              <p>
-                If you want to delete your account, you can submit a request below.
-                Your data will be removed after review.
-              </p>
-              <div className="main-buttons-right" style={{ marginTop: "20px" }}>
-                <button
-                  className="edit-profile-btn small-btn"
-                  onClick={() => {
-                    alert("Account deletion request submitted!");
-                    setShowPrivacyModal(false);
-                  }}
-                >
-                  Request Account Deletion
-                </button>
-                <button
-                  className="edit-profile-btn small-btn"
-                  onClick={() => setShowPrivacyModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+          </section>
+        </main>
       </div>
     </LayoutHeaderOnly>
   );
 }
+
 export default SellerProfile;
