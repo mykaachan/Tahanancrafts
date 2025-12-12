@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Layout.css';
 
 // Easy to update API URL in one place
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://tahanancrafts.onrender.com";
 
 const Layout = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
