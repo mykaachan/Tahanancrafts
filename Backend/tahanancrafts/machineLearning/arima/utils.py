@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.utils import timezone
 from statsmodels.tsa.arima.model import ARIMA
 # optionally: from pmdarima import auto_arima  (if you want auto model selection)
-from orders.models import Order, OrderItem
+from products.models import Order, OrderItem
 from django.conf import settings
 
 def build_sales_series(product_id=None, by="monthly"):
