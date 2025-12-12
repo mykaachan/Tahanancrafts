@@ -9,13 +9,12 @@ from users.models import CustomUser, Artisan
 from products.models import Product, Order, ProductImage
 from .serializers import CustomerSerializer, ArtisanSerializer, OrderSerializer
 
-
 class DashboardAnalyticsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
 
-        # ---- ANALYTICS ----
+        # ---- ANALYTICS (fast & lightweight) ----
         total_customers = CustomUser.objects.filter(role="customer").count()
         total_artisans = Artisan.objects.count()
         total_orders = Order.objects.count()
@@ -56,10 +55,14 @@ class DashboardAnalyticsView(APIView):
             .order_by("year", "month")
         )
 
-        # ---- PRODUCT LIST WITH FIXED OUTPUT ----
-        products_data = []
-        for p in Product.objects.all():
+        # ---- LISTS (OPTIMIZED) ----
+        # Instead of loading thousands → load only first 10
+        products_qs = Product.objects.prefetch_related(
+            "categories", "materials", "images"
+        ).select_related("artisan")[:10]
 
+        products_data = []
+        for p in products_qs:
             products_data.append({
                 "id": p.id,
                 "name": p.name,
@@ -70,25 +73,29 @@ class DashboardAnalyticsView(APIView):
                 "regular_price": str(p.regular_price),
                 "sales_price": str(p.sales_price),
                 "main_image": p.main_image.url if p.main_image else None,
-
-                # FIXED: category names instead of IDs
                 "categories": [c.name for c in p.categories.all()],
-
-                # FIXED: material names instead of IDs
                 "materials": [m.name for m in p.materials.all()],
-
-                # FIXED: include gallery images (full URLs)
                 "images": [img.image.url for img in p.images.all()],
-
                 "is_preorder": p.is_preorder,
                 "total_orders": p.total_orders,
                 "created_at": p.created_at,
-                "artisan": p.artisan.id if p.artisan else None,
+                "artisan": p.artisan_id,
             })
 
-        customers = CustomerSerializer(CustomUser.objects.filter(role="customer"), many=True).data
-        artisans = ArtisanSerializer(Artisan.objects.all(), many=True).data
-        orders = OrderSerializer(Order.objects.all(), many=True).data
+        customers = CustomerSerializer(
+            CustomUser.objects.filter(role="customer")[:10],
+            many=True
+        ).data
+
+        artisans = ArtisanSerializer(
+            Artisan.objects.all()[:10], many=True
+        ).data
+
+        orders = OrderSerializer(
+            Order.objects.select_related("artisan", "shipping_address")
+            .prefetch_related("items")[:10],
+            many=True
+        ).data
 
         return Response({
             "analytics": {
