@@ -287,6 +287,14 @@ html, body {
 }
 
 /* Remove blue underlines and default blue link color for nav and product links */
+.homepage-header .nav-links{
+  margin-top: -180px;
+}
+.homepage-header .header-actions{
+  margin-right: -1000px;
+  margin-top: -200px;
+}
+
 .homepage-header .nav-links a,
 .homepage-header .nav-links a:visited,
 .product-link,

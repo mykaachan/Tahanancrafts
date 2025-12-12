@@ -25,7 +25,8 @@ html, body {
   width: 100%;
   background: #fdf3e6;
   border-bottom: 1px solid #ddd;
-  padding: 12px 20px;
+  padding: 16px 20px;
+  height: 90px;
   position: fixed;
   top: 0;
   z-index: 999;
@@ -35,13 +36,21 @@ html, body {
 /* ===== TOP ROW (LOGO | SEARCH | CART) ===== */
 .header-top-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: right;
   width: 100%;
 }
 
 .logo-svg.homepage-logo {
   width: 140px;
+  margin-right: 1000px;
+}
+
+.search-box{
+  height: 40px;
+}
+
+.cart-btn{
+  margin-top: 35px;
 }
 
 /* SEARCH BOX */
@@ -55,6 +64,7 @@ html, body {
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 20px;
+  margin-top: 25px;
 }
 
 .search-box input {
@@ -91,7 +101,7 @@ html, body {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 10px;
+  margin-top: -100px;
 }
 
 .nav-links ul {
@@ -121,7 +131,6 @@ html, body {
   padding: 50px 70px;
   margin-top: 60px;
   font-family: 'Segoe UI', sans-serif;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,27 +139,31 @@ html, body {
 
 /* FOOTER LOGO CENTERED */
 .footer-logo {
-  font-size: 38px;
+  font-size: 60px;
   font-family: "Times New Roman", serif;
-  font-weight: 400;
-  margin-bottom: 20px;
+  font-weight: 50;
+  margin-bottom: 0px;
+  margin-top: 70px;
+  margin-right: 300px;
   color: #000;
 }
 
 /* LEFT SECTION — JOIN US */
 .footer-left {
   max-width: 500px;
-  margin-bottom: 25px;
+  margin-top: -120px;
+  margin-right: 1000px;
+  text-align: left;
 }
 
 .footer-left h2 {
-  font-size: 32px;
+  font-size: 40px;
   margin-bottom: 10px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .footer-left p {
-  font-size: 15px;
+  font-size: 13px;
   margin-bottom: 18px;
   color: #d8cfc0;
 }
@@ -170,14 +183,19 @@ html, body {
   background: #fff4e2;
 }
 
+.footer{
+  margin-top: -20px;
+  height: 310px;
+}
 /* HORIZONTAL ROW → ABOUT | SUPPORT | EMAIL */
 .footer-content {
   width: 100%;
   max-width: 900px;
-  margin: 20px 0;
+  margin-right: -700px;
+  margin-top: -140px;
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 100px;
 }
 
 .footer-links h4 {
@@ -203,7 +221,8 @@ html, body {
   flex-direction: column;
   text-align: center;
   gap: 6px;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-left: 1230px;
   font-size: 13px;
   color: #d8cfc0;
 }
@@ -331,54 +350,55 @@ html, body {
   .footer-content {
     gap: 12px;
   }
-}
-/* Base font scaling */
-.hf-wrapper {
-  font-size: clamp(14px, 1.2vw, 18px);
-}
-.hf-header, .hf-footer, .hf-main {
-  font-size: inherit;
-}
 
-/* Header links/buttons */
-.hf-nav a,
-.hf-cart,
-.hf-search input,
-.hf-search button,
-.hf-register-btn {
-  font-size: clamp(0.8rem, 1vw, 1rem);
-}
+  /* Base font scaling */
+  .hf-wrapper {
+    font-size: clamp(14px, 1.2vw, 18px);
+  }
+  .hf-header, .hf-footer, .hf-main {
+    font-size: inherit;
+  }
 
-/* Footer titles & links */
-.hf-footer-left h2,
-.hf-footer-logo,
-.hf-footer-links h4,
-.hf-footer-links a {
-  font-size: clamp(0.9rem, 1vw, 1.4rem);
-}
-/* Header padding */
-.hf-header {
-  padding: clamp(10px, 2vw, 20px) clamp(15px, 3vw, 40px);
-}
+  /* Header links/buttons */
+  .hf-nav a,
+  .hf-cart,
+  .hf-search input,
+  .hf-search button,
+  .hf-register-btn {
+    font-size: clamp(0.8rem, 1vw, 1rem);
+  }
 
-/* Main padding */
-.hf-main {
-  padding: clamp(15px, 4vw, 40px);
-}
+  /* Footer titles & links */
+  .hf-footer-left h2,
+  .hf-footer-logo,
+  .hf-footer-links h4,
+  .hf-footer-links a {
+    font-size: clamp(0.9rem, 1vw, 1.4rem);
+  }
+  /* Header padding */
+  .hf-header {
+    padding: clamp(10px, 2vw, 20px) clamp(15px, 3vw, 40px);
+  }
 
-/* Footer padding */
-.hf-footer {
-  padding: clamp(20px, 4vw, 40px);
-}
-.hf-logo {
-  width: clamp(50px, 10vw, 70px);
-  height: auto;
-}
+  /* Main padding */
+  .hf-main {
+    padding: clamp(15px, 4vw, 40px);
+  }
 
-.hf-search input {
-  width: clamp(120px, 40%, 250px);
+  /* Footer padding */
+  .hf-footer {
+    padding: clamp(20px, 4vw, 40px);
+  }
+  .hf-logo {
+    width: clamp(50px, 10vw, 70px);
+    height: auto;
+  }
+
+  .hf-search input {
+    width: clamp(120px, 40%, 250px);
+  }
+
 }
-/* Uncomment if you want all elements to shrink proportionally */
 @media (max-width: 480px) {
   .hf-wrapper {
     transform: scale(0.85);

@@ -333,8 +333,6 @@ function Products() {
           )}
         </section>
       </div>
-
-      <Footer />
     </div>
   );
 }
