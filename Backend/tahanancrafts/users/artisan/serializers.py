@@ -80,6 +80,7 @@ class ArtisanStorySerializer(serializers.ModelSerializer):
             "main_photo",
             "photos",
             "latest_products",
+            "gcash_qr",
         ]
 
     def get_latest_products(self, artisan):

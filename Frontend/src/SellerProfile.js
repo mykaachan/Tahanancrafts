@@ -5,7 +5,7 @@ import "./SellerProfile.css";
 function SellerProfile() {
   const artisanId = localStorage.getItem("artisan_id");
   const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
-
+  //const API_URL = "http://localhost:8000";
   const [artisan, setArtisan] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -39,7 +39,8 @@ function SellerProfile() {
           mission: data.mission || "",
         });
         setMainImage(data.main_photo || null);
-        setGalleryImages(data.gallery_photos || []);
+        setQrCode(data.gcash_qr || null);
+        setGalleryImages(data.photos || []);
       })
       .catch((err) => console.error("Error fetching artisan:", err));
   }, [API_URL, artisanId]);
@@ -55,7 +56,7 @@ function SellerProfile() {
     const form = new FormData();
     Object.keys(formData).forEach((key) => form.append(key, formData[key] ?? ""));
     if (mainImage instanceof File) form.append("main_photo", mainImage);
-    if (qrCode instanceof File) form.append("qr_code", qrCode);
+    if (qrCode instanceof File) form.append("gcash_qr", qrCode);
 
     try {
       const res = await fetch(`${API_URL}/api/users/artisan/update/${artisanId}/`, {
@@ -71,8 +72,9 @@ function SellerProfile() {
         setEditMode(false);
         // refresh displayed data
         setArtisan(result);
-        setGalleryImages(result.gallery_photos || galleryImages);
+        setGalleryImages(result.photos || galleryImages);
         setMainImage(result.main_photo || mainImage);
+        setQrCode(result.gcash_qr || qrCode);
       } else {
         console.error(result);
         alert("Update failed.");

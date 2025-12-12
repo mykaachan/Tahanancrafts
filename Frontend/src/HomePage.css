@@ -81,6 +81,42 @@ html, body {
 .cart-btn:hover {
   color: #6b4226;
 }
+.lazy-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fdf3e6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  width: 70px;
+  height: 70px;
+  border: 6px solid #d3c4b8;
+  border-top-color: #b3531a;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lazy-screen p {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #2e2e2e;
+  font-weight: 600;
+}
+
 /* -------------------- FEATURED SECTION -------------------- */
 .featured-section {
   display: flex;
@@ -89,7 +125,7 @@ html, body {
   margin: 0;
   padding: 0;
   border: none;
-  margin-top: -80px;   /* pulls section up */
+  margin-top: -30px;   /* pulls section up */
 }
 /* LEFT SIDE (IMAGE) */
 .featured-left {
@@ -122,7 +158,8 @@ html, body {
 }
 .featured-box h1 {
   font-size: 6rem;
-  margin-bottom: -20px;
+  margin-bottom: -80px;
+  margin-top: 40px;
   color: #000;
   position: relative;
   top: -120px;
@@ -156,6 +193,16 @@ html, body {
   color: #fff;
   max-width: 500px;
 }
+
+.shop-cards-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #2e2e2e;
+}
+
 .shop-btn {
   background: #2c1810;
   color: #fff;
@@ -170,21 +217,62 @@ html, body {
 .shop-btn:hover {
   background: #6b4226;
 }
-/* ----------------------------------------- */
-/* SHOP CARDS (STATIC SECTION) – SAFE STYLES */
-/* ----------------------------------------- */
 .shop-cards {
-  padding: px 0;
-  margin: 0;
+  padding: 0;
   background: #fdf3e6;
 }
+
 .shop-cards-grid {
   display: flex;
   justify-content: center;
-  gap: 100px;
-  background: #fdf3e6;
-  padding: 40px 0;
+  gap: 150px; /* same as latest */
+  flex-wrap: nowrap;
+  max-width: 100%;
+  padding: 20px 20px 40px;
 }
+
+/* wrapper behaves like product-item */
+.shop-card-wrapper {
+  text-align: center;
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.shop-card-wrapper:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+/* image behaves like .product-card */
+.shop-card {
+  width: 350px;      /* same width as product-card */
+  height: 350px;     /* same height */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.shop-card:hover {
+  transform: scale(1.05);
+}
+
+.artisan-name {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2e2e2e;
+  transition: color 0.3s ease;
+}
+
+.shop-card-wrapper:hover .artisan-name {
+  color: #b3531a;
+}
+
 /* -------------------- LATEST PRODUCTS -------------------- */
 .latest-products {
   padding: 0px;
@@ -328,116 +416,241 @@ html, body {
   z-index: 1;
   text-align: center;
 }
-/* -------------------- FOOTER -------------------- */
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background-color: #705c47;
-  color: #e5decf;
-  padding: 50px 70px;
-  font-family: 'Segoe UI', sans-serif;
-  margin-top: 60px;
-}
-.footer-left {
-  flex: 1;
-  max-width: 30%;
-}
-.footer-left h2 {
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-.footer-left p {
-  font-size: 16px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-  color: #d8cfc0;
-}
-.register-btn {
-  background: #e5decf;
-  color: #333;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: 0.2s;
-}
-.register-btn:hover {
-  background: #fff4e2;
-}
-.footer-right {
-  flex: 2;
-  padding-left: 60px;
-}
-.footer-right hr {
-  border: none;
-  border-top: 1px solid #ffffff;
-  margin: 12px 0;
-}
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin: 24px 0;
-}
-.footer-logo {
-  font-size: 36px;
-  font-weight: 400;
-  font-family: 'Times New Roman', serif;
-  margin-right: 70px;
-  color: #000;
-}
-.footer-links {
-  display: flex;
-  gap: 70px;
-}
-.footer-links h4 {
-  margin-bottom: 10px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #e5decf;
-  letter-spacing: 1px;
-}
-.footer-links p {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #d8cfc0;
-  cursor: pointer;
-}
-.footer-links p:hover {
-  text-decoration: underline;
-}
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #d8cfc0;
-  margin-top: 14px;
-}
-/* LAYOUT SHRINKING (instead of responsive reflow)*/
-/* Slight shrink for medium screen */
-@media (max-width: 1200px) {
-  .products-page {
-    zoom: 0.85;
-  }
-}
-/* More shrink on tablets */
+
+/* ============================================================
+   MOBILE SHRINK (NO LAYOUT CHANGE)
+============================================================ */
+
 @media (max-width: 768px) {
-  .products-page {
-    zoom: 0.75;
+
+  /* ------------ FEATURED SECTION (Shrink only) ------------ */
+
+  .featured-section {
+    height: 420px; 
+    margin-top: -30px; 
+  }
+
+  .featured-photo {
+    height: 100%;
+  }
+
+  .featured-box {
+    padding: 25px 20px;
+  }
+
+  .featured-box h1 {
+    font-size: 2.2rem;
+    top: -40px;
+    margin-bottom: -30px;
+  }
+
+  .featured-box h3 {
+    font-size: 1rem;
+  }
+
+  .featured-box p {
+    font-size: 0.9rem;
+    max-width: 90%;
+  }
+
+  .shop-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  /* ------------ SHOP CARDS ------------ */
+
+  .shop-cards-grid {
+    gap: 40px;
+  }
+
+  .shop-card {
+    width: 200px;
+    height: 200px;
+  }
+
+  .artisan-name {
+    font-size: 14px;
+  }
+
+  /* ------------ LATEST PRODUCTS ------------ */
+
+  .latest-products-grid {
+    gap: 30px;
+  }
+
+  .product-card {
+    width: 220px;
+    height: 220px;
+  }
+
+  .product-name {
+    font-size: 14px;
+  }
+
+  /* ------------ HERITAGE SECTION ------------ */
+
+  .heritage-container {
+    gap: 20px;
+  }
+
+  .heritage-image img {
+    width: 220px;
+  }
+
+  .heritage-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .heritage-content p {
+    font-size: 0.9rem;
+  }
+
+  /* ------------ TAHANANCRAFTS SECTION ------------ */
+
+  .tahanancrafts-logo {
+    width: 180px;
+  }
+
+  .description-box {
+    padding: 30px 20px;
+    font-size: 0.9rem;
   }
 }
-/* Maximum shrink for small phones */
+
+/* ============================================================
+   VERY SMALL (≤480px)
+============================================================ */
+
 @media (max-width: 480px) {
-  .products-page {
-    zoom: 0.60;
+
+  .featured-section {
+    height: 250px;
+    margin-bottom: -20px;
   }
-}
-/* Prevent horizontal scrollbars */
-html, body {
-  overflow-x: hidden;
+
+  .featured-box h1 {
+    font-size: 1.4rem;
+  }
+
+  .featured-box p {
+    font-size: 0.6rem;
+  }
+  .featured-box .rating-value {
+    font-size: 0.6rem;
+    margin-left: 3px;
+  }
+
+  .shop-btn{
+    padding: 4px 10px;
+    font-size: 0.6rem;
+  }
+
+  .shop-card {
+    width: 140px;
+    height: 140px;
+  }
+
+  .shop-card-wrapper {
+    margin-top: -20px;
+    margin-bottom: -40px;
+    text-align: center;
+    width: 150px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .latest-products-title {
+    margin-top: -20px;
+  }
+
+
+  /* === LATEST PRODUCTS GRID === */
+  .latest-products-grid {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* reduced since images are smaller */
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: none;
+    padding: 0 0px;
+    margin-bottom: -30px;
+  }
+
+  /* === CARD ITEM === */
+  .latest-products .product-item {
+    text-align: center;
+    width: 120px;       /* reduced from 280px */
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin: 0px 0px;  /* added vertical margin for spacing */
+    padding-top: 4px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  /* === IMAGE — Your updated version applied cleanly === */
+  .latest-products .product-item img {
+    width: 100%;
+    height: 80px;
+    border-radius: 7px;
+    object-fit: cover;
+    margin-top: 0;
+    margin-right: -40px;
+    margin-left: -40px;
+    padding: 0;
+  }
+
+  /* === HOVER EFFECT (gentler due to smaller card) === */
+  .latest-products .product-item:hover {
+    transform: scale(1.03) translateY(-3px);
+  }
+
+  /* === PRODUCT NAME === */
+  .latest-products .product-name {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    font-size: 14px;        /* reduced from 18px */
+    font-weight: 600;
+  }
+  .product-card {
+    width: 180px;
+    height: 180px;
+  }
+
+  .heritage-section {
+    padding: 20px 0;
+    margin-bottom: -30px;
+  }
+
+  .heritage-image img {
+    width: 180px;
+  }
+
+  .heritage-content p {
+    font-size: 0.8rem;
+  }
+
+  .tahanancrafts-section {
+    padding: 20px 10px;
+    min-height: 400px;
+    margin-bottom: -70px;
+  }
+  .tahanancrafts-logo {
+    width: 140px;
+    top: 20px;
+  }
+  .description-box {
+    padding: 10px 10px;
+    font-size: 0.85rem;
+    margin: 40px 0 10px 0;
+  }
 }

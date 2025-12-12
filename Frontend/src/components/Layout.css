@@ -25,6 +25,15 @@
   width: auto;
 }
 
+.dashboard-link{
+  margin-left: 20px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+}
+
 .header-actions {
   display: flex;
   align-items: center;

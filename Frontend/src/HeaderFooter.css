@@ -1,277 +1,334 @@
-/* Wrapper */
-.hf-wrapper {
+/* ================================================================
+   RESET & WRAPPER
+================================================================ */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.header-footer-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
-  background: #ffffff; /* now white */
+  background: #ffffff;
 }
-/* ===== HEADER ===== */
-.hf-header {
+
+/* ================================================================
+   HEADER
+================================================================ */
+.homepage-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 40px;
-  background: #fffdf9; /* 👈 KEEP here so only header is beige */
+  flex-direction: column; 
+  width: 100%;
+  background: #fdf3e6;
   border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  position: sticky;
+  padding: 12px 20px;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: 999;
+  box-sizing: border-box;
 }
-.hf-logo {
-  width: 70px;
-  height: auto;
-}
-.hf-nav ul {
-  display: flex;
-  list-style: none;
-  gap: 25px;
-  margin: 0;
-  padding: 0;
-}
-.hf-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
-  transition: color 0.2s ease;
-}
-.hf-nav a:hover {
-  color: #b78a4a; 
-}
-.hf-actions {
+
+/* ===== TOP ROW (LOGO | SEARCH | CART) ===== */
+.header-top-row {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
 }
-.hf-search input {
-  padding: 6px 12px;
+
+.logo-svg.homepage-logo {
+  width: 140px;
+}
+
+/* SEARCH BOX */
+.search-box {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 260px;
+  margin: 0 15px;
+  padding: 4px 10px;
+  background: #fff;
   border: 1px solid #ccc;
   border-radius: 20px;
 }
-.hf-search button {
-  margin-left: 5px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 20px;
-  background: #d5c1a1;
-  cursor: pointer;
-}
-.hf-cart {
-  padding: 6px 14px;
-  border: none;
-  background: #d5c1a1;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: none;
-  color: #000;
-}
-/* ===== MAIN CONTENT ===== */
-.hf-main {
+
+.search-box input {
   flex: 1;
-  padding: 40px 20px;
+  border: none;
+  outline: none;
+  padding: 6px;
+  background: transparent;
 }
-/* ===== FOOTER ===== */
-.hf-footer {
-  background: #f7f4f1;
-  padding: 40px;
+
+.search-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* CART */
+.cart-btn {
+  background: none;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.cart-btn:hover {
+  color: #6b4226;
+}
+
+/* ===== NAVIGATION BELOW ===== */
+.nav-links {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.nav-links ul {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links ul li {
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-links ul li:hover {
+  color: #6b4226;
+}
+
+/* ================================================================
+   FOOTER
+================================================================ */
+.footer {
+  background-color: #705c47;
+  color: #e5decf;
+  padding: 50px 70px;
+  margin-top: 60px;
+  font-family: 'Segoe UI', sans-serif;
+
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  align-items: center;
+  text-align: center;
 }
-.hf-footer-top {
+
+/* FOOTER LOGO CENTERED */
+.footer-logo {
+  font-size: 38px;
+  font-family: "Times New Roman", serif;
+  font-weight: 400;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* LEFT SECTION — JOIN US */
+.footer-left {
+  max-width: 500px;
+  margin-bottom: 25px;
+}
+
+.footer-left h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.footer-left p {
+  font-size: 15px;
+  margin-bottom: 18px;
+  color: #d8cfc0;
+}
+
+.register-btn {
+  background: #e5decf;
+  color: #333;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.register-btn:hover {
+  background: #fff4e2;
+}
+
+/* HORIZONTAL ROW → ABOUT | SUPPORT | EMAIL */
+.footer-content {
+  width: 100%;
+  max-width: 900px;
+  margin: 20px 0;
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: 40px;
 }
-.hf-footer-left {
-  max-width: 40%;
+
+.footer-links h4 {
+  font-size: 14px;
+  color: #e5decf;
+  margin-bottom: 8px;
 }
-.hf-footer-left h2 {
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
-.hf-register-btn {
-  margin-top: 12px;
-  padding: 10px 20px;
-  border: none;
-  background: #d5c1a1;
-  border-radius: 20px;
+
+.footer-links p {
+  font-size: 13px;
+  margin: 3px 0;
   cursor: pointer;
-  font-weight: 600;
+  color: #d8cfc0;
 }
-.hf-footer-right {
-  flex: 1;
-  min-width: 300px;
+
+.footer-links p:hover {
+  text-decoration: underline;
 }
-.hf-footer-logo {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-.hf-footer-links {
+
+/* COPYRIGHT + PRIVACY */
+.footer-bottom {
   display: flex;
-  gap: 50px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #d8cfc0;
 }
-.hf-footer-links h4 {
-  margin-bottom: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-}
-.hf-footer-links a {
-  display: block;
-  margin: 4px 0;
-  text-decoration: none;
-  color: #333;
-  font-size: 0.9rem;
-}
-.hf-footer-links a:hover {
-  color: #b78a4a;
-}
-.hf-footer-bottom {
-  border-top: 1px solid #ddd;
-  padding-top: 15px;
+
+/* ================================================================
+   MODALS
+================================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
   display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: #555;
-}
-/* Ensure header keeps its beige theme and font, but remove default blue underlines/colors for links */
-.hf-nav a,
-.hf-nav a:visited,
-.hf-footer-links a {
-  text-decoration: none; /* remove underline */
-  color: inherit;        /* use surrounding text color instead of browser blue */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
-/* hover still shows accent color, keep visual feedback */
-.hf-nav a:hover,
-.hf-footer-links a:hover {
-  color: #b78a4a;
-  text-decoration: none;
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
 }
 
-/* keep a subtle focus ring for accessibility (keyboard navigation) */
-.hf-nav a:focus,
-.hf-footer-links a:focus,
-.hf-cart:focus,
-.hf-search button:focus,
-.hf-register-btn:focus {
-  outline: 2px solid rgba(183,138,74,0.18);
-  outline-offset: 2px;
+.close-modal-btn {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background: #d5c1a1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/* reinforce header font-family so link defaults don't override it */
-.hf-header,
-.hf-header * {
-  font-family: 'Segoe UI', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-
-/* ===== Responsive Adjustments Only ===== */
-@media (max-width: 1024px) {
-  .hf-header {
-    padding: 15px 20px;
-  }
-  .hf-nav ul {
-    gap: 15px;
-  }
-  .hf-actions {
-    gap: 15px;
-  }
-  .hf-main {
-    padding: 30px 15px;
-  }
-  .hf-footer {
-    padding: 30px 20px;
-  }
-  .hf-footer-top {
-    gap: 25px;
-  }
-  .hf-footer-left {
-    max-width: 50%;
-  }
-  .hf-footer-links {
-    gap: 30px;
-  }
-}
-/* Mobile / Small screens */
+/* ================================================================
+   MOBILE RESPONSIVE ( ≤ 768px )
+================================================================ */
 @media (max-width: 768px) {
-  /* Header stacks vertically */
-  .hf-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+
+  /* ----- HEADER ----- */
+
+  .logo-svg.homepage-logo {
+    width: 85px;
   }
-  .hf-nav ul {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
+
+  .search-box {
+    max-width: 150px;
+    padding: 2px 6px;
   }
-  .hf-actions {
-    width: 100%;
-    justify-content: flex-start;
-    gap: 10px;
+
+  .search-box input {
+    font-size: 12px;
   }
-  .hf-search input {
-    width: 70%;
+
+  .cart-btn {
+    font-size: 12px;
+    padding: 4px 6px;
   }
-  .hf-main {
-    padding: 20px 10px;
+
+  .nav-links ul {
+    gap: 20px;
+    font-size: 13px;
+    flex-wrap: wrap;
   }
-  /* Footer stacks left and right */
-  .hf-footer {
-    padding: 25px 15px;
+
+  /* ----- FOOTER ----- */
+
+  .footer {
+    padding: 35px 25px;
+  }
+
+  .footer-logo {
+    font-size: 26px;
+    margin-bottom: 15px;
+  }
+
+  .footer-left h2 {
+    font-size: 22px;
+  }
+
+  .footer-left p {
+    font-size: 13px;
+  }
+
+  .register-btn {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .footer-content {
+    flex-direction: row;
     gap: 20px;
   }
-  .hf-footer-top {
-    flex-direction: column;
-    gap: 20px;
+
+  .footer-links h4 {
+    font-size: 12px;
   }
-  .hf-footer-left {
-    max-width: 100%;
+
+  .footer-links p {
+    font-size: 12px;
   }
-  .hf-footer-right {
-    min-width: 100%;
-  }
-  .hf-footer-links {
-    gap: 20px;
-    flex-direction: column;
+
+  .footer-bottom {
+    font-size: 12px;
   }
 }
-/* Very small screens / smartphones */
+
+/* ================================================================
+   VERY SMALL DEVICES ( ≤ 480px )
+================================================================ */
 @media (max-width: 480px) {
-  .hf-header {
-    padding: 12px 10px;
+
+  .logo-svg.homepage-logo {
+    width: 70px;
   }
-  .hf-logo {
-    width: 60px;
+
+  .search-box {
+    max-width: 120px;
   }
-  .hf-search input {
-    width: 60%;
+
+  .footer-logo {
+    font-size: 22px;
   }
-  .hf-actions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .hf-main {
-    padding: 15px 8px;
-  }
-  .hf-footer {
-    padding: 20px 10px;
-    gap: 15px;
-  }
-  .hf-footer-top {
-    gap: 15px;
-  }
-  .hf-footer-links {
-    gap: 10px;
-  }
-  .hf-footer-bottom {
-    flex-direction: column;
-    gap: 10px;
+
+  .footer-content {
+    gap: 12px;
   }
 }
