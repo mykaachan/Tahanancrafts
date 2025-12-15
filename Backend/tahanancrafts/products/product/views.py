@@ -9,7 +9,7 @@ from django.db.models import Sum, Prefetch
 from django.db.models.functions import Coalesce
 import machineLearning.recommendations.recommendation as reco
 from users.models import Artisan, CustomUser
-from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem
+from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem, Rating 
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.db.models import Count
@@ -18,6 +18,8 @@ from products.checkout.services.checkout_service import create_orders_from_cart
 from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404
 from chat.notification import send_notification
+from django.db.models import Sum, Avg, Count, Q
+
 
 class ProductListView(APIView):
     permission_classes = [AllowAny]
@@ -37,7 +39,9 @@ class ProductListView(APIView):
                 sold_count=Sum(
                     "order_items__quantity",
                     filter=Q(order_items__order__status__in=valid_statuses)
-                )
+                ),
+                average_rating=Avg("ratings__score"),     
+                rating_count=Count("ratings")              
             )
             .prefetch_related(
                 Prefetch("images", queryset=ProductImage.objects.only("id", "image")),
@@ -60,6 +64,7 @@ class ProductListView(APIView):
             )
         )
 
+
         data = []
         for p in products:
             data.append({
@@ -80,6 +85,9 @@ class ProductListView(APIView):
                 "created_at": p.created_at,
                 "artisan": p.artisan.id if p.artisan else None,
                 "sold_count": p.sold_count or 0,
+
+                "average_rating": round(p.average_rating, 1) if p.average_rating else 0,
+                "rating_count": p.rating_count,
             })
 
         return Response(data)

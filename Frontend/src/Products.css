@@ -1,4 +1,9 @@
+
 /* MAIN PAGE LAYOUT*/
+
+.mobile-search-filter {
+  display: none;
+}
 .products-page {
   display: flex;
   flex-direction: column;
@@ -32,6 +37,15 @@
   font-size: 1rem;
   margin-bottom: 10px;
   font-weight: 600;
+}
+
+.products-page .products-filters .search-box {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 /* FIXED: Label no longer forces display; React controls visibility */
 .products-page .filter-group label {
@@ -123,6 +137,7 @@
 .filter-chip:hover {
   background: #7f6e48;
 }
+
 .clear-chips-btn {
   background: none;
   border: none;
@@ -148,23 +163,6 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding-bottom: 20px;
-}
-
-/* Responsive fallbacks: 3 / 2 / 1 columns at smaller widths */
-@media (max-width: 1200px) {
-  .products-page .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .products-page .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 480px) {
-  .products-page .products-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
 }
 
 /* ====== PRODUCT CARD (equal height, flexible content) ===== */
@@ -264,21 +262,8 @@
   padding-top: 20px;
 }
 
-/* Responsive tweaks */
-@media (max-width: 1024px) {
-  .products-page .product-card .image-wrap { height: 200px; }
-  .products-page .product-card { min-height: 320px; }
-}
-@media (max-width: 720px) {
-  .products-page .products-layout { gap: 18px; margin: 20px; }
-  .products-page .product-card .image-wrap { height: 180px; }
-  .products-page .products-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-}
 
-/* Prevent horizontal scrollbars */
-html, body {
-  overflow-x: hidden;
-}
+
 
 /* Reinforce header font on Products page to match main header and remove browser blue link styles */
 .homepage-header,
@@ -320,6 +305,10 @@ html, body {
   outline-offset: 2px;
 }
 
+.products-page{
+  margin-top: -120px;
+}
+
 /* If any anchor inside product cards still shows default link color, ensure it inherits */
 .products-grid a,
 .products-grid a:visited {
@@ -356,4 +345,190 @@ html, body {
 
 .products-page .show-more-btn:active {
   transform: translateY(0);
+}
+
+/* Responsive fallbacks: 3 / 2 / 1 columns at smaller widths */
+@media (max-width: 1200px) {
+  .products-page .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 1024px) {
+  .products-page .product-card .image-wrap { height: 200px; }
+  .products-page .product-card { min-height: 320px; }
+}
+
+@media (max-width: 900px) {
+  .products-page .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .products-page .products-layout { gap: 10px; margin: 15px; }
+  .products-page .product-card .image-wrap { height: 140px; }
+  .products-page .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+
+  .products-filters {
+    display: none;
+    position: flex;
+    top: 70px;
+
+    margin-right: -3000px;
+
+    width: 90vw;
+    max-width: 420px;
+    height: calc(100vh - 90px);
+
+    background: #fffdf9;
+    z-index: 1001;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    padding: 24px 18px;
+    border-radius: 14px; /* optional but looks nicer */
+  }
+
+  body.show-mobile-filters .products-filters {
+    display: block;
+  }
+
+  .mobile-search-filter {
+    flex-direction: row;
+    gap: 8px;
+    padding: 10px 4px 0 4px;
+  }
+  
+  .mobile-search-filter .search-box {
+    width: 70%;
+    min-width: 0;
+    max-width: none;
+    font-size: 0.98rem;
+    padding: 5px 5px;
+  }
+  .mobile-filter-btn {
+    font-size: 0.98rem;
+    padding: 8px 10px;
+  }
+
+  /* Product card tweaks for small screens */
+  .products-page .product-card {
+    width: 200px;
+    height: 200px;
+
+  }
+
+  .products-filters .search-box {
+    display: none;
+  }
+
+  .products-page .product-card .image-wrap {
+    height: 200px;
+  }
+
+  .products-page .product-card h2 {
+    font-size: 0.6rem;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+
+  .products-page .product-card .muted {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .price-sale {
+    font-size: 0.37rem;
+  }
+
+  .price-regular {
+    font-size: 0.35rem;
+  }
+
+  .product-stats {
+    font-size: 0.65rem;
+    margin-top: 4px;
+  }
+
+  .rating-review {
+    font-size: 0.7rem !important;
+  }
+
+  .sold-count {
+    font-size: 0.65rem !important;
+  }
+
+  .mobile-search-filter {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 16px 10px 0 10px;
+    background: #fffdf9;
+    position: sticky;
+    top: 60px;
+    z-index: 10;
+    margin-left: 20px;
+    width: 650px;
+
+  }
+
+  .mobile-search-filter .search-box {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  .mobile-filter-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #998759;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .mobile-filter-btn:hover {
+    background: #7f6e48;
+  }
+
+  /* Hide sidebar filters by default, show when .show-mobile-filters is on body */
+  .products-filters {
+    display: none;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 90vw;          /* 👈 wider */
+    max-width: 420px;     /* 👈 larger panel */
+    height: calc(100vh - 70px);
+    background: #fffdf9;
+    z-index: 1001;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.12);
+    overflow-y: auto;
+    padding: 24px 18px;
+  }
+
+  body.show-mobile-filters .products-filters {
+    display: block;
+  }
+  /* Overlay for closing filters */
+  body.show-mobile-filters::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 1000;
+  }
+
+  /* 3 products per row on mobile */
+  .products-page .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Prevent horizontal scrollbars */
+html, body {
+  overflow-x: hidden;
 }

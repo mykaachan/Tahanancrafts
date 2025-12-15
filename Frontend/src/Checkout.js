@@ -1,6 +1,5 @@
 // src/components/Checkout.js
 import React, { useEffect, useState } from "react";
-import HeaderFooter from "./HeaderFooter";
 import "./Checkout.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -105,7 +104,7 @@ function Checkout() {
       };
 
       const res = await fetch(
-        "https://www.tahanancrafts.shop/api/checkout-quotation/",
+        "https://www.tahanancrafts.shop/api/products/delivery/checkout-quotation/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -401,122 +400,121 @@ function Checkout() {
   // -------------------------
   // UI render (keeps your original modal and layout)
   return (
-    <HeaderFooter>
-      <div className="checkout-page">
-        <h1 className="checkout-title">Checkout</h1>
+    <div className="checkout-page">
+      <h1 className="checkout-title">Checkout</h1>
 
-        {/* Address bar */}
-        <div className="address-bar">
-          <div className="address-info">
-            <span className="address-icon">📍</span>
-            <div>
-              {selectedAddress ? (
-                <>
-                  <p className="address-title">
-                    {selectedAddress.barangay}, {selectedAddress.city} {selectedAddress.province}
-                  </p>
-                  <p className="address-details">
-                    {selectedAddress.full_name} ({selectedAddress.phone}) <br />
-                    {selectedAddress.address}
-                  </p>
-                </>
-              ) : (<p>No address found. Add one.</p>)}
-            </div>
+      {/* Address bar */}
+      <div className="address-bar">
+        <div className="address-info">
+          <span className="address-icon">📍</span>
+          <div>
+            {selectedAddress ? (
+              <>
+                <p className="address-title">
+                  {selectedAddress.barangay}, {selectedAddress.city} {selectedAddress.province}
+                </p>
+                <p className="address-details">
+                  {selectedAddress.full_name} ({selectedAddress.phone}) <br />
+                  {selectedAddress.address}
+                </p>
+              </>
+            ) : (<p>No address found. Add one.</p>)}
           </div>
-
-          <button className="change-btn" onClick={() => setShowAddressModal(true)}>
-            Change
-          </button>
         </div>
 
-        <div className="checkout-container">
-          <div className="checkout-details">
-            <h2>Products Ordered</h2>
-            <div className="product-header">
-              <span>Unit Price</span><span>Quantity</span><span>Item Subtotal</span>
-            </div>
+        <button className="change-btn" onClick={() => setShowAddressModal(true)}>
+          Change
+        </button>
+      </div>
 
-            {selectedItems.map((item) => (
-              <div className="product-item" key={item.id}>
-                <img src={item.main_image || item.img || "https://via.placeholder.com/150"} alt={item.product_name} className="product-img" />
-                <div className="product-details">
-                  <p className="product-name">{item.product_name}</p>
-                  <p className="artisan-name">By: {item.artisan_name}</p>
-                </div>
-                <span className="unit-price">₱{item.unit_price || item.price}</span>
-                <span className="quantity">{item.quantity}</span>
-                <span className="subtotal">₱{item.total_price}</span>
-              </div>
-            ))}
+      <div className="checkout-container">
+        <div className="checkout-details">
+          <h2>Products Ordered</h2>
+          <div className="product-header">
+            <span>Unit Price</span><span>Quantity</span><span>Item Subtotal</span>
           </div>
 
-          <div className="checkout-summary">
-            <h2>Order Summary</h2>
-            <div className="summary-details">
-              <p><span>Items Subtotal:</span><span>₱{itemsSubtotal}</span></p>
-              <p><span>Shipping Fee:</span><span>{loadingFee ? "Calculating..." : (shippingFee !== null ? `₱${shippingFee}` : "—")}</span></p>
-
-              <div className="payment-options" style={{ marginTop: 20 }}>
-                <h3>Payment Options</h3>
-
-                <label>
-                  <input type="radio" value="sf_only" checked={paymentOption === "sf_only"} onChange={() => setPaymentOption("sf_only")} />
-                  Pay Shipping Fee Only
-                </label>
-
-                <label>
-                  <input type="radio" value="partial" checked={paymentOption === "partial"} onChange={() => setPaymentOption("partial")} />
-                  Partial Payment
-                </label>
-
-                {paymentOption === "partial" && (
-                  <input type="number" className="partial-input" placeholder="Enter partial amount" value={partialAmount} onChange={(e) => setPartialAmount(e.target.value)} min="1" />
-                )}
-
-                <label>
-                  <input type="radio" value="full" checked={paymentOption === "full"} onChange={() => setPaymentOption("full")} />
-                  Pay Full Amount
-                </label>
+          {selectedItems.map((item) => (
+            <div className="product-item" key={item.id}>
+              <img src={item.main_image || item.img || "https://via.placeholder.com/150"} alt={item.product_name} className="product-img" />
+              <div className="product-details">
+                <p className="product-name">{item.product_name}</p>
+                <p className="artisan-name">By: {item.artisan_name}</p>
               </div>
+              <span className="unit-price">₱{item.unit_price || item.price}</span>
+              <span className="quantity">{item.quantity}</span>
+              <span className="subtotal">₱{item.total_price}</span>
+            </div>
+          ))}
+        </div>
 
-              <p className="total"><span>Total Pay Now:</span><span>₱{payNow}</span></p>
-              <p className="cod-amount"><span>COD Remaining:</span><span>₱{codAmount}</span></p>
+        <div className="checkout-summary">
+          <h2>Order Summary</h2>
+          <div className="summary-details">
+            <p><span>Items Subtotal:</span><span>₱{itemsSubtotal}</span></p>
+            <p><span>Shipping Fee:</span><span>{loadingFee ? "Calculating..." : (shippingFee !== null ? `₱${shippingFee}` : "—")}</span></p>
+
+            <div className="payment-options" style={{ marginTop: 20 }}>
+              <h3>Payment Options</h3>
+
+              <label>
+                <input type="radio" value="sf_only" checked={paymentOption === "sf_only"} onChange={() => setPaymentOption("sf_only")} />
+                Pay Shipping Fee Only
+              </label>
+
+              <label>
+                <input type="radio" value="partial" checked={paymentOption === "partial"} onChange={() => setPaymentOption("partial")} />
+                Partial Payment
+              </label>
+
+              {paymentOption === "partial" && (
+                <input type="number" className="partial-input" placeholder="Enter partial amount" value={partialAmount} onChange={(e) => setPartialAmount(e.target.value)} min="1" />
+              )}
+
+              <label>
+                <input type="radio" value="full" checked={paymentOption === "full"} onChange={() => setPaymentOption("full")} />
+                Pay Full Amount
+              </label>
             </div>
 
-            <div style={{ marginTop: 25, textAlign: "center" }}>
-              <h3>Pay Shipping Fee {hasPreorder ? " + Downpayment (if required)" : ""}</h3>
-              {selectedItems[0]?.artisan_qr ? (
-                <img src={selectedItems[0].artisan_qr} alt="Payment QR" style={{ width: 200, borderRadius: 12, marginTop: 10 }} />
-              ) : (<p style={{ fontSize: 13, color: "#999" }}>No QR uploaded by seller</p>)}
-              <p style={{ marginTop: 8, fontSize: 13, color: "#555" }}>Scan the QR to pay. After payment, upload proof in your Orders page.</p>
-            </div>
-
-            <h2 style={{ marginTop: 20 }}>Payment Method</h2>
-            <p className="payment-method">Cash on Delivery</p>
-            <div style={{ marginTop: "20px" }}>
-              <h3>Message to Seller (optional)</h3>
-              <textarea
-                className="seller-message-box"
-                placeholder="Write a message to the seller (optional)…"
-                value={messageToSeller}
-                onChange={(e) => setMessageToSeller(e.target.value)}
-                style={{
-                  width: "100%",
-                  minHeight: "80px",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  border: "1px solid #ccc",
-                  resize: "vertical",
-                  fontSize: "14px",
-                }}
-              />
-            </div>
-            <button className="btn-place-order" onClick={placeOrder}>Place Order</button>
+            <p className="total"><span>Total Pay Now:</span><span>₱{payNow}</span></p>
+            <p className="cod-amount"><span>COD Remaining:</span><span>₱{codAmount}</span></p>
           </div>
+
+          <div style={{ marginTop: 25, textAlign: "center" }}>
+            <h3>Pay Shipping Fee {hasPreorder ? " + Downpayment (if required)" : ""}</h3>
+            {selectedItems[0]?.artisan_qr ? (
+              <img src={selectedItems[0].artisan_qr} alt="Payment QR" style={{ width: 200, borderRadius: 12, marginTop: 10 }} />
+            ) : (<p style={{ fontSize: 13, color: "#999" }}>No QR uploaded by seller</p>)}
+            <p style={{ marginTop: 8, fontSize: 13, color: "#555" }}>Scan the QR to pay. After payment, upload proof in your Orders page.</p>
+          </div>
+
+          <h2 style={{ marginTop: 20 }}>Payment Method</h2>
+          <p className="payment-method">Cash on Delivery</p>
+          <div style={{ marginTop: "20px" }}>
+            <h3>Message to Seller (optional)</h3>
+            <textarea
+              className="seller-message-box"
+              placeholder="Write a message to the seller (optional)…"
+              value={messageToSeller}
+              onChange={(e) => setMessageToSeller(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: "80px",
+                padding: "10px",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                resize: "vertical",
+                fontSize: "14px",
+              }}
+            />
+          </div>
+          <button className="btn-place-order" onClick={placeOrder}>Place Order</button>
         </div>
       </div>
 
       {/* Address modal (same as your previous UI) */}
+      {/* Modals are rendered here for correct JSX syntax */}
       {showAddressModal && (
         <div className="address-modal-backdrop" onClick={() => setShowAddressModal(false)}>
           <div className="address-modal-box" onClick={(e) => e.stopPropagation()}>
@@ -613,7 +611,7 @@ function Checkout() {
           </div>
         </div>
       )}
-    </HeaderFooter>
+    </div>
   );
 }
 

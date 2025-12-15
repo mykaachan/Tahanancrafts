@@ -2,6 +2,7 @@
   font-family: "Poppins", sans-serif;
   background-color: #faf5ef;
   color: #3b2f2f;
+  margin-top: -25px;
 }
 /* ===== HERO SECTION ===== */
 .taal-hero {
@@ -150,25 +151,89 @@
 }
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
-  .taal-hero-content,
+  .taal-hero-content { 
+    display: flex;
+    flex-direction: row;     /* image left, text right */
+    align-items: center;
+    gap: 40px;               /* space between image and text */
+  }
+
+  /* IMAGE */
+  .taal-hero-content img {
+    width: 40%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  /* TEXT */
+  .taal-hero-text {
+    flex: 1;                 /* allow text to take remaining space */
+    text-align: left;
+  }
+
+  /* Keep your existing paddings */
   .heritage-inner,
   .taal-story-section,
+  .latest-products,
+  .more-products {
+    padding: 40px 15px;
+  }
+
+
   .product-grid {
-    flex-direction: column;
-    align-items: center;
+    display: flex;              /* 👈 horizontal layout */
+    flex-direction: row;
+    gap: 25px;
+    overflow-x: auto;           /* 👈 enable horizontal scroll */
+    overflow-y: hidden;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
   }
-  .story-left img,
-  .taal-hero-logo,
+
+  /* Prevent cards from shrinking */
+  .product-grid .product-card {
+    flex: 0 0 auto;
+    max-width: 200px;
+    height: 230px;
+  }
+
+  .product-grid .product-card img {
+    width: 150px;
+    height: 150px;
+  }
+  /* STORY SECTION IMAGE */
+  .story-left img {
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* HERO IMAGE */
+  .taal-hero-logo {
+    width: 40%;
+    max-width: 260px;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  /* HERITAGE IMAGE */
   .heritage-right img {
-    width: 90%;
-    max-width: 700px;
+    width: 100%;
+    max-width: 620px;
+    display: block;
+    margin: 0 auto;
   }
+
   .story-right, .heritage-left {
     max-width: 90%;
     text-align: left;
   }
-  .product-card {
-    width: 90%;
+  .taal-story-page{
+    margin-bottom: -20px;
+    margin-top: -80px;
   }
 }
 /* ===== MOBILE / SMALL SCREENS ===== */
@@ -190,7 +255,12 @@
   }
   .taal-hero-text p {
     font-size: 0.95rem;
-    text-align: center;
+    text-align: justify;
+  }
+
+  .taal-story-page{
+    margin-top: -27px;
+    margin-bottom: -70px;
   }
   /* Story Sections */
   .taal-story-section,
@@ -204,20 +274,41 @@
   }
   .story-right {
     max-width: 100%;
-    text-align: center;
+    text-align: justify;
   }
   .story-right p {
     font-size: 0.95rem;
     line-height: 1.5;
+
   }
   /* Products */
   .latest-products,
   .more-products {
     padding: 40px 15px;
   }
-  .product-card {
-    width: 100%;
+
+  .product-grid {
+    display: flex;              /* 👈 horizontal layout */
+    flex-direction: row;
+    gap: 5px;
+    overflow-x: auto;           /* 👈 enable horizontal scroll */
+    overflow-y: hidden;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
   }
+
+  /* Prevent cards from shrinking */
+  .product-grid .product-card {
+    flex: 0 0 auto;
+    max-width: 120px;
+    height: 200px;
+  }
+
+  .product-grid .product-card img {
+    width: 100px;
+    height: 100px;
+  }
+
   /* Heritage Section */
   .heritage-wrapper {
     padding: 30px 15px;

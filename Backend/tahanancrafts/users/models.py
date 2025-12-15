@@ -176,3 +176,22 @@ class ShippingAddress(models.Model):
     lng = models.FloatField(null=True, blank=True)
 
     is_default = models.BooleanField(default=False)
+
+class ArtisanFollow(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="followed_artisans"
+    )
+    artisan = models.ForeignKey(
+        Artisan,
+        on_delete=models.CASCADE,
+        related_name="followers"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "artisan")  # prevent duplicate follows
+
+    def __str__(self):
+        return f"{self.user.id} follows {self.artisan.id}"

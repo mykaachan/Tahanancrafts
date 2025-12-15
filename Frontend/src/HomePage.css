@@ -121,11 +121,12 @@ html, body {
 .featured-section {
   display: flex;
   width: 100%;
-  height: 700px;           /* adjust if needed */
+  height: 700px;           
   margin: 0;
   padding: 0;
   border: none;
-  margin-top: -30px;   /* pulls section up */
+  margin-top: -30px;   
+  margin-bottom: -20px;
 }
 /* LEFT SIDE (IMAGE) */
 .featured-left {
@@ -133,8 +134,8 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;              /* remove padding */
-  margin: 0;               /* remove margin */
+  padding: 0;              
+  margin: 0;               
   background: #fdf3e6;
 }
 /* IMAGE styling */

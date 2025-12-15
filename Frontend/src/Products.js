@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import HeaderFooter from "./HeaderFooter";
 import "./Products.css";
-import Footer from "./Footer";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { fetchCategories, fetchMaterials, getImageUrl } from "./api";
+import { useLocation } from "react-router-dom";
 
-const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
-//const API_URL = "http://127.0.0.1:8000";
+
+
+//const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
+const API_URL = "http://127.0.0.1:8000";
 const PRODUCTS_PER_PAGE = 12;
 
 /* ---------- Simple cache helpers (localStorage) ---------- */
@@ -46,13 +49,33 @@ function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+  const urlQuery = useMemo(() => {
+    return new URLSearchParams(location.search).get("q") || "";
+  }, [location.search]);
 
-  /* ---------- Debounced search (unchanged) ---------- */
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    if (urlQuery) {
+      setSearchQuery(urlQuery);
+    }
+  }, [urlQuery]);
+
+  useEffect(() => {
+    function handleOutsideClick(e) {
+      if (
+        document.body.classList.contains("show-mobile-filters") &&
+        !e.target.closest(".products-filters") &&
+        !e.target.closest(".mobile-filter-btn")
+      ) {
+        document.body.classList.remove("show-mobile-filters");
+      }
+    }
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
+
+  // Live filtering: no debounce, filter as user types
 
   /* ---------- Load filters with cache + stale-while-revalidate ---------- */
   useEffect(() => {
@@ -147,8 +170,8 @@ function Products() {
         p.materials && p.materials.some((m) => selectedMaterials.includes(m.id))
       );
     }
-    if (debouncedSearch.trim()) {
-      const q = debouncedSearch.toLowerCase();
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (p) =>
           (p.name || "").toLowerCase().includes(q) ||
@@ -157,12 +180,17 @@ function Products() {
       );
     }
     return filtered;
-  }, [allProducts, selectedCategories, selectedMaterials, debouncedSearch]);
+  }, [allProducts, selectedCategories, selectedMaterials, searchQuery]);
 
   useEffect(() => {
     setProducts(filteredProducts);
     setCurrentPage(1);
   }, [filteredProducts]);
+
+  // Expose allProducts for HeaderFooter search modal
+  React.useEffect(() => {
+    window.__ALL_PRODUCTS__ = allProducts;
+  }, [allProducts]);
 
   // Pagination (unchanged)
   const totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
@@ -180,160 +208,168 @@ function Products() {
   }
 
   return (
-    <div className="products-page">
-      {/* HEADER */}
-      <header className="homepage-header">
-        <Logo className="logo-svg homepage-logo" />
-        <nav className="nav-links">
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li>Products</li>
-            <li><Link to="/story">Heritage</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-          </ul>
-        </nav>
+    <>
 
-        <div className="header-actions">
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="search-btn">🔍</button>
-          </div>
-
-          <Link to="/cart">
-            <button className="cart-btn">CART 🛒</button>
-          </Link>
-        </div>
-      </header>
-
-      <div className="products-layout">
-        {/* FILTERS */}
-        <aside className="products-filters">
-          <h3>Filter</h3>
-
+      <div className="products-page">
+        {/* Mobile search and filter button */}
+        <div className="mobile-search-filter">
+          <input
+            className="search-box"
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
           <button
-            className="clear-filters-btn"
+            className="mobile-filter-btn"
             onClick={() => {
-              setSelectedCategories([]);
-              setSelectedMaterials([]);
+              document.body.classList.toggle('show-mobile-filters');
             }}
           >
-            Clear All Filters ✕
+            Filter
           </button>
+        </div>
+        <div className="products-layout">
+          {/* FILTERS SIDEBAR */}
+          <aside className="products-filters">
+            <h3>Filter</h3>
+            <input
+              className="search-box"
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            <button
+              className="clear-filters-btn"
+              onClick={() => {
+                setSelectedCategories([]);
+                setSelectedMaterials([]);
+                setSearchQuery("");
+              }}
+            >
+              Clear All Filters ✕
+            </button>
+            <FilterGroup
+              title="Category"
+              items={categories}
+              selectedItems={selectedCategories}
+              onChange={(id) =>
+                setSelectedCategories((prev) =>
+                  prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
+                )
+              }
+            />
+            <FilterGroup
+              title="Material"
+              items={materials}
+              selectedItems={selectedMaterials}
+              onChange={(id) =>
+                setSelectedMaterials((prev) =>
+                  prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
+                )
+              }
+            />
+          </aside>
 
-          <FilterGroup
-            title="Category"
-            items={categories}
-            selectedItems={selectedCategories}
-            onChange={(id) =>
-              setSelectedCategories((prev) =>
-                prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
-              )
-            }
-          />
-
-          <FilterGroup
-            title="Material"
-            items={materials}
-            selectedItems={selectedMaterials}
-            onChange={(id) =>
-              setSelectedMaterials((prev) =>
-                prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-              )
-            }
-          />
-        </aside>
-
-        {/* PRODUCTS */}
-        <section className="products-content">
-          {loading ? (
-            <p className="loading-message">Loading products...</p>
-          ) : (
-            <>
-              <div className="products-grid">
-                {currentProducts.length === 0 ? (
-                  <p>No products found.</p>
-                ) : (
-                  currentProducts.map((product) => (
-                    <Link key={product.id} to={`/product/${product.id}`} className="product-link">
-                      <div className="product-card" onClick={() => handleProductClick(product.id)}>
-                        <div className="image-wrap">
-                          <img
-                            src={getImageUrl(product.main_image)}
-                            alt={product.name}
-                            loading="lazy" // lazy-load images below fold
-                          />
-                          {product.sales_price ? (
-                            <div className="discount-badge">
-                              -{Math.round(
-                                ((product.regular_price - product.sales_price) /
-                                  product.regular_price) *
-                                  100
-                              )}
-                              %
+            {/* PRODUCTS */}
+            <section className="products-content">
+              {loading ? (
+                <p className="loading-message">Loading products...</p>
+              ) : (
+                <>
+                  <div className="products-grid">
+                    {currentProducts.length === 0 ? (
+                      <p>No products found.</p>
+                    ) : (
+                      currentProducts.map((product) => (
+                        <Link key={product.id} to={`/product/${product.id}`} className="product-link">
+                          <div className="product-card" onClick={() => handleProductClick(product.id)}>
+                            <div className="image-wrap">
+                              <img
+                                src={getImageUrl(product.main_image)}
+                                alt={product.name}
+                                loading="lazy"
+                              />
+                              {product.sales_price ? (
+                                <div className="discount-badge">
+                                  -{Math.round(
+                                    ((product.regular_price - product.sales_price) /
+                                      product.regular_price) *
+                                      100
+                                  )}
+                                  %
+                                </div>
+                              ) : null}
                             </div>
-                          ) : null}
-                        </div>
 
-                        <div className="card-body">
-                          <h2>{product.name}</h2>
-                          <p className="muted">{product.description}</p>
+                            <div className="card-body">
+                              <h2>{product.name}</h2>
+                              <p className="muted">{product.description}</p>
 
-                          <div className="price-row">
-                            {product.sales_price ? (
-                              <>
-                                <span className="price-sale">₱{product.sales_price}</span>
-                                <span className="price-regular">₱{product.regular_price}</span>
-                              </>
-                            ) : (
-                              <span className="price-sale">₱{product.regular_price}</span>
-                            )}
+                              <div className="price-row">
+                                {product.sales_price ? (
+                                  <>
+                                    <span className="price-sale">₱{product.sales_price}</span>
+                                    <span className="price-regular">₱{product.regular_price}</span>
+                                  </>
+                                ) : (
+                                  <span className="price-sale">₱{product.regular_price}</span>
+                                )}
+                              </div>
+
+                              {/* Ratings and Sold count */}
+                              <div className="product-stats" style={{ marginTop: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                                <span className="rating-review" style={{ fontSize: '1.0rem', color: '#f5a623', display: 'flex', alignItems: 'center', gap: 2 }}>
+                                  {/* Show stars and average rating, fallback to N/A if not available */}
+                                  {typeof product.average_rating === 'number' ? (
+                                    <>
+                                      <span style={{ marginRight: 2 }}>★</span>
+                                      {product.average_rating.toFixed(1)}
+                                    </>
+                                  ) : (
+                                    <span style={{ color: '#bbb' }}>No rating</span>
+                                  )}
+                                </span>
+                                <span className="sold-count" style={{ fontSize: '0.85rem', color: '#6b6763' }}>
+                                  Sold: {Number(product.sold_count ?? 0)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
+                        </Link>
+                      ))
+                    )}
+                  </div>
 
-                          {/* Sold count (uses backend sold_count) */}
-                          <div className="product-stats" style={{ marginTop: 8 }}>
-                            <span className="sold-count" style={{ fontSize: "0.85rem", color: "#6b6763" }}>
-                              Sold: {Number(product.sold_count ?? 0)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))
-                )}
-              </div>
+                  {/* PAGINATION */}
+                  {totalPages > 1 && (
+                    <div className="pagination">
+                      <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((p) => p - 1)}
+                      >
+                        ← Previous
+                      </button>
 
-              {/* PAGINATION */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => p - 1)}
-                  >
-                    ← Previous
-                  </button>
+                      <span>
+                        Page {currentPage} of {totalPages}
+                      </span>
 
-                  <span>
-                    Page {currentPage} of {totalPages}
-                  </span>
-
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => p + 1)}
-                  >
-                    Next →
-                  </button>
-                </div>
+                      <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((p) => p + 1)}
+                      >
+                        Next →
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </section>
-      </div>
-    </div>
+            </section>
+          </div>
+        </div>
+    </>
   );
 }
 

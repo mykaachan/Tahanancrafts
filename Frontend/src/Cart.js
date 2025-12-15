@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Cart.css";
 import { ReactComponent as Logo } from "./Logo.svg";
 import { getCartItems, updateCartItem, removeCartItem } from "./api";
-import Footer from "./Footer";
 function Cart() {
   const [groups, setGroups] = useState([]); // 🟡 groups by artisan
   const [loading, setLoading] = useState(true);
@@ -164,27 +163,6 @@ function Cart() {
   if (loading) return <p>Loading cart...</p>;
   return (
     <>
-      {/* HEADER */}
-      <header className="homepage-header">
-        <Logo className="logo-svg homepage-logo" />
-        <nav className="nav-links">
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/products">Products</Link></li>
-            <li><Link to="/story">Story</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-          </ul>
-        </nav>
-        <div className="header-actions">
-          <div className="search-box">
-            <input type="text" placeholder="Search" />
-            <button className="search-btn">🔍</button>
-          </div>
-          <Link to="/cart">
-            <button className="cart-btn">CART 🛒</button>
-          </Link>
-        </div>
-      </header>
       {/* CART CONTENT */}
       <main className="cart-page">
         <div className="cart-container">
@@ -332,7 +310,6 @@ function Cart() {
           </div>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

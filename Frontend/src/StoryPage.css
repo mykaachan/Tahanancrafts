@@ -1,8 +1,10 @@
 /* Story Content */
 .story-content {
-  padding-top: 120px;
+  padding-top: 30px;
   max-width: 100%;
-  margin: 0 60px;         
+  margin: 0 60px;  
+  margin-top: -25px;   
+  margin-bottom: 0px;   
   display: flex;
   flex-direction: column;
   gap: 60px;              
@@ -28,6 +30,7 @@
   flex-direction: row;
   gap: 0;
   align-items: flex-start;
+  margin-bottom: 50px;
 }
 /* Images */
 .story-image {
@@ -70,19 +73,28 @@
 /* LAYOUT SHRINKING (instead of responsive reflow)*/
 /* Slight shrink for medium screen */
 @media (max-width: 1200px) {
-  .products-page {
+  .story-page {
     zoom: 0.85;
   }
 }
+
 /* More shrink on tablets */
 @media (max-width: 768px) {
-  .products-page {
-    zoom: 0.75;
+  .story-page {
+    margin-top: -42px;
+    margin-bottom: -130px;
+    zoom: 0.70;
+  }
+  .story-paragraph{
+    font-size: 12px;
+  }
+  .story-image{
+    max-width: 400px;
   }
 }
 /* Maximum shrink for small phones */
 @media (max-width: 480px) {
-  .products-page {
+  .story-page {
     zoom: 0.60;
   }
 }

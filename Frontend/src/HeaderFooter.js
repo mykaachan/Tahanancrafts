@@ -1,89 +1,140 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ReactComponent as Logo } from "./Logo.svg";
 import "./HeaderFooter.css";
 import "./PrivacyTerms.css";
 
-function HeaderFooter({ children }) {
+// Accept searchQuery and setSearchQuery as props for live filtering
+function HeaderFooter({ children, searchQuery, setSearchQuery }) {
   const [activeModal, setActiveModal] = useState(null);
 
   const openModal = (type) => setActiveModal(type);
   const closeModal = () => setActiveModal(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+
+
+
 
   return (
     <div className="header-footer-wrapper">
-      {/* ===== Header ===== */}
+      {/* ================= HEADER ================= */}
       <header className="homepage-header">
-        <div className="header-top-row">
+
+        {/* ===== DESKTOP HEADER ===== */}
+        <div className="header-row desktop-header">
           <Logo className="logo-svg homepage-logo" />
-          <div className="search-box">
-            <input type="text" placeholder="Search" />
-            <button className="search-btn">🔍</button>
+
+          <nav className="nav-links main-nav">
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/products">Products</Link></li>
+              <li><Link to="/story">Heritage</Link></li>
+              <li><Link to="/profile">Profile</Link></li>
+            </ul>
+          </nav>
+
+          <div className="search-cart-wrap">
+            <Link to="/cart">
+              <button className="cart-btn">CART 🛒</button>
+            </Link>
           </div>
-          <Link to="/cart"><button className="cart-btn">CART 🛒</button></Link>
         </div>
 
-        <nav className="nav-links">
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/products">Products</Link></li>
-            <li><Link to="/story">Heritage</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-          </ul>
-        </nav>
+        {/* ===== MOBILE HEADER (MAXWOSLEY STYLE) ===== */}
+        <div className="header-row mobile-header">
+          {/* LEFT: MENU */}
+          <button
+            className="menu-btn"
+            aria-label="Menu"
+            onClick={() => {
+              setIsMenuOpen(prev => !prev);
+            }}
+          >
+            ☰
+          </button>
+
+          {/* CENTER: LOGO */}
+          <Logo className="logo-svg homepage-logo mobile-logo" />
+
+          {/* RIGHT: SEARCH + CART */}
+          <div className="mobile-actions">
+            {/* Hide mobile search icon/modal, let Products.js handle search */}
+            <Link to="/cart">
+              <button className="icon-btn" aria-label="Cart">
+                🛒
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* ===== MOBILE NAVIGATION ===== */}
+        {isMenuOpen && (
+          <nav className="mobile-nav">
+            <ul>
+              <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
+              <li><Link to="/products" onClick={() => setIsMenuOpen(false)}>Products</Link></li>
+              <li><Link to="/story" onClick={() => setIsMenuOpen(false)}>Heritage</Link></li>
+              <li><Link to="/profile" onClick={() => setIsMenuOpen(false)}>Profile</Link></li>
+            </ul>
+          </nav>
+        )}
+
       </header>
 
       {/* ===== Page Content ===== */}
-      <main style={{ marginTop: "120px" }}>{children}</main>
+      <main style={{ marginTop: "110px" }}>{children}</main>
 
       {/* ===== Footer ===== */}
+
       <footer className="footer">
-        {/* --- Centered Footer Logo --- */}
-        <h1 className="footer-logo">THC</h1>
-
-        <div className="footer-left">
-          <h2>
-            Join us, <br /> artisans!
-          </h2>
-
-          <p>
-            Share your handmade creations with the world and join a community
-            that celebrates Filipino craftsmanship.
-          </p>
-
-          <Link to="/sellerregister" style={{ textDecoration: "none" }}>
-            <button className="register-btn">Register</button>
-          </Link>
-        </div>
-
-        {/* --- Horizontal Links Row --- */}
-        <div className="footer-content">
-
-          <div className="footer-links">
-            <h4>ABOUT US</h4>
-            <p onClick={() => openModal("tahanan")} className="footer-link">TahananCrafts</p>
-            <p onClick={() => openModal("about")} className="footer-link">About</p>
+        <div className="footer-main-row">
+          <div className="footer-left">
+            <h2>
+              Join us, <br /> artisans!
+            </h2>
+            <p>
+              Share your handmade creations with the world and join a community
+              that celebrates Filipino craftsmanship.
+            </p>
+            <Link to="/sellerregister" style={{ textDecoration: "none" }}>
+              <button className="register-btn">Register</button>
+            </Link>
           </div>
-
-          <div className="footer-links">
-            <h4>SUPPORT</h4>
-            <p onClick={() => openModal("support")} className="footer-link">Customer Support</p>
-            <p onClick={() => openModal("support")} className="footer-link">Contact</p>
+          <div className="footer-center-right">
+            <div className="footer-line" />
+            <div className="footer-center-content">
+              <div className="footer-center">
+                <h1 className="footer-logo">THC</h1>
+              </div>
+              <div className="footer-content">
+                <div className="footer-links">
+                  <h4>ABOUT US</h4>
+                  <p onClick={() => openModal("tahanan")} className="footer-link">TahananCrafts</p>
+                  <p onClick={() => openModal("about")} className="footer-link">About</p>
+                </div>
+                <div className="footer-links">
+                  <h4>SUPPORT</h4>
+                  <p onClick={() => openModal("support")} className="footer-link">Customer Support</p>
+                  <p onClick={() => openModal("support")} className="footer-link">Contact</p>
+                </div>
+                <div className="footer-links">
+                  <h4>EMAIL</h4>
+                  <p>tahanancrafts.shop@gmail.com</p>
+                </div>
+              </div>
+            </div>
+            <div className="footer-line" />
+            <div className="footer-bottom-row">
+              <div className="footer-bottom-left">
+                © 2025 - TahananCrafts
+              </div>
+              <div className="footer-bottom-right">
+                <span onClick={() => openModal("privacy")} className="footer-link">Privacy — Terms</span>
+              </div>
+            </div>
           </div>
-
-          <div className="footer-links">
-            <h4>EMAIL</h4>
-            <p>tahanancrafts.shop@gmail.com</p>
-          </div>
-
         </div>
-
-        {/* --- Bottom Row --- */}
-        <div className="footer-bottom">
-          <p>© 2025 - TahananCrafts</p>
-          <p onClick={() => openModal("privacy")} className="footer-link">Privacy — Terms</p>
-        </div>
-
       </footer>
 
 

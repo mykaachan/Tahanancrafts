@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import HeaderFooter from "./HeaderFooter";
 import { getProfile, updateProfile, changePassword } from "./api";
 import "./Profile.css";
 import SidebarProfile from "./components/SidebarProfile";
@@ -129,7 +128,6 @@ function Profile() {
     code === "O" ? "Other" : "";
 
   return (
-    <HeaderFooter>
       <div className="profile-page">
         <SidebarProfile profile={profileData} />
         <main className="profile-content">
@@ -234,7 +232,6 @@ function Profile() {
 
         </main>
       </div>
-    </HeaderFooter>
   );
 }
 

@@ -377,3 +377,22 @@ class OrderTimeline(models.Model):
 
     def __str__(self):
         return f"{self.status} - Order {self.order.id}"
+
+class ProductLike(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="liked_products"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="likes"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "product")  # prevent duplicate likes
+
+    def __str__(self):
+        return f"{self.user.id} liked {self.product.id}"

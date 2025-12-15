@@ -53,6 +53,7 @@ import PrivacyTerms from './PrivacyTerms';
 import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
 import SellerRegister from "./SellerRegister"; // ✅ default export
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import HeaderFooter from './HeaderFooter';
 // ✅ Step 1: Create a conditional wrapper for the popup
 function ConditionalChatPopup() {
   const location = useLocation();
@@ -86,10 +87,10 @@ function MainApp() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/verify" element={<VerifyCode />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/story" element={<StoryPage />} />
-        <Route path="/products" element={<Products />} />
+        <Route path="/story" element={<HeaderFooter><StoryPage /></HeaderFooter>} />
+        <Route path="/products" element={<HeaderFooter><Products /></HeaderFooter>} />
         <Route path="/iraya" element={<Iraya />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<HeaderFooter><Cart /></HeaderFooter>} />
         <Route path="/signup-verify" element={<SignupVerifyContact />} />
         <Route path="/add-product" element={<Layout><AddProduct /></Layout>} />
         <Route path="/edit-product/:id" element={<Layout><EditProduct /></Layout>} />
@@ -97,7 +98,7 @@ function MainApp() {
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="/order-list" element={<OrderList />} />
         <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout" element={<HeaderFooter><Checkout /></HeaderFooter>} />
         <Route path="/shop/:artisan_id" element={<Shop />} />
         <Route path="/shop/:artisan_id/products" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
@@ -119,12 +120,12 @@ function MainApp() {
         <Route path="/adminorders" element={<AdminOrders />} /> 
         <Route path="/adminorders/:id" element={<AdminOrderDet />} /> 
         <Route path="/adminforecast" element={<AdminForecast />} />
-        <Route path="/heritage/:artisan_id" element={<TaalStory />} />
+        <Route path="/heritage/:artisan_id" element={<HeaderFooter><TaalStory /></HeaderFooter>} />
         <Route path="/privacy-terms" element={<PrivacyTerms />} />
         <Route path="/sellerprofile" element={<SellerProfile />} /> {/* ✅ NEW route */}
         <Route path="/sellerregister" element={<SellerRegister />} />
         {/* ✅ Profile and its nested routes */}
-        <Route path="/profile" element={<Profile />}>
+        <Route path="/profile" element={<HeaderFooter><Profile /></HeaderFooter>}>
           <Route
             index
             element={

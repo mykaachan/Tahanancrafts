@@ -306,7 +306,7 @@ function HomePage() {
         </section>
 
       </div>
-    </HeaderFooter>
+    </HeaderFooter>   
   );
 }
 
