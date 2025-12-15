@@ -8,8 +8,8 @@ import { useLocation } from "react-router-dom";
 
 
 
-//const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = process.env.REACT_APP_API_URL || "https://tahanancrafts.onrender.com";
+//const API_URL = "http://127.0.0.1:8000";
 const PRODUCTS_PER_PAGE = 12;
 
 /* ---------- Simple cache helpers (localStorage) ---------- */
