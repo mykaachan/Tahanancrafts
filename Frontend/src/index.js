@@ -47,7 +47,6 @@ import AdminNotification from './AdminNotification';
 import AdminOrders from './AdminOrders';
 import AdminOrderDet from './AdminOrderDet';
 import AdminForecast from './AdminForecast';
-import UnderDevelopment from './UnderDevelopment';
 import TaalStory from './TaalStory';
 import PrivacyTerms from './PrivacyTerms';
 import SellerProfile from "./SellerProfile"; // ✅ NEW — Import SellerProfile
@@ -97,14 +96,14 @@ function MainApp() {
         <Route path="/seller-dashboard" element={<HomeDashboard />} />
         <Route path="/all-products" element={<AllProducts />} />
         <Route path="/order-list" element={<OrderList />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/product/:id" element={<HeaderFooter><ProductDetails /></HeaderFooter>} />
         <Route path="/checkout" element={<HeaderFooter><Checkout /></HeaderFooter>} />
         <Route path="/shop/:artisan_id" element={<Shop />} />
         <Route path="/shop/:artisan_id/products" element={<ShopAllProducts />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
-        <Route path="/my-purchases" element={<MyPurchases />} />
-        <Route path="/notification" element={<Notification />} />
+        <Route path="/my-purchases" element={<HeaderFooter><MyPurchases /></HeaderFooter>} />
+        <Route path="/notification" element={<HeaderFooter><Notification /></HeaderFooter>} />
         <Route path="/create-user" element={<UserForm />} />
         <Route path="/adminsidebar" element={<AdminSidebar />} />
         <Route path="/admin" element={<AdminDash />} />

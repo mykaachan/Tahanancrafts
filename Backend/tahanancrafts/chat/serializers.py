@@ -147,4 +147,14 @@ class ConversationSerializer(serializers.ModelSerializer):
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "message",
+            "notif_type",
+            "icon",
+            "is_read",
+            "created_at",
+            "artisan_id",
+            "user_id",
+        ]

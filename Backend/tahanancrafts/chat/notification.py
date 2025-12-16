@@ -1,5 +1,6 @@
 from .models import Notification
 from users.models import CustomUser
+from chat.models import Notification
 
 
 def notify_user(user, title, message, notif_type="system", icon="🔔"):
@@ -130,3 +131,5 @@ def send_notification(event, order=None, buyer=None, artisan=None, extra=None):
             notif_type="inventory",
             icon="⚠️"
         )
+
+

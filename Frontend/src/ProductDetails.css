@@ -1,9 +1,11 @@
 .iraya-page .related-section .related-grid {
-  gap: 35px; 
+  gap: 15px; 
 }
 /* Main content wrapper */
 .iraya-page {
-  padding-top: 105px;   
+  padding-top: 25px;   
+  padding-left: 25px;
+  padding-right: 25px;
   background: #fffdf9;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -260,6 +262,19 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.view-shop-btn{
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #c59d5f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
 .add-cart-btn:hover:not(:disabled) {
   background-color: #a47c4b;
   transform: translateY(-2px);
@@ -280,81 +295,6 @@
   height: auto;
 }
 
-/* ===== Responsive: revert to stacked layout on small screens ===== */
-@media (max-width: 1024px) {
-  .iraya-container {
-    flex-direction: column;
-    padding: 0 40px;
-    gap: 30px;
-  }
-  .iraya-container .iraya-images,
-  .iraya-container .iraya-details {
-    flex-basis: 100%;
-    max-width: 100%;
-  }
-  .iraya-container .iraya-images .main-image {
-    height: 56vh;
-    min-height: 300px;
-  }
-  .iraya-container .iraya-images .thumbnails img {
-    width: 90px;
-    height: 70px;
-  }
-  .price-block {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .total-price {
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 720px) {
-  .iraya-container {
-    padding: 0 20px;
-  }
-  .iraya-details h1 {
-    font-size: 1.4rem;
-  }
-  .iraya-container .iraya-images .main-image {
-    height: 44vh;
-    min-height: 220px;
-  }
-  .iraya-container .iraya-images .thumbnails img {
-    width: 72px;
-    height: 56px;
-  }
-  .price-sale {
-    font-size: 1.5rem;
-  }
-  .quantity {
-    flex-wrap: wrap;
-  }
-  .add-cart-btn {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .iraya-details h1 {
-    font-size: 1.2rem;
-  }
-  .iraya-details h2 {
-    font-size: 0.9rem;
-  }
-  .price-sale {
-    font-size: 1.3rem;
-  }
-  .qty-input {
-    width: 40px;
-    font-size: 0.85rem;
-  }
-  .add-cart-btn {
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
-}
 /* Reviews Section */
 .reviews-section {
   margin: 60px auto;
@@ -530,117 +470,249 @@
 .shop-avatar:hover {
   transform: scale(1.05);
 }
-/* Optional: make it responsive */
-@media (max-width: 600px) {
-  .shop-image-horizontal {
-    width: 80px;
-    height: 80px;
-  }
-}
-.shop-info {
+
+.skeleton {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: left;
+  gap: 30px;
 }
-.shop-name {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #2e2e2e;
+.skeleton-box {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 10px;
 }
-.view-shop-btn {
-  padding: 10px 20px;
-  background-color: #c59d5f;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s;
+.skeleton-box.image {
+  width: 60%;
+  height: 420px;
 }
-.view-shop-btn:hover {
-  background-color: #a47c4b;
+.skeleton-box.text {
+  width: 40%;
+  height: 300px;
 }
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
 /* ===== Responsive adjustments for Iraya Page & Related Products ===== */
 @media (max-width: 1024px) {
+  
   .iraya-container {
-    flex-direction: column;
+    flex-direction: row;           /* 👈 keep side-by-side */
     padding: 0 30px;
-    gap: 30px;
-  }
-  .iraya-container .iraya-images .main-image {
-    width: 100%;
-    height: auto;
-  }
-  .iraya-container .iraya-images .thumbnails img {
-    width: 150px;
-    height: 120px;
-  }
-  .iraya-container .iraya-details {
-    gap: 10px;
-  }
-  .iraya-container .options {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .iraya-container .add-to-cart {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .reviews-section,
-  .related-section,
-  .shop-section {
-    padding: 0 20px;
-    max-width: 100%;
-  }
-  .related-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 25px;
+  }
+
+  .iraya-container .iraya-images {
+    flex: 0 0 60%;
+    max-width: 60%;
+  }
+
+  .iraya-container .iraya-details {
+    flex: 0 0 40%;
+    max-width: 40%;
+    gap: 12px;
+  }
+
+  .iraya-container .iraya-images .main-image {
+    height: 50vh;
+    min-height: 320px;
+  }
+
+  .iraya-container .iraya-images .thumbnails img {
+    width: 90px;
+    height: 70px;
+  }
+
+  .iraya-details h1 {
+    font-size: 1.35rem;
+  }
+
+  .iraya-details h2 {
+    font-size: 0.95rem;
+  }
+
+  .price-sale {
+    font-size: 1.5rem;
+  }
+
+  .total-amount {
+    font-size: 1rem;
+    padding: 6px 12px;
+  }
+
+  .add-cart-btn {
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
     justify-items: center;
+  }
+
+ .related-card img {
+    height: 140px;
+  }
+
+  .related-card h4 {
+    font-size: 0.9rem;
+  }
+
+  .related-card p {
+    font-size: 0.75rem;
+  }
+
+  .related-card .price {
+    font-size: 0.85rem;
   }
 }
 @media (max-width: 768px) {
-  .iraya-container .iraya-images .thumbnails img {
-    width: 100px;
-    height: 80px;
-  }
-  .iraya-container .iraya-details h1 {
-    font-size: 1.4rem;
-  }
-  .iraya-container .iraya-details h2 {
-    font-size: 1rem;
-  }
-  .iraya-container .iraya-details .description {
-    font-size: 0.85rem;
-  }
-  .iraya-container .option .buttons button,
-  .iraya-container .quantity-controls button,
-  .iraya-container .add-to-cart button {
-    font-size: 0.85rem;
-    padding: 5px 12px;
-  }
-  .reviews-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  .related-grid {
-    grid-template-columns: 1fr;
+
+  /* ===== MAIN PRODUCT LAYOUT ===== */
+  .iraya-container {
+    flex-direction: column;
     gap: 20px;
   }
-  .shop-card-horizontal {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+
+  /* Image stays on top */
+  .iraya-container .iraya-images {
+    width: 100%;
+    max-width: 100%;
   }
-  .shop-image-horizontal {
-    width: 80px;
-    height: 80px;
+
+  .iraya-container .iraya-images .main-image {
+    height: 42vh;
+    min-height: 220px;
+    border-radius: 10px;
   }
-  .shop-info {
-    text-align: center;
+
+  /* Thumbnails smaller */
+  .iraya-container .iraya-images .thumbnails img {
+    width: 90px;
+    height: 70px;
+  }
+
+  /* ===== DETAILS BELOW IMAGE ===== */
+  .iraya-container .iraya-details {
+    width: 100%;
+    max-width: 100%;
+    gap: 10px;
+  }
+
+  .iraya-container .iraya-details h1 {
+    font-size: 1.2rem;
+  }
+
+  .iraya-container .iraya-details h2 {
+    font-size: 0.9rem;
+  }
+
+  /* Description smaller */
+  .iraya-container .iraya-details .description p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  /* ===== RATINGS & REVIEWS (SMALLER) ===== */
+  .product-rating-box {
+    gap: 6px;
+  }
+
+  .rating-stars {
+    font-size: 0.85rem;
+  }
+
+  .rating-count {
+    font-size: 0.75rem;
+  }
+
+  /* ===== PRICE ===== */
+  .price-sale {
+    font-size: 1.3rem;
+  }
+
+  .price-regular {
+    font-size: 0.8rem;
+  }
+
+  /* ===== QUANTITY & BUTTONS ===== */
+  .quantity label {
+    font-size: 0.8rem;
+  }
+
+  .qty-input {
+    width: 38px;
+    font-size: 0.8rem;
+  }
+
+  .add-cart-btn {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+
+ /* ===== YOU MAY ALSO LIKE ===== */
+  .related-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 10px 5px 15px;
+    scroll-snap-type: x mandatory;
+  }
+
+  /* hide vertical stretching */
+  .related-grid > * {
+    flex-shrink: 0;
+  }
+
+  /* SMALL HORIZONTAL CARD */
+  .related-card {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+
+    padding: 8px;
+    scroll-snap-align: start;
+  }
+  
+  .related-card img {
+    height: 110px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .related-card h4 {
+    font-size: 0.85rem;
+  }
+
+  .related-card p {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+
+  .related-card .price {
+    font-size: 0.8rem;
+  }
+
+  /* Optional scrollbar styling */
+  .related-grid::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .related-grid::-webkit-scrollbar-thumb {
+    background: #d4c4b0;
+    border-radius: 10px;
   }
 }
-@media (max-width: 480px) {
+
+@media (max-width: 400px) {
   .iraya-container .iraya-details h1 {
     font-size: 1.2rem;
   }
@@ -674,4 +746,63 @@
     padding: 8px 16px;
     font-size: 0.85rem;
   }
+
+  /* ===== YOU MAY ALSO LIKE ===== */
+  .related-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 10px 5px 15px;
+    scroll-snap-type: x mandatory;
+  }
+
+  /* hide vertical stretching */
+  .related-grid > * {
+    flex-shrink: 0;
+  }
+
+  /* SMALL HORIZONTAL CARD */
+  .related-card {
+    width: 140px !important;
+    min-width: 140px !important;
+    max-width: 140px !important;
+
+    padding: 8px;
+    scroll-snap-align: start;
+  }
+
+  .related-card img {
+    height: 110px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .related-card h4 {
+    font-size: 0.85rem;
+  }
+
+  .related-card p {
+    font-size: 0.7rem;
+    line-height: 1.3;
+  }
+
+  .related-card .price {
+    font-size: 0.8rem;
+  }
+
+  /* Optional scrollbar styling */
+  .related-grid::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .related-grid::-webkit-scrollbar-thumb {
+    background: #d4c4b0;
+    border-radius: 10px;
+  }
+  
 }

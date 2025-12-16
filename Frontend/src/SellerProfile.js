@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LayoutHeaderOnly from "./LayoutHeaderOnly";
-import "./SellerProfile.css";
+import "./SellerProfile.css"; 
 
 function SellerProfile() {
   const artisanId = localStorage.getItem("artisan_id");
@@ -22,6 +22,10 @@ function SellerProfile() {
   const [mainImage, setMainImage] = useState(null);
   const [qrCode, setQrCode] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
+  const [showNotifModal, setShowNotifModal] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+
 
   useEffect(() => {
     if (!artisanId) return;
@@ -51,6 +55,40 @@ function SellerProfile() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const fetchNotifications = async () => {
+    if (!artisanId) return;
+
+    setNotifLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/api/notifications/artisan/${artisanId}/`
+      );
+      const data = await res.json();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Notification fetch error:", err);
+    } finally {
+      setNotifLoading(false);
+    }
+  };
+
+  const markNotificationRead = async (notifId) => {
+    try {
+      await fetch(
+        `${API_URL}/api/notifications/read/${notifId}/`,
+        { method: "POST" }
+      );
+
+      setNotifications((prev) =>
+        prev.filter((n) => n.id !== notifId)
+      );
+    } catch (err) {
+      console.error("Mark read error:", err);
+    }
+  };
+
+
 
   const handleSave = async () => {
     const form = new FormData();

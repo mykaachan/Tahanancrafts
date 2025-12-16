@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HeaderFooter from "./HeaderFooter";
-import SidebarProfile from "./components/SidebarProfile";
+import ProfileSidebar from "./components/SidebarProfile";
 import "./Profile.css";
 import { useLocation } from "react-router-dom";
+
 function MyPurchases() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const defaultTab = params.get("tab") || "all";
+
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [showReview, setShowReview] = useState(false);
   const [showToPayModal, setShowToPayModal] = useState(false);
@@ -27,12 +28,11 @@ function MyPurchases() {
   const [refundImage, setRefundImage] = useState(null);
   const [refundSubmitting, setRefundSubmitting] = useState(false);
   const navigate = useNavigate();
-
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const API_URL = "https://tahanancrafts.onrender.com"// "http://localhost:8000";
-
+  //const API_URL = "http://127.0.0.1:8000"
   function getFriendlyImage(product) {
     if (!product) return null;
-
     // If the backend provides something like "/media/...":
     const makeUrl = (path) => {
       if (!path) return null;
@@ -40,6 +40,7 @@ function MyPurchases() {
     };
 
     if (product.main_image) return makeUrl(product.main_image);
+
 
     if (product.images && product.images.length > 0)
       return makeUrl(product.images[0].image);
@@ -53,14 +54,17 @@ function MyPurchases() {
     }
     return {};
   };
+
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
     try {
       const userId = localStorage.getItem("user_id");
       if (!userId) {
+
         throw new Error("No user_id in localStorage. Please log in.");
       }
+
       const url = `${API_URL}/api/products/orders/my-orders/?user_id=${userId}`;
       const res = await fetch(url, {
         method: "GET",
@@ -69,17 +73,21 @@ function MyPurchases() {
           ...getAuthHeaders(),
         },
       });
+
       if (res.status === 400) {
         const txt = await res.text();
         throw new Error(`Bad Request: ${txt}`);
       }
+
       if (res.status === 404) {
         throw new Error("Orders not found");
       }
+
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Failed to fetch orders");
       }
+
       const data = await res.json();
 
     const mapped = (data || []).map((o) => {
@@ -95,7 +103,6 @@ function MyPurchases() {
           }
         }
       }
-
       // Fallback artisan to prevent null errors
       const safeArtisan = artisan || {
         id: 0,
@@ -115,7 +122,6 @@ function MyPurchases() {
           : "https://via.placeholder.com/120",
 
         artisan: safeArtisan,  // <-- ALWAYS SAFE
-
         status: mapBackendStatusToTab(o.status),
         quantity: firstItem?.quantity || 1,
         order_number: o.order_number || `TC-${o.id}`,
@@ -151,11 +157,15 @@ function MyPurchases() {
     if (["completed"].includes(s)) return "completed";
     return "all";
   };
+
   useEffect(() => {
     fetchOrders();
+
   }, []);
+
   const filteredOrders =
     activeTab === "all" ? orders : orders.filter((o) => o.status === activeTab);
+
   const cancelOrder = async (orderId) => {
     if (!window.confirm("Cancel this order? This action may not be reversible.")) return;
     try {
@@ -179,6 +189,7 @@ function MyPurchases() {
       alert("Cancel failed: " + (err.message || err));
     }
   };
+
   const confirmReceived = async (orderId) => {
     if (!window.confirm("Mark this order as received?")) return;
 
@@ -225,14 +236,17 @@ function MyPurchases() {
       const res = await fetch(`${API_URL}/api/products/orders/payment/upload-proof/`, {
         method: "POST",
         headers: {
+
           ...getAuthHeaders(),
         },
         body: form,
       });
+
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(txt || "Upload proof failed");
       }
+
       const data = await res.json();
       alert("Payment proof uploaded. Seller will verify shortly.");
       setProofFile(null);
@@ -360,6 +374,7 @@ function MyPurchases() {
     }
   };
 
+
   const renderButtonsForStatus = (status, order) => {
     switch (status) {
       case "to-pay":
@@ -414,6 +429,7 @@ function MyPurchases() {
               className="btn-buy"
               onClick={async (e) => {
                 e.stopPropagation();
+
                 await confirmReceived(order.id);
               }}
             >
@@ -441,6 +457,7 @@ function MyPurchases() {
             </button>
           </>
         );
+
       case "to-review":
         return (
           <>
@@ -461,6 +478,7 @@ function MyPurchases() {
             </button>
           </>
         );
+
       default:
         return (
           <>
@@ -508,12 +526,20 @@ function MyPurchases() {
     }
   };
   return (
-    <HeaderFooter>
       <div className="profile-page">
-        <SidebarProfile />
-
+        <ProfileSidebar
+          mobileOpen={mobileSidebarOpen}
+          onClose={() => setMobileSidebarOpen(false)}
+        />  
         <main className="profile-content">
           <h2>My Purchases</h2>
+          {/* ☰ Mobile Hamburger */}
+              <button
+                className="mobile-hamburger"
+                onClick={() => setMobileSidebarOpen(true)}
+              >
+                ☰
+              </button>
           <p className="subtitle">Track your order status here</p>
 
           {/* TABS */}
@@ -541,12 +567,14 @@ function MyPurchases() {
               </button>
             ))}
           </div>
+
           {/* MAIN AREA */}
           <div className="purchase-box">
             <div style={{ marginBottom: 12 }}>
               {loading && <div>Loading orders...</div>}
               {error && <div style={{ color: "crimson" }}>{error}</div>}
             </div>
+
             <div className="orders-list">
               {filteredOrders.length === 0 && !loading ? (
                 <p>No orders yet.</p>
@@ -557,6 +585,7 @@ function MyPurchases() {
                     <div className="order-header">
                       <h3>{order.artisan.name}</h3>
                       <p style={{ fontSize: "13px", opacity: 0.7 }}>
+
                       </p>
                       <div className="order-actions">
                        <button
@@ -573,6 +602,7 @@ function MyPurchases() {
                       </div>
                       <span className="order-status">{renderStatusText(order.status, order)}</span>
                     </div>
+
                     {/* BODY */}
                     <div
                       className="order-body"
@@ -587,11 +617,13 @@ function MyPurchases() {
                         <p>Price: ₱{order.price}</p>
                       </div>
                     </div>
+
                     {/* FOOTER */}
                     <div className="order-footer">
                       <p className="order-total">
                         Order Total: <strong>₱{order.total}</strong>
                       </p>
+
                       <div className="order-buttons">
                         {renderButtonsForStatus(order.status, order)}
                       </div>
@@ -600,6 +632,7 @@ function MyPurchases() {
                 ))
               )}
             </div>
+
             {/* ORDER DETAILS MODAL */}
             {selectedOrder && (
               <div className="review-modal-overlay">
@@ -617,6 +650,7 @@ function MyPurchases() {
                   }}
                 >
                   <h2 style={{ marginBottom: "20px" }}>Order Details</h2>
+
                   {/* SELLER HEADER */}
                   <div
                     style={{
@@ -633,6 +667,8 @@ function MyPurchases() {
                     <div style={{ fontWeight: "600", fontSize: "17px" }}>
                       {selectedOrder.artisan?.name || "Artisan Shop"}
                     </div>
+
+
                     <button
                       style={{
                         background: "#8B5E3C",
@@ -644,11 +680,13 @@ function MyPurchases() {
                       }}
                       onClick={() => {
                         
+
                       }}
                     >
                       Chat with Artisan
                     </button>
                   </div>
+
                   {/* DELIVERY BAR (Only for certain statuses) */}
                   {["to-receive", "to-review", "completed"].includes(
                     selectedOrder.status
@@ -674,6 +712,7 @@ function MyPurchases() {
                           <strong>{selectedOrder.delivery?.courier || "Courier"}</strong> —{" "}
                           {selectedOrder.delivery?.tracking_number || "No tracking"}
                         </div>
+
                         <button
                           style={{
                             background: "#C9A27A",
@@ -691,6 +730,7 @@ function MyPurchases() {
                           Track Package
                         </button>
                       </div>
+
                       <p style={{ margin: 0, fontSize: "13px", opacity: 0.8 }}>
                         {selectedOrder.status === "completed"
                           ? "Order has been received. Thank you!"
@@ -698,6 +738,7 @@ function MyPurchases() {
                       </p>
                     </div>
                   )}
+
                   {/* PAYMENT QR (TO PAY ONLY) */}
                   {selectedOrder.status === "to-pay" && (
                     <div
@@ -725,6 +766,8 @@ function MyPurchases() {
                           border: "1px solid #ccc",
                         }}
                       />
+
+
                       {/* Upload Screenshot for payment proof */}
                       <div style={{ marginTop: 12 }}>
                         <label
@@ -782,6 +825,7 @@ function MyPurchases() {
                       </div>
                     </div>
                   )}
+
                   {/* ITEMS LIST */}
                   <div
                     style={{
@@ -820,6 +864,7 @@ function MyPurchases() {
                           </p>
                           <p style={{ marginTop: "8px" }}>Qty: {it.quantity}</p>
                         </div>
+
                         <div style={{ textAlign: "right", whiteSpace: "nowrap" }}>
                           <p style={{ fontWeight: "600" }}>₱{it.price}</p>
                           <p style={{ fontSize: 12, opacity: 0.8 }}>
@@ -828,11 +873,13 @@ function MyPurchases() {
                         </div>
                       </div>
                     ))}
+
                     {/* ORDER TOTAL */}
                     <div style={{ textAlign: "right" }}>
                       <p>Subtotal: ₱{selectedOrder.subtotal}</p>
                       <p>Shipping Fee: ₱{selectedOrder.shipping_fee}</p>
                       <p>Discount: -₱{selectedOrder.discount}</p>
+
                       <p
                         style={{
                           marginTop: "8px",
@@ -845,6 +892,7 @@ function MyPurchases() {
                       </p>
                     </div>
                   </div>
+
                   {/* BOTTOM GRID */}
                   <div
                     style={{
@@ -881,10 +929,12 @@ function MyPurchases() {
                           </div>
                         ))
                       )}
+
                       <p style={{ marginTop: "10px" }}>
                         Payment Method: <strong>{selectedOrder.payment_method}</strong>
                       </p>
                     </div>
+
                     {/* TOTAL SUMMARY */}
                     <div
                       style={{
@@ -895,6 +945,7 @@ function MyPurchases() {
                       }}
                     >
                       <h3>Total Summary</h3>
+
                       <p>
                         <span>Subtotal</span>
                         <span style={{ float: "right" }}>₱{selectedOrder.subtotal}</span>
@@ -907,7 +958,9 @@ function MyPurchases() {
                         <span>Discount</span>
                         <span style={{ float: "right" }}>-₱{selectedOrder.discount}</span>
                       </p>
+
                       <hr style={{ borderColor: "#E5DED3", margin: "12px 0" }} />
+
                       <p
                         style={{
                           fontWeight: "bold",
@@ -920,6 +973,7 @@ function MyPurchases() {
                       </p>
                     </div>
                   </div>
+
                   {/* BUTTONS */}
                   <div
                     style={{
@@ -942,6 +996,27 @@ function MyPurchases() {
                     >
                       Close
                     </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     {/* MESSAGE */}
                     {["to-ship", "to-review", "completed", "to-receive"].includes(
                       selectedOrder.status
@@ -960,6 +1035,7 @@ function MyPurchases() {
                         Message Artisan
                       </button>
                     )}
+
                     {/* WRITE REVIEW */}
                     {selectedOrder.status === "to-review" && (
                       <button
@@ -976,6 +1052,7 @@ function MyPurchases() {
                         Write a Review
                       </button>
                     )}
+
                     {/* BUY AGAIN */}
                     {selectedOrder.status === "completed" && (
                       <button
@@ -1004,6 +1081,7 @@ function MyPurchases() {
                 </div>
               </div>
             )}
+
             {/* REVIEW MODAL */}
             {showReview && (
               <div className="review-modal-overlay">
@@ -1029,6 +1107,7 @@ function MyPurchases() {
                       </span>
                     ))}
                   </div>
+
                   <textarea
                     className="review-textarea"
                     placeholder="Share your thoughts about the product..."
@@ -1036,6 +1115,7 @@ function MyPurchases() {
                     onChange={(e) => setReviewText(e.target.value)}
                     style={{ width: "100%", minHeight: 100 }}
                   ></textarea>
+
                   <div style={{ marginTop: 10, marginBottom: 12 }}>
                     <label className="checkbox-label">
                       <input
@@ -1046,6 +1126,7 @@ function MyPurchases() {
                       Post review anonymously
                     </label>
                   </div>
+
                   <div className="modal-buttons">
                     <button className="btn-cancel" onClick={() => setShowReview(false)}>
                       Cancel
@@ -1152,6 +1233,7 @@ function MyPurchases() {
                       </div>
                     </div>
                   </div>
+
                   <div className="modal-buttons" style={{ marginTop: 14 }}>
                     <button
                       className="btn-cancel"
@@ -1169,9 +1251,10 @@ function MyPurchases() {
           </div>
         </main>
       </div>
-    </HeaderFooter>
   );
 }
+
+
 function formatDate(d) {
   if (!d) return "-";
   try {
@@ -1187,4 +1270,5 @@ function getFriendlyImage(product) {
   if (product.images && product.images.length > 0) return product.images[0].image;
   return null;
 }
+
 export default MyPurchases;

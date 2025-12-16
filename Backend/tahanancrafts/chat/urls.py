@@ -11,5 +11,4 @@ urlpatterns = [
     path("artisan/<int:artisan_id>/", ArtisanNotificationsView.as_view()),
     path("read/<int:notif_id>/", MarkNotificationReadView.as_view()),
 
-
 ]

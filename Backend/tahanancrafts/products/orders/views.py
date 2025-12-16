@@ -37,6 +37,7 @@ class UploadPaymentProofView(APIView):
             proof_image=proof_image
         )
 
+
         # Update order status
         order.status = Order.STATUS_AWAITING_VERIFICATION
         order.save()
@@ -73,7 +74,7 @@ class MyOrdersView(APIView):
             return Response({"error": "Missing user_id"}, status=400)
 
         user = get_object_or_404(CustomUser, id=user_id)
-        orders = Order.objects.filter(user=user).order_by("-created_at")
+        orders = Order.objects.filter(user=user).order_by("-created_at")[:10]
 
         return Response(OrderSerializer(orders, many=True).data, status=200)
 
@@ -86,6 +87,7 @@ class ArtisanOrdersView(APIView):
 
         product_ids = artisan.products.values_list("id", flat=True)
 
+        # ✅ CORRECT VARIABLE NAME
         order_ids = (
             OrderItem.objects
             .filter(product_id__in=product_ids)
@@ -93,10 +95,23 @@ class ArtisanOrdersView(APIView):
             .distinct()
         )
 
-        orders = Order.objects.filter(id__in=order_ids).order_by("-created_at")
+        orders = (
+            Order.objects
+            .filter(id__in=order_ids)   # ✅ MUST MATCH
+            .select_related("user", "shipping_address", "delivery")
+            .prefetch_related(
+                "items",
+                "items__product",
+                "items__product__artisan",
+                "timeline",
+                "payment_proofs"
+            )
+            .order_by("-created_at")[:20]
+        )
 
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=200)
+
 
 class CancelOrderView(APIView):
     permission_classes = [AllowAny]

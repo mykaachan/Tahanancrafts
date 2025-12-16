@@ -6,8 +6,22 @@
   background: #ffffff;
   min-height: 80vh;
   font-family: 'Segoe UI', sans-serif;
+  margin-top: 0px;
+  margin-bottom: 10px;
 }
 /* ===== Sidebar ===== */
+.mobile-hamburger{
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  color: #666;
+  background: none;
+  border: none;
+
+  
+}
+
 .sidebar {
   width: 250px;
   background: #ffffff;
@@ -170,22 +184,6 @@
 }
 .btn-logout:hover {
   background: #5a4028;
-}
-/* Responsive: stack for smaller screens */
-@media (max-width: 768px) {
-   .profile-avatar {
-    margin-top: 20px;
-  }
-  .profile-box.editing {
-    flex-direction: column;
-    align-items: center;
-  }
-  .edit-profile-form {
-    width: 100%;
-  }
-  .edit-profile-form .dob-gender {
-    flex-direction: column;
-  }
 }
 /* ===== Edit Profile Form (inside box) ===== */
 .edit-profile-form {
@@ -417,69 +415,172 @@
 }
 /* ===== Profile Page Responsive ===== */
 @media (max-width: 1024px) {
-  .profile-page {
-    flex-direction: column; 
-    gap: 20px;
-  }
-  .sidebar {
-    width: 100%;
-    padding: 15px;
-  }
-  .profile-box,
-  .purchase-box,
-  .order-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .profile-avatar {
-    margin-top: 15px;
-  }
-  .profile-details p {
-    text-align: center;
-  }
-  .edit-profile-form .dob-gender {
-    flex-direction: column;
-  }
-  .form-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .purchases-tabs {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .order-body {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  .order-footer {
-    flex-direction: column;
-    gap: 10px;
+  .profile.profile-page{
+    width: 80%;
   }
 }
 @media (max-width: 768px) {
+   .profile-page {
+    flex-direction: column;
+    padding: 15px 20px;
+  }
+
+  /* Sidebar becomes overlay (hamburger-controlled) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    background: #fff;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Dark overlay behind sidebar */
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
+  }
+
+  /* 🔽 MAIN FIX FOR YOU */
+  .profile-content {
+    max-width: 100%;
+    padding: 15px;
+    margin: 0;
+    font-size: 14px;
+  }
+  .purchases-tabs {
+    display: flex;
+    flex-wrap: wrap;      /* ✅ allows 2 rows */
+    font-size: 10px;
+    gap: 2px;
+    padding: 0;
+  }
+
+  /* each button takes half width → 2 rows */
+  .purchases-tabs button {
+    flex: 1 1 30%;        /* adjust % to control row count */
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
   .profile-box,
   .purchase-box,
   .order-card {
     width: 100%;
+    padding: 15px;
   }
-  .sidebar {
-    padding: 10px;
+
+  /* Hamburger button */
+  .mobile-hamburger {
+    display: block;
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 0px;
+    margin-top: -35px;
+    margin-left: 300px;
   }
-  .profile-avatar img.profile-img {
-    width: 120px;
-    height: 120px;
+  .orders-list {
+    gap: 12px;
   }
-  .edit-profile-form input,
-  .edit-profile-form select {
+
+  .order-card {
+    padding: 13px;
+    border-radius: 8px;
+  }
+  .order-actions .btn-small{
+    display: none;
+  }
+
+  .order-buttons .btn-buy{
+    color: #555;
+  }
+
+  /* Header */
+  .order-header{
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .order-header h3 {
+    font-size: 13px;
+  }
+
+  .order-status {
+    font-size: 10px;
+  }
+
+  .btn-small {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  /* Body */
+  .order-body {
+    gap: 10px;
+    padding: 8px 0;
+  }
+
+  .order-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 5px;
+  }
+
+  .order-info h4 {
+    font-size: 12px;
+  }
+
+  .order-info p {
+    font-size: 11px;
+    margin: 3px 0 0;
+  }
+
+  /* Footer */
+  .order-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .order-total {
+    font-size: 13px;
+  }
+
+  .order-buttons {
     width: 100%;
+    gap: 6px;
   }
-  .btn-edit, .btn-save, .btn-cancel, .btn-delete {
-    width: 100%;
+
+  .btn-buy,
+  .btn-contact {
+    font-size: 11px;
+    padding: 6px 10px;
+    width: 100%; /* easier tapping */
+  }
+
+  .review-modal {
+    font-size: 10px;
   }
 }
+
 .btn-review {
   background: #7a5a36;
   color: white;

@@ -39,13 +39,55 @@
   align-items: center;
   gap: 20px;
 }
-.notification-icon,
-.message-icon {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  transition: opacity 0.2s;
+.notification-icon {
+  width: 22px;
+  height: 22px;
 }
+
+.notif-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 999;
+}
+
+.notif-popup {
+  position: absolute;
+  right: 30px;
+  top: 70px;
+  width: 340px;
+  max-height: 65vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notif-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.notif-icon {
+  font-size: 18px;
+}
+
+.notif-read-btn {
+  background: none;
+  border: none;
+  color: #c07a2d;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .notification-icon:hover,
 .message-icon:hover {
   opacity: 0.7;

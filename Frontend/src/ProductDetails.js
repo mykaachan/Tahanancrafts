@@ -9,37 +9,57 @@ import RecommendedProducts from "./YouMayLike";
 import defaultImg from "./images/basket1.png";
 
 function ProductDetail() {
-  const { id } = useParams(); // get product ID from the URL (e.g. /products/5)
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImg, setSelectedImg] = useState(defaultImg);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // for navigation after actions
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [sort, setSort] = useState("Latest");
-  let productId = id; // Ensure productId is defined
+  let productId = id;
 
-  // helper to normalise image values returned by API
+  /* =========================
+     CACHE CONFIG
+  ========================== */
+  const PRODUCT_CACHE_KEY = `product_details_${id}`;
+  const PRODUCT_CACHE_TIME = `product_details_time_${id}`;
+
+  const REVIEW_CACHE_KEY = `product_reviews_${id}`;
+  const REVIEW_CACHE_TIME = `product_reviews_time_${id}`;
+
+  const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+  /* =========================
+     IMAGE HELPER (UNCHANGED)
+  ========================== */
   const urlFor = (img) => {
     if (!img) return null;
     try {
-      // if img is an object with .image or .url
       if (typeof img === "object") {
         if (img.image) return getImageUrl(img.image);
         if (img.url) return getImageUrl(img.url);
       }
-      // if img is a string (already absolute or relative)
       if (typeof img === "string") return getImageUrl(img);
-    } catch (e) {}
+    } catch {}
     return null;
   };
 
   useEffect(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
-
+  /* =========================
+     FETCH REVIEWS (WITH CACHE)
+  ========================== */
   useEffect(() => {
+    const cached = localStorage.getItem(REVIEW_CACHE_KEY);
+    const cachedTime = localStorage.getItem(REVIEW_CACHE_TIME);
+
+    if (cached && cachedTime && Date.now() - cachedTime < CACHE_DURATION) {
+      setReviews(JSON.parse(cached));
+    }
+
     const fetchReviews = async () => {
       try {
         const res = await fetch(
@@ -47,10 +67,13 @@ function ProductDetail() {
         );
         const data = await res.json();
         setReviews(data);
+        localStorage.setItem(REVIEW_CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(REVIEW_CACHE_TIME, Date.now());
       } catch (err) {
         console.error("Error fetching reviews:", err);
       }
     };
+
     fetchReviews();
   }, [id]);
 
@@ -60,7 +83,7 @@ function ProductDetail() {
     if (sort === "Oldest") return dateA - dateB;
     if (sort === "Highest Rated") return b.score - a.score;
     if (sort === "Lowest Rated") return a.score - b.score;
-    return dateB - dateA; // Latest by default
+    return dateB - dateA;
   });
 
   const handleViewShop = () => {
@@ -69,13 +92,36 @@ function ProductDetail() {
     }
   };
 
+  /* =========================
+     FETCH PRODUCT (WITH CACHE)
+  ========================== */
   useEffect(() => {
+    const cached = localStorage.getItem(PRODUCT_CACHE_KEY);
+    const cachedTime = localStorage.getItem(PRODUCT_CACHE_TIME);
+
+    if (cached && cachedTime && Date.now() - cachedTime < CACHE_DURATION) {
+      const cachedProduct = JSON.parse(cached);
+      setProduct(cachedProduct);
+
+      let firstImg = null;
+        if (Array.isArray(cachedProduct.images) && cachedProduct.images.length > 0) {
+          firstImg = urlFor(cachedProduct.images[0]);
+        }
+        if (!firstImg && cachedProduct.main_image)
+          firstImg = urlFor(cachedProduct.main_image);
+
+        setSelectedImg(firstImg || defaultImg);
+        setLoading(false);
+      }
+
     const fetchProduct = async () => {
       try {
-        const data = await getProduct(id); // use the helper
+        const data = await getProduct(id);
         setProduct(data);
 
-        // choose first available image: images[0] -> main_image -> fallback
+        localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(PRODUCT_CACHE_TIME, Date.now());
+
         let firstImg = null;
         if (Array.isArray(data.images) && data.images.length > 0) {
           firstImg = urlFor(data.images[0]);
@@ -91,70 +137,38 @@ function ProductDetail() {
     fetchProduct();
   }, [id]);
 
-  if (loading) return <p className="loading">Loading product...</p>;
+  if (loading) {
+    return (
+      <div className="iraya-page">
+        <div className="iraya-container skeleton">
+          <div className="skeleton-box image"></div>
+          <div className="skeleton-box text"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) return <p className="error">Product not found</p>;
 
-  // prefer long_description unless it's empty or literal "null"
   const longDesc =
     product.long_description &&
-    String(product.long_description).trim() &&
     String(product.long_description).trim().toLowerCase() !== "null"
       ? product.long_description
       : product.description || "No description available.";
-
+  
   const mainImageUrl = selectedImg || defaultImg;
 
-  // small helper for consistent currency formatting
   const formatPHP = (value) =>
     `₱${Number(value || 0).toLocaleString("en-PH", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
 
-  // compute unit price (prefer sales_price) and total
   const unitPrice = Number(product?.sales_price ?? product?.regular_price ?? 0);
-  const totalPrice = unitPrice * Number(quantity || 1);
+  const totalPrice = unitPrice * quantity;
 
   return (
     <>
-     {/* ===== HEADER ===== */}
-     <header className="homepage-header">
-       <Logo className="logo-svg homepage-logo" />
-       <nav className="nav-links">
-         <ul>
-           <li>
-             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-               Home
-             </Link>
-           </li>
-           <li>
-             <Link to="/products" style={{ textDecoration: "none", color: "inherit" }}>
-               Products
-             </Link>
-           </li>
-           <li>
-             <Link to="/story" style={{ textDecoration: "none", color: "inherit" }}>
-               Story
-             </Link>
-           </li>
-           <li>
-             <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
-               Profile
-             </Link>
-           </li>
-         </ul>
-       </nav>
-       <div className="header-actions">
-         <div className="search-box">
-           <input type="text" placeholder="Search" />
-           <button className="search-btn">🔍</button>
-         </div>
-         <Link to="/cart" style={{ textDecoration: "none" }}>
-           <button className="cart-btn">CART 🛒</button>
-         </Link>
-       </div>
-     </header>
-
      {/* ===== MAIN CONTENT ===== */}
      <div className="iraya-page">
        <div className="iraya-container">
@@ -395,46 +409,6 @@ function ProductDetail() {
 
      {/* ===== YOU MAY ALSO LIKE ===== */}
      <RecommendedProducts productId={productId} />
-
-     {/* ===== FOOTER ===== */}
-     <footer className="footer">
-       <div className="footer-left">
-         <h2>
-           Join us, <br /> artisans!
-         </h2>
-         <p>
-           This is a sample description and does not hold any valuable meaning.
-         </p>
-         <button className="register-btn">Register</button>
-       </div>
-       <div className="footer-right">
-         <hr />
-         <div className="footer-content">
-           <h1 className="footer-logo">THC</h1>
-           <div className="footer-links">
-             <div>
-               <h4>ABOUT US</h4>
-               <p>TahananCrafts</p>
-               <p>About</p>
-             </div>
-             <div>
-               <h4>SUPPORT</h4>
-               <p>Customer Support</p>
-               <p>Contact</p>
-             </div>
-             <div>
-               <h4>EMAIL</h4>
-               <p>Sample@email.com</p>
-             </div>
-           </div>
-         </div>
-         <hr />
-         <div className="footer-bottom">
-           <p>© 2025 - TahananCrafts</p>
-           <p>Privacy — Terms</p>
-         </div>
-       </div>
-     </footer>
     </>
   );
 }

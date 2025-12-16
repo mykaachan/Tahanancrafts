@@ -2,12 +2,22 @@ from rest_framework import serializers
 from products.models import (
     Order, OrderItem, Delivery, OrderTimeline, PaymentProof, Product
 )
-from users.models import Artisan
+from users.models import Artisan, ShippingAddress, CustomUser
 
 class SimpleArtisanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artisan
         fields = ["id", "name", "gcash_qr"]
+
+class ShippingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = ["id" , "full_name", "phone", "address"]
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id","name"]
+
 
 class SimpleProductSerializer(serializers.ModelSerializer):
     artisan = SimpleArtisanSerializer(read_only=True)
@@ -69,6 +79,12 @@ class OrderSerializer(serializers.ModelSerializer):
     timeline = OrderTimelineSerializer(many=True)
     payment_proofs = PaymentProofSerializer(many=True)
 
+    # ✅ ADD THESE
+    buyer_name = serializers.SerializerMethodField()
+    shipping_full_name = serializers.SerializerMethodField()
+    shipping_phone = serializers.SerializerMethodField()
+    shipping_address = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
         fields = [
@@ -83,8 +99,38 @@ class OrderSerializer(serializers.ModelSerializer):
             "grand_total",
             "created_at",
             "message_to_seller",
+
+            # ✅ NEW
+            "buyer_name",
+            "shipping_full_name",
+            "shipping_phone",
+            "shipping_address",
+
             "items",
             "delivery",
             "timeline",
             "payment_proofs",
+            "shipping_address_id",
+            "user_id",
         ]
+
+    # =========================
+    # Serializer method fields
+    # =========================
+    def get_buyer_name(self, obj):
+        return obj.user.name if obj.user else None
+
+    def get_shipping_full_name(self, obj):
+        if obj.shipping_address:
+            return obj.shipping_address.full_name
+        return None
+
+    def get_shipping_phone(self, obj):
+        if obj.shipping_address:
+            return obj.shipping_address.phone
+        return None
+
+    def get_shipping_address(self, obj):
+        if obj.shipping_address:
+            return obj.shipping_address.address
+        return None

@@ -34,6 +34,33 @@ def geocode_address(full_address):
 
     except Exception:
         return None, None
+    
+def geocode_with_fallback(address, city=None, province=None):
+    """
+    Try full address first.
+    If failed, fallback to city + province.
+    """
+    # 1️⃣ Try full address
+    lat, lng = geocode_address(address)
+    if lat and lng:
+        return lat, lng
+
+    # 2️⃣ Fallback: city + province
+    if city and province:
+        fallback_address = f"{city}, {province}, Philippines"
+        lat, lng = geocode_address(fallback_address)
+        if lat and lng:
+            return lat, lng
+
+    # 3️⃣ Final fallback: province only
+    if province:
+        fallback_address = f"{province}, Philippines"
+        lat, lng = geocode_address(fallback_address)
+        if lat and lng:
+            return lat, lng
+
+    return None, None
+
 
 
 
@@ -65,29 +92,38 @@ class CreateAddress(APIView):
         if serializer.is_valid():
             address_obj = serializer.save(user_id=user_id)
 
-            # Create full string for geocoding
+            # Build full address
             full_address = (
                 f"{address_obj.address}, "
                 f"{address_obj.barangay}, "
                 f"{address_obj.city}, "
-                f"{address_obj.province}"
+                f"{address_obj.province}, Philippines"
             )
 
-            lat, lng = geocode_address(full_address)
+            # 🔥 Geocode with fallback
+            lat, lng = geocode_with_fallback(
+                full_address,
+                city=address_obj.city,
+                province=address_obj.province
+            )
 
             if lat and lng:
                 address_obj.lat = lat
                 address_obj.lng = lng
                 address_obj.save()
             else:
-                return Response(
-                    {"error": "Unable to find coordinates for this address"},
-                    status=400
-                )
+                # 🚨 Final emergency fallback (Batangas center)
+                address_obj.lat = 13.7565
+                address_obj.lng = 121.0583
+                address_obj.save()
 
-            return Response(ShippingAddressSerializer(address_obj).data, status=201)
+            return Response(
+                ShippingAddressSerializer(address_obj).data,
+                status=201
+            )
 
         return Response(serializer.errors, status=400)
+
 
 # ---------------------------------------------------------
 # 📌 SET DEFAULT ADDRESS

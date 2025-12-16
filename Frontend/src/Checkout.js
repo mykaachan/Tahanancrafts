@@ -53,7 +53,7 @@ function Checkout() {
       if (!userId) return;
       try {
         const res = await fetch(
-          `https://tahanancrafts.onrender.com/api/users/shipping-address/${userId}/`
+          `https:tahanancrafts.onrender.com/api/users/shipping-address/${userId}/`
         );
         const data = await res.json();
         setAddresses(data || []);
@@ -104,18 +104,16 @@ function Checkout() {
       };
 
       const res = await fetch(
-        "https://www.tahanancrafts.shop/api/products/delivery/checkout-quotation/",
+        "https://tahanancrafts.onrender.com/api/products/delivery/checkout-quotation/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            shipping_address: selectedAddress,
-            artisan: {
-              pickup_lat: location.state?.artisan_pickup_lat,
-              pickup_lng: location.state?.artisan_pickup_lng,
-              pickup_address: location.state?.artisan_pickup_address,
-            }
+            shipping_address_id: selectedAddress.id,
+            artisan_id: artisan_id,
+            user_id: localStorage.getItem("user_id")
           }),
+
         }
       );
 

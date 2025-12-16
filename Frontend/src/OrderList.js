@@ -119,12 +119,23 @@ const OrderList = () => {
           id: o.id,
           status: o.status || "unknown",
           created_at: o.created_at,
+
+          // ✅ ADD THESE
+          buyer_name: o.buyer_name,
+          shipping_full_name: o.shipping_full_name,
+          shipping_phone: o.shipping_phone,
+          shipping_address: o.shipping_address,
+          downpayment_amount: safe(o.downpayment_amount, "0"),
+
           total_items_amount: safe(o.total_items_amount, "0"),
           shipping_fee: safe(o.shipping_fee, "0"),
           grand_total: safe(o.grand_total, "0"),
+
           payment_method: o.payment_method || "—",
           payment_verified: o.payment_verified || false,
+
           items,
+
           first_item: {
             ...first,
             product,
@@ -132,6 +143,7 @@ const OrderList = () => {
             main_image: product.main_image,
             description: product.description,
           },
+
           delivery: o.delivery || {},
           timeline: o.timeline || [],
           payment_proofs: o.payment_proofs || [],
@@ -428,22 +440,6 @@ const OrderList = () => {
                 <button className="approve-btn" onClick={(e) => { e.stopPropagation(); bookCourier(order.id); }}>Book Courier</button>
                 <button className="decline-btn" onClick={(e) => { e.stopPropagation(); cancelAndRefund(order.id); }}>Cancel & Refund</button>
               </div>
-
-              {/* inline shipment fields (optional quick-edit) */}
-              <div className="shipment-fields" style={{ marginTop: 12, display: "grid", gap: 8 }}>
-                <div className="field-row">
-                  <label>Tracking Number:</label>
-                  <input type="text" value={fields.trackingNumber || ""} onChange={(e) => setField(setShippingFields, order.id, "trackingNumber", e.target.value)} />
-                </div>
-                <div className="field-row">
-                  <label>Courier:</label>
-                  <input type="text" value={fields.courier || ""} onChange={(e) => setField(setShippingFields, order.id, "courier", e.target.value)} />
-                </div>
-                <div className="field-row">
-                  <label>Upload Proof of Shipment:</label>
-                  <input type="file" accept="image/*" onChange={(e) => setField(setShippingFields, order.id, "shipmentProof", e.target.files[0])} />
-                </div>
-              </div>
             </div>
           );
         })
@@ -636,189 +632,261 @@ const OrderList = () => {
           </div>
         </div>
 
-        {/* ===== Modal (details) ===== */}
         {modalOpen && modalOrder && (
+        <div className="review-modal-overlay">
           <div
-            className="modal-backdrop"
+            className="review-modal"
             style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.35)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 2000,
+              width: "900px",
+              maxWidth: "95%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              padding: "25px",
+              borderRadius: "12px",
+              background: "#FAF6F0",
+              color: "#3C2F2F",
             }}
-            onClick={closeModal}
           >
+            <h2 style={{ marginBottom: "20px" }}>Order Details</h2>
+
+            {/* ===== order HEADER ===== */}
             <div
-              className="modal-content"
-              onClick={(e) => e.stopPropagation()}
               style={{
-                width: "min(900px, 95%)",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                background: "#fff",
-                borderRadius: "12px",
-                padding: "24px",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                background: "#FFFFFF",
+                border: "1px solid #E5DED3",
+                padding: "15px",
+                borderRadius: "10px",
+                marginBottom: "15px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              {/* ================= HEADER ================= */}
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
-                <h2 style={{ margin: 0, color: "#4d3c2e" }}>Order #{modalOrder.id}</h2>
-                <button
-                  onClick={closeModal}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    fontSize: "1.4rem",
-                    cursor: "pointer",
-                    color: "#4d3c2e",
-                  }}
-                >
-                  ×
-                </button>
+              <div style={{ fontWeight: 600, fontSize: 17 }}>
+                {modalOrder.buyer_name || "Buyer"}
               </div>
 
-              {/* ================= CARD 1: ITEMS ================= */}
-              <div className="modal-card">
-                <h3 className="modal-card-title">Ordered Items</h3>
+              {/* KEEP YOUR EXISTING MESSAGE BUTTON LOGIC */}
+              <button className="btn-contact">
+                Message Customer
+              </button>
+            </div>
 
-                {modalOrder.items.map((item, idx) => {
-                  const p = item.product || {};
-                  const img = p.main_image ? getImageUrl(p.main_image) : "/images/blankimage.png";
+            {/* ===== SHIPPING DETAILS ===== */}
+            <div
+              style={{
+                background: "#FFFFFF",
+                border: "1px solid #E5DED3",
+                padding: "15px",
+                borderRadius: "10px",
+                marginBottom: "20px",
+              }}
+            >
+              <h3 style={{ marginBottom: 10 }}>Shipping Details</h3>
 
-                  return (
-                    <div
-                      key={idx}
+              <p>
+                <strong>Name:</strong> {modalOrder.shipping_full_name || "—"}
+              </p>
+              <p>
+                <strong>Phone:</strong> {modalOrder.shipping_phone || "—"}
+              </p>
+              <p>
+                <strong>Address:</strong> {modalOrder.shipping_address || "—"}
+              </p>
+            </div>
+
+            {/* ===== PAYMENT PROOF ===== */}
+            {modalOrder.payment_proofs?.length > 0 && (
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E5DED3",
+                  padding: "15px",
+                  borderRadius: "10px",
+                  marginBottom: "20px",
+                }}
+              >
+                <h3 style={{ marginBottom: 10 }}>Payment Proof</h3>
+
+                {modalOrder.payment_proofs.map((pp) => (
+                  <div key={pp.id} style={{ marginBottom: 12 }}>
+                    <img
+                      src={getImageUrl(pp.proof_image)}
+                      alt="Payment Proof"
                       style={{
-                        display: "flex",
-                        gap: 16,
-                        padding: "12px 0",
-                        borderBottom: "1px solid #eee",
+                        width: "100%",
+                        maxWidth: 300,
+                        borderRadius: 8,
+                        border: "1px solid #ddd",
                       }}
-                    >
-                      <img
-                        src={img}
-                        style={{
-                          width: 70,
-                          height: 70,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                        }}
-                      />
+                    />
+                    <p style={{ fontSize: 12, marginTop: 6 }}>
+                      Uploaded on {formatDateShort(pp.created_at)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
 
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600 }}>{p.name}</div>
-                        <div style={{ fontSize: 13, color: "#7c6a58" }}>{p.description}</div>
-                        <div style={{ marginTop: 4 }}>Qty: {item.quantity}</div>
-                      </div>
+            {/* ===== ITEMS LIST ===== */}
+            <div
+              style={{
+                background: "#FFFFFF",
+                border: "1px solid #E5DED3",
+                padding: "15px",
+                borderRadius: "10px",
+                marginBottom: "25px",
+              }}
+            >
+              {(modalOrder.items || []).map((item) => {
+                const p = item.product || {};
+                const img = p.main_image
+                  ? getImageUrl(p.main_image)
+                  : "/images/blankimage.png";
 
-                      <div style={{ fontWeight: 600, whiteSpace: "nowrap" }}>
-                        {money(item.subtotal)}
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <div style={{ textAlign: "right", marginTop: 12 }}>
-                  <div>Subtotal: {money(modalOrder.total_items_amount)}</div>
-                  <div>Shipping Fee: {money(modalOrder.shipping_fee)}</div>
+                return (
                   <div
+                    key={item.id}
                     style={{
-                      marginTop: 6,
-                      fontWeight: 700,
-                      fontSize: 18,
-                      color: "#d97a00",
+                      display: "flex",
+                      gap: "15px",
+                      paddingBottom: "15px",
+                      borderBottom: "1px solid #EFE7DD",
+                      marginBottom: "15px",
                     }}
                   >
-                    Total: {money(modalOrder.grand_total)}
-                  </div>
-                </div>
-              </div>
-
-              {/* ================= CARD 2: BUYER INFO ================= */}
-              <div className="modal-card">
-                <h3 className="modal-card-title">Buyer Information</h3>
-
-                <div><strong>Name:</strong> {modalOrder.raw?.buyer?.name || "Not provided"}</div>
-                <div style={{ marginTop: 4 }}>
-                  <strong>Shipping Address:</strong> {modalOrder.delivery?.address || "No address available"}
-                </div>
-              </div>
-
-              {/* ================= CARD 3: PAYMENT INFO ================= */}
-              <div className="modal-card">
-                <h3 className="modal-card-title">Payment Information</h3>
-
-                <div><strong>Payment Method:</strong> {modalOrder.payment_method}</div>
-
-                <div style={{ marginTop: 10, fontWeight: 600 }}>Payment Proofs</div>
-                <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
-                  {modalOrder.payment_proofs.length === 0 && (
-                    <div style={{ color: "#7c6a58" }}>No payment proofs uploaded.</div>
-                  )}
-
-                  {modalOrder.payment_proofs.map((pp) => (
-                    <div
-                      key={pp.id}
+                    <img
+                      src={img}
+                      alt=""
                       style={{
-                        border: "1px solid #eee",
-                        padding: 8,
-                        borderRadius: 8,
-                        width: 120,
-                        textAlign: "center",
+                        width: 95,
+                        height: 95,
+                        borderRadius: "8px",
+                        objectFit: "cover",
                       }}
-                    >
-                      <img
-                        src={getImageUrl(pp.proof_image)}
-                        style={{ width: "100%", height: 100, objectFit: "cover", borderRadius: 6 }}
-                      />
-                      <div style={{ marginTop: 6, fontSize: 12 }}>
-                        <div><strong>{pp.payment_type}</strong></div>
-                        <div>{money(pp.amount_paid)}</div>
-                        <div>{formatDateShort(pp.created_at)}</div>
-                      </div>
+                    />
+
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontWeight: 600 }}>{p.name}</p>
+                      <p style={{ fontSize: 13, opacity: 0.8 }}>{p.description}</p>
+                      <p style={{ marginTop: 8 }}>Qty: {item.quantity}</p>
                     </div>
-                  ))}
-                </div>
+
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ fontWeight: 600 }}>{money(item.subtotal)}</p>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div style={{ textAlign: "right" }}>
+                <p>Subtotal: {money(modalOrder.total_items_amount)}</p>
+                <p>Shipping Fee: {money(modalOrder.shipping_fee)}</p>
+                <p
+                  style={{
+                    marginTop: 8,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: "#8B5E3C",
+                  }}
+                >
+                  Total: {money(modalOrder.grand_total)}
+                </p>
+              </div>
+            </div>
+
+            {/* ===== BOTTOM GRID (TIMELINE + SUMMARY) ===== */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1.5fr 1fr",
+                gap: "20px",
+              }}
+            >
+              {/* TIMELINE */}
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E5DED3",
+                  padding: "15px",
+                  borderRadius: "10px",
+                }}
+              >
+                <h3 style={{ marginBottom: 10 }}>Order Timeline</h3>
+
+                {(modalOrder.timeline || []).map((t) => (
+                  <div key={t.id} style={{ marginBottom: 8 }}>
+                    <div style={{ fontWeight: 600 }}>
+                      {t.status.replace(/_/g, " ")}
+                    </div>
+                    <div style={{ fontSize: 13 }}>{t.description}</div>
+                    <div style={{ fontSize: 12, opacity: 0.7 }}>
+                      {formatDateShort(t.created_at)}
+                    </div>
+                  </div>
+                ))}
+
+                <p style={{ marginTop: 10 }}>
+                  Payment Method: <strong>{modalOrder.payment_method}</strong>
+                </p>
               </div>
 
-              {/* ================= CARD 4: SHIPPING ================= */}
-              <div className="modal-card">
-                <h3 className="modal-card-title">Shipping Information</h3>
+              {/* SUMMARY */}
+              <div
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #E5DED3",
+                  padding: "15px",
+                  borderRadius: "10px",
+                }}
+              >
+                <h3>Total Summary</h3>
 
-                {modalOrder.delivery ? (
-                  <>
-                    <div><strong>Courier:</strong> {modalOrder.delivery.courier || "Not assigned"}</div>
-                    <div style={{ marginTop: 4 }}>
-                      <strong>Tracking #:</strong> {modalOrder.delivery.tracking_number || "—"}
-                    </div>
-                  </>
-                ) : (
-                  <div>No shipping info available yet.</div>
-                )}
+                <p>
+                  Items Subtotal
+                  <span style={{ float: "right" }}>
+                    {money(modalOrder.total_items_amount)}
+                  </span>
+                </p>
+
+                <p>
+                  Downpayment
+                  <span style={{ float: "right" }}>
+                    {money(modalOrder.downpayment_amount)}
+                  </span>
+                </p>
+
+                <p>
+                  Shipping Fee
+                  <span style={{ float: "right" }}>
+                    {money(modalOrder.shipping_fee)}
+                  </span>
+                </p>
+
+                <hr style={{ borderColor: "#E5DED3", margin: "12px 0" }} />
+
+                <p style={{ fontWeight: "bold", fontSize: 18, color: "#8B5E3C" }}>
+                  Grand Total
+                  <span style={{ float: "right" }}>
+                    {money(modalOrder.grand_total)}
+                  </span>
+                </p>
               </div>
+            </div>
 
-              {/* ================= CARD 5: ORDER TIMELINE ================= */}
-              <div className="modal-card">
-                <h3 className="modal-card-title">Order Timeline</h3>
 
-                {modalOrder.timeline.length === 0 ? (
-                  <div>No recorded events.</div>
-                ) : (
-                  modalOrder.timeline.map((t) => (
-                    <div key={t.id} style={{ marginBottom: 12 }}>
-                      <div style={{ fontWeight: 600 }}>{t.status.replace(/_/g, " ")}</div>
-                      <div style={{ fontSize: 13 }}>{t.description}</div>
-                      <div style={{ opacity: 0.7, fontSize: 12 }}>
-                        {formatDateShort(t.created_at)}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+            {/* ===== FOOTER BUTTONS (UNCHANGED LOGIC) ===== */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "25px",
+                gap: "15px",
+              }}
+            >
+              <button className="btn-cancel" onClick={closeModal}>
+                Close
+              </button>
 
               {/* ================= CARD 6: ACTION BUTTONS ================= */}
               <div className="modal-card">
@@ -874,8 +942,8 @@ const OrderList = () => {
               </div>
             </div>
           </div>
-        )}
-
+        </div>
+      )}
       </div>
     </Layout>
   );
