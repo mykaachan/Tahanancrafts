@@ -97,12 +97,6 @@ function Checkout() {
     setQuotation(null);
 
     try {
-      const body = {
-        shipping_address_id: selectedAddress.id,
-        artisan_id: artisan_id,
-        user_id: localStorage.getItem("user_id")
-      };
-
       const res = await fetch(
         "https://tahanancrafts.onrender.com/api/products/delivery/checkout-quotation/",
         {
@@ -111,40 +105,42 @@ function Checkout() {
           body: JSON.stringify({
             shipping_address_id: selectedAddress.id,
             artisan_id: artisan_id,
-            user_id: localStorage.getItem("user_id")
+            user_id: localStorage.getItem("user_id"),
           }),
-
         }
       );
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.warn("Quotation API returned error: ", data);
-        alert(data.message || data.error || "Failed to compute shipping fee");
-        setLoadingFee(false);
+        console.warn("Quotation API error, using fallback ₱78", data);
+        setShippingFee(78); // 👈 FALLBACK
         return;
       }
 
       const q = data.quotation || data;
-      // priceBreakdown.total might be string; parse
-      const totalStr = q?.priceBreakdown?.total ?? q?.priceBreakdown?.totalBeforeOptimization ?? null;
+      const totalStr =
+        q?.priceBreakdown?.total ??
+        q?.priceBreakdown?.totalBeforeOptimization ??
+        null;
+
       const parsed = totalStr !== null ? Number(totalStr) : null;
 
       if (parsed === null || Number.isNaN(parsed)) {
-        console.warn("Quotation missing priceBreakdown.total:", q);
-        alert("Failed to compute shipping fee");
+        console.warn("Invalid quotation total, using fallback ₱78", q);
+        setShippingFee(78); // 👈 FALLBACK
       } else {
         setShippingFee(parsed);
         setQuotation(q);
       }
     } catch (err) {
-      console.error("fetchShippingFee error:", err);
-      alert("Failed to load shipping fee.");
+      console.error("fetchShippingFee failed, using fallback ₱78", err);
+      setShippingFee(78); // 👈 FALLBACK
     } finally {
       setLoadingFee(false);
     }
   };
+
 
   useEffect(() => {
     // fetch when either address or items change
@@ -450,7 +446,7 @@ function Checkout() {
           <h2>Order Summary</h2>
           <div className="summary-details">
             <p><span>Items Subtotal:</span><span>₱{itemsSubtotal}</span></p>
-            <p><span>Shipping Fee:</span><span>{loadingFee ? "Calculating..." : (shippingFee !== null ? `₱${shippingFee}` : "—")}</span></p>
+            <p><span>Shipping Fee:</span><span>{loadingFee ? "Calculating..." : (shippingFee !== null ? `₱${shippingFee}` : "-")}</span></p>
 
             <div className="payment-options" style={{ marginTop: 20 }}>
               <h3>Payment Options</h3>
