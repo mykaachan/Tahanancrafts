@@ -12,7 +12,6 @@ const Notification = () => {
 
   // 🔑 Adjust which ID to use
   const userId = localStorage.getItem("user_id");
-  const artisanId = localStorage.getItem("artisan_id"); // if artisan
 
   useEffect(() => {
     fetchNotifications();
@@ -22,10 +21,10 @@ const Notification = () => {
     try {
       let endpoint = "";
 
-      if (artisanId) {
-        endpoint = `${API_URL}/api/chat/artisan/${artisanId}/`;
-      } else {
+      if (userId) {
         endpoint = `${API_URL}/api/chat/user/${userId}/`;
+      } else {
+        endpoint = `no user found`;
       }
 
       const res = await fetch(endpoint);

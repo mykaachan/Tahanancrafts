@@ -1,84 +1,176 @@
-// src/AdminOrders.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminOrders() {
-  const BASE_API = "https://tahanancrafts.onrender.com";
+  const BASE_API = "http://127.0.0.1:8000";
+  const ORDERS_URL = `${BASE_API}/api/products/admin/orders/`;
+  const PRODUCTS_URL = `${BASE_API}/api/products/admin/products/`;
+  const ARTISANS_URL = `${BASE_API}/api/products/admin/artisans/`;
   const MEDIA_URL = BASE_API;
+
   const navigate = useNavigate();
 
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [notifications] = useState([
-    "🧺 New artisan shop registered",
-    "📦 Order update received",
-    "💬 Customer sent a message",
-  ]);
+  // ---------------- AUTH ----------------
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("user_role");
 
+    if (!token || role !== "admin") {
+      alert("Admins only.");
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+
+  // ---------------- UI ----------------
+  const [search, setSearch] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [page, setPage] = useState(1);
+
+  // ---------------- DATA ----------------
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [artisans, setArtisans] = useState([]);
 
-  const itemsPerPage = 5;
-  const [page, setPage] = useState(1);
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
+  // ---------------- FETCH ORDERS ----------------
+  async function fetchOrders(url) {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(url, {
+      headers: { Authorization: `Token ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Orders fetch failed");
+
+    const json = await res.json();
+    setOrders(json.results || []);
+    setNextPage(json.next);
+    setPrevPage(json.previous);
+    setCount(json.count);
+  }
+
+  // ---------------- INITIAL LOAD ----------------
   useEffect(() => {
     async function load() {
-      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
-      const data = await res.json();
+      try {
+        const token = localStorage.getItem("token");
 
-      setOrders(data.lists.orders);
-      setProducts(data.lists.products);
-      setArtisans(data.lists.artisans);
+        // Orders (paginated)
+        await fetchOrders(ORDERS_URL);
+
+        // Products
+        const prodRes = await fetch(PRODUCTS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const prodJson = await prodRes.json();
+        setProducts(prodJson.results || []);
+
+        // Artisans
+        const artRes = await fetch(ARTISANS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const artJson = await artRes.json();
+        setArtisans(artJson.results || []);
+      } catch (err) {
+        console.error(err);
+        localStorage.clear();
+        navigate("/login", { replace: true });
+      } finally {
+        setLoading(false);
+      }
     }
+
     load();
-  }, []);
+  }, [navigate]);
+
+  // ---------------- SEARCH (FRONTEND ONLY) ----------------
+  const filteredOrders = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return orders;
+
+    return orders.filter((o) => {
+      if (!o.items?.length) return false;
+
+      const product = products.find(p => p.id === o.items[0].product);
+      const artisan = product
+        ? artisans.find(a => a.id === product.artisan)
+        : null;
+
+      return (
+        o.id.toString().includes(q) ||
+        o.status.toLowerCase().includes(q) ||
+        product?.name.toLowerCase().includes(q) ||
+        artisan?.name.toLowerCase().includes(q)
+      );
+    });
+  }, [orders, search, products, artisans]);
+
+  const getStatusClass = (status) => {
+    if (["completed", "delivered", "to_review"].includes(status)) return "badge-green";
+    if (["cancelled", "refund"].includes(status)) return "badge-red";
+    return "badge-yellow";
+  };
+
+  if (loading) {
+    return (
+      <div className="admindash-container">
+        <AdminSidebar />
+        <div className="admindash-main"><h3>Loading Orders...</h3></div>
+      </div>
+    );
+  }
+  const itemsPerPage = 5;
 
   const totalPages = Math.ceil(orders.length / itemsPerPage);
+
   const paginatedOrders = orders.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
 
-  const getStatusClass = (status) => {
-    const green = ["completed", "delivered", "to_review"];
-    const red = ["refund", "cancelled"];
-    if (green.includes(status)) return "badge-green";
-    if (red.includes(status)) return "badge-red";
-    return "badge-yellow";
-  };
 
   return (
     <div className="admindash-container">
       <AdminSidebar />
 
       <div className="admindash-main">
-        {/* HEADER */}
         <header className="admindash-header">
-          <input className="admindash-search" placeholder="🔍 Search orders..." />
+          <input
+            className="admindash-search"
+            placeholder="🔍 Search orders..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
           <div className="admindash-header-right">
             <div className="admindash-bell" onClick={() => setShowNotifications(!showNotifications)}>
-              <FaBell size={20} color="#fffdf9" />
-              {notifications.length > 0 && <span className="notif-dot"></span>}
-
-              {showNotifications && (
-                <div className="admindash-dropdown">
-                  <h4>Notifications</h4>
-                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
-                </div>
-              )}
+              <FaBell size={20} />
+              <span className="notif-dot" />
             </div>
 
-            <button className="admindash-logout">Logout</button>
-            <div className="admindash-profile-circle"></div>
+            <button
+              className="admindash-logout"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </button>
+
+            <div className="admindash-profile-circle" />
           </div>
         </header>
 
         <div className="admindash-welcome">
-          <h2>Orders &gt; History</h2>
+          <h2>Orders</h2>
         </div>
 
         <div className="cust-history">
@@ -95,7 +187,19 @@ export default function AdminOrders() {
 
             <tbody>
               {paginatedOrders.map((order) => {
-                const item = order.items[0];
+                const item = order.items?.[0];
+
+                // 🛡️ Guard: orders with no items
+                if (!item) {
+                  return (
+                    <tr key={order.id}>
+                      <td colSpan={5} style={{ textAlign: "center", color: "#888" }}>
+                        Order #{order.id} has no items
+                      </td>
+                    </tr>
+                  );
+                }
+
                 const product = products.find((p) => p.id === item.product);
                 if (!product) return null;
 
@@ -110,10 +214,14 @@ export default function AdminOrders() {
                   >
                     <td>
                       <div className="cust-prod">
-                        <img src={MEDIA_URL + product.main_image} width={40} alt="" />
+                        <img
+                          src={product.main_image}
+                          width={40}
+                          alt={product.name}
+                        />
                         <div>
                           <p className="prod-name">{product.name}</p>
-                          <small>{artisan ? artisan.name : "Unknown Artisan"}</small>
+                          <small>{artisan?.name || "Unknown Artisan"}</small>
                         </div>
                       </div>
                     </td>
@@ -132,36 +240,15 @@ export default function AdminOrders() {
                 );
               })}
             </tbody>
+
           </table>
 
-          {/* PAGINATION */}
           <div className="pagination">
-            <span>
-              Showing {(page - 1) * itemsPerPage + 1} -{" "}
-              {Math.min(page * itemsPerPage, orders.length)} of {orders.length}
-            </span>
+            <span>Showing {filteredOrders.length} of {count}</span>
 
             <div className="pagination-buttons">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-                &lt;
-              </button>
-
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  className={page === i + 1 ? "active" : ""}
-                  onClick={() => setPage(i + 1)}
-                >
-                  {i + 1}
-                </button>
-              ))}
-
-              <button
-                disabled={page === totalPages}
-                onClick={() => setPage(page + 1)}
-              >
-                &gt;
-              </button>
+              <button disabled={!prevPage} onClick={() => fetchOrders(prevPage)}>&lt;</button>
+              <button disabled={!nextPage} onClick={() => fetchOrders(nextPage)}>&gt;</button>
             </div>
           </div>
         </div>

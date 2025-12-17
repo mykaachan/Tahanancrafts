@@ -8,38 +8,99 @@ export default function AdminOrderDet() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const BASE_API = "https://tahanancrafts.onrender.com";
+  const BASE_API = "http://127.0.0.1:8000";
   const MEDIA_URL = BASE_API;
+
+  const ORDERS_URL = `${BASE_API}/api/products/admin/orders/?search=${id}`;
+  const PRODUCTS_URL = `${BASE_API}/api/products/admin/products/`;
+  const CUSTOMERS_URL = `${BASE_API}/api/products/admin/customers/`;
+  const ARTISANS_URL = `${BASE_API}/api/products/admin/artisans/`;
 
   const [order, setOrder] = useState(null);
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [artisans, setArtisans] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [showNotifications, setShowNotifications] = useState(false);
 
+  // ---------------- AUTH ----------------
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("user_role");
+
+    if (!token || role !== "admin") {
+      alert("Admins only.");
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+
+  // ---------------- FETCH DATA ----------------
   useEffect(() => {
     async function load() {
-      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
-      const data = await res.json();
+      try {
+        const token = localStorage.getItem("token");
 
-      const o = data.lists.orders.find((ord) => ord.id === parseInt(id));
-      setOrder(o);
+        // Fetch order
+        const orderRes = await fetch(ORDERS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const orderJson = await orderRes.json();
+        const foundOrder = orderJson.results?.find(
+          (o) => o.id === parseInt(id)
+        );
+        if (!foundOrder) throw new Error("Order not found");
+        setOrder(foundOrder);
 
-      setProducts(data.lists.products);
-      setCustomers(data.lists.customers);
-      setArtisans(data.lists.artisans);
+        // Fetch products
+        const prodRes = await fetch(PRODUCTS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const prodJson = await prodRes.json();
+        setProducts(prodJson.results || []);
+
+        // Fetch customers
+        const custRes = await fetch(CUSTOMERS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const custJson = await custRes.json();
+        setCustomers(custJson.results || []);
+
+        // Fetch artisans
+        const artRes = await fetch(ARTISANS_URL, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        const artJson = await artRes.json();
+        setArtisans(artJson.results || []);
+      } catch (err) {
+        console.error("AdminOrderDet error:", err);
+        navigate("/adminorders");
+      } finally {
+        setLoading(false);
+      }
     }
-    load();
-  }, [id]);
 
-  if (!order) return <div>Loading order...</div>;
+    load();
+  }, [id, navigate]);
+
+  if (loading || !order) {
+    return (
+      <div className="admindash-container">
+        <AdminSidebar />
+        <div className="admindash-main">
+          <h3>Loading order...</h3>
+        </div>
+      </div>
+    );
+  }
 
   const customer = customers.find((c) => c.id === order.user);
 
   const itemsDetailed = order.items.map((i) => {
     const product = products.find((p) => p.id === i.product);
-    const artisan = artisans.find((a) => a.id === product.artisan);
+    const artisan = product
+      ? artisans.find((a) => a.id === product.artisan)
+      : null;
     return { item: i, product, artisan };
   });
 
@@ -50,10 +111,8 @@ export default function AdminOrderDet() {
       )}&background=random&color=fff`;
 
   const getStatusClass = (status) => {
-    const green = ["completed", "delivered", "to_review"];
-    const red = ["refund", "cancelled"];
-    if (green.includes(status)) return "badge-green";
-    if (red.includes(status)) return "badge-red";
+    if (["completed", "delivered", "to_review"].includes(status)) return "badge-green";
+    if (["refund", "cancelled"].includes(status)) return "badge-red";
     return "badge-yellow";
   };
 
@@ -67,29 +126,34 @@ export default function AdminOrderDet() {
           <input className="admindash-search" placeholder="Search order..." />
 
           <div className="admindash-header-right">
-            <div className="admindash-bell" onClick={() => setShowNotifications(!showNotifications)}>
+            <div
+              className="admindash-bell"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
               <FaBell size={20} />
-
-              {showNotifications && (
-                <div className="admindash-dropdown">
-                  <h4>Notifications</h4>
-                  <ul>
-                    <li>Order update received</li>
-                    <li>New customer inquiry</li>
-                  </ul>
-                </div>
-              )}
             </div>
 
-            <button className="admindash-logout">Logout</button>
-            <div className="admindash-profile-circle"></div>
+            <button
+              className="admindash-logout"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </button>
+
+            <div className="admindash-profile-circle" />
           </div>
         </header>
 
         {/* BREADCRUMB */}
         <div className="admindash-welcome breadcrumb-header">
           <h2>
-            <span className="breadcrumb-link" onClick={() => navigate("/adminorders")}>
+            <span
+              className="breadcrumb-link"
+              onClick={() => navigate("/adminorders")}
+            >
               Orders
             </span>{" "}
             &gt; #{order.id}
@@ -97,16 +161,16 @@ export default function AdminOrderDet() {
         </div>
 
         <div className="customer-details">
-          {/* LEFT SECTION: ORDER SUMMARY */}
+          {/* LEFT */}
           <div className="cust-summary">
             <div className="cust-cards">
               <div className="cust-card spent">
-                <h4>Total Items Amount</h4>
+                <h4>Total Items</h4>
                 <p className="amount">₱{order.total_items_amount}</p>
               </div>
 
               <div className="cust-card orders">
-                <h4>Shipping Fee</h4>
+                <h4>Shipping</h4>
                 <p className="amount">₱{order.shipping_fee}</p>
               </div>
 
@@ -116,10 +180,8 @@ export default function AdminOrderDet() {
               </div>
             </div>
 
-            {/* ORDER ITEMS TABLE */}
             <div className="cust-history">
               <h4>Items Purchased</h4>
-
               <table className="cust-history-table">
                 <thead>
                   <tr>
@@ -136,21 +198,17 @@ export default function AdminOrderDet() {
                       <td>
                         <div className="cust-prod">
                           <img
-                            src={MEDIA_URL + product.main_image}
-                            alt=""
+                            src={product.main_image}
                             width={40}
+                            alt={product.name}
                           />
                           <div>
                             <p>{product.name}</p>
-                            <small>{product.categories[0]}</small>
                           </div>
                         </div>
                       </td>
-
                       <td>{artisan?.name || "Unknown Artisan"}</td>
-
                       <td>{item.quantity}</td>
-
                       <td>₱{item.price}</td>
                     </tr>
                   ))}
@@ -158,32 +216,28 @@ export default function AdminOrderDet() {
               </table>
             </div>
 
-            {/* STATUS */}
             <div className="cust-history">
               <h4>Order Status</h4>
-              <p>
-                <span className={`status-badge ${getStatusClass(order.status)}`}>
-                  {order.status.replace("_", " ")}
-                </span>
-              </p>
+              <span className={`status-badge ${getStatusClass(order.status)}`}>
+                {order.status.replace("_", " ")}
+              </span>
               <p><strong>Date:</strong> {new Date(order.created_at).toLocaleDateString()}</p>
-              <p><strong>Payment Method:</strong> {order.payment_method.toUpperCase()}</p>
+              <p><strong>Payment:</strong> {order.payment_method.toUpperCase()}</p>
             </div>
           </div>
 
-          {/* RIGHT SECTION: CUSTOMER INFO */}
+          {/* RIGHT */}
           <div className="cust-profile-card">
-            <img src={avatarSrc} alt="customer" className="cust-avatar" />
-
-            <h3>{customer.name}</h3>
-            <p className="cust-username">@{customer.username || "Customer"}</p>
+            <img src={avatarSrc} className="cust-avatar" alt="customer" />
+            <h3>{customer?.name}</h3>
+            <p className="cust-username">@{customer?.username || "Customer"}</p>
 
             <hr />
 
             <div className="cust-info-list">
-              <p><FaUser /> <strong>ID:</strong> {customer.id}</p>
-              <p><FaEnvelope /> <strong>Email:</strong> {customer.email}</p>
-              <p><FaPhone /> <strong>Phone:</strong> {customer.phone || "N/A"}</p>
+              <p><FaUser /> <strong>ID:</strong> {customer?.id}</p>
+              <p><FaEnvelope /> <strong>Email:</strong> {customer?.email}</p>
+              <p><FaPhone /> <strong>Phone:</strong> {customer?.phone || "N/A"}</p>
             </div>
           </div>
         </div>

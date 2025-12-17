@@ -1,30 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './Layout.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./Layout.css";
 
-// Easy to update API URL in one place
 const API_URL = "https://tahanancrafts.onrender.com";
 
 const Layout = ({ children }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
   const [artisan, setArtisan] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showNotif, setShowNotif] = useState(false);
+  const [loadingNotif, setLoadingNotif] = useState(false);
+  const artisanId = localStorage.getItem("artisan_id");
 
-  const toggleNotifications = () => {
-    setShowNotifications(prev => !prev);
+  // ===============================
+  // FETCH NOTIFICATIONS (FIXED)
+  // ===============================
+  const fetchNotifications = async () => {
+    if (!artisanId) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/api/chat/artisan/${artisanId}` // ✅ NO TRAILING SLASH
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // backend may return object or array
+      const list = Array.isArray(data) ? data : [data];
+      setNotifications(list);
+    } catch (error) {
+      console.error("Failed to load notifications", error);
+      setNotifications([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Fetch artisan info using ID from localStorage
+  // ===============================
+  // MARK AS READ (FRONTEND ONLY)
+  // ===============================
+  const markAsRead = (notifId) => {
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.id === notifId ? { ...n, is_read: true } : n
+      )
+    );
+  };
+
+  // ===============================
+  // FETCH ARTISAN INFO
+  // ===============================
   useEffect(() => {
-    const artisanId = localStorage.getItem("artisan_id");
     if (!artisanId) return;
 
     fetch(`${API_URL}/api/users/artisan/story/${artisanId}/`)
       .then((res) => res.json())
-      .then((data) => {
-        setArtisan(data);
-      })
-      .catch((err) => console.error("Error fetching artisan:", err));
-  }, []);
+      .then((data) => setArtisan(data))
+      .catch((err) =>
+        console.error("Error fetching artisan:", err)
+      );
+  }, [artisanId]);
+
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
     <div className="layout">
@@ -42,10 +84,31 @@ const Layout = ({ children }) => {
           </div>
 
           <div className="header-actions">
+            {/* Notification Icon */}
+            <div style={{ position: "relative" }}>
+              <img
+                src="/images/notifications.png"
+                alt="Notifications"
+                className="notification-icon"
+                onClick={() => {
+                  setShowNotif((prev) => !prev);
+                  fetchNotifications();
+                }}
+                style={{ cursor: "pointer" }}
+              />
 
-            <a href="/sellerprofile" style={{ textDecoration: "none", color: "inherit" }}>
+              {unreadCount > 0 && (
+                <span className="notif-badge">
+                  {unreadCount}
+                </span>
+              )}
+            </div>
+
+            <Link
+              to="/sellerprofile"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <div className="user-info">
-                {/* Dynamic Avatar */}
                 <div className="user-avatar">
                   {artisan?.main_photo ? (
                     <img
@@ -55,7 +118,7 @@ const Layout = ({ children }) => {
                         width: "100%",
                         height: "100%",
                         borderRadius: "50%",
-                        objectFit: "cover"
+                        objectFit: "cover",
                       }}
                     />
                   ) : (
@@ -63,47 +126,60 @@ const Layout = ({ children }) => {
                   )}
                 </div>
 
-                {/* Dynamic Username */}
                 <span className="username">
                   {artisan?.name || "Loading..."}
                 </span>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
 
-        {/* Notification Popup */}
-        {showNotifications && (
-          <div className="notification-popup">
-            <h4>Notifications</h4>
-            <ul>
-              <li>
-                🛒 New Order Request – COD
-                <button className="view-order-btn">View Order</button>
-              </li>
-              <li>
-                🛒 New Order Request – Preorder (Downpayment Required)
-                <button className="view-order-btn">View Order</button>
-              </li>
-              <li>
-                Buyer Paid Shipping Fee
-                <button className="view-order-btn">View Order</button>
-              </li>
-              <li>
-                Buyer Uploaded Downpayment Proof
-                <button className="view-order-btn">View Order</button>
-              </li>
-              <li>
-                Buyer Requested Cancellation
-                <button className="view-order-btn">View Order</button>
-              </li>
-            </ul>
+        {/* ===============================
+            NOTIFICATION POPUP
+        =============================== */}
+        {showNotif && (
+          <div className="notif-overlay" onClick={() => setShowNotif(false)}>
+            <div className="notif-popup" onClick={(e) => e.stopPropagation()}>
+              <div className="notif-header">
+                <h4>Notifications</h4>
+                <button onClick={() => setShowNotif(false)}>✖</button>
+              </div>
+
+              <div className="notif-content">
+                {loadingNotif ? (
+                  <p>Loading...</p>
+                ) : notifications.length === 0 ? (
+                  <p>No new notifications</p>
+                ) : (
+                  notifications.map((notif) => (
+                    <div key={notif.id} className="notif-item">
+                      <span className="notif-icon">{notif.icon}</span>
+                      <div className="notif-text">
+                        <strong>{notif.title}</strong>
+                        <p>{notif.message}</p>
+                        <small>
+                          {new Date(notif.created_at).toLocaleString()}
+                        </small>
+                      </div>
+
+                      {!notif.is_read && (
+                        <button
+                          className="notif-read-btn"
+                          onClick={() => markAsRead(notif.id)}
+                        >
+                          Mark as read
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         )}
       </header>
 
       <div className="main-container">
-        {/* Sidebar */}
         <aside className="dashboard-sidebar">
           <nav className="sidebar-nav">
             <Link to="/seller-dashboard" className="nav-item no-underline">
@@ -123,10 +199,7 @@ const Layout = ({ children }) => {
           </nav>
         </aside>
 
-        {/* Main Content */}
-        <main className="main-content">
-          {children}
-        </main>
+        <main className="main-content">{children}</main>
       </div>
     </div>
   );

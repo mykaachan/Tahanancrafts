@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView
 from django.db.models import Q
 from django.db.models import Sum, Prefetch
 from django.db.models.functions import Coalesce
-import machineLearning.recommendations.recommendation as reco
+import machineLearning.recommendations as reco
 from users.models import Artisan, CustomUser
 from products.models import Product, Category, Material,ProductImage, UserActivity, UserRecommendations,Order,OrderItem, Rating 
 from .serializers import ProductSerializer, UpdateProductSerializer, ProductReadSerializer

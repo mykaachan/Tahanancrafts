@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminCust() {
   const navigate = useNavigate();
-  //const BASE_API = "http://127.0.0.1:8000";
-  const BASE_API = "https://tahanancrafts.onrender.com";
+  const BASE_API = "http://127.0.0.1:8000";
+  //const BASE_API = "https://tahanancrafts.onrender.com";
 
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -21,24 +21,41 @@ export default function AdminCust() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchCustomers() {
       try {
-        const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("user_role");
+        
+        if (!token || role !== "admin") {
+          alert("Admins only.");
+          navigate("/login", { replace: true });
+          return;
+        }
+        const res = await fetch(
+          `${BASE_API}/api/products/admin/customers/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+
+        if (!res.ok) throw new Error("Unauthorized");
+
         const data = await res.json();
 
-        setCustomers(data.lists.customers);
-        setOrders(data.lists.orders);
+        // ✅ PAGINATED RESPONSE
+        setCustomers(data.results || []);
+
       } catch (error) {
-        console.log("Fetch error:", error);
+        console.error("Fetch error:", error);
+        navigate("/login");
       }
     }
-    fetchData();
-  }, []);
 
-  // Calculate total orders for each customer
-  function getOrderCount(customerId) {
-    return orders.filter((o) => o.user === customerId).length;
-  }
+    fetchCustomers();
+  }, [navigate]);
+
 
   return (
     <div className="admindash-container">
@@ -106,7 +123,7 @@ export default function AdminCust() {
 
                   <td>{cust.phone || "N/A"}</td>
 
-                  <td>{getOrderCount(cust.id)}</td>
+                  <td>{cust.total_orders ?? "—"}</td>
 
                   <td>
                     <span className="status-badge active">Active</span>

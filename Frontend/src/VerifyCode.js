@@ -9,7 +9,7 @@ function VerifyCode() {
   const location = useLocation();
 
   // Contact email/phone from LoginPage
-  const contact = location.state?.contact || "your email/phone";
+  const contact = location.state?.contact || "";
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleVerify();
@@ -17,38 +17,43 @@ function VerifyCode() {
 
   const handleVerify = async () => {
     try {
+      // ✅ CALL OTP VERIFY API
       const res = await loginOtp({ otp, contact });
 
-      if (!res.user) throw new Error("Invalid response");
+      // ✅ DESTRUCTURE RESPONSE CORRECTLY
+      const { token, user } = res;
 
-      const user = res.user;
+      if (!token || !user) {
+        throw new Error("Invalid OTP response");
+      }
 
       console.log("OTP verified:", user);
 
       // ---------------------------------------------
-      // ⭐ SAVE ALL USER DATA IN LOCAL STORAGE
+      // ⭐ SAVE AUTH DATA (THIS FIXES 403 ERRORS)
       // ---------------------------------------------
-      localStorage.setItem("user_id", user.id);
+      localStorage.setItem("token", token);
       localStorage.setItem("user_role", user.role);
-      localStorage.setItem("user_name", user.username || user.name || "");
-      localStorage.setItem("user_email", user.email || contact);
+      localStorage.setItem("user_id", user.id);
+      localStorage.setItem("user_name", user.username || "");
+      localStorage.setItem("user_email", contact);
 
       // ⭐ Save artisan_id ONLY if seller
       if (user.role === "seller" && user.artisan_id) {
         localStorage.setItem("artisan_id", user.artisan_id);
+      } else {
+        localStorage.removeItem("artisan_id");
       }
 
       // ---------------------------------------------
-      // ⭐ REDIRECT BASED ON USER ROLE
+      // ⭐ REDIRECT BY ROLE
       // ---------------------------------------------
-      if (user.role === "seller") {
-        navigate("/seller-dashboard");
-      } 
-      else if (user.role === "admin") {
-        navigate("/Admin");
-      }
-      else {
-        navigate("/");
+      if (user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (user.role === "seller") {
+        navigate("/seller-dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
       }
 
     } catch (err) {

@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'products',
+    'machineLearning',
     'search',
     'chat',
     'rest_framework',  # Django REST Framework for API
@@ -247,14 +248,18 @@ EMAIL_BACKEND = "resend.django.EmailBackend"  # Resend backend
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        # or JWT if you use it
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+
 
 LALAMOVE_BASE_URL = "https://rest.sandbox.lalamove.com/v3"
 LALAMOVE_API_KEY = os.environ.get("LALAMOVE_API_KEY", default="")

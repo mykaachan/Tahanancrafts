@@ -88,7 +88,7 @@ def send_notification(event, order=None, buyer=None, artisan=None, extra=None):
         notify_user(
             buyer,
             "Payment Proof Submitted",
-            "Your proof was uploaded. Seller will verify it soon.",
+            f"Your proof of payment for #{order.id} was uploaded. Seller will verify it soon.",
             notif_type="payment",
             icon="💰"
         )

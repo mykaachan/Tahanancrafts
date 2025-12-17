@@ -6,7 +6,7 @@ html, body {
   font-family: 'Segoe UI', sans-serif;
 }
 .cart-page {
-  padding-top: 120px; 
+  padding-top: 10px; 
   background: #fffdf9; 
   min-height: 70vh;
 
@@ -231,7 +231,7 @@ html, body {
   .cart-page {
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 60px;
+    padding-top: 10px;
   }
   .cart-title {
     font-size: 2rem;
@@ -240,10 +240,7 @@ html, body {
     flex-direction: column;
     gap: 20px;
   }
-  .cart-item {
-    flex-direction: column;
-    gap: 10px;
-  }
+  
   .item-body {
     flex-direction: row;
     gap: 10px;

@@ -29,7 +29,6 @@ import Shop from './Shop';
 import ShopAllProducts from './ShopAllProducts';
 import ChatPopup from './ChatPopup'; // ✅ Global popup
 import TransactionHistory from './TransactionHistory';
-import AdminLogin from './AdminLogin';  
 import MyPurchases from './MyPurchases';
 import Notification from './Notification';
 import UserForm from './UserForm';
@@ -100,7 +99,6 @@ function MainApp() {
         <Route path="/checkout" element={<HeaderFooter><Checkout /></HeaderFooter>} />
         <Route path="/shop/:artisan_id" element={<Shop />} />
         <Route path="/shop/:artisan_id/products" element={<ShopAllProducts />} />
-        <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/dashboard/transaction-history" element={<TransactionHistory />} />
         <Route path="/my-purchases" element={<HeaderFooter><MyPurchases /></HeaderFooter>} />
         <Route path="/notification" element={<HeaderFooter><Notification /></HeaderFooter>} />

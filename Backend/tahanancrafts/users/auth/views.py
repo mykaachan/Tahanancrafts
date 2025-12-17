@@ -17,7 +17,7 @@ from .serializers import (
     ForgotPasswordSerializer, ForgotPasswordOtpVerifySerializer,
     ChangePasswordSerializer,CustomUserCreateSerializer
 )
-
+from rest_framework.authtoken.models import Token
 import random
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -259,12 +259,6 @@ class LoginRequestOTPView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
-
-# Verify OTP for login
-
-
 class LoginVerifyOTPView(APIView):
     permission_classes = [AllowAny]
 
@@ -291,26 +285,28 @@ class LoginVerifyOTPView(APIView):
 
             cache.delete(f"login_{normalized_contact}")
 
+            # ⭐ CREATE / GET TOKEN (THIS IS THE MISSING PIECE)
+            token, _ = Token.objects.get_or_create(user=user)
+
             # ⭐ GET ARTISAN ID FOR SELLERS
             artisan = None
             if user.role == "seller":
                 artisan_obj = Artisan.objects.filter(user=user).first()
                 artisan = artisan_obj.id if artisan_obj else None
 
-            # ⭐ STRUCTURED USER DATA SENT TO FRONTEND
-            user_data = {
-                "id": user.id,
-                "role": user.role,
-                "username": user.name,
-                "artisan_id": artisan
-            }
-
             return Response({
                 "message": f"Successfully logged in as {user.role}.",
-                "user": user_data
+                "token": token.key,  # ⭐ REQUIRED
+                "user": {
+                    "id": user.id,
+                    "role": user.role,
+                    "username": user.name,
+                    "artisan_id": artisan
+                }
             }, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 #this is for forgot password
 class ForgotPasswordView(APIView):
@@ -408,16 +404,39 @@ class GoogleLoginAPIView(APIView):
     def post(self, request):
         token = request.data.get("credential")
         if not token:
-            return Response({"error": "No token provided"}, status=400)
+            return Response(
+                {"error": "No Google credential provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         user = verify_google_token(token)
         if not user:
-            return Response({"error": "Invalid Google token"}, status=400)
+            return Response(
+                {"error": "Invalid Google token"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Optionally: create session / JWT
-        return Response({"message": "Login successful", "email": user.email, "name": user.name})
+        # 🚫 HARD BLOCK: Admin accounts cannot use Google login
+        if user.role == "admin":
+            return Response(
+                {
+                    "error": "Google login is disabled for admin accounts. "
+                             "Please use email and OTP authentication."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # ✅ Allowed roles: customer / seller
+        return Response(
+            {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "role": user.role,
+            },
+            status=status.HTTP_200_OK
+        )
     
-
 class CreateCustomUserView(APIView):
 
 

@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-from orders.models import Order, OrderItem  # adjust import path if needed
+from products.models import Order, OrderItem  # adjust import path if needed
 from users.models import CustomUser
 
 def build_customer_dataset():

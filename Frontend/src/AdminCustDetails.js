@@ -14,13 +14,14 @@ export default function AdminCustDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const BASE_API = "https://tahanancrafts.onrender.com";
+  const BASE_API = "http://127.0.0.1:8000";
   const MEDIA_URL = BASE_API;
 
+  // ---------------- STATES ----------------
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
-  const [artisans, setArtisans] = useState([]); // ✅ Artisan list added
+  const [artisans, setArtisans] = useState([]);
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 5;
@@ -32,7 +33,7 @@ export default function AdminCustDetails() {
     "💬 Customer sent a message",
   ]);
 
-  // Extract initials
+  // ---------------- HELPERS ----------------
   const getInitials = (name) => {
     if (!name) return "U";
     const parts = name.trim().split(" ");
@@ -41,24 +42,65 @@ export default function AdminCustDetails() {
       : parts[0][0].toUpperCase();
   };
 
-  useEffect(() => {
-    async function load() {
-      const res = await fetch(`${BASE_API}/api/products/admin/dashboard/`);
-      const data = await res.json();
+  const getStatusClass = (status) => {
+    const green = ["completed", "delivered", "to_review"];
+    const red = ["refund", "cancelled"];
+    if (green.includes(status)) return "badge-green";
+    if (red.includes(status)) return "badge-red";
+    return "badge-yellow";
+  };
 
-      const cust = data.lists.customers.find((c) => c.id === parseInt(id));
-      const userOrders = data.lists.orders.filter((o) => o.user === parseInt(id));
+  // ---------------- FETCH DATA ----------------
+  async function load() {
+    try {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("user_role");
 
-      setCustomer(cust);
-      setOrders(userOrders);
-      setProducts(data.lists.products);
-      setArtisans(data.lists.artisans); // ✅ Added
+      if (!token || role !== "admin") {
+        alert("Admins only.");
+        navigate("/login", { replace: true });
+        return;
+      }
+
+      const headers = { Authorization: `Token ${token}` };
+
+      const [
+        customersRes,
+        ordersRes,
+        productsRes,
+        artisansRes,
+      ] = await Promise.all([
+        fetch(`${BASE_API}/api/users/admin/customers/`, { headers }),
+        fetch(`${BASE_API}/api/products/admin/orders/?user=${id}`, { headers }),
+        fetch(`${BASE_API}/api/products/admin/products/`, { headers }),
+        fetch(`${BASE_API}/api/products/admin/artisans/`, { headers }),
+      ]);
+
+      if (!customersRes.ok) throw new Error("Customers fetch failed");
+
+      const customersData = await customersRes.json();
+      const foundCustomer = customersData.results.find(
+        (c) => c.id === Number(id)
+      );
+
+      if (!foundCustomer) throw new Error("Customer not found");
+
+      setCustomer(foundCustomer);
+      setOrders((await ordersRes.json()).results || []);
+      setProducts((await productsRes.json()).results || []);
+      setArtisans((await artisansRes.json()).results || []);
+
+    } catch (err) {
+      console.error("AdminCustDetails error:", err);
+      navigate("/login", { replace: true });
     }
-    load();
-  }, [id]);
+  }
+  
+  if (!customer) {
+    return <div className="admindash-loading">Loading customer...</div>;
+  }
 
-  if (!customer) return <div>Loading...</div>;
-
+  // ---------------- COMPUTED VALUES ----------------
   const initials = getInitials(customer.name);
 
   const avatarSrc = customer.avatar
@@ -67,35 +109,25 @@ export default function AdminCustDetails() {
       : `${BASE_API}${customer.avatar}`
     : null;
 
-  // Pagination logic
   const totalPages = Math.ceil(orders.length / itemsPerPage);
   const paginatedOrders = orders.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
 
-  // Status badge colors
-  const getStatusClass = (status) => {
-    const green = ["completed", "delivered", "to_review"];
-    const red = ["refund", "cancelled"];
-
-    if (green.includes(status)) return "badge-green";
-    if (red.includes(status)) return "badge-red";
-    return "badge-yellow";
-  };
-
   const totalSpent = orders.reduce(
-    (sum, o) => sum + parseFloat(o.total_items_amount),
+    (sum, o) => sum + Number(o.total_items_amount || 0),
     0
   );
+
   const totalRefunds = orders.filter((o) => o.status === "refund").length;
 
+  // ---------------- RENDER ----------------
   return (
     <div className="admindash-container">
       <AdminSidebar />
 
       <div className="admindash-main">
-
         {/* HEADER */}
         <header className="admindash-header">
           <input className="admindash-search" placeholder="🔍 Search..." />
@@ -111,12 +143,25 @@ export default function AdminCustDetails() {
               {showNotifications && (
                 <div className="admindash-dropdown">
                   <h4>Notifications</h4>
-                  <ul>{notifications.map((n, i) => <li key={i}>{n}</li>)}</ul>
+                  <ul>
+                    {notifications.map((n, i) => (
+                      <li key={i}>{n}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
 
-            <button className="admindash-logout">Logout</button>
+            <button
+              className="admindash-logout"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </button>
+
             <div className="admindash-profile-circle"></div>
           </div>
         </header>
@@ -136,7 +181,7 @@ export default function AdminCustDetails() {
 
         {/* MAIN CONTENT */}
         <div className="customer-details">
-          {/* LEFT PROFILE CARD */}
+          {/* LEFT PROFILE */}
           <div className="cust-profile-card">
             <div className="cust-avatar-wrapper">
               {avatarSrc ? (
@@ -159,7 +204,7 @@ export default function AdminCustDetails() {
             </div>
           </div>
 
-          {/* RIGHT SIDE SUMMARY */}
+          {/* RIGHT SUMMARY */}
           <div className="cust-summary">
             <div className="cust-cards">
               <div className="cust-card spent">
@@ -195,11 +240,9 @@ export default function AdminCustDetails() {
 
                 <tbody>
                   {paginatedOrders.map((o) => {
-                    const item = o.items[0];
-                    const product = products.find((p) => p.id === item.product);
-                    const artisan = artisans.find(
-                      (a) => a.id === product.artisan
-                    );
+                    const item = o.items?.[0];
+                    const product = products.find((p) => p.id === item?.product);
+                    const artisan = artisans.find((a) => a.id === product?.artisan);
 
                     return (
                       <tr key={o.id}>
@@ -208,13 +251,17 @@ export default function AdminCustDetails() {
                         <td>
                           <div className="cust-prod">
                             <img
-                              src={MEDIA_URL + product.main_image}
+                              src={
+                                product?.main_image
+                                  ? MEDIA_URL + product.main_image
+                                  : "https://via.placeholder.com/40"
+                              }
                               width={40}
-                              alt={product.name}
+                              alt={product?.name || "Product"}
                             />
                             <div>
-                              <p>{product.name}</p>
-                              <small>{artisan ? artisan.name : "Unknown Artisan"}</small>
+                              <p>{product?.name || "Unknown Product"}</p>
+                              <small>{artisan?.name || "Unknown Artisan"}</small>
                             </div>
                           </div>
                         </td>
@@ -266,4 +313,3 @@ export default function AdminCustDetails() {
     </div>
   );
 }
-

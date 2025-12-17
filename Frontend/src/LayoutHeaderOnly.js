@@ -20,7 +20,7 @@ function LayoutHeaderOnly({ children }) {
     setLoadingNotif(true);
     try {
       const res = await fetch(
-        `${API_URL}/api/notifications/artisan/${artisanId}/`
+        `${API_URL}/api/chat/artisan/${artisanId}/`
       );
       const data = await res.json();
       setNotifications(data);
@@ -34,7 +34,7 @@ function LayoutHeaderOnly({ children }) {
   const markAsRead = async (notifId) => {
     try {
       await fetch(
-        `${API_URL}/api/notifications/read/${notifId}/`,
+        `${API_URL}/api/chat/read/${notifId}/`,
         { method: "POST" }
       );
 

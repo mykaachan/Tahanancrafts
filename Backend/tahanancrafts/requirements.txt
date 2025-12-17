@@ -53,6 +53,7 @@ setuptools==80.9.0
 six==1.17.0
 social-auth-app-django==5.5.1
 social-auth-core==4.7.0
+statsmodels
 sqlparse==0.5.3
 telesign==3.0.0
 telesignenterprise==3.0.0

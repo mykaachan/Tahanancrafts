@@ -37,11 +37,6 @@ function AdminSidebar() {
             </Link>
           </li>
         </ul>
-        <p className="admin-menu-label">View as</p>
-        <ul>
-          <li>Artisan</li>
-          <li>Customer</li>
-        </ul>
       </div>
       <div className="admin-sidebar-footer">
         <p>⚙ SETTINGS</p>
