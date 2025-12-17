@@ -5,7 +5,8 @@ import { FaBell, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminProd() {
-  const BASE_URL = "http://127.0.0.1:8000";
+  //const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = "https://tahanancrafts.onrender.com";
   const PRODUCTS_URL = `${BASE_URL}/api/products/admin/products/`;
   const DELETE_URL = `${BASE_URL}/api/products/product/delete_product/`;
 

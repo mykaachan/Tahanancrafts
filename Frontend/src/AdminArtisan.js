@@ -4,8 +4,8 @@ import AdminSidebar from "./AdminSidebar";
 import { FaBell, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-//const BASE_API = "https://tahanancrafts.onrender.com";
-const BASE_API = "http://127.0.0.1:8000";
+const BASE_API = "https://tahanancrafts.onrender.com";
+//const BASE_API = "http://127.0.0.1:8000";
 
 
 export default function AdminArtisan() {

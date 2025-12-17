@@ -1,8 +1,8 @@
 // src/api.js
 import axios from "axios";
 // ✅ Base URL of your Django backend
-//export const API_URL = `${process.env.REACT_APP_API_URL}`;
-export const API_URL = ` http://127.0.0.1:8000`;
+export const API_URL = `${process.env.REACT_APP_API_URL}`;
+//export const API_URL = ` http://127.0.0.1:8000`;
 export const MEDIA_URL = process.env.REACT_APP_API_URL;
 //export const MEDIA_URL = ` http://127.0.0.1:8000`;
 

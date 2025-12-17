@@ -5,7 +5,9 @@ import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminOrders() {
-  const BASE_API = "http://127.0.0.1:8000";
+  //const BASE_API = "http://127.0.0.1:8000";
+  const BASE_API = "https://tahanancrafts.onrender.com";
+
   const ORDERS_URL = `${BASE_API}/api/products/admin/orders/`;
   const PRODUCTS_URL = `${BASE_API}/api/products/admin/products/`;
   const ARTISANS_URL = `${BASE_API}/api/products/admin/artisans/`;

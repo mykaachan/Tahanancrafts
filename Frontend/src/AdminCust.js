@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminCust() {
   const navigate = useNavigate();
-  const BASE_API = "http://127.0.0.1:8000";
-  //const BASE_API = "https://tahanancrafts.onrender.com";
+  //const BASE_API = "http://127.0.0.1:8000";
+  const BASE_API = "https://tahanancrafts.onrender.com";
 
 
   const [showNotifications, setShowNotifications] = useState(false);

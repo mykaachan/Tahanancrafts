@@ -14,7 +14,8 @@ export default function AdminCustDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const BASE_API = "http://127.0.0.1:8000";
+  //const BASE_API = "http://127.0.0.1:8000";
+  const BASE_API = "https://tahanancrafts.onrender.com";
   const MEDIA_URL = BASE_API;
 
   // ---------------- STATES ----------------
