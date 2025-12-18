@@ -8,8 +8,8 @@ export default function AdminOrderDet() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  //onst BASE_API = "http://127.0.0.1:8000";
-  const BASE_API = "https://tahanancrafts.onrender.com";
+  const BASE_API = "http://127.0.0.1:8000";
+  //const BASE_API = "https://tahanancrafts.onrender.com";
   const MEDIA_URL = BASE_API;
 
   const ORDERS_URL = `${BASE_API}/api/products/admin/orders/?search=${id}`;

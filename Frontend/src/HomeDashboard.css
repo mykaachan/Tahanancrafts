@@ -16,6 +16,30 @@
   color: #7c6a58;
   margin-top: 4px;
 }
+.preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  background: #fff3cd;
+  color: #664d03;
+  padding: 10px 16px;
+  border-bottom: 1px solid #ffe69c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-top: -30px;
+}
+
+.preview-banner button {
+  background: #664d03;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
 .dashboard-main {
   display: flex;
   gap: 32px;

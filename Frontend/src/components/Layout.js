@@ -112,7 +112,7 @@ const Layout = ({ children }) => {
                 <div className="user-avatar">
                   {artisan?.main_photo ? (
                     <img
-                      src={`${API_URL}${artisan.main_photo}`}
+                      src={`${API_URL}${artisan.main_photos}`}
                       alt="avatar"
                       style={{
                         width: "100%",
@@ -127,7 +127,7 @@ const Layout = ({ children }) => {
                 </div>
 
                 <span className="username">
-                  {artisan?.name || "Loading..."}
+                  {artisan?.names || "Admin Myka"}
                 </span>
               </div>
             </Link>

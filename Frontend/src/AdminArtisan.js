@@ -150,7 +150,7 @@ export default function AdminArtisan() {
                   <th></th>
                   <th>Shop Name</th>
                   <th>Location</th>
-                  <th>Orders</th>
+                  <th>Pending Orders</th>
                   <th>Status</th>
                   <th>Created</th>
                   <th>Action</th>

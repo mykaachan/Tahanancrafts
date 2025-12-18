@@ -1,148 +1,71 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import "./AdminDash.css";
 import AdminSidebar from "./AdminSidebar";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminOrders() {
-  //const BASE_API = "http://127.0.0.1:8000";
-  const BASE_API = "https://tahanancrafts.onrender.com";
-
-  const ORDERS_URL = `${BASE_API}/api/products/admin/orders/`;
-  const PRODUCTS_URL = `${BASE_API}/api/products/admin/products/`;
-  const ARTISANS_URL = `${BASE_API}/api/products/admin/artisans/`;
-  const MEDIA_URL = BASE_API;
-
   const navigate = useNavigate();
 
-  // ---------------- AUTH ----------------
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("user_role");
-
-    if (!token || role !== "admin") {
-      alert("Admins only.");
-      navigate("/login", { replace: true });
-    }
-  }, [navigate]);
-
-  // ---------------- UI ----------------
+  // ================== UI ==================
   const [search, setSearch] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [page, setPage] = useState(1);
 
-  // ---------------- DATA ----------------
-  const [orders, setOrders] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [artisans, setArtisans] = useState([]);
+  // ================== FAKE DATA ==================
 
-  const [nextPage, setNextPage] = useState(null);
-  const [prevPage, setPrevPage] = useState(null);
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const products = [
+    { id: 101, name: "Traditional Barong", artisan: "Iraya Basketry", main_image: "http://127.0.0.1:8000/media/products/main/barong.png" },
+    { id: 102, name: "Traditional Barong", artisan: "Iraya Basketry", main_image: "http://127.0.0.1:8000/media/products/main/barong.png" },
+    { id: 103, name: "Floor Mat", artisan: "Iraya Basketry", main_image: "http://127.0.0.1:8000/media/products/main/mat.png" },
+    { id: 104, name: "Vase", artisan: "Iraya Basketry", main_image: "http://127.0.0.1:8000/media/media/products/main/20087121_50173208_600.webp" },
+    { id: 105, name: "Ceramic Mug", artisan: "Banig Handicrafts", main_image: "http://127.0.0.1:8000/media/media/products/main/497263654_18324018016200726_7373794072908281053_n.jpg" },
+  ];
 
-  // ---------------- FETCH ORDERS ----------------
-  async function fetchOrders(url) {
-    const token = localStorage.getItem("token");
+  const orders = [
+    { id: 115, status: "delivered", total_items_amount: 4674, created_at: "2025-12-15", product_id: 101 },
+    { id: 114, status: "awaiting_payment", total_items_amount: 404.04, created_at: "2025-12-15", product_id: 102 },
+    { id: 113, status: "processing", total_items_amount: 450, created_at: "2025-12-13", product_id: 103 },
+    { id: 112, status: "processing", total_items_amount: 750, created_at: "2025-12-13", product_id: 104 },
+    { id: 111, status: "awaiting_verification", total_items_amount: 320, created_at: "2025-12-10", product_id: 105 },
+    { id: 110, status: "refund", total_items_amount: 420, created_at: "2025-12-09", product_id: 101 },
+    { id: 109, status: "awaiting_payment", total_items_amount: 600, created_at: "2025-12-07", product_id: 102 },
+    { id: 108, status: "delivered", total_items_amount: 280, created_at: "2025-12-07", product_id: 103 },
+    { id: 107, status: "delivered", total_items_amount: 450, created_at: "2025-12-07", product_id: 104 },
+    { id: 106, status: "delivered", total_items_amount: 200, created_at: "2025-12-06", product_id: 105 },
+  ];
 
-    const res = await fetch(url, {
-      headers: { Authorization: `Token ${token}` },
-    });
-
-    if (!res.ok) throw new Error("Orders fetch failed");
-
-    const json = await res.json();
-    setOrders(json.results || []);
-    setNextPage(json.next);
-    setPrevPage(json.previous);
-    setCount(json.count);
-  }
-
-  // ---------------- INITIAL LOAD ----------------
-  useEffect(() => {
-    async function load() {
-      try {
-        const token = localStorage.getItem("token");
-
-        // Orders (paginated)
-        await fetchOrders(ORDERS_URL);
-
-        // Products
-        const prodRes = await fetch(PRODUCTS_URL, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        const prodJson = await prodRes.json();
-        setProducts(prodJson.results || []);
-
-        // Artisans
-        const artRes = await fetch(ARTISANS_URL, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        const artJson = await artRes.json();
-        setArtisans(artJson.results || []);
-      } catch (err) {
-        console.error(err);
-        localStorage.clear();
-        navigate("/login", { replace: true });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    load();
-  }, [navigate]);
-
-  // ---------------- SEARCH (FRONTEND ONLY) ----------------
+  // ================== SEARCH ==================
   const filteredOrders = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return orders;
-
-    return orders.filter((o) => {
-      if (!o.items?.length) return false;
-
-      const product = products.find(p => p.id === o.items[0].product);
-      const artisan = product
-        ? artisans.find(a => a.id === product.artisan)
-        : null;
-
-      return (
-        o.id.toString().includes(q) ||
-        o.status.toLowerCase().includes(q) ||
-        product?.name.toLowerCase().includes(q) ||
-        artisan?.name.toLowerCase().includes(q)
-      );
-    });
-  }, [orders, search, products, artisans]);
-
-  const getStatusClass = (status) => {
-    if (["completed", "delivered", "to_review"].includes(status)) return "badge-green";
-    if (["cancelled", "refund"].includes(status)) return "badge-red";
-    return "badge-yellow";
-  };
-
-  if (loading) {
-    return (
-      <div className="admindash-container">
-        <AdminSidebar />
-        <div className="admindash-main"><h3>Loading Orders...</h3></div>
-      </div>
+    const q = search.toLowerCase();
+    return orders.filter(o =>
+      o.id.toString().includes(q) ||
+      o.status.toLowerCase().includes(q)
     );
-  }
-  const itemsPerPage = 5;
+  }, [search]);
 
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  // ================== PAGINATION ==================
+  const itemsPerPage = 10;
+  const totalPages = "12";
 
-  const paginatedOrders = orders.slice(
+  const paginatedOrders = filteredOrders.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
 
+  const getStatusClass = (status) => {
+    if (["completed", "delivered"].includes(status)) return "badge-green";
+    if (["cancelled"].includes(status)) return "badge-red";
+    return "badge-yellow";
+  };
 
+  // ================== RENDER ==================
   return (
     <div className="admindash-container">
       <AdminSidebar />
 
       <div className="admindash-main">
+        {/* HEADER */}
         <header className="admindash-header">
           <input
             className="admindash-search"
@@ -157,16 +80,7 @@ export default function AdminOrders() {
               <span className="notif-dot" />
             </div>
 
-            <button
-              className="admindash-logout"
-              onClick={() => {
-                localStorage.clear();
-                navigate("/login");
-              }}
-            >
-              Logout
-            </button>
-
+            <button className="admindash-logout">Logout</button>
             <div className="admindash-profile-circle" />
           </div>
         </header>
@@ -175,6 +89,7 @@ export default function AdminOrders() {
           <h2>Orders</h2>
         </div>
 
+        {/* TABLE */}
         <div className="cust-history">
           <table className="cust-history-table">
             <thead>
@@ -188,42 +103,21 @@ export default function AdminOrders() {
             </thead>
 
             <tbody>
-              {paginatedOrders.map((order) => {
-                const item = order.items?.[0];
-
-                // 🛡️ Guard: orders with no items
-                if (!item) {
-                  return (
-                    <tr key={order.id}>
-                      <td colSpan={5} style={{ textAlign: "center", color: "#888" }}>
-                        Order #{order.id} has no items
-                      </td>
-                    </tr>
-                  );
-                }
-
-                const product = products.find((p) => p.id === item.product);
-                if (!product) return null;
-
-                const artisan = artisans.find((a) => a.id === product.artisan);
+              {paginatedOrders.map(order => {
+                const product = products.find(p => p.id === order.product_id);
 
                 return (
                   <tr
                     key={order.id}
                     className="clickable-row"
                     onClick={() => navigate(`/adminorders/${order.id}`)}
-                    style={{ cursor: "pointer" }}
                   >
                     <td>
                       <div className="cust-prod">
-                        <img
-                          src={product.main_image}
-                          width={40}
-                          alt={product.name}
-                        />
+                        <img src={product.main_image} width={40} alt="" />
                         <div>
                           <p className="prod-name">{product.name}</p>
-                          <small>{artisan?.name || "Unknown Artisan"}</small>
+                          <small>{product.artisan}</small>
                         </div>
                       </div>
                     </td>
@@ -242,15 +136,15 @@ export default function AdminOrders() {
                 );
               })}
             </tbody>
-
           </table>
 
+          {/* PAGINATION */}
           <div className="pagination">
-            <span>Showing {filteredOrders.length} of {count}</span>
+            <span>Page {page} of {totalPages}</span>
 
             <div className="pagination-buttons">
-              <button disabled={!prevPage} onClick={() => fetchOrders(prevPage)}>&lt;</button>
-              <button disabled={!nextPage} onClick={() => fetchOrders(nextPage)}>&gt;</button>
+              <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>&lt;</button>
+              <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>&gt;</button>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import SearchFilter
 
@@ -20,6 +20,7 @@ from .serializers import (
 from .permission import IsAdmin
 
 class AdminDashboardAnalyticsView(APIView):
+
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def get(self, request):
@@ -144,7 +145,7 @@ class AdminTopArtisanView(APIView):
         return Response(top or {})
 
 class AdminTopSellingProductsView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         SOLD_STATUSES = ["completed", "delivered", "to_review"]
@@ -165,7 +166,7 @@ class AdminTopSellingProductsView(APIView):
         return Response(products)
 
 class AdminRecentOrdersView(APIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         orders = (

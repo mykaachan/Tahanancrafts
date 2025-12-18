@@ -102,6 +102,8 @@ function formatDate(d) {
 
 const HomeDashboard = () => {
   const navigate = useNavigate();
+  const previewRole = localStorage.getItem("view_as");
+
   // Stored IDs
   const artisanIdFromStorage = localStorage.getItem("artisan_id");
   const userIdFromStorage = localStorage.getItem("user_id");
@@ -265,16 +267,16 @@ const HomeDashboard = () => {
           delivered_orders: Number(data.delivered_orders || 0),
           refund_orders: Number(data.refund_orders || 0),
           cancelled_orders: Number(data.cancelled_orders || 0),
-          total_sales: Number(data.total_sales || 0),
-          sales_per_products: Array.isArray(data.sales_per_products) ? data.sales_per_products : [],
-          sales_per_categories: Array.isArray(data.sales_per_categories) ? data.sales_per_categories : [],
-          total_orders: Number(data.total_orders || 0),
+          total_sales: Number(data.total_sale || 0),
+          sales_per_products: Array.isArray(data.sales_per_product) ? data.sales_per_products : [],
+          sales_per_categories: Array.isArray(data.sales_per_categorie) ? data.sales_per_categories : [],
+          total_orders: Number(data.total_order || 0),
           // round shop_performance to 2 decimals if provided
           shop_performance:
-            data.shop_performance === null || data.shop_performance === undefined
+            data.shop_performances === null || data.shop_performances === undefined
               ? null
-              : Math.round(Number(data.shop_performance || 0) * 100) / 100,
-          top_selling_products: Array.isArray(data.top_selling_products) ? data.top_selling_products : [],
+              : Math.round(Number(data.shop_performances || 0) * 100) / 100,
+          top_selling_product: Array.isArray(data.top_selling_products) ? data.top_selling_products : [],
         };
 
         setDashboard(normalized);
@@ -426,6 +428,20 @@ const HomeDashboard = () => {
   // ==============
   return (
     <Layout>
+      {previewRole && (
+              <div className="preview-banner">
+                👁️ You are viewing the site as{" "}
+                <strong>{previewRole.toUpperCase()}</strong> (ADMIN PREVIEW)
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("view_as");
+                    window.location.href = "/admin-dashboard";
+                  }}
+                >
+                  Exit Preview
+                </button>
+              </div>
+            )}
       <div className="dashboard-page-container">
         <div className="dashboard-header">
           <h2>Dashboard</h2>
@@ -451,23 +467,23 @@ const HomeDashboard = () => {
                         className="todo-item"
                         onClick={() => navigate("/order-list?tab=awaiting_payment")}
                       >
-                        <span className="todo-count">{safe(dashboard?.pending_orders, 0)}</span>
+                        <span className="todo-count">{safe(dashboard?.pending_order, 0)}</span>
                         <span className="todo-label">Pending Orders</span>
                       </div>
                       <div className="todo-item" onClick={() => navigate("/order-list?tab=processing")}>
-                        <span className="todo-count">{safe(dashboard?.processing_orders, 0)}</span>
+                        <span className="todo-count">{safe(dashboard?.processing_order, 0)}</span>
                         <span className="todo-label">To-Process Shipment</span>
                       </div>
                       <div className="todo-item" onClick={() => navigate("/order-list?tab=shipped")}>
-                        <span className="todo-count">{safe(dashboard?.shipped_orders, 0)}</span>
+                        <span className="todo-count">{safe(dashboard?.shipped_order, 0)}</span>
                         <span className="todo-label">Processed Shipment</span>
                       </div>
                       <div className="todo-item" onClick={() => navigate("/order-list?tab=delivered")}>
-                        <span className="todo-count">{safe(dashboard?.delivered_orders, 0)}</span>
+                        <span className="todo-count">{safe(dashboard?.delivered_order, 0)}</span>
                         <span className="todo-label">Delivered</span>
                       </div>
                       <div className="todo-item" onClick={() => navigate("/order-list?tab=refund")}>
-                        <span className="todo-count">{safe(dashboard?.refund_orders, 0)}</span>
+                        <span className="todo-count">{safe(dashboard?.refund_order, 0)}</span>
                         <span className="todo-label">Return/Refund/Cancel</span>
                       </div>
                     </div>
@@ -493,13 +509,13 @@ const HomeDashboard = () => {
                         <div>
                           <span style={{ color: "#7c6a58", fontSize: "1rem" }}>Sales</span>
                           <div style={{ fontWeight: "bold", fontSize: "1.3rem", color: "#4d3c2e" }}>
-                            ₱{formatPrice(insights.sales)}
+                            ₱{formatPrice(insights.sale)}
                           </div>
                         </div>
                         <div>
                           <span style={{ color: "#7c6a58", fontSize: "1rem" }}>Orders</span>
                           <div style={{ fontWeight: "bold", fontSize: "1.3rem", color: "#4d3c2e" }}>
-                            {insights.orders}
+                            {insights.order||0}
                           </div>
                         </div>
                       </div>
@@ -646,7 +662,7 @@ const HomeDashboard = () => {
                     <h4 style={{ fontWeight: "bold", position: "absolute", top: "16px", left: "24px", margin: 0 }}>Shop Performance</h4>
                     <div style={{ textAlign: "center", marginTop: "8px" }}>
                       <div style={{ fontSize: "2.0rem",marginTop: "30px", color: "green", fontWeight: 700, letterSpacing: ".06em" }}>{shopPerformance}</div>
-                      <div style={{  color: "#7c6a58" }}>Average Rating: {shopAverageRating !== null ? shopAverageRating.toFixed(2) : "—"}</div>
+                      <div style={{  color: "#7c6a58" }}>Average Rating: {shopAverageRating !== null ? shopAverageRating.toFixed(2) : "No Rating"}</div>
                     </div>
                   </div>
 
@@ -656,11 +672,11 @@ const HomeDashboard = () => {
                     <div className="top-seller-list" style={{ marginTop: "12px" }}>
                       {loading ? (
                         <p>Loading top selling products...</p>
-                      ) : !dashboard?.sales_per_products?.length ? (
+                      ) : !dashboard?.sales_per_product?.length ? (
                         <p>No top selling products available.</p>
                       ) : (
                         (() => {
-                          const arr = dashboard.sales_per_products;
+                          const arr = dashboard.sales_per_product;
 
                           // STEP 1 — merge with sellerProducts so we can get price + category + real image
                           const merged = arr.map((p) => {
@@ -734,10 +750,10 @@ const HomeDashboard = () => {
                     <h4>Forecast & Trends</h4>
                     <div className="dashboard-row" style={{ gap: "12px" }}>
                       <div className="forecast-card" style={{ padding: "12px", border: "1px dashed #e0e0e0", borderRadius: "8px" }}>
-                        <span className="graph-placeholder">[Sales Trend Graph Placeholder]</span>
+                        <span className="graph-placeholder">[Sales Trend Graph]</span>
                       </div>
                       <div className="trending-categories-card" style={{ padding: "12px", border: "1px dashed #e0e0e0", borderRadius: "8px" }}>
-                        <span className="trending-placeholder">[Trending Categories Placeholder]</span>
+                        <span className="trending-placeholder">[Trending Categories]</span>
                       </div>
                     </div>
                     <div style={{ marginTop: "12px" }}>

@@ -36,6 +36,16 @@ function AdminSidebar() {
               Orders
             </Link>
           </li>
+            <li>
+            <Link to="/adminforecast" style={{ textDecoration: "none", color: "inherit" }}>
+              Forecast & Trends
+            </Link>
+          </li>
+        </ul>
+        <p className="admin-menu-label">View as</p>
+        <ul>
+          <li>Artisan</li>
+          <li>Customer</li>
         </ul>
       </div>
       <div className="admin-sidebar-footer">

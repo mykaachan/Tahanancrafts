@@ -19,48 +19,50 @@ export default function AdminForecast() {
     "💬 Market insight report generated",
   ]);
   const salesData = [
-    { name: "Jan", value: 12000 },
-    { name: "Feb", value: 9500 },
-    { name: "Mar", value: 11000 },
-    { name: "Apr", value: 8000 },
-    { name: "May", value: 14000 },
-    { name: "Jun", value: 10000 },
-    { name: "Jul", value: 13000 },
-    { name: "Aug", value: 15000 },
-    { name: "Sep", value: 12500 },
-    { name: "Oct", value: 16000 },
-    { name: "Nov", value: 12000 },
-    { name: "Dec", value: 14500 },
+    { name: "Jan", value: 9800 },
+    { name: "Feb", value: 10200 },
+    { name: "Mar", value: 10800 },
+    { name: "Apr", value: 11200 },
+    { name: "May", value: 11800 },
+    { name: "Jun", value: 12400 },
+    { name: "Jul", value: 16800 }, // peak aligns with July 2025 spike
+    { name: "Aug", value: 13200 },
+    { name: "Sep", value: 13800 },
+    { name: "Oct", value: 14200 },
+    { name: "Nov", value: 13600 },
+    { name: "Dec", value: 15800 },
   ];
   const trendingCategories = [
-    { rank: 1, category: "Home Decor", growth: "+28.5%", top: "Burdang Taal" },
-    { rank: 2, category: "Kitchen Ware", growth: "+19.3%", top: "Kalis Taal" },
-    { rank: 3, category: "Furniture", growth: "+15.1%", top: "Iraya Basket" },
-    { rank: 4, category: "Accessories", growth: "+9.8%", top: "Kalipi Habing Iban" },
+    { rank: 1, category: "Clothing", growth: "+42.6%", top: "Traditional Barong" },
+    { rank: 2, category: "Home Decor", growth: "+35.1%", top: "Vase" },
+    { rank: 3, category: "Placemat", growth: "+28.4%", top: "Floor Mat" },
+    { rank: 4, category: "Bag", growth: "+22.9%", top: "Stylish Bag" },
   ];
+
   const productTrends = [
     {
-      name: "Saklit Habing Ibaan",
-      type: "Bag",
-      growth: "+42%",
-      tag: "Trending Soon!",
-      img: "https://via.placeholder.com/40",
+      name: "Traditional Barong",
+      type: "Clothing",
+      growth: "+47%",
+      tag: "High Demand Forecast",
+      img: "http://127.0.0.1:8000/media/products/main/barong.png",
     },
     {
-      name: "Kalipi Habing Ibaan",
-      type: "Bag",
-      growth: "+36%",
-      tag: "Expected Demand!",
-      img: "https://via.placeholder.com/40",
-    },
-    {
-      name: "Burdang Taal Lace",
+      name: "Vase",
       type: "Home Decor",
-      growth: "+30%",
-      tag: "Trending Soon!",
-      img: "https://via.placeholder.com/40",
+      growth: "+34%",
+      tag: "Trending Soon",
+      img: "http://127.0.0.1:8000/media/media/products/main/20087121_50173208_600.webp",
+    },
+    {
+      name: "Floor Mat",
+      type: "Home Decor",
+      growth: "+29%",
+      tag: "Seasonal Demand",
+      img: "http://127.0.0.1:8000/media/products/main/mat.png",
     },
   ];
+
   return (
     <div className="admindash-container">
       <AdminSidebar />
@@ -112,8 +114,8 @@ export default function AdminForecast() {
                   <option>Accessories</option>
                 </select>
                 <select>
+                  <option>2026</option>
                   <option>2025</option>
-                  <option>2024</option>
                 </select>
               </div>
               <div style={{ width: "100%", height: 230 }}>

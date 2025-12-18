@@ -29,6 +29,7 @@ function setCache(key, data) {
 // ------------------------------------------------ //
 
 function HomePage() {
+  const previewRole = localStorage.getItem("view_as");
   const [latestProducts, setLatestProducts] = React.useState([]);
   const [featuredProducts, setFeaturedProducts] = React.useState([]);
   const [recentArtisans, setRecentArtisans] = React.useState([]);
@@ -175,6 +176,20 @@ function HomePage() {
   return (
     <HeaderFooter>
       <div className="homepage-container">
+       {previewRole && (
+        <div className="preview-banner">
+          👁️ You are viewing the site as{" "}
+          <strong>{previewRole.toUpperCase()}</strong> (ADMIN PREVIEW)
+          <button
+            onClick={() => {
+              localStorage.removeItem("view_as");
+              window.location.href = "/admin-dashboard";
+            }}
+          >
+            Exit Preview
+          </button>
+        </div>
+      )}
 
         {/* ---------------- FEATURED SECTION ---------------- */}
         <section className="featured-section">
